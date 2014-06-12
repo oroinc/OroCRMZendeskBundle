@@ -1,0 +1,30 @@
+{
+    "name": "oro/crm-zendesk",
+    "type": "symfony-bundle",
+    "description": "OroCRM Zendesk Integration",
+    "keywords": ["OroCRM", "Zendesk", "Integration"],
+    "authors": [
+        {
+            "name": "Oro, Inc",
+            "homepage": "http://www.orocrm.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "OroCRM\\Bundle\\ZendeskBundle": "src/"
+        }
+    },
+    "target-dir": "src/OroCRM/Bundle/ZendeskBundle",
+    "require": {
+        "php": ">=5.4.4",
+        "oro/platform": "1.x-dev",
+        "oro/crm": "1.x-dev"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    }
+}
