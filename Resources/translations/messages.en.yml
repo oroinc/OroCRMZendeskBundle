@@ -1,0 +1,18 @@
+orocrm:
+    zendesk:
+        system_configuration:
+            integrations.title: 'Integrations'
+            zendesk_integration.title: 'Zendesk'
+            zendesk_settings.title: 'Settings'
+
+        form:
+            email:
+                label: Email
+            api_token:
+                label: Api Token
+            sync_timeout:
+                label: Sync Timeout
+            zendesk_default_user:
+                label: Default Zendesk user
+            default_user:
+                label: Default OroCRM user

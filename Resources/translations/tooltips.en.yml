@@ -1,0 +1,13 @@
+orocrm:
+    zendesk:
+        form:
+            email:
+                tooltip: Zendesk user email
+            api_token:
+                tooltip: Zendesk api token
+            sync_timeout:
+                tooltip: Syncronization with zendesk timeout(in minutes)
+            zendesk_default_user:
+                tooltip: Use in case if case assigned on non exist zendesk user
+            default_user:
+                tooltip: Use in case if case assigned on non exist orocrm user

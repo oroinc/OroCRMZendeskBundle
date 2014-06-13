@@ -1,2 +1,9 @@
-parameters: ~
-services: ~
+parameters:
+    orocrm_zendesk.provider.type.configuration_provider.class: OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider
+
+services:
+    orocrm_zendesk.provider.type.configuration_provider:
+        class: %orocrm_zendesk.provider.type.configuration_provider.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @oro_config.global
