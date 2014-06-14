@@ -84,21 +84,30 @@ class ZendeskUser
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=30)
      */
     protected $phone;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=30)
      */
     protected $timeZone;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=30)
      */
     protected $locale;
 
     /**
      * @var Contact
+     *
+     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\ContactBundle\Entity\Contact")
+     * @ORM\JoinColumn(name="contact_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $contact;
 
@@ -173,17 +182,6 @@ class ZendeskUser
     public function getEmail()
     {
         return $this->email;
-    }
-
-    /**
-     * @param int $id
-     * @return ZendeskUser
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     /**

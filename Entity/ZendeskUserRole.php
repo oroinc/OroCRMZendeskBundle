@@ -106,15 +106,11 @@ class ZendeskUserRole implements Translatable
     }
 
     /**
-     * @param mixed $other
+     * @param ZendeskUserRole $other
      * @return bool
      */
-    public function isEqualTo($other)
+    public function isEqualTo(ZendeskUserRole $other)
     {
-        if (!$other instanceof TicketPriority) {
-            return false;
-        }
-
         return $this->getName() == $other->getName();
     }
 }

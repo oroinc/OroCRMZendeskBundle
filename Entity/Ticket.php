@@ -167,7 +167,7 @@ class Ticket
      * @param ZendeskUser $assignedTo
      * @return Ticket
      */
-    public function setAssignedTo($assignedTo)
+    public function setAssignedTo(ZendeskUser $assignedTo)
     {
         $this->assignedTo = $assignedTo;
 
@@ -186,7 +186,7 @@ class Ticket
      * @param CaseEntity $case
      * @return Ticket
      */
-    public function setCase($case)
+    public function setCase(CaseEntity $case)
     {
         $this->case = $case;
 
@@ -205,7 +205,7 @@ class Ticket
      * @param \DateTime $createdAt
      * @return Ticket
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -243,7 +243,7 @@ class Ticket
      * @param \DateTime $dueAt
      * @return Ticket
      */
-    public function setDueAt($dueAt)
+    public function setDueAt(\DateTime $dueAt)
     {
         $this->dueAt = $dueAt;
 
@@ -278,17 +278,6 @@ class Ticket
     }
 
     /**
-     * @param int $id
-     * @return Ticket
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getId()
@@ -300,7 +289,7 @@ class Ticket
      * @param User $owner
      * @return Ticket
      */
-    public function setOwner($owner)
+    public function setOwner(User $owner)
     {
         $this->owner = $owner;
 
@@ -319,7 +308,7 @@ class Ticket
      * @param TicketPriority $priority
      * @return Ticket
      */
-    public function setPriority($priority)
+    public function setPriority(TicketPriority $priority)
     {
         $this->priority = $priority;
 
@@ -357,7 +346,7 @@ class Ticket
      * @param ZendeskUser $requester
      * @return Ticket
      */
-    public function setRequester($requester)
+    public function setRequester(ZendeskUser $requester)
     {
         $this->requester = $requester;
 
@@ -376,7 +365,7 @@ class Ticket
      * @param TicketStatus $status
      * @return Ticket
      */
-    public function setStatus($status)
+    public function setStatus(TicketStatus $status)
     {
         $this->status = $status;
 
@@ -414,7 +403,7 @@ class Ticket
      * @param ZendeskUser $submitter
      * @return Ticket
      */
-    public function setSubmitter($submitter)
+    public function setSubmitter(ZendeskUser $submitter)
     {
         $this->submitter = $submitter;
 
@@ -433,7 +422,7 @@ class Ticket
      * @param TicketType $type
      * @return Ticket
      */
-    public function setType($type)
+    public function setType(TicketType $type)
     {
         $this->type = $type;
 
@@ -452,7 +441,7 @@ class Ticket
      * @param \DateTime $updatedAt
      * @return Ticket
      */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt(\DateTime $updatedAt)
     {
         $this->updatedAt = $updatedAt;
 

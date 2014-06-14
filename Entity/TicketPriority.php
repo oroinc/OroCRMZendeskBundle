@@ -107,15 +107,11 @@ class TicketPriority implements Translatable
     }
 
     /**
-     * @param mixed $other
+     * @param TicketPriority $other
      * @return bool
      */
-    public function isEqualTo($other)
+    public function isEqualTo(TicketPriority $other)
     {
-        if (!$other instanceof TicketPriority) {
-            return false;
-        }
-
         return $this->getName() == $other->getName();
     }
 }

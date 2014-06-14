@@ -110,7 +110,7 @@ class TicketComment
      * @param ZendeskUser $author
      * @return TicketComment
      */
-    public function setAuthor($author)
+    public function setAuthor(ZendeskUser $author)
     {
         $this->author = $author;
         return $this;
@@ -146,7 +146,7 @@ class TicketComment
      * @param CaseComment $caseComment
      * @return TicketComment
      */
-    public function setCaseComment($caseComment)
+    public function setCaseComment(CaseComment $caseComment)
     {
         $this->caseComment = $caseComment;
 
@@ -165,7 +165,7 @@ class TicketComment
      * @param \DateTime $createdAt
      * @return TicketComment
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -200,17 +200,6 @@ class TicketComment
     }
 
     /**
-     * @param int $id
-     * @return TicketComment
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getId()
@@ -222,7 +211,7 @@ class TicketComment
      * @param User $owner
      * @return TicketComment
      */
-    public function setOwner($owner)
+    public function setOwner(User $owner)
     {
         $this->owner = $owner;
 
@@ -260,7 +249,7 @@ class TicketComment
      * @param Ticket $ticket
      * @return TicketComment
      */
-    public function setTicket($ticket)
+    public function setTicket(Ticket $ticket)
     {
         $this->ticket = $ticket;
 
@@ -279,7 +268,7 @@ class TicketComment
      * @param \DateTime $updatedAt
      * @return TicketComment
      */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt(\DateTime $updatedAt)
     {
         $this->updatedAt = $updatedAt;
 
