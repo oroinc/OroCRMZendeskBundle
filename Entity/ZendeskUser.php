@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
-use Oro\Bundle\UserBundle\Entity\User as OroCrmUser;
+use Oro\Bundle\UserBundle\Entity\User;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 
 /**
@@ -33,12 +33,8 @@ use OroCRM\Bundle\ContactBundle\Entity\Contact;
  *  }
  * )
  */
-class User
+class ZendeskUser
 {
-    const ROLE_AGENT = 'agent';
-    const ROLE_ADMIN = 'admin';
-    const ROLE_END_USER = 'end-user';
-
     /**
      * @var int
      * @ORM\Column(type="integer")
@@ -71,7 +67,10 @@ class User
     protected $updatedAt;
 
     /**
-     * @var string
+     * @var ZendeskUserRole
+     *
+     * @ORM\ManyToOne(targetEntity="ZendeskUserRole", cascade={"persist"})
+     * @ORM\JoinColumn(name="role_name", referencedColumnName="name", onDelete="SET NULL")
      */
     protected $role;
 
@@ -79,7 +78,6 @@ class User
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=100)
-     * @Oro\Versioned
      */
     protected $email;
 
@@ -104,20 +102,18 @@ class User
     protected $contact;
 
     /**
-     * @var OroCRMUser
+     * @var User
      *
      * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="SET NULL")
-     * @Oro\Versioned
      */
     protected $user;
 
     /**
-     * @var OroCRMUser
+     * @var User
      *
      * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
-     * @Oro\Versioned
      */
     protected $owner;
 

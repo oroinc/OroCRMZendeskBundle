@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
-use Oro\Bundle\UserBundle\Entity\User as OroCrmUser;
+use Oro\Bundle\UserBundle\Entity\User;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 
 /**
@@ -33,7 +33,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
  *  }
  * )
  */
-class Comment
+class TicketComment
 {
     /**
      * @var int
@@ -45,16 +45,14 @@ class Comment
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="text")
-     * @Oro\Versioned
+     * @ORM\Column(name="body", type="text")
      */
     protected $body;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="text")
-     * @Oro\Versioned
+     * @ORM\Column(name="html_body", type="text")
      */
     protected $htmlBody;
 
@@ -62,16 +60,14 @@ class Comment
      * @var bool
      *
      * @ORM\Column(name="public", type="boolean", options={"default"=false})
-     * @Oro\Versioned
      */
     protected $public;
 
     /**
-     * @var User
+     * @var ZendeskUser
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="ZendeskUser")
      * @ORM\JoinColumn(name="author_id", referencedColumnName="id", onDelete="SET NULL")
-     * @Oro\Versioned
      */
     protected $author;
 
@@ -80,7 +76,6 @@ class Comment
      *
      * @ORM\ManyToOne(targetEntity="Ticket")
      * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="SET NULL")
-     * @Oro\Versioned
      */
     protected $ticket;
 
@@ -104,11 +99,10 @@ class Comment
     protected $caseComment;
 
     /**
-     * @var OroCRMUser
+     * @var User
      *
      * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
-     * @Oro\Versioned
      */
     protected $owner;
 
