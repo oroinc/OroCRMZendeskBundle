@@ -164,6 +164,329 @@ class Ticket
     protected $owner;
 
     /**
+     * @param ZendeskUser $assignedTo
+     * @return Ticket
+     */
+    public function setAssignedTo($assignedTo)
+    {
+        $this->assignedTo = $assignedTo;
+
+        return $this;
+    }
+
+    /**
+     * @return ZendeskUser
+     */
+    public function getAssignedTo()
+    {
+        return $this->assignedTo;
+    }
+
+    /**
+     * @param CaseEntity $case
+     * @return Ticket
+     */
+    public function setCase($case)
+    {
+        $this->case = $case;
+
+        return $this;
+    }
+
+    /**
+     * @return CaseEntity
+     */
+    public function getCase()
+    {
+        return $this->case;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     * @return Ticket
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param string $description
+     * @return Ticket
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param \DateTime $dueAt
+     * @return Ticket
+     */
+    public function setDueAt($dueAt)
+    {
+        $this->dueAt = $dueAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDueAt()
+    {
+        return $this->dueAt;
+    }
+
+    /**
+     * @param boolean $hasIncidents
+     * @return Ticket
+     */
+    public function setHasIncidents($hasIncidents)
+    {
+        $this->hasIncidents = $hasIncidents;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getHasIncidents()
+    {
+        return $this->hasIncidents;
+    }
+
+    /**
+     * @param int $id
+     * @return Ticket
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param User $owner
+     * @return Ticket
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param TicketPriority $priority
+     * @return Ticket
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
+     * @return TicketPriority
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param string $recipient
+     * @return Ticket
+     */
+    public function setRecipient($recipient)
+    {
+        $this->recipient = $recipient;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecipient()
+    {
+        return $this->recipient;
+    }
+
+    /**
+     * @param ZendeskUser $requester
+     * @return Ticket
+     */
+    public function setRequester($requester)
+    {
+        $this->requester = $requester;
+
+        return $this;
+    }
+
+    /**
+     * @return ZendeskUser
+     */
+    public function getRequester()
+    {
+        return $this->requester;
+    }
+
+    /**
+     * @param TicketStatus $status
+     * @return Ticket
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return TicketStatus
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $subject
+     * @return Ticket
+     */
+    public function setSubject($subject)
+    {
+        $this->subject = $subject;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
+     * @param ZendeskUser $submitter
+     * @return Ticket
+     */
+    public function setSubmitter($submitter)
+    {
+        $this->submitter = $submitter;
+
+        return $this;
+    }
+
+    /**
+     * @return ZendeskUser
+     */
+    public function getSubmitter()
+    {
+        return $this->submitter;
+    }
+
+    /**
+     * @param TicketType $type
+     * @return Ticket
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return TicketType
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     * @return Ticket
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param string $url
+     * @return Ticket
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
      * @ORM\PrePersist
      */
     public function prePersist()
