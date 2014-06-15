@@ -6,7 +6,10 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 
 class TicketStatusTest extends \PHPUnit_Framework_TestCase
 {
-    protected $name = TicketStatus::STATUS_CLOSED;
+    /**
+     * @var string
+     */
+    protected $name;
 
     /**
      * @var TicketStatus
@@ -15,6 +18,7 @@ class TicketStatusTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->name = TicketStatus::STATUS_CLOSED;
         $this->target = new TicketStatus($this->name);
     }
 

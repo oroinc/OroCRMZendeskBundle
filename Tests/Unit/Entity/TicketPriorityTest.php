@@ -6,7 +6,10 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 
 class TicketPriorityTest extends \PHPUnit_Framework_TestCase
 {
-    protected $name = TicketPriority::PRIORITY_HIGH;
+    /**
+     * @var string
+     */
+    protected $name;
 
     /**
      * @var TicketPriority
@@ -15,6 +18,7 @@ class TicketPriorityTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->name = TicketPriority::PRIORITY_HIGH;
         $this->target = new TicketPriority($this->name);
     }
 

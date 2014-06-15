@@ -6,7 +6,10 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
 
 class TicketTypeTest extends \PHPUnit_Framework_TestCase
 {
-    protected $name = TicketType::TYPE_TASK;
+    /**
+     * @var string
+     */
+    protected $name;
 
     /**
      * @var TicketType
@@ -15,6 +18,7 @@ class TicketTypeTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->name = TicketType::TYPE_TASK;
         $this->target = new TicketType($this->name);
     }
 

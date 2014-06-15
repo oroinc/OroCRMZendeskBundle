@@ -6,7 +6,10 @@ use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskUserRole;
 
 class ZendeskUserRoleTest extends \PHPUnit_Framework_TestCase
 {
-    protected $name = ZendeskUserRole::ROLE_ADMIN;
+    /**
+     * @var string
+     */
+    protected $name;
 
     /**
      * @var ZendeskUserRole
@@ -15,6 +18,7 @@ class ZendeskUserRoleTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->name = ZendeskUserRole::ROLE_ADMIN;
         $this->target = new ZendeskUserRole($this->name);
     }
 

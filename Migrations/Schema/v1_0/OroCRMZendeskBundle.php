@@ -61,17 +61,22 @@ class OroCRMZendeskBundle implements Migration
     {
         /** Generate table orocrm_zendesk_user **/
         $table = $schema->createTable('orocrm_zendesk_user');
-        $table->addColumn('id', 'integer', array());
-        $table->addColumn('role_name', 'string', array('notnull' => false, 'length' => 16));
-        $table->addColumn('owner_id', 'integer', array('notnull' => false));
-        $table->addColumn('user_id', 'integer', array('notnull' => false));
-        $table->addColumn('createdAt', 'datetime', array());
-        $table->addColumn('updatedAt', 'datetime', array());
-        $table->addColumn('email', 'string', array('length' => 100));
-        $table->setPrimaryKey(array('id'));
-        $table->addIndex(array('role_name'), 'IDX_303D6CC8E09C0C92', array());
-        $table->addIndex(array('user_id'), 'IDX_303D6CC8A76ED395', array());
-        $table->addIndex(array('owner_id'), 'IDX_303D6CC87E3C61F9', array());
+        $table->addColumn('id', 'integer', []);
+        $table->addColumn('contact_id', 'integer', ['notnull' => false]);
+        $table->addColumn('owner_id', 'integer', ['notnull' => false]);
+        $table->addColumn('role_name', 'string', ['notnull' => false, 'length' => 16]);
+        $table->addColumn('user_id', 'integer', ['notnull' => false]);
+        $table->addColumn('createdAt', 'datetime', []);
+        $table->addColumn('updatedAt', 'datetime', []);
+        $table->addColumn('email', 'string', ['length' => 100]);
+        $table->addColumn('phone', 'string', ['length' => 30]);
+        $table->addColumn('time_zone', 'string', ['length' => 30]);
+        $table->addColumn('locale', 'string', ['length' => 30]);
+        $table->setPrimaryKey(['id']);
+        $table->addIndex(['role_name'], 'IDX_303D6CC8E09C0C92', []);
+        $table->addIndex(['user_id'], 'IDX_303D6CC8A76ED395', []);
+        $table->addIndex(['owner_id'], 'IDX_303D6CC87E3C61F9', []);
+        $table->addIndex(['contact_id'], 'IDX_303D6CC8E7A1254A', []);
         /** End of generate table orocrm_zendesk_user **/
     }
 
@@ -201,7 +206,6 @@ class OroCRMZendeskBundle implements Migration
 
     protected function addForeignKeys(Schema $schema)
     {
-        /** Generate foreign keys for table orocrm_zendesk_comment **/
         $table = $schema->getTable('orocrm_zendesk_comment');
         $table->addForeignKeyConstraint(
             $schema->getTable('oro_user'),
@@ -221,9 +225,7 @@ class OroCRMZendeskBundle implements Migration
             array('id'),
             array('onDelete' => 'SET NULL', 'onUpdate' => null)
         );
-        /** End of generate foreign keys for table orocrm_zendesk_comment **/
 
-        /** Generate foreign keys for table orocrm_zendesk_ticket **/
         $table = $schema->getTable('orocrm_zendesk_ticket');
         $table->addForeignKeyConstraint(
             $schema->getTable('oro_user'),
@@ -273,10 +275,14 @@ class OroCRMZendeskBundle implements Migration
             array('id'),
             array('onDelete' => 'SET NULL', 'onUpdate' => null)
         );
-        /** End of generate foreign keys for table orocrm_zendesk_ticket **/
 
-        /** Generate foreign keys for table orocrm_zendesk_user **/
         $table = $schema->getTable('orocrm_zendesk_user');
+        $table->addForeignKeyConstraint(
+            $schema->getTable('orocrm_contact'),
+            array('contact_id'),
+            array('id'),
+            array('onDelete' => 'SET NULL', 'onUpdate' => null)
+        );
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_zendesk_user_role'),
             array('role_name'),
@@ -295,6 +301,5 @@ class OroCRMZendeskBundle implements Migration
             array('id'),
             array('onDelete' => 'SET NULL', 'onUpdate' => null)
         );
-        /** End of generate foreign keys for table orocrm_zendesk_user **/
     }
 }

@@ -85,21 +85,21 @@ class ZendeskUser
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=30)
+     * @ORM\Column(name="phone", type="string", length=30)
      */
     protected $phone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=30)
+     * @ORM\Column(name="time_zone", type="string", length=30)
      */
     protected $timeZone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=30)
+     * @ORM\Column(name="locale", type="string", length=30)
      */
     protected $locale;
 
