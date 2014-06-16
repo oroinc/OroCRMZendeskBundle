@@ -9,10 +9,10 @@ use Gedmo\Translatable\Translatable;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="orocrm_zendesk_user_role")
- * @Gedmo\TranslationEntity(class="OroCRM\Bundle\ZendeskBundle\Entity\ZendeskUserRoleTranslation")
+ * @ORM\Table(name="orocrm_zd_user_role")
+ * @Gedmo\TranslationEntity(class="OroCRM\Bundle\ZendeskBundle\Entity\UserRoleTranslation")
  */
-class ZendeskUserRole implements Translatable
+class UserRole implements Translatable
 {
     const ROLE_AGENT = 'agent';
     const ROLE_ADMIN = 'admin';
@@ -106,10 +106,10 @@ class ZendeskUserRole implements Translatable
     }
 
     /**
-     * @param ZendeskUserRole $other
+     * @param UserRole $other
      * @return bool
      */
-    public function isEqualTo(ZendeskUserRole $other)
+    public function isEqualTo(UserRole $other)
     {
         return $this->getName() == $other->getName();
     }

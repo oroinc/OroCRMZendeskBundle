@@ -42,7 +42,7 @@ class LoadStatusData extends AbstractTranslatableEntityFixture
                 }
 
                 // set locale and label
-                $label = $this->translate($name, LoadStatusData::TRANSLATION_PREFIX, $locale);
+                $label = $this->translate($name, static::TRANSLATION_PREFIX, $locale);
                 $ticketStatus->setLocale($locale)
                     ->setLabel($label);
 

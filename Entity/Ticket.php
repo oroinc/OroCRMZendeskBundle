@@ -2,18 +2,18 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
-use Oro\Bundle\UserBundle\Entity\User;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 
 /**
  * @ORM\Entity
  * @ORM\Table(
- *      name="orocrm_zendesk_ticket"
+ *      name="orocrm_zd_ticket"
  * )
  * @ORM\HasLifecycleCallbacks()
  * @Oro\Loggable
@@ -21,14 +21,6 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
  *  defaultValues={
  *      "entity"={
  *          "icon"="icon-list-alt"
- *      },
- *      "ownership"={
- *          "owner_type"="USER",
- *          "owner_field_name"="owner",
- *          "owner_column_name"="owner_id"
- *      },
- *      "security"={
- *          "type"="ACL"
  *      }
  *  }
  * )
@@ -49,6 +41,32 @@ class Ticket
      * @ORM\Column(name="url", type="string", length=255)
      */
     protected $url;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="external_id", type="string", length=50)
+     */
+    protected $externalId;
+
+    /**
+     * @var Ticket
+     *
+     * @ORM\OneToOne(targetEntity="Ticket")
+     * @ORM\JoinColumn(name="problem_id", referencedColumnName="id")
+     */
+    protected $problem;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="User")
+     * @ORM\JoinTable(name="orocrm_zd_ticket_collaborators",
+     *      joinColumns={@ORM\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")}
+     * )
+     */
+    protected $collaborators;
 
     /**
      * @var string
@@ -96,28 +114,28 @@ class Ticket
     protected $recipient;
 
     /**
-     * @var ZendeskUser
+     * @var User
      *
-     * @ORM\ManyToOne(targetEntity="ZendeskUser")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="requester_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $requester;
 
     /**
-     * @var ZendeskUser
+     * @var User
      *
-     * @ORM\ManyToOne(targetEntity="ZendeskUser")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="submitter_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $submitter;
 
     /**
-     * @var ZendeskUser
+     * @var User
      *
-     * @ORM\ManyToOne(targetEntity="ZendeskUser")
-     * @ORM\JoinColumn(name="assigned_to_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="assignee_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    protected $assignedTo;
+    protected $assignee;
 
     /**
      * @var bool
@@ -156,30 +174,22 @@ class Ticket
     protected $case;
 
     /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $owner;
-
-    /**
-     * @param ZendeskUser $assignedTo
+     * @param User $assignee
      * @return Ticket
      */
-    public function setAssignedTo(ZendeskUser $assignedTo)
+    public function setAssignee(User $assignee)
     {
-        $this->assignedTo = $assignedTo;
+        $this->assignee = $assignee;
 
         return $this;
     }
 
     /**
-     * @return ZendeskUser
+     * @return User
      */
-    public function getAssignedTo()
+    public function getAssignee()
     {
-        return $this->assignedTo;
+        return $this->assignee;
     }
 
     /**
@@ -286,25 +296,6 @@ class Ticket
     }
 
     /**
-     * @param User $owner
-     * @return Ticket
-     */
-    public function setOwner(User $owner)
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    /**
-     * @return User
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
      * @param TicketPriority $priority
      * @return Ticket
      */
@@ -343,10 +334,10 @@ class Ticket
     }
 
     /**
-     * @param ZendeskUser $requester
+     * @param User $requester
      * @return Ticket
      */
-    public function setRequester(ZendeskUser $requester)
+    public function setRequester(User $requester)
     {
         $this->requester = $requester;
 
@@ -354,7 +345,7 @@ class Ticket
     }
 
     /**
-     * @return ZendeskUser
+     * @return User
      */
     public function getRequester()
     {
@@ -400,10 +391,10 @@ class Ticket
     }
 
     /**
-     * @param ZendeskUser $submitter
+     * @param User $submitter
      * @return Ticket
      */
-    public function setSubmitter(ZendeskUser $submitter)
+    public function setSubmitter(User $submitter)
     {
         $this->submitter = $submitter;
 
@@ -411,7 +402,7 @@ class Ticket
     }
 
     /**
-     * @return ZendeskUser
+     * @return User
      */
     public function getSubmitter()
     {
@@ -476,19 +467,59 @@ class Ticket
     }
 
     /**
-     * @ORM\PrePersist
+     * @param string $externalId
+     * @return Ticket
      */
-    public function prePersist()
+    public function setExternalId($externalId)
     {
-        $this->createdAt = $this->createdAt ? $this->createdAt : new \DateTime('now', new \DateTimeZone('UTC'));
-        $this->updatedAt = $this->updatedAt ? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
+        $this->externalId = $externalId;
+
+        return $this;
     }
 
     /**
-     * @ORM\PreUpdate
+     * @return string
      */
-    public function preUpdate()
+    public function getExternalId()
     {
-        $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
+        return $this->externalId;
+    }
+
+    /**
+     * @param Ticket $problem
+     * @return Ticket
+     */
+    public function setProblem(Ticket $problem)
+    {
+        $this->problem = $problem;
+
+        return $this;
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getProblem()
+    {
+        return $this->problem;
+    }
+
+    /**
+     * @param ArrayCollection $collaborators
+     * @return Ticket
+     */
+    public function setCollaborators(ArrayCollection $collaborators)
+    {
+        $this->collaborators = $collaborators;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCollaborators()
+    {
+        return $this->collaborators;
     }
 }

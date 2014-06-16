@@ -9,7 +9,7 @@ use Gedmo\Translatable\Translatable;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="orocrm_ticket_priority")
+ * @ORM\Table(name="orocrm_zd_ticket_priority")
  * @Gedmo\TranslationEntity(class="OroCRM\Bundle\ZendeskBundle\Entity\TicketPriorityTranslation")
  */
 class TicketPriority implements Translatable

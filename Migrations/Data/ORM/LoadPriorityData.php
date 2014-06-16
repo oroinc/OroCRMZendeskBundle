@@ -41,7 +41,7 @@ class LoadPriorityData extends AbstractTranslatableEntityFixture
                 }
 
                 // set locale and label
-                $label = $this->translate($name, self::TRANSLATION_PREFIX, $locale);
+                $label = $this->translate($name, static::TRANSLATION_PREFIX, $locale);
                 $ticketPriority->setLocale($locale)
                     ->setLabel($label);
 

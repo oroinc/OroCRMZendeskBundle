@@ -33,16 +33,13 @@ class TicketCommentTest extends \PHPUnit_Framework_TestCase
      */
     public function settersAndGettersDataProvider()
     {
-        $zendeskUser = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\ZendeskUser')
+        $zendeskUser = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\User')
             ->disableOriginalConstructor()
             ->getMock();
         $ticket = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\Ticket')
             ->disableOriginalConstructor()
             ->getMock();
         $comment = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Entity\CaseComment')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $user = $this->getMockBuilder('Oro\Bundle\UserBundle\Entity\User')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -53,9 +50,7 @@ class TicketCommentTest extends \PHPUnit_Framework_TestCase
             array('author', $zendeskUser),
             array('ticket', $ticket),
             array('createdAt', new \DateTime()),
-            array('updatedAt', new \DateTime()),
-            array('caseComment', $comment),
-            array('owner', $user),
+            array('caseComment', $comment)
         );
     }
 }

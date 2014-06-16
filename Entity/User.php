@@ -7,13 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
-use Oro\Bundle\UserBundle\Entity\User;
+use Oro\Bundle\UserBundle\Entity\User as OroCRMUser;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 
 /**
  * @ORM\Entity
  * @ORM\Table(
- *      name="orocrm_zendesk_user"
+ *      name="orocrm_zd_user"
  * )
  * @ORM\HasLifecycleCallbacks()
  * @Oro\Loggable
@@ -21,19 +21,11 @@ use OroCRM\Bundle\ContactBundle\Entity\Contact;
  *  defaultValues={
  *      "entity"={
  *          "icon"="icon-list-alt"
- *      },
- *      "ownership"={
- *          "owner_type"="USER",
- *          "owner_field_name"="owner",
- *          "owner_column_name"="owner_id"
- *      },
- *      "security"={
- *          "type"="ACL"
  *      }
  *  }
  * )
  */
-class ZendeskUser
+class User
 {
     /**
      * @var int
@@ -45,13 +37,52 @@ class ZendeskUser
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255)
      */
     protected $url;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="external_id", type="string", length=50)
+     */
+    protected $externalId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=100)
      */
     protected $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="details", type="text")
+     */
+    protected $details;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ticket_restrictions", type="string", length=30)
+     */
+    protected $ticketRestriction;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="only_private_comments", type="boolean", options={"default"=false})
+     */
+    protected $onlyPrivateComments;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="notes", type="text")
+     */
+    protected $notes;
 
     /**
      * @var \DateTime
@@ -68,9 +99,37 @@ class ZendeskUser
     protected $updatedAt;
 
     /**
-     * @var ZendeskUserRole
+     * @var \DateTime
      *
-     * @ORM\ManyToOne(targetEntity="ZendeskUserRole", cascade={"persist"})
+     * @ORM\Column(type="datetime")
+     */
+    protected $lastLoginAt;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="verified", type="boolean", options={"default"=false})
+     */
+    protected $verified;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="active", type="boolean", options={"default"=false})
+     */
+    protected $active;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="alias", type="string", length=100)
+     */
+    protected $alias;
+
+    /**
+     * @var UserRole
+     *
+     * @ORM\ManyToOne(targetEntity="UserRole", cascade={"persist"})
      * @ORM\JoinColumn(name="role_name", referencedColumnName="name", onDelete="SET NULL")
      */
     protected $role;
@@ -112,7 +171,7 @@ class ZendeskUser
     protected $contact;
 
     /**
-     * @var User
+     * @var OroCRMUser
      *
      * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="SET NULL")
@@ -120,16 +179,8 @@ class ZendeskUser
     protected $user;
 
     /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $owner;
-
-    /**
      * @param Contact $contact
-     * @return ZendeskUser
+     * @return User
      */
     public function setContact($contact)
     {
@@ -148,7 +199,7 @@ class ZendeskUser
 
     /**
      * @param \DateTime $createdAt
-     * @return ZendeskUser
+     * @return User
      */
     public function setCreatedAt($createdAt)
     {
@@ -167,7 +218,7 @@ class ZendeskUser
 
     /**
      * @param string $email
-     * @return ZendeskUser
+     * @return User
      */
     public function setEmail($email)
     {
@@ -194,7 +245,7 @@ class ZendeskUser
 
     /**
      * @param string $locale
-     * @return ZendeskUser
+     * @return User
      */
     public function setLocale($locale)
     {
@@ -213,7 +264,7 @@ class ZendeskUser
 
     /**
      * @param string $name
-     * @return ZendeskUser
+     * @return User
      */
     public function setName($name)
     {
@@ -231,27 +282,8 @@ class ZendeskUser
     }
 
     /**
-     * @param User $owner
-     * @return ZendeskUser
-     */
-    public function setOwner($owner)
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    /**
-     * @return User
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
      * @param string $phone
-     * @return ZendeskUser
+     * @return User
      */
     public function setPhone($phone)
     {
@@ -269,10 +301,10 @@ class ZendeskUser
     }
 
     /**
-     * @param ZendeskUserRole $role
-     * @return ZendeskUser
+     * @param UserRole $role
+     * @return User
      */
-    public function setRole($role)
+    public function setRole(UserRole $role)
     {
         $this->role = $role;
 
@@ -280,7 +312,7 @@ class ZendeskUser
     }
 
     /**
-     * @return ZendeskUserRole
+     * @return UserRole
      */
     public function getRole()
     {
@@ -289,7 +321,7 @@ class ZendeskUser
 
     /**
      * @param string $timeZone
-     * @return ZendeskUser
+     * @return User
      */
     public function setTimeZone($timeZone)
     {
@@ -308,7 +340,7 @@ class ZendeskUser
 
     /**
      * @param \DateTime $updatedAt
-     * @return ZendeskUser
+     * @return User
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -327,7 +359,7 @@ class ZendeskUser
 
     /**
      * @param string $url
-     * @return ZendeskUser
+     * @return User
      */
     public function setUrl($url)
     {
@@ -345,10 +377,10 @@ class ZendeskUser
     }
 
     /**
-     * @param User $user
-     * @return ZendeskUser
+     * @param OroCRMUser $user
+     * @return User
      */
-    public function setUser($user)
+    public function setUser(OroCRMUser $user)
     {
         $this->user = $user;
 
@@ -356,7 +388,7 @@ class ZendeskUser
     }
 
     /**
-     * @return User
+     * @return OroCRMUser
      */
     public function getUser()
     {
@@ -364,19 +396,173 @@ class ZendeskUser
     }
 
     /**
-     * @ORM\PrePersist
+     * @param string $externalId
+     * @return User
      */
-    public function prePersist()
+    public function setExternalId($externalId)
     {
-        $this->createdAt = $this->createdAt ? $this->createdAt : new \DateTime('now', new \DateTimeZone('UTC'));
-        $this->updatedAt = $this->updatedAt ? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
+        $this->externalId = $externalId;
+
+        return $this;
     }
 
     /**
-     * @ORM\PreUpdate
+     * @return string
      */
-    public function preUpdate()
+    public function getExternalId()
     {
-        $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
+        return $this->externalId;
+    }
+
+    /**
+     * @param boolean $active
+     * @return User
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param string $alias
+     * @return User
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @param string $details
+     * @return User
+     */
+    public function setDetails($details)
+    {
+        $this->details = $details;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDetails()
+    {
+        return $this->details;
+    }
+
+    /**
+     * @param \DateTime $lastLoginAt
+     * @return User
+     */
+    public function setLastLoginAt(\DateTime $lastLoginAt)
+    {
+        $this->lastLoginAt = $lastLoginAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastLoginAt()
+    {
+        return $this->lastLoginAt;
+    }
+
+    /**
+     * @param string $notes
+     * @return User
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
+
+    /**
+     * @param boolean $onlyPrivateComments
+     * @return User
+     */
+    public function setOnlyPrivateComments($onlyPrivateComments)
+    {
+        $this->onlyPrivateComments = $onlyPrivateComments;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getOnlyPrivateComments()
+    {
+        return $this->onlyPrivateComments;
+    }
+
+    /**
+     * @param string $ticketRestriction
+     * @return User
+     */
+    public function setTicketRestriction($ticketRestriction)
+    {
+        $this->ticketRestriction = $ticketRestriction;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTicketRestriction()
+    {
+        return $this->ticketRestriction;
+    }
+
+    /**
+     * @param boolean $verified
+     * @return User
+     */
+    public function setVerified($verified)
+    {
+        $this->verified = $verified;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getVerified()
+    {
+        return $this->verified;
     }
 }

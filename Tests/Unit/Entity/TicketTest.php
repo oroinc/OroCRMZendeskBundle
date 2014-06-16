@@ -2,6 +2,8 @@
 
 namespace Unit\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 
 class TicketTest extends \PHPUnit_Framework_TestCase
@@ -33,7 +35,7 @@ class TicketTest extends \PHPUnit_Framework_TestCase
      */
     public function settersAndGettersDataProvider()
     {
-        $zendeskUser = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\ZendeskUser')
+        $zendeskUser = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\User')
             ->disableOriginalConstructor()
             ->getMock();
         $ticketType = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\TicketType')
@@ -45,13 +47,11 @@ class TicketTest extends \PHPUnit_Framework_TestCase
         $ticketPriority = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority')
             ->disableOriginalConstructor()
             ->getMock();
-        $user = $this->getMockBuilder('Oro\Bundle\UserBundle\Entity\User')
-            ->disableOriginalConstructor()
-            ->getMock();
         $case = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Entity\CaseEntity')
             ->disableOriginalConstructor()
             ->getMock();
-
+        $ticket = new Ticket();
+        $collaborators = new ArrayCollection(array($zendeskUser));
         return array(
             array('url', 'test.com'),
             array('subject', 'test subject'),
@@ -64,11 +64,13 @@ class TicketTest extends \PHPUnit_Framework_TestCase
             array('updatedAt', new \DateTime()),
             array('dueAt', new \DateTime()),
             array('requester', $zendeskUser),
-            array('assignedTo', $zendeskUser),
+            array('assignee', $zendeskUser),
             array('submitter', $zendeskUser),
             array('case', $case),
-            array('hasIncidents', true),
-            array('owner', $user),
+            array('externalId', uniqid()),
+            array('problem', $ticket),
+            array('collaborators', $collaborators),
+            array('hasIncidents', true)
         );
     }
 }

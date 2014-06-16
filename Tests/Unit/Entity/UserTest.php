@@ -2,18 +2,18 @@
 
 namespace Unit\Entity;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskUser;
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
 
-class ZendeskUserTest extends \PHPUnit_Framework_TestCase
+class UserTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ZendeskUser
+     * @var User
      */
     protected $target;
 
     public function setUp()
     {
-        $this->target = new ZendeskUser();
+        $this->target = new User();
     }
 
     /**
@@ -33,7 +33,7 @@ class ZendeskUserTest extends \PHPUnit_Framework_TestCase
      */
     public function settersAndGettersDataProvider()
     {
-        $role = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\ZendeskUserRole')
+        $role = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\UserRole')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -55,9 +55,16 @@ class ZendeskUserTest extends \PHPUnit_Framework_TestCase
             array('url', 'tes.com'),
             array('createdAt', new \DateTime()),
             array('updatedAt', new \DateTime()),
+            array('lastLoginAt', new \DateTime()),
             array('role', $role),
             array('user', $user),
-            array('owner', $user),
+            array('externalId', uniqid()),
+            array('details', 'details'),
+            array('notes', 'notes'),
+            array('alias', 'alias'),
+            array('onlyPrivateComments', true),
+            array('verified', true),
+            array('active', true),
             array('contact', $contact),
         );
     }

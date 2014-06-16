@@ -2,9 +2,9 @@
 
 namespace Unit\Entity;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskUserRole;
+use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 
-class ZendeskUserRoleTest extends \PHPUnit_Framework_TestCase
+class UserRoleTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var string
@@ -12,14 +12,14 @@ class ZendeskUserRoleTest extends \PHPUnit_Framework_TestCase
     protected $name;
 
     /**
-     * @var ZendeskUserRole
+     * @var UserRole
      */
     protected $target;
 
     public function setUp()
     {
-        $this->name = ZendeskUserRole::ROLE_ADMIN;
-        $this->target = new ZendeskUserRole($this->name);
+        $this->name = UserRole::ROLE_ADMIN;
+        $this->target = new UserRole($this->name);
     }
 
     public function testName()
@@ -30,9 +30,9 @@ class ZendeskUserRoleTest extends \PHPUnit_Framework_TestCase
 
     public function testIsEqualTo()
     {
-        $other = new ZendeskUserRole(ZendeskUserRole::ROLE_AGENT);
+        $other = new UserRole(UserRole::ROLE_AGENT);
         $this->assertFalse($this->target->isEqualTo($other));
-        $other = new ZendeskUserRole(ZendeskUserRole::ROLE_ADMIN);
+        $other = new UserRole(UserRole::ROLE_ADMIN);
         $this->assertTrue($this->target->isEqualTo($other));
     }
 

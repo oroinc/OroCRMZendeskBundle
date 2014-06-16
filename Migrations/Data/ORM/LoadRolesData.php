@@ -5,7 +5,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Migrations\Data\ORM;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
-use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskUserRole;
+use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 
 class LoadRolesData extends AbstractTranslatableEntityFixture
 {
@@ -15,9 +15,9 @@ class LoadRolesData extends AbstractTranslatableEntityFixture
      * @var array
      */
     protected $names = array(
-        ZendeskUserRole::ROLE_ADMIN,
-        ZendeskUserRole::ROLE_AGENT,
-        ZendeskUserRole::ROLE_END_USER
+        UserRole::ROLE_ADMIN,
+        UserRole::ROLE_AGENT,
+        UserRole::ROLE_END_USER
     );
     /**
      * Load entities to DB
@@ -26,20 +26,20 @@ class LoadRolesData extends AbstractTranslatableEntityFixture
      */
     protected function loadEntities(ObjectManager $manager)
     {
-        $repository = $manager->getRepository('OroCRMZendeskBundle:ZendeskUserRole');
+        $repository = $manager->getRepository('OroCRMZendeskBundle:UserRole');
 
         $translationLocales = $this->getTranslationLocales();
 
         foreach ($translationLocales as $locale) {
             foreach ($this->names as $name) {
-                /** @var ZendeskUserRole $zendeskUserRole */
+                /** @var UserRole $zendeskUserRole */
                 $zendeskUserRole = $repository->findOneBy(array('name' => $name));
                 if (!$zendeskUserRole) {
-                    $zendeskUserRole = new ZendeskUserRole($name);
+                    $zendeskUserRole = new UserRole($name);
                 }
 
                 // set locale and label
-                $label = $this->translate($name, LoadStatusData::TRANSLATION_PREFIX, $locale);
+                $label = $this->translate($name, static::TRANSLATION_PREFIX, $locale);
                 $zendeskUserRole->setLocale($locale)
                     ->setLabel($label);
 

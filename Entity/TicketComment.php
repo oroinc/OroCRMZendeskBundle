@@ -7,13 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
-use Oro\Bundle\UserBundle\Entity\User;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 
 /**
  * @ORM\Entity
  * @ORM\Table(
- *      name="orocrm_zendesk_comment"
+ *      name="orocrm_zd_comment"
  * )
  * @ORM\HasLifecycleCallbacks()
  * @Oro\Loggable
@@ -21,14 +20,6 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
  *  defaultValues={
  *      "entity"={
  *          "icon"="icon-list-alt"
- *      },
- *      "ownership"={
- *          "owner_type"="USER",
- *          "owner_field_name"="owner",
- *          "owner_column_name"="owner_id"
- *      },
- *      "security"={
- *          "type"="ACL"
  *      }
  *  }
  * )
@@ -64,9 +55,9 @@ class TicketComment
     protected $public;
 
     /**
-     * @var ZendeskUser
+     * @var User
      *
-     * @ORM\ManyToOne(targetEntity="ZendeskUser")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="author_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $author;
@@ -87,37 +78,25 @@ class TicketComment
     protected $createdAt;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     */
-    protected $updatedAt;
-
-    /**
      * @var CaseComment
+     *
+     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseComment")
+     * @ORM\JoinColumn(name="case_comment_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $caseComment;
 
     /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $owner;
-
-    /**
-     * @param ZendeskUser $author
+     * @param User $author
      * @return TicketComment
      */
-    public function setAuthor(ZendeskUser $author)
+    public function setAuthor(User $author)
     {
         $this->author = $author;
         return $this;
     }
 
     /**
-     * @return ZendeskUser
+     * @return User
      */
     public function getAuthor()
     {
@@ -208,25 +187,6 @@ class TicketComment
     }
 
     /**
-     * @param User $owner
-     * @return TicketComment
-     */
-    public function setOwner(User $owner)
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    /**
-     * @return User
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
      * @param boolean $public
      * @return TicketComment
      */
@@ -262,41 +222,5 @@ class TicketComment
     public function getTicket()
     {
         return $this->ticket;
-    }
-
-    /**
-     * @param \DateTime $updatedAt
-     * @return TicketComment
-     */
-    public function setUpdatedAt(\DateTime $updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        $this->createdAt = $this->createdAt ? $this->createdAt : new \DateTime('now', new \DateTimeZone('UTC'));
-        $this->updatedAt = $this->updatedAt ? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function preUpdate()
-    {
-        $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
     }
 }

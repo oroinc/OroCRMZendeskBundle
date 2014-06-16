@@ -5,7 +5,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="orocrm_zendesk_sync_state")
+ * @ORM\Table(name="orocrm_zd_sync_state")
  * @ORM\Entity
  */
 class ZendeskSyncState
