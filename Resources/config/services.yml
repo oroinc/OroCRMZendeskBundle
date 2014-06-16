@@ -1,7 +1,13 @@
 parameters:
     orocrm_zendesk.provider.type.configuration_provider.class: OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider
+    orocrm_zendesk.mapper.class:                               OroCRM\Bundle\ZendeskBundle\Model\Mapper
 
 services:
+    orocrm_zendesk.mapper:
+        class: %orocrm_zendesk.mapper.class%
+        arguments:
+            - %orocrm_zendesk.map%
+
     orocrm_zendesk.provider.type.configuration_provider:
         class: %orocrm_zendesk.provider.type.configuration_provider.class%
         arguments:
