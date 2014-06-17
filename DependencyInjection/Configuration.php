@@ -23,6 +23,7 @@ class Configuration implements ConfigurationInterface
                 'zendesk_sync_timeout' => array('type'  => 'scalar', 'value' => 60),
                 'zendesk_email'        => array('type' => 'scalar', 'value' => ''),
                 'zendesk_api_token'    => array('type' => 'scalar', 'value' => ''),
+                'zendesk_username'     => array('type' => 'scalar', 'value' => ''),
                 'zendesk_default_user' => array('type' => 'scalar', 'value' => ''),
                 'orocrm_default_user'  => array('type' => 'scalar', 'value' => ''),
             )
