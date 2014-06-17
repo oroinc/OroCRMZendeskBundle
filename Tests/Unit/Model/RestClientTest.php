@@ -161,8 +161,7 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \OroCRM\Bundle\ZendeskBundle\Exception\BadRequestException
-     * @expectedExceptionCode 42
+     * @expectedException \OroCRM\Bundle\ZendeskBundle\Exception\RestException
      * @expectedExceptionMessage test message
      */
     public function testPerformRequestThrowAnExceptionIfSentThrowGuzzleException()
@@ -187,9 +186,12 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \OroCRM\Bundle\ZendeskBundle\Exception\BadResponseException
-     * @expectedExceptionCode 401
-     * @expectedExceptionMessage Incorrect status code
+     * @expectedException \OroCRM\Bundle\ZendeskBundle\Exception\RestException
+     * @expectedExceptionMessage Zendesk API request error
+     * [error] Unexpected response status
+     * [url] https://foo.zendesk.com/api/v2/users.json
+     * [method] GET
+     * [status code] 401
      */
     public function testPerformRequestThrowAnExceptionIfStatusCodeNot200()
     {
@@ -201,7 +203,15 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
         $client = $this->getMockBuilder('Guzzle\Http\Client')
             ->disableOriginalConstructor()
             ->getMock();
+
         $request = $this->getRequest(array(), 401);
+        $request->expects($this->once())
+            ->method('getUrl')
+            ->will($this->returnValue('https://foo.zendesk.com/api/v2/users.json'));
+        $request->expects($this->once())
+            ->method('getMethod')
+            ->will($this->returnValue('GET'));
+
         $client->expects($this->once())
             ->method('createRequest')
             ->will($this->returnValue($request));
@@ -230,7 +240,7 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
         $response = $this->getMockBuilder('Guzzle\Http\Message\Response')
             ->disableOriginalConstructor()
             ->getMock();
-        $response->expects($this->once())
+        $response->expects($this->atLeastOnce())
             ->method('getStatusCode')
             ->will($this->returnValue($statusCode));
         $response->expects($this->any())
@@ -240,6 +250,7 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
         $request->expects($this->once())
             ->method('Send')
             ->will($this->returnValue($response));
+
         return $request;
     }
 }

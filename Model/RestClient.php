@@ -2,15 +2,13 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model;
 
+use Guzzle\Common\Exception\GuzzleException;
 use Guzzle\Http\Client;
-use Guzzle\Http\Exception\RequestException;
 use Guzzle\Http\QueryString;
 use Guzzle\Http\Url;
+use OroCRM\Bundle\ZendeskBundle\Exception\RestException;
 
-use OroCRM\Bundle\ZendeskBundle\Exception\BadRequestException;
-use OroCRM\Bundle\ZendeskBundle\Exception\BadResponseException;
-
-class RestClient
+class RestClient implements RestClientInterface
 {
     const BASE_URL = '.zendesk.com/api/v2/';
 
@@ -33,9 +31,8 @@ class RestClient
     /**
      * @param string $action Example tickets.json | full url
      * @param array $params
-     * @throws BadRequestException
-     * @throws BadResponseException
      * @return array
+     * @throws RestException
      */
     public function get($action, $params = array())
     {
@@ -47,9 +44,8 @@ class RestClient
     /**
      * @param string $action Example users/create_many.json
      * @param mixed $data
-     * @throws BadRequestException
-     * @throws BadResponseException
      * @return array
+     * @throws RestException
      */
     public function post($action, $data)
     {
@@ -59,9 +55,8 @@ class RestClient
 
     /**
      * @param string $action Example users/12.json
-     * @throws BadRequestException
-     * @throws BadResponseException
      * @return array
+     * @throws RestException
      */
     public function delete($action)
     {
@@ -72,9 +67,8 @@ class RestClient
     /**
      * @param string $action Example users/12.json
      * @param mixed $data
-     * @throws BadRequestException
-     * @throws BadResponseException
      * @return array
+     * @throws RestException
      */
     public function put($action, $data)
     {
@@ -112,9 +106,8 @@ class RestClient
      * @param string     $url
      * @param string     $method
      * @param null|mixed $data
-     * @throws BadRequestException
-     * @throws BadResponseException
-     * @return array
+     * @return string
+     * @throws RestException
      */
     protected function performRequest($url, $method, $data = null)
     {
@@ -137,13 +130,21 @@ class RestClient
             );
 
             $response = $request->send();
-        } catch (RequestException $exception) {
-            throw new BadRequestException($exception->getMessage(), $exception->getCode(), $exception);
+        } catch (GuzzleException $exception) {
+            throw RestException::create(
+                null,
+                isset($request) ? $request : null,
+                null,
+                $exception
+            );
         }
 
-        $statusCode = $response->getStatusCode();
-        if ($statusCode != 200) {
-            throw new BadResponseException('Incorrect status code', $statusCode);
+        if ($response->getStatusCode() >= 400 || $response->getStatusCode() < 200) {
+            throw RestException::create(
+                'Unexpected response status',
+                $request,
+                $response
+            );
         }
 
         $body = $response->getBody(true);
