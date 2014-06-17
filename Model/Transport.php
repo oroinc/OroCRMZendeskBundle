@@ -23,8 +23,38 @@ class Transport
      * @param array $params
      * @return array
      */
-    public function call($action, $params = array())
+    public function get($action, $params = array())
     {
         //$client = StaticClient::get()
+    }
+
+    /**
+     * @param string $action Example users/create_many.json
+     * @param array $params
+     * @return array
+     */
+    public function post($action, $params = array())
+    {
+
+    }
+
+    /**
+     * @param string $action Example users/12.json
+     * @param array $params
+     * @return array
+     */
+    public function delete($action, $params = array())
+    {
+
+    }
+
+    /**
+     * @param string $action Example users/12.json
+     * @param array $params
+     * @return array
+     */
+    public function put($action, $params = array())
+    {
+
     }
 }
