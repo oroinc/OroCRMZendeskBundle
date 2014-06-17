@@ -2,12 +2,13 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model;
 
-use Guzzle\Common\Exception\GuzzleException;
 use Guzzle\Http\Client;
+use Guzzle\Http\Exception\RequestException;
 use Guzzle\Http\QueryString;
 use Guzzle\Http\Url;
 
-use OroCRM\Bundle\ZendeskBundle\Exception\BadResponse;
+use OroCRM\Bundle\ZendeskBundle\Exception\BadRequestException;
+use OroCRM\Bundle\ZendeskBundle\Exception\BadResponseException;
 
 class RestClient
 {
@@ -32,6 +33,8 @@ class RestClient
     /**
      * @param string $action Example tickets.json | full url
      * @param array $params
+     * @throws BadRequestException
+     * @throws BadResponseException
      * @return array
      */
     public function get($action, $params = array())
@@ -44,6 +47,8 @@ class RestClient
     /**
      * @param string $action Example users/create_many.json
      * @param mixed $data
+     * @throws BadRequestException
+     * @throws BadResponseException
      * @return array
      */
     public function post($action, $data)
@@ -54,6 +59,8 @@ class RestClient
 
     /**
      * @param string $action Example users/12.json
+     * @throws BadRequestException
+     * @throws BadResponseException
      * @return array
      */
     public function delete($action)
@@ -65,12 +72,22 @@ class RestClient
     /**
      * @param string $action Example users/12.json
      * @param mixed $data
+     * @throws BadRequestException
+     * @throws BadResponseException
      * @return array
      */
     public function put($action, $data)
     {
         $url = $this->getUrl($action, array());
         return $this->performRequest($url, 'put', $data);
+    }
+
+    /**
+     * @return array
+     */
+    public function getSettings()
+    {
+        return $this->settings;
     }
 
     /**
@@ -95,8 +112,9 @@ class RestClient
      * @param string     $url
      * @param string     $method
      * @param null|mixed $data
-     * @throws \OroCRM\Bundle\ZendeskBundle\Exception\BadResponse
-     * @return string
+     * @throws BadRequestException
+     * @throws BadResponseException
+     * @return array
      */
     protected function performRequest($url, $method, $data = null)
     {
@@ -104,26 +122,32 @@ class RestClient
         $token = $this->settings['api_token'];
 
         try {
+            $headers = null;
+            if ($data) {
+                $headers = array('Content-Type' => 'application/json');
+                $data = json_encode($data);
+            }
+
             $request = $this->client->createRequest(
                 $method,
                 $url,
-                null,
+                $headers,
                 $data,
                 array('auth' => array("{$email}/token", $token))
             );
 
             $response = $request->send();
-        } catch (GuzzleException $e) {
-            throw new BadResponse();
+        } catch (RequestException $exception) {
+            throw new BadRequestException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-
-        if ($response->getStatusCode() != 200) {
-            throw new BadResponse();
+        $statusCode = $response->getStatusCode();
+        if ($statusCode != 200) {
+            throw new BadResponseException('Incorrect status code', $statusCode);
         }
 
         $body = $response->getBody(true);
 
-        return json_encode($body);
+        return json_decode($body, true);
     }
 }
