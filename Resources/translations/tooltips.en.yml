@@ -3,6 +3,8 @@ orocrm:
         form:
             email:
                 tooltip: Zendesk user email
+            username:
+                tooltip: Zendesk sub domain (https://{subdomain}.zendesk.com)
             api_token:
                 tooltip: Zendesk api token
             sync_timeout:

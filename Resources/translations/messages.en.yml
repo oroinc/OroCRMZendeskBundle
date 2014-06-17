@@ -8,6 +8,8 @@ orocrm:
         form:
             email:
                 label: Email
+            username:
+                label: Username
             api_token:
                 label: Api Token
             sync_timeout:

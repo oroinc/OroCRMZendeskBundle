@@ -61,7 +61,7 @@ class ConfigurationProviderTest extends \PHPUnit_Framework_TestCase
         $this->configurationManager->expects($this->once())
             ->method('get')
             ->with(ConfigurationProvider::ZENDESK_DEFAULT_USER_FIELD_NAME);
-        $this->target->getZendescDefaultUser();
+        $this->target->getZendeskDefaultUser();
     }
 
     public function testGetDefaultUser()

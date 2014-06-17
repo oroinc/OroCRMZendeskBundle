@@ -14,6 +14,7 @@ class ConfigurationProvider
     const SYNC_TIMEOUT_FIELD_NAME = 'oro_crm_zendesk.zendesk_sync_timeout';
     const ZENDESK_DEFAULT_USER_FIELD_NAME = 'oro_crm_zendesk.zendesk_default_user';
     const OROCRM_DEFAULT_USER_FIELD_NAME = 'oro_crm_zendesk.orocrm_default_user';
+    const USERNAME_FIELD_NAME = 'oro_crm_zendesk.zendesk_usermane';
 
     /**
      * @var EntityManager
@@ -58,9 +59,14 @@ class ConfigurationProvider
     /**
      * @return string
      */
-    public function getZendescDefaultUser()
+    public function getZendeskDefaultUser()
     {
         return $this->configManager->get(self::ZENDESK_DEFAULT_USER_FIELD_NAME);
+    }
+
+    public function getSubDomain()
+    {
+        return $this->configManager->get(self::USERNAME_FIELD_NAME);
     }
 
     /**

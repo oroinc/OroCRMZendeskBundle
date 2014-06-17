@@ -44,6 +44,16 @@ oro_system_configuration:
                 constraints:
                     - NotBlank: ~
 
+        oro_crm_zendesk.zendesk_usermane:
+            type: text
+            priority: 11
+            options:
+                label: orocrm.zendesk.form.usermane.label
+                tooltip: orocrm.zendesk.form.usermane.tooltip
+                required: true
+                constraints:
+                    - NotBlank: ~
+
         oro_crm_zendesk.zendesk_default_user:
             type: text
             priority: 7
@@ -83,3 +93,4 @@ oro_system_configuration:
                                             - oro_crm_zendesk.zendesk_default_user
                                             - oro_crm_zendesk.orocrm_default_user
                                             - oro_crm_zendesk.zendesk_sync_timeout
+                                            - oro_crm_zendesk.zendesk_usermane

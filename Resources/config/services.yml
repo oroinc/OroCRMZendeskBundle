@@ -1,6 +1,7 @@
 parameters:
     orocrm_zendesk.provider.type.configuration_provider.class: OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider
     orocrm_zendesk.mapper.class:                               OroCRM\Bundle\ZendeskBundle\Model\Mapper
+    orocrm_zendesk.rest_client_factory.class:                  OroCRM\Bundle\ZendeskBundle\Model\RestClientFactory
 
 services:
     orocrm_zendesk.mapper:
@@ -13,3 +14,8 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @oro_config.global
+
+    orocrm_zendesk.rest_client_factory.class:
+        class: %orocrm_zendesk.rest_client_factory.class%
+        arguments:
+            - @orocrm_zendesk.provider.type.configuration_provider
