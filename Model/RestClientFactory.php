@@ -6,7 +6,7 @@ use Guzzle\Http\Client;
 
 use OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider;
 
-class RestClientFactory
+class RestClientFactory implements RestClientFactoryInterface
 {
     /**
      * @var ConfigurationProvider

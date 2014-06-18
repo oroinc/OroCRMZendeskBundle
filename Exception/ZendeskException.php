@@ -2,6 +2,6 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Exception;
 
-interface Exception
+interface ZendeskException
 {
 }

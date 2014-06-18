@@ -7,6 +7,8 @@ use Doctrine\ORM\EntityManager;
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\UserBundle\Entity\User;
 
+use OroCRM\Bundle\ZendeskBundle\Exception\ConfigurationException;
+
 class ConfigurationProvider
 {
     const EMAIL_FIELD_NAME = 'oro_crm_zendesk.zendesk_email';
@@ -37,7 +39,7 @@ class ConfigurationProvider
      */
     public function getEmail()
     {
-        return $this->configManager->get(self::EMAIL_FIELD_NAME);
+        return $this->getConfigurationSetting(self::EMAIL_FIELD_NAME, true);
     }
 
     /**
@@ -45,7 +47,7 @@ class ConfigurationProvider
      */
     public function getApiToken()
     {
-        return $this->configManager->get(self::API_TOKEN_FIELD_NAME);
+        return $this->getConfigurationSetting(self::API_TOKEN_FIELD_NAME, true);
     }
 
     /**
@@ -53,7 +55,7 @@ class ConfigurationProvider
      */
     public function getSyncTimeOut()
     {
-        return $this->configManager->get(self::SYNC_TIMEOUT_FIELD_NAME);
+        return $this->getConfigurationSetting(self::SYNC_TIMEOUT_FIELD_NAME);
     }
 
     /**
@@ -61,12 +63,15 @@ class ConfigurationProvider
      */
     public function getZendeskDefaultUser()
     {
-        return $this->configManager->get(self::ZENDESK_DEFAULT_USER_FIELD_NAME);
+        return $this->getConfigurationSetting(self::ZENDESK_DEFAULT_USER_FIELD_NAME);
     }
 
+    /**
+     * @return string
+     */
     public function getSubDomain()
     {
-        return $this->configManager->get(self::USERNAME_FIELD_NAME);
+        return $this->getConfigurationSetting(self::USERNAME_FIELD_NAME, true);
     }
 
     /**
@@ -74,7 +79,7 @@ class ConfigurationProvider
      */
     public function getDefaultUser()
     {
-        $username = $this->configManager->get(self::OROCRM_DEFAULT_USER_FIELD_NAME);
+        $username = $this->getConfigurationSetting(self::OROCRM_DEFAULT_USER_FIELD_NAME);
 
         if (empty($username)) {
             return null;
@@ -84,5 +89,24 @@ class ConfigurationProvider
             ->findOneBy(array('username' => $username));
 
         return $user;
+    }
+
+    /**
+     * Get configuration setting value
+     *
+     * @param string $name
+     * @param bool $required
+     * @return mixed
+     * @throws ConfigurationException
+     */
+    protected function getConfigurationSetting($name, $required = false)
+    {
+        $value = $this->configManager->get($name);
+
+        if ($value === null && $required) {
+            throw ConfigurationException::settingValueRequired($name);
+        }
+
+        return $value;
     }
 }

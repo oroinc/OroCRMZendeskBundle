@@ -36,7 +36,8 @@ class ConfigurationProviderTest extends \PHPUnit_Framework_TestCase
     {
         $this->configurationManager->expects($this->once())
             ->method('get')
-            ->with(ConfigurationProvider::EMAIL_FIELD_NAME);
+            ->with(ConfigurationProvider::EMAIL_FIELD_NAME)
+            ->will($this->returnValue('admin@example.com'));
         $this->target->getEmail();
     }
 
@@ -44,7 +45,8 @@ class ConfigurationProviderTest extends \PHPUnit_Framework_TestCase
     {
         $this->configurationManager->expects($this->once())
             ->method('get')
-            ->with(ConfigurationProvider::API_TOKEN_FIELD_NAME);
+            ->with(ConfigurationProvider::API_TOKEN_FIELD_NAME)
+            ->will($this->returnValue(md5('api_token')));
         $this->target->getApiToken();
     }
 
