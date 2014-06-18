@@ -3,13 +3,13 @@ orocrm:
         form:
             email:
                 tooltip: Zendesk user email
-            username:
+            subdomain:
                 tooltip: Zendesk sub domain (https://{subdomain}.zendesk.com)
             api_token:
-                tooltip: Zendesk api token
+                tooltip: Zendesk API token
             sync_timeout:
-                tooltip: Syncronization with zendesk timeout(in minutes)
-            zendesk_default_user:
-                tooltip: Use in case if case assigned on non exist zendesk user
-            default_user:
-                tooltip: Use in case if case assigned on non exist orocrm user
+                tooltip: Syncronization with Zendesk timeout (in minutes)
+            zendesk_default_user_email:
+                tooltip: Email of Zendesk user that will be used by default when relevant user linked with OroCRM wasn't found
+            default_username:
+                tooltip: Username of OroCRM user that will be used by default when no relevant user linked with Zendesk wasn't found

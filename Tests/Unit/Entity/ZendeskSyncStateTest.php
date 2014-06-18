@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Entity;
+namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskSyncState;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Model;
+namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Model;
 
 use OroCRM\Bundle\ZendeskBundle\Model\Mapper;
 

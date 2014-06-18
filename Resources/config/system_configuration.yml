@@ -44,34 +44,34 @@ oro_system_configuration:
                 constraints:
                     - NotBlank: ~
 
-        oro_crm_zendesk.zendesk_username:
+        oro_crm_zendesk.zendesk_subdomain:
             type: text
             priority: 11
             options:
-                label: orocrm.zendesk.form.username.label
-                tooltip: orocrm.zendesk.form.username.tooltip
+                label: orocrm.zendesk.form.subdomain.label
+                tooltip: orocrm.zendesk.form.subdomain.tooltip
                 required: true
                 resettable: false
                 constraints:
                     - NotBlank: ~
 
-        oro_crm_zendesk.zendesk_default_user:
+        oro_crm_zendesk.zendesk_default_user_email:
             type: text
             priority: 7
             options:
-                label: orocrm.zendesk.form.zendesk_default_user.label
-                tooltip: orocrm.zendesk.form.zendesk_default_user.tooltip
+                label: orocrm.zendesk.form.zendesk_default_user_email.label
+                tooltip: orocrm.zendesk.form.zendesk_default_user_email.tooltip
                 required: true
                 resettable: false
                 constraints:
                     - NotBlank: ~
 
-        oro_crm_zendesk.orocrm_default_user:
+        oro_crm_zendesk.orocrm_default_username:
             type: text
             priority: 6
             options:
-                label: orocrm.zendesk.form.default_user.label
-                tooltip: orocrm.zendesk.form.default_user.tooltip
+                label: orocrm.zendesk.form.default_username.label
+                tooltip: orocrm.zendesk.form.default_username.tooltip
                 required: true
                 resettable: false
                 constraints:
@@ -91,7 +91,7 @@ oro_system_configuration:
                                         children:
                                             - oro_crm_zendesk.zendesk_email
                                             - oro_crm_zendesk.zendesk_api_token
-                                            - oro_crm_zendesk.zendesk_default_user
-                                            - oro_crm_zendesk.orocrm_default_user
+                                            - oro_crm_zendesk.zendesk_default_user_email
+                                            - oro_crm_zendesk.orocrm_default_username
                                             - oro_crm_zendesk.zendesk_sync_timeout
-                                            - oro_crm_zendesk.zendesk_username
+                                            - oro_crm_zendesk.zendesk_subdomain

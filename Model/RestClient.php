@@ -6,6 +6,7 @@ use Guzzle\Common\Exception\GuzzleException;
 use Guzzle\Http\Client;
 use Guzzle\Http\QueryString;
 use Guzzle\Http\Url;
+
 use OroCRM\Bundle\ZendeskBundle\Exception\RestException;
 
 class RestClient implements RestClientInterface
@@ -22,6 +23,10 @@ class RestClient implements RestClientInterface
      */
     protected $client;
 
+    /**
+     * @param Client $client
+     * @param array  $zendeskSettings
+     */
     public function __construct(Client $client, array $zendeskSettings)
     {
         $this->client = $client;
@@ -85,11 +90,11 @@ class RestClient implements RestClientInterface
     }
 
     /**
-     * @param $action
-     * @param $params
+     * @param string $action
+     * @param array $params
      * @return string
      */
-    protected function getUrl($action, $params)
+    protected function getUrl($action, array $params)
     {
         $query = new QueryString();
         foreach ($params as $name => $value) {
