@@ -244,6 +244,16 @@ class User
     }
 
     /**
+     * @param int $id
+     * @return User
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
      * @param string $locale
      * @return User
      */

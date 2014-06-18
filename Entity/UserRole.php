@@ -40,9 +40,9 @@ class UserRole implements Translatable
     protected $locale;
 
     /**
-     * @param string $name
+     * @param string|null $name
      */
-    public function __construct($name)
+    public function __construct($name = null)
     {
         $this->name = $name;
     }
@@ -53,6 +53,16 @@ class UserRole implements Translatable
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return UserRole
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**
