@@ -30,7 +30,7 @@ class User
     /**
      * @var int
      *
-     * @ORM\Column(type="bigint")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      */
     protected $id;
