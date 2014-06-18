@@ -67,14 +67,14 @@ orocrm:
 
         form:
             email:
-                label: Email
-            username:
-                label: Username
+                label: API email
+            subdomain:
+                label: Subdomain
             api_token:
-                label: Api Token
+                label: API Token
             sync_timeout:
                 label: Sync Timeout
-            zendesk_default_user:
-                label: Default Zendesk user
-            default_user:
-                label: Default OroCRM user
+            zendesk_default_user_email:
+                label: Default Zendesk user email
+            default_username:
+                label: Default OroCRM username

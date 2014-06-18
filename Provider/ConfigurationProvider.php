@@ -14,8 +14,8 @@ class ConfigurationProvider
     const EMAIL_FIELD_NAME = 'oro_crm_zendesk.zendesk_email';
     const API_TOKEN_FIELD_NAME = 'oro_crm_zendesk.zendesk_api_token';
     const SYNC_TIMEOUT_FIELD_NAME = 'oro_crm_zendesk.zendesk_sync_timeout';
-    const ZENDESK_DEFAULT_USER_FIELD_NAME = 'oro_crm_zendesk.zendesk_default_user';
-    const OROCRM_DEFAULT_USER_FIELD_NAME = 'oro_crm_zendesk.orocrm_default_user';
+    const ZENDESK_DEFAULT_USER_EMAIL_FIELD_NAME = 'oro_crm_zendesk.zendesk_default_user_email';
+    const OROCRM_DEFAULT_USERNAME_FIELD_NAME = 'oro_crm_zendesk.orocrm_default_username';
     const USERNAME_FIELD_NAME = 'oro_crm_zendesk.zendesk_username';
 
     /**
@@ -61,9 +61,9 @@ class ConfigurationProvider
     /**
      * @return string
      */
-    public function getZendeskDefaultUser()
+    public function getZendeskDefaultUserEmail()
     {
-        return $this->getConfigurationSetting(self::ZENDESK_DEFAULT_USER_FIELD_NAME);
+        return $this->getConfigurationSetting(self::ZENDESK_DEFAULT_USER_EMAIL_FIELD_NAME);
     }
 
     /**
@@ -79,7 +79,7 @@ class ConfigurationProvider
      */
     public function getDefaultUser()
     {
-        $username = $this->getConfigurationSetting(self::OROCRM_DEFAULT_USER_FIELD_NAME);
+        $username = $this->getConfigurationSetting(self::OROCRM_DEFAULT_USERNAME_FIELD_NAME);
 
         if (empty($username)) {
             return null;
