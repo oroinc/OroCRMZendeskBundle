@@ -3,6 +3,8 @@ parameters:
     orocrm_zendesk.provider.type.configuration_provider.class: OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider
     orocrm_zendesk.mapper.class:                               OroCRM\Bundle\ZendeskBundle\Model\Mapper
     orocrm_zendesk.rest_client_factory.class:                  OroCRM\Bundle\ZendeskBundle\Model\RestClientFactory
+    orocrm_zendesk.twig.extension.case_ticket.class:           OroCRM\Bundle\ZendeskBundle\Twig\CaseTicketExtension
+    orocrm_zendesk.placeholder.filter.class:                   OroCRM\Bundle\ZendeskBundle\Placeholder\Filter\Filter
 
 services:
     orocrm_zendesk.mapper:
@@ -20,3 +22,15 @@ services:
         class: %orocrm_zendesk.rest_client_factory.class%
         arguments:
             - @orocrm_zendesk.provider.type.configuration_provider
+
+    orocrm_zendesk.twig.extension.case_ticket:
+        class: %orocrm_zendesk.twig.extension.case_ticket.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+        tags:
+            - { name: twig.extension }
+
+    orocrm_zendesk.placeholder.filter:
+        class: %orocrm_zendesk.placeholder.filter.class%
+        arguments:
+            - @doctrine.orm.entity_manager

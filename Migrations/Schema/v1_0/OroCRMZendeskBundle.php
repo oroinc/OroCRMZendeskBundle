@@ -91,7 +91,7 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('subject', 'string', array('length' => 255));
         $table->addColumn('description', 'text', array('notnull' => false));
         $table->addColumn('recipient_email', 'string', array('length' => 100));
-        $table->addColumn('public', 'boolean', array('default' => '0'));
+        $table->addColumn('has_incidents', 'boolean', array('default' => '0'));
         $table->addColumn('dueAt', 'datetime', array());
         $table->addColumn('createdAt', 'datetime', array());
         $table->addColumn('updatedAt', 'datetime', array());

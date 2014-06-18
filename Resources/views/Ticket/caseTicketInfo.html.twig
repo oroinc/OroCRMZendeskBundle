@@ -1,0 +1,59 @@
+{% if resource_granted('orocrm_case_view') %}
+    {% import 'OroUIBundle::macros.html.twig' as UI %}
+    {% import 'OroEmailBundle::macros.html.twig' as email %}
+
+    {% macro render_zendesk_user(label, user) %}
+        {% import 'OroUIBundle::macros.html.twig' as UI %}
+        {%- set userHtml -%}
+        {%- if user -%}
+            {% if user.user %}
+                {% if resource_granted('oro_user_user_view') %}
+                    <a href="{{ path('oro_user_view', {'id': user.user.id}) }}">
+                        {{ user.user|oro_format_name|escape }}
+                    </a>
+                {% else %}
+                    {{ user.user|oro_format_name|escape }}
+                {% endif %}
+            {% else %}
+                {{ user.name|escape }}
+            {% endif %}
+        {%- endif -%}
+        {%- endset -%}
+        {{ UI.renderHtmlProperty(label, userHtml) }}
+    {% endmacro %}
+
+    {% set ticket = orocrm_zendesk_get_case_ticket(entity) %}
+    {% if ticket %}
+        <div class="responsive-cell">
+            <div class="box-type1">
+                <div class="title">
+                    <span class="widget-title">Zendesk ticket info</span>
+                </div>
+                <div class="row-fluid form-horizontal">
+                    <div class="responsive-block">
+                        {{ UI.renderProperty('External Id'|trans, ticket.externalId) }}
+                        {{ UI.renderProperty('Url'|trans, ticket.url) }}
+                        {% set recipient %}
+                            {{ email.email_address_simple(ticket.recipient) }}
+                        {% endset %}
+                        {{ UI.renderHtmlProperty('Recipient email'|trans, recipient) }}
+                        {{ UI.renderProperty('Is problem'|trans, ticket.hasIncidents ? "Yes"|trans : "No"|trans) }}
+                        {{ UI.renderProperty('Status'|trans, ticket.status.label) }}
+                        {{ UI.renderProperty('Type'|trans, ticket.type.label) }}
+                        {{ _self.render_zendesk_user('Submitter'|trans, ticket.submitter) }}
+                        {{ UI.renderProperty('Priority'|trans, ticket.priority.label) }}
+                        {% set problem %}
+                            {% if ticket.problem and ticket.problem.case %}
+                                <a href="{{ path('orocrm_case_view', {'id': ticket.problem.case.id}) }}">
+                                    {{ ticket.problem.subject }}
+                                </a>
+                            {% endif %}
+                        {% endset %}
+                        {{ UI.renderHtmlProperty('Problem'|trans, problem|trim) }}
+                        {{ _self.render_zendesk_user('Requester'|trans, ticket.requester) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}

@@ -140,7 +140,7 @@ class Ticket
     /**
      * @var bool
      *
-     * @ORM\Column(name="public", type="boolean", options={"default"=false})
+     * @ORM\Column(name="has_incidents", type="boolean", options={"default"=false})
      */
     protected $hasIncidents;
 
