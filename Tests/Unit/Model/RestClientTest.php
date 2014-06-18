@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Model;
+namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Model;
 
 use Guzzle\Http\Exception\RequestException;
 
@@ -8,6 +8,18 @@ use OroCRM\Bundle\ZendeskBundle\Model\RestClient;
 
 class RestClientTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $client;
+
+    protected function setUp()
+    {
+        $this->client = $this->getMockBuilder('Guzzle\Http\Client')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
     public function testGetSettings()
     {
         $settings = array(
@@ -15,10 +27,8 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
             'api_token' => uniqid(),
             'sub_domain' => 'domain'
         );
-        $client = $this->getMockBuilder('Guzzle\Http\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $restClient = $this->getClient($client, $settings);
+
+        $restClient = $this->getClient($settings);
         $this->assertEquals($settings, $restClient->getSettings());
     }
 
@@ -32,16 +42,13 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
         );
         $expectedAuth = array('auth' => array('test@mail.com/token', $settings['api_token']));
 
-        $client = $this->getMockBuilder('Guzzle\Http\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
         $request = $this->getRequest();
 
-        $client->expects($this->once())
+        $this->client->expects($this->once())
             ->method('createRequest')
             ->with('get', $expected, null, null, $expectedAuth)
             ->will($this->returnValue($request));
-        $restClient = $this->getClient($client, $settings);
+        $restClient = $this->getClient($settings);
         $restClient->get($expected, array('test' => 'test'));
     }
 
@@ -62,15 +69,12 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
         $expectedBody = array('test json' => array('test param' => 'test value'));
         $expectedAuth = array('auth' => array('test@mail.com/token', $settings['api_token']));
 
-        $client = $this->getMockBuilder('Guzzle\Http\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
         $request = $this->getRequest($expectedBody);
-        $client->expects($this->once())
+        $this->client->expects($this->once())
             ->method('createRequest')
             ->with('get', $expected, null, null, $expectedAuth)
             ->will($this->returnValue($request));
-        $restClient = $this->getClient($client, $settings);
+        $restClient = $this->getClient($settings);
         $actualBody = $restClient->get($action, $params);
         $this->assertEquals($expectedBody, $actualBody);
     }
@@ -91,15 +95,12 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
         $expectedAuth = array('auth' => array('test@mail.com/token', $settings['api_token']));
         $expectedHeaders = array('Content-Type' => 'application/json');
 
-        $client = $this->getMockBuilder('Guzzle\Http\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
         $request = $this->getRequest($expectedBody);
-        $client->expects($this->once())
+        $this->client->expects($this->once())
             ->method('createRequest')
             ->with('post', $expectedUrl, $expectedHeaders, json_encode($expectedData), $expectedAuth)
             ->will($this->returnValue($request));
-        $restClient = $this->getClient($client, $settings);
+        $restClient = $this->getClient($settings);
         $actualBody = $restClient->post($action, $expectedData);
         $this->assertEquals($expectedBody, $actualBody);
     }
@@ -120,15 +121,12 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
         $expectedAuth = array('auth' => array('test@mail.com/token', $settings['api_token']));
         $expectedHeaders = array('Content-Type' => 'application/json');
 
-        $client = $this->getMockBuilder('Guzzle\Http\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
         $request = $this->getRequest($expectedBody);
-        $client->expects($this->once())
+        $this->client->expects($this->once())
             ->method('createRequest')
             ->with('put', $expectedUrl, $expectedHeaders, json_encode($expectedData), $expectedAuth)
             ->will($this->returnValue($request));
-        $restClient = $this->getClient($client, $settings);
+        $restClient = $this->getClient($settings);
         $actualBody = $restClient->put($action, $expectedData);
         $this->assertEquals($expectedBody, $actualBody);
     }
@@ -147,15 +145,12 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
         $expectedBody = array('test json' => array('test param' => 'test value'));
         $expectedAuth = array('auth' => array('test@mail.com/token', $settings['api_token']));
 
-        $client = $this->getMockBuilder('Guzzle\Http\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
         $request = $this->getRequest($expectedBody);
-        $client->expects($this->once())
+        $this->client->expects($this->once())
             ->method('createRequest')
             ->with('delete', $expectedUrl, null, null, $expectedAuth)
             ->will($this->returnValue($request));
-        $restClient = $this->getClient($client, $settings);
+        $restClient = $this->getClient($settings);
         $actualBody = $restClient->delete($action);
         $this->assertEquals($expectedBody, $actualBody);
     }
@@ -171,17 +166,15 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
             'sub_domain' => 'test_sub_domain',
             'api_token' => uniqid()
         );
-        $client = $this->getMockBuilder('Guzzle\Http\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
+
         $request = $this->getMock('Guzzle\Http\Message\RequestInterface');
         $request->expects($this->once())
             ->method('Send')
             ->will($this->throwException(new RequestException('test message', 42)));
-        $client->expects($this->once())
+        $this->client->expects($this->once())
             ->method('createRequest')
             ->will($this->returnValue($request));
-        $restClient = $this->getClient($client, $settings);
+        $restClient = $this->getClient($settings);
         $restClient->get('https://foo.zendesk.com');
     }
 
@@ -200,9 +193,6 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
             'sub_domain' => 'test_sub_domain',
             'api_token' => uniqid()
         );
-        $client = $this->getMockBuilder('Guzzle\Http\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
 
         $request = $this->getRequest(array(), 401);
         $request->expects($this->once())
@@ -212,21 +202,20 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
             ->method('getMethod')
             ->will($this->returnValue('GET'));
 
-        $client->expects($this->once())
+        $this->client->expects($this->once())
             ->method('createRequest')
             ->will($this->returnValue($request));
-        $restClient = $this->getClient($client, $settings);
+        $restClient = $this->getClient($settings);
         $restClient->get('https://foo.zendesk.com');
     }
 
     /**
-     * @param \PHPUnit_Framework_MockObject_MockObject $client
      * @param array $settings
      * @return RestClient
      */
-    public function getClient($client, $settings)
+    public function getClient($settings)
     {
-        return new RestClient($client, $settings);
+        return new RestClient($this->client, $settings);
     }
 
     /**

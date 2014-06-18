@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Provider;
+namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Provider;
 
 use OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider;
 
