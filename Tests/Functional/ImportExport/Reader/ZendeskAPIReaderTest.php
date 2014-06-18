@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport;
 
 use Oro\Bundle\ImportExportBundle\Context\Context;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\ZendeskAPIReader;
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Reader\ZendeskAPIReader;
 
 class ZendeskAPIReaderTest extends WebTestCase
 {

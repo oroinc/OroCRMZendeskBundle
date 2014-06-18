@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport;
+namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Reader;
 
 use OroCRM\Bundle\ZendeskBundle\Model\RestClientFactoryInterface;
 use OroCRM\Bundle\ZendeskBundle\Model\RestIterator;

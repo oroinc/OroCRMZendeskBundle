@@ -167,37 +167,37 @@ class OroCRMZendeskBundle implements Migration
         /** Generate table orocrm_zd_user **/
         $table = $schema->createTable('orocrm_zd_user');
         $table->addColumn('id', 'integer', array());
-        $table->addColumn('user_id', 'integer', array('notnull' => false));
+        $table->addColumn('related_user_id', 'integer', array('notnull' => false));
         $table->addColumn('role_name', 'string', array('notnull' => false, 'length' => 16));
-        $table->addColumn('contact_id', 'integer', array('notnull' => false));
-        $table->addColumn('url', 'string', array('length' => 255));
-        $table->addColumn('external_id', 'string', array('length' => 50));
-        $table->addColumn('name', 'string', array('length' => 100));
-        $table->addColumn('details', 'text', array());
-        $table->addColumn('ticket_restrictions', 'string', array('length' => 30));
+        $table->addColumn('related_contact_id', 'integer', array('notnull' => false));
+        $table->addColumn('url', 'string', array('length' => 255, 'notnull' => false));
+        $table->addColumn('external_id', 'string', array('length' => 50, 'notnull' => false));
+        $table->addColumn('name', 'string', array('length' => 100, 'notnull' => false));
+        $table->addColumn('details', 'text', array('notnull' => false));
+        $table->addColumn('ticket_restrictions', 'string', array('length' => 30, 'notnull' => false));
         $table->addColumn('only_private_comments', 'boolean', array('default' => '0'));
-        $table->addColumn('notes', 'text', array());
-        $table->addColumn('createdAt', 'datetime', array());
-        $table->addColumn('updatedAt', 'datetime', array());
-        $table->addColumn('lastLoginAt', 'datetime', array());
+        $table->addColumn('notes', 'text', array('notnull' => false));
+        $table->addColumn('createdAt', 'datetime', array('notnull' => false));
+        $table->addColumn('updatedAt', 'datetime', array('notnull' => false));
+        $table->addColumn('lastLoginAt', 'datetime', array('notnull' => false));
         $table->addColumn('verified', 'boolean', array('default' => '0'));
         $table->addColumn('active', 'boolean', array('default' => '0'));
-        $table->addColumn('alias', 'string', array('length' => 100));
-        $table->addColumn('email', 'string', array('length' => 100));
-        $table->addColumn('phone', 'string', array('length' => 30));
-        $table->addColumn('time_zone', 'string', array('length' => 30));
-        $table->addColumn('locale', 'string', array('length' => 30));
+        $table->addColumn('alias', 'string', array('length' => 100, 'notnull' => false));
+        $table->addColumn('email', 'string', array('length' => 100, 'notnull' => false));
+        $table->addColumn('phone', 'string', array('length' => 30, 'notnull' => false));
+        $table->addColumn('time_zone', 'string', array('length' => 30, 'notnull' => false));
+        $table->addColumn('locale', 'string', array('length' => 30, 'notnull' => false));
         $table->setPrimaryKey(array('id'));
         $table->addIndex(array('role_name'), 'IDX_5CD5C9CDE09C0C92', array());
-        $table->addIndex(array('contact_id'), 'IDX_5CD5C9CDE7A1254A', array());
-        $table->addIndex(array('user_id'), 'IDX_5CD5C9CDA76ED395', array());
+        $table->addIndex(array('related_contact_id'), 'IDX_5CD5C9CD6D6C2DFA', array());
+        $table->addIndex(array('related_user_id'), 'IDX_5CD5C9CD98771930', array());
         /** End of generate table orocrm_zd_user **/
 
         /** Generate foreign keys for table orocrm_zd_user **/
         $table = $schema->getTable('orocrm_zd_user');
         $table->addForeignKeyConstraint(
             $schema->getTable('oro_user'),
-            array('user_id'),
+            array('related_user_id'),
             array('id'),
             array('onDelete' => 'SET NULL', 'onUpdate' => null)
         );
@@ -210,7 +210,7 @@ class OroCRMZendeskBundle implements Migration
         );
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_contact'),
-            array('contact_id'),
+            array('related_contact_id'),
             array('id'),
             array('onDelete' => 'SET NULL', 'onUpdate' => null)
         );

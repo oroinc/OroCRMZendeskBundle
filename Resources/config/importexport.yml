@@ -1,26 +1,49 @@
 parameters:
-    orocrm_zendesk.importexport.reader.zendesk_api.class: OroCRM\Bundle\ZendeskBundle\ImportExport\ZendeskAPIReader
+    orocrm_zendesk.importexport.reader.zendesk_api.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Reader\ZendeskAPIReader
     orocrm_zendesk.importexport.normalizer.user.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserNormalizer
     orocrm_zendesk.importexport.normalizer.user_role.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserRoleNormalizer
+    orocrm_zendesk.importexport.provider.contact.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ContactProvider
+    orocrm_zendesk.importexport.provider.oro_user.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroUserProvider
+    orocrm_zendesk.importexport.strategy.user_sync.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\UserSyncStrategy
 
 services:
+    # Readers
     orocrm_zendesk.importexport.reader.zendesk_api:
         class: %orocrm_zendesk.importexport.reader.zendesk_api.class%
         arguments:
           - @oro_importexport.context_registry
           - @orocrm_zendesk.rest_client_factory
 
-    orocrm_zendesk.importexport.processor.zendesk_user_sync:
+    # Processors
+    orocrm_zendesk.importexport.processor.user_sync:
         parent: oro_importexport.processor.import_abstract
-#        calls:
-#             - [setDataConverter, [@orocrm_contact.importexport.data_converter.contact]]
-#             - [setStrategy, [@orocrm_contact.importexport.strategy.import.contact.add_or_replace]]
+        calls:
+            - [setStrategy, [@orocrm_zendesk.importexport.strategy.user_sync]]
         tags:
             -
               name: oro_importexport.processor
               type: import
               entity: %orocrm_zendesk.entity.user.class%
               alias: orocrm_zendesk.sync_from_zendesk_user
+
+    # Strategies
+    orocrm_zendesk.importexport.strategy.user_sync:
+        class: %orocrm_zendesk.importexport.strategy.user_sync.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @orocrm_zendesk.importexport.provider.contact
+            - @orocrm_zendesk.importexport.provider.oro_user
+
+    # Providers
+    orocrm_zendesk.importexport.provider.contact:
+        class: %orocrm_zendesk.importexport.provider.contact.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+
+    orocrm_zendesk.importexport.provider.oro_user:
+        class: %orocrm_zendesk.importexport.provider.oro_user.class%
+        arguments:
+            - @doctrine.orm.entity_manager
 
     # Normalizers
     orocrm_zendesk.importexport.normalizer.user:
