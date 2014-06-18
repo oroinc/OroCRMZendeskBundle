@@ -30,7 +30,7 @@ class User
     /**
      * @var int
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\Id
      */
     protected $id;
@@ -241,6 +241,16 @@ class User
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     * @return User
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**

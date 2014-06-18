@@ -1,5 +1,7 @@
 parameters:
     orocrm_zendesk.importexport.reader.zendesk_api.class: OroCRM\Bundle\ZendeskBundle\ImportExport\ZendeskAPIReader
+    orocrm_zendesk.importexport.normalizer.user.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserNormalizer
+    orocrm_zendesk.importexport.normalizer.user_role.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserRoleNormalizer
 
 services:
     orocrm_zendesk.importexport.reader.zendesk_api:
@@ -19,3 +21,14 @@ services:
               type: import
               entity: %orocrm_zendesk.entity.user.class%
               alias: orocrm_zendesk.sync_from_zendesk_user
+
+    # Normalizers
+    orocrm_zendesk.importexport.normalizer.user:
+        class: %orocrm_zendesk.importexport.normalizer.user.class%
+        tags:
+            - { name: oro_importexport.normalizer }
+
+    orocrm_zendesk.importexport.normalizer.user_role:
+        class: %orocrm_zendesk.importexport.normalizer.user_role.class%
+        tags:
+            - { name: oro_importexport.normalizer }
