@@ -66,15 +66,15 @@ orocrm:
             zendesk_settings.title: 'Settings'
 
         form:
-            email:
+            api_email:
                 label: API email
-            subdomain:
-                label: Subdomain
             api_token:
                 label: API Token
+            subdomain:
+                label: Subdomain
             sync_timeout:
                 label: Sync Timeout
             zendesk_default_user_email:
                 label: Default Zendesk user email
-            default_username:
+            oro_default_username:
                 label: Default OroCRM username
