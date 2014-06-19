@@ -4,16 +4,17 @@ namespace OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 
-use Doctrine\ORM\EntityRepository;
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
+use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
 use OroCRM\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
@@ -22,7 +23,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 
-class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInterface
+class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     const TICKET_COUNT = 10;
 
@@ -130,13 +131,14 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
             $type = $this->getRandomEntity('OroCRMZendeskBundle:TicketType');
         }
 
+        /**
+         * @var EntityMapper $entityMapper
+         */
         $entityMapper = $this->container->get('orocrm_zendesk.entity_mapper');
 
-        $status = $this->entityManager->getRepository('OroCRMZendeskBundle:TicketStatus')
-            ->findOneBy(array('name' => $entityMapper->getTicketStatus($case->getStatus()->getName())));
+        $status = $entityMapper->getTicketStatus($case->getStatus()->getName());
 
-        $priority = $this->entityManager->getRepository('OroCRMZendeskBundle:TicketPriority')
-            ->findOneBy(array('name' => $entityMapper->getTicketPriority($case->getPriority()->getName())));
+        $priority = $entityMapper->getTicketPriority($case->getPriority()->getName());
 
         if (!$type || !$status || !$priority) {
             return null;
@@ -307,6 +309,16 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getDependencies()
+    {
+        return array(
+            'OroCRM\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData'
+        );
+    }
+
+    /**
      * @param array $data
      * @param object $target
      */
@@ -335,13 +347,5 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
             ->findOneBy(array('name' => $roleName));
 
         return $role;
-    }
-
-    /**
-     * @return EntityRepository
-     */
-    protected function getUserRepository()
-    {
-        return $this->entityManager->getRepository('OroCRMZendeskBundle:User');
     }
 }
