@@ -296,6 +296,17 @@ class Ticket
     }
 
     /**
+     * @param int $id
+     * @return Ticket
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * @param TicketPriority $priority
      * @return Ticket
      */

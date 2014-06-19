@@ -1,5 +1,6 @@
 orocrm:
     zendesk:
+        ticket_info_title: Zendesk ticket info
         ticket:
             entity_label: Ticket
             entity_plural_label: Tickets

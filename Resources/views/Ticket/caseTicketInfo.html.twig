@@ -5,19 +5,15 @@
     {% macro render_zendesk_user(label, user) %}
         {% import 'OroUIBundle::macros.html.twig' as UI %}
         {%- set userHtml -%}
-        {%- if user -%}
-            {% if user.user %}
-                {% if resource_granted('oro_user_user_view') %}
+            {%- if user -%}
+                {% if resource_granted('oro_user_user_view') and user.user %}
                     <a href="{{ path('oro_user_view', {'id': user.user.id}) }}">
-                        {{ user.user|oro_format_name|escape }}
+                        {{ user.name|escape }}
                     </a>
                 {% else %}
-                    {{ user.user|oro_format_name|escape }}
+                    {{ user.name|escape }}
                 {% endif %}
-            {% else %}
-                {{ user.name|escape }}
-            {% endif %}
-        {%- endif -%}
+            {%- endif -%}
         {%- endset -%}
 
         {% if label %}
@@ -32,7 +28,7 @@
         <div class="responsive-cell">
             <div class="box-type1">
                 <div class="title">
-                    <span class="widget-title">Zendesk ticket info</span>
+                    <span class="widget-title">{{ "orocrm.zendesk.ticket_info_title"|trans }}</span>
                 </div>
                 <div class="row-fluid form-horizontal">
                     <div class="responsive-block">
@@ -46,6 +42,8 @@
                         {{ UI.renderProperty('orocrm.zendesk.ticket.status.label'|trans, ticket.status.label) }}
                         {{ UI.renderProperty('orocrm.zendesk.ticket.type.label'|trans, ticket.type.label) }}
                         {{ _self.render_zendesk_user('orocrm.zendesk.ticket.submitter.label'|trans, ticket.submitter) }}
+                        {{ _self.render_zendesk_user('orocrm.zendesk.ticket.assignee.label'|trans, ticket.assignee) }}
+                        {{ _self.render_zendesk_user('orocrm.zendesk.ticket.requester.label'|trans, ticket.requester) }}
                         {{ UI.renderProperty('orocrm.zendesk.ticket.priority.label'|trans, ticket.priority.label) }}
                         {% set problem %}
                             {% if ticket.problem and ticket.problem.case %}
@@ -55,7 +53,7 @@
                             {% endif %}
                         {% endset %}
                         {{ UI.renderHtmlProperty('orocrm.zendesk.ticket.problem.label'|trans, problem|trim) }}
-                        {{ _self.render_zendesk_user('orocrm.zendesk.ticket.requester.label'|trans, ticket.requester) }}
+
                         {% set collaborators %}
                             {% if ticket.collaborators %}
                                 {% for collaborator in ticket.collaborators %}
