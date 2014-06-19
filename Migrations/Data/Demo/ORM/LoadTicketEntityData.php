@@ -4,10 +4,13 @@ namespace OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 
+use Doctrine\ORM\EntityRepository;
+use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -19,9 +22,10 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 
-class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
+class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInterface
 {
     const TICKET_COUNT = 10;
+
     /**
      * @var ContainerInterface
      */
@@ -45,12 +49,20 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     /**
      * @var int
      */
-    protected $startId = 100;
+    protected $ticketOriginId = 100;
+
 
     /**
      * @var int
      */
-    protected $startUserId = 100;
+    protected $ticketCommentOriginId = 100;
+
+    /**
+     * @var int
+     */
+    protected $userOriginId = 100;
+
+    protected $zendeskUsers = array();
 
     /**
      * {@inheritdoc}
@@ -75,6 +87,8 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
             }
 
             $manager->persist($ticket);
+
+            $this->createTicketComments($ticket);
         }
 
         $manager->flush();
@@ -85,7 +99,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
      */
     protected function createTicketEntity()
     {
-        $this->startId++;
+        $this->ticketOriginId++;
         $case = $this->getCase();
         if (!$case) {
             return null;
@@ -93,9 +107,9 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
         $requester = $this->getZendeskUserByUser($this->getRandomEntity('OroUserBundle:User'));
         $assignee = $this->getZendeskUserByUser($case->getAssignedTo());
         $data = array(
-            'origin_id' => $this->startId,
-            'url' => "https://company.zendesk.com/api/v2/tickets/{$this->startId}.json",
-            'recipient' => "{$this->startId}_support@company.com",
+            'origin_id' => $this->ticketOriginId,
+            'url' => "https://company.zendesk.com/api/v2/tickets/{$this->ticketOriginId}.json",
+            'recipient' => "{$this->ticketOriginId}_support@company.com",
             'requester' => $requester,
             'assignee'  => $assignee,
             'hasIncidents' => rand(0, 1),
@@ -141,11 +155,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
 
         $ticket = new Ticket();
 
-        if (!$data['hasIncidents']) {
-            $ticket->setProblem($ticket);
-        }
-
-        $this->setter($data, $ticket);
+        $this->setObjectValues($data, $ticket);
 
         return $ticket;
     }
@@ -160,6 +170,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
 
         return $result;
     }
+
     /**
      * @return CaseEntity|false
      */
@@ -185,14 +196,23 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
      */
     protected function getZendeskUserByUser(OroUser $user)
     {
+        $email = $user->getEmail();
+        if (array_key_exists($email, $this->zendeskUsers)) {
+            return $this->zendeskUsers[$email];
+        }
+
         $zendeskUser = new User();
         $name = $user->getFirstName().' '.$user->getLastName();
-        $zendeskUser->setOriginId($this->startUserId++)
+        $roleName = rand(0, 1) ? UserRole::ROLE_AGENT : UserRole::ROLE_ADMIN;
+        $role = $this->getRoleByName($roleName);
+        $zendeskUser->setOriginId($this->userOriginId++)
             ->setRelatedUser($user)
             ->setEmail($user->getEmail())
+            ->setRole($role)
             ->setName($name);
 
         $this->entityManager->persist($zendeskUser);
+        $this->zendeskUsers[$email] = $zendeskUser;
 
         return $zendeskUser;
     }
@@ -203,16 +223,48 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
      */
     protected function getZendeskUserByContact(Contact $contact)
     {
+        $email = $contact->getEmail();
+        if (array_key_exists($email, $this->zendeskUsers)) {
+            return $this->zendeskUsers[$email];
+        }
+
         $zendeskUser = new User();
-        $name = $contact->getFirstName().' '.$contact->getLastName();
-        $zendeskUser->setOriginId($this->startUserId++)
+        $name = $contact->getFirstName() . ' ' . $contact->getLastName();
+        $role = $this->getRoleByName(UserRole::ROLE_END_USER);
+
+        $zendeskUser->setOriginId($this->userOriginId++)
             ->setRelatedContact($contact)
-            ->setEmail($contact->getEmail())
-            ->setName($name);
+            ->setEmail($email)
+            ->setName($name)
+            ->setRole($role);
 
         $this->entityManager->persist($zendeskUser);
+        $this->zendeskUsers[$email] = $zendeskUser;
 
         return $zendeskUser;
+    }
+
+    protected function createTicketComments(Ticket $ticket)
+    {
+        $comments = $ticket->getRelatedCase()->getComments();
+
+        /**
+         * @var CaseComment $comment
+         */
+        foreach ($comments as $comment) {
+            $ticketComment = new TicketComment();
+            $author = $this->getZendeskUserByUser($comment->getOwner());
+            $ticketComment->setOriginId($this->ticketCommentOriginId++)
+                ->setAuthor($author)
+                ->setBody($comment->getMessage())
+                ->setHtmlBody($comment->getMessage())
+                ->setCreatedAt($comment->getCreatedAt())
+                ->setPublic($comment->isPublic())
+                ->setTicket($ticket)
+                ->setRelatedComment($comment);
+
+            $this->entityManager->persist($ticketComment);
+        }
     }
 
     /**
@@ -255,31 +307,41 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getDependencies()
-    {
-        return array(
-            'OroCRM\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData'
-        );
-    }
-
-    /**
      * @param array $data
      * @param object $target
      */
-    protected function setter(array $data, $target)
+    protected function setObjectValues(array $data, $target)
     {
         $reflectionClass = new \ReflectionClass($target);
 
         foreach ($reflectionClass->getProperties() as $property) {
             $propertyName = $property->getName();
-            if (!isset($data[$propertyName])) {
+            if (!array_key_exists($propertyName, $data)) {
                 continue;
             }
             $value = $data[$propertyName];
             $reflectionClass->getMethod('set' . ucfirst($propertyName))
                 ->invoke($target, $value);
         }
+    }
+
+    /**
+     * @param $roleName
+     * @return null|object
+     */
+    protected function getRoleByName($roleName)
+    {
+        $role = $this->entityManager->getRepository('OroCRMZendeskBundle:UserRole')
+            ->findOneBy(array('name' => $roleName));
+
+        return $role;
+    }
+
+    /**
+     * @return EntityRepository
+     */
+    protected function getUserRepository()
+    {
+        return $this->entityManager->getRepository('OroCRMZendeskBundle:User');
     }
 }
