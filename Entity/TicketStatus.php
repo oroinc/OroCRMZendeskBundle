@@ -46,7 +46,7 @@ class TicketStatus implements Translatable
     /**
      * @param string $name
      */
-    public function __construct($name)
+    public function __construct($name = null)
     {
         $this->name = $name;
     }
@@ -60,12 +60,12 @@ class TicketStatus implements Translatable
     }
 
     /**
-     * @param string $label
-     * @return TicketPriority
+     * @param string $name
+     * @return TicketStatus
      */
-    public function setLabel($label)
+    public function setName($name)
     {
-        $this->label = $label;
+        $this->name = $name;
 
         return $this;
     }
@@ -79,10 +79,21 @@ class TicketStatus implements Translatable
     }
 
     /**
+     * @param string $label
+     * @return TicketStatus
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
      * Set locale
      *
      * @param string $locale
-     * @return TicketPriority
+     * @return TicketStatus
      */
     public function setLocale($locale)
     {

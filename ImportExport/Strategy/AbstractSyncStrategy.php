@@ -5,11 +5,12 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 use Doctrine\ORM\EntityManager;
 
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskProvider;
 
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
@@ -30,6 +31,11 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     protected $entityManager;
 
     /**
+     * @var ZendeskProvider
+     */
+    protected $zendeskProvider;
+
+    /**
      * @var ContextInterface
      */
     private $context;
@@ -40,11 +46,45 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     private $logger;
 
     /**
+     * Validates availability of origin id field
+     *
+     * @param mixed $entity
+     * @return bool
+     */
+    public function validateOriginId($entity)
+    {
+        if (!$entity->getOriginId()) {
+            $message = $this->buildMessage(
+                'Can\'t process record [id=null].',
+                $this->getContext()->getReadCount(),
+                'read_index'
+            );
+
+            $this->getContext()->addError($message);
+            $this->getLogger()->error($message);
+
+            $this->getContext()->incrementErrorEntriesCount();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @param EntityManager $entityManager
      */
-    public function __construct(EntityManager $entityManager)
+    public function setEntityManager(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @param ZendeskProvider $zendeskProvider
+     */
+    public function setZendeskProvider(ZendeskProvider $zendeskProvider)
+    {
+        $this->zendeskProvider = $zendeskProvider;
     }
 
     /**
@@ -53,6 +93,32 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     protected function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @param mixed $entity
+     * @param string $fieldName
+     * @param string $dictionaryEntityAlias
+     */
+    protected function refreshDictionaryField($entity, $fieldName, $dictionaryEntityAlias = null)
+    {
+        $dictionaryEntityAlias = $dictionaryEntityAlias ? : $fieldName;
+        $value = null;
+        $entityGetter = 'get' . ucfirst($fieldName);
+        $entitySetter = 'set' . ucfirst($fieldName);
+        $providerGetter = 'get' . ucfirst($dictionaryEntityAlias);
+        if ($entity->$entityGetter()) {
+            $value = $this->zendeskProvider->$providerGetter($entity->$entityGetter());
+            if (!$value) {
+                $valueName = $entity->$entityGetter()->getName();
+                $this->getLogger()->warning(
+                    $this->buildMessage("Can't find $fieldName [name=$valueName].", $entity)
+                );
+            }
+        } else {
+            $this->getLogger()->warning($this->buildMessage(ucfirst($fieldName) . " is empty.", $entity));
+        }
+        $entity->$entitySetter($value);
     }
 
     /**

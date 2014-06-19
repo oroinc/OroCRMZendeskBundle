@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -73,15 +74,15 @@ class Ticket
     /**
      * @var Ticket
      *
-     * @ORM\OneToOne(targetEntity="Ticket")
+     * @ORM\OneToOne(targetEntity="Ticket", cascade={"persist"})
      * @ORM\JoinColumn(name="problem_id", referencedColumnName="id")
      */
     protected $problem;
 
     /**
-     * @var ArrayCollection
+     * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="User")
+     * @ORM\ManyToMany(targetEntity="User", cascade={"persist"})
      * @ORM\JoinTable(name="orocrm_zd_ticket_collaborators",
      *      joinColumns={@ORM\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="CASCADE")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")}
@@ -123,7 +124,7 @@ class Ticket
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
      * @ORM\JoinColumn(name="requester_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $requester;
@@ -131,7 +132,7 @@ class Ticket
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
      * @ORM\JoinColumn(name="submitter_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $submitter;
@@ -139,7 +140,7 @@ class Ticket
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
      * @ORM\JoinColumn(name="assignee_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $assignee;
@@ -175,10 +176,18 @@ class Ticket
     /**
      * @var CaseEntity
      *
-     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseEntity")
+     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseEntity", cascade={"persist"})
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedCase;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->collaborators = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -319,6 +328,30 @@ class Ticket
     public function getCollaborators()
     {
         return $this->collaborators;
+    }
+
+    /**
+     * @param User $user
+     * @return Ticket
+     */
+    public function addCollaborator(User $user)
+    {
+        if (!$this->getCollaborators()->contains($user)) {
+            $this->getCollaborators()->add($user);
+        }
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return Ticket
+     */
+    public function removeCollaborator(User $user)
+    {
+        if (!$this->getCollaborators()->contains($user)) {
+            $this->getCollaborators()->remove($user);
+        }
+        return $this;
     }
 
     /**

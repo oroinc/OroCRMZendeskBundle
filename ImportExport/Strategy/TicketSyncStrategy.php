@@ -4,55 +4,31 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
-use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ContactProvider;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroUserProvider;
-
-class UserSyncStrategy extends AbstractSyncStrategy
+class TicketSyncStrategy extends AbstractSyncStrategy
 {
-    /**
-     * @var ContactProvider
-     */
-    protected $contactProvider;
-
-    /**
-     * @var OroUserProvider
-     */
-    protected $oroUserProvider;
-
-    /**
-     * @param ContactProvider $contactProvider
-     * @param OroUserProvider $oroUserProvider
-     */
-    public function __construct(
-        ContactProvider $contactProvider,
-        OroUserProvider $oroUserProvider
-    ) {
-        $this->contactProvider = $contactProvider;
-        $this->oroUserProvider = $oroUserProvider;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function process($entity)
     {
-        if (!$entity instanceof ZendeskUser) {
-            throw new InvalidArgumentException('Imported entity must be instance of Zendesk User');
+        if (!$entity instanceof Ticket) {
+            throw new InvalidArgumentException('Imported entity must be instance of Zendesk Ticket');
         }
 
         if (!$this->validateOriginId($entity)) {
             return null;
         }
 
-        $this->refreshDictionaryField($entity, 'role', 'userRole');
+        $this->refreshDictionaryField($entity, 'status', 'ticketStatus');
+        $this->refreshDictionaryField($entity, 'priority', 'ticketPriority');
+        $this->refreshDictionaryField($entity, 'type', 'ticketType');
 
-        $existingUser = $this->findExistingEntity($entity, 'originId');
-        if ($existingUser) {
-            $this->syncProperties($existingUser, $entity, array('relatedUser', 'relatedContact', 'id'));
-            $entity = $existingUser;
+        $existingTicket = $this->zendeskProvider->getTicket($entity);
+        if ($existingTicket) {
+            $this->syncProperties($existingTicket, $entity, array('relatedCase', 'id'));
+            $entity = $existingTicket;
 
             $this->getLogger()->debug($this->buildMessage("Update found record.", $entity));
             $this->getContext()->incrementUpdateCount();
