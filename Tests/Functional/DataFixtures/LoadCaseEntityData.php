@@ -3,18 +3,11 @@
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\DataFixtures\AbstractFixture;
 
-class LoadCaseEntityData extends AbstractFixture implements ContainerAwareInterface
+class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwareInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
     /**
      * @var array
      */
@@ -37,13 +30,10 @@ class LoadCaseEntityData extends AbstractFixture implements ContainerAwareInterf
     {
         $caseManager = $this->container->get('orocrm_case.manager');
 
-        $adminUser = $manager->getRepository('OroUserBundle:User')->findOneByUsername('admin');
-
         foreach (static::$casesData as $caseData) {
             $case = $caseManager->createCase()
                 ->setSubject($caseData['subject'])
-                ->setDescription($caseData['description'])
-                ->setOwner($adminUser);
+                ->setDescription($caseData['description']);
 
             $manager->persist($case);
 
@@ -53,14 +43,6 @@ class LoadCaseEntityData extends AbstractFixture implements ContainerAwareInterf
         }
 
         $manager->flush();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 
     public static function getCaseData()

@@ -21,6 +21,13 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             'email' => 'fred.taylor@zendeskagent.com',
             'role' => UserRole::ROLE_AGENT,
         ),
+        array(
+            'id' => 1011,
+            'url' => 'https://foo.zendesk.com/api/v2/users/1011.json',
+            'name' => 'Alex Taylor',
+            'email' => 'alex.taylor@zendeskagent.com',
+            'role' => UserRole::ROLE_END_USER,
+        )
     );
 
     /**

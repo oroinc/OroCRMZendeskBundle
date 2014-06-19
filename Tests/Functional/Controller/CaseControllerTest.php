@@ -11,6 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
 /**
  * @outputBuffering enabled
  * @dbIsolation
+ * @dbReindex
  */
 class CaseControllerTest extends WebTestCase
 {
@@ -104,20 +105,18 @@ class CaseControllerTest extends WebTestCase
         $recipient = $this->getFieldValue("Recipient email", $crawler);
         $this->assertContains($expectedTicket['recipient'], $recipient->html());
 
-        $userData = LoadUserEntityData::getUserData();
-
         $collaborators = $this->getFieldValue("Collaborators", $crawler);
-        $this->assertContains($userData[0]['name'], $collaborators->html());
-        $this->assertContains($userData[1]['name'], $collaborators->html());
+        $this->assertContains('Fred Taylor', $collaborators->html());
+        $this->assertContains('Alex Taylor', $collaborators->html());
 
         $submitter = $this->getFieldValue("Submitter", $crawler);
-        $this->assertContains($userData[0]['name'], $submitter->html());
+        $this->assertContains('Fred Taylor', $submitter->html());
 
         $assignee = $this->getFieldValue("Assignee", $crawler);
-        $this->assertContains($userData[0]['name'], $assignee->html());
+        $this->assertContains('Fred Taylor', $assignee->html());
 
         $requester = $this->getFieldValue("Requester", $crawler);
-        $this->assertContains($userData[1]['name'], $requester->html());
+        $this->assertContains('Alex Taylor', $requester->html());
 
         $hasIncidents = $this->getFieldValue("Has incidents", $crawler);
         $this->assertContains($expectedTicket['hasIncidents'] ? 'Yes' : 'No', $hasIncidents->html());

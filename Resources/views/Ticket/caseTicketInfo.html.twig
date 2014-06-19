@@ -6,8 +6,8 @@
         {% import 'OroUIBundle::macros.html.twig' as UI %}
         {%- set userHtml -%}
             {%- if user -%}
-                {% if resource_granted('oro_user_user_view') and user.user %}
-                    <a href="{{ path('oro_user_view', {'id': user.user.id}) }}">
+                {% if resource_granted('oro_user_user_view') and user.relatedUser %}
+                    <a href="{{ path('oro_user_view', {'id': user.relatedUser.id}) }}">
                         {{ user.name|escape }}
                     </a>
                 {% else %}

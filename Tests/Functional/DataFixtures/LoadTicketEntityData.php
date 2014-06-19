@@ -8,21 +8,20 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
 
-class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
+class LoadTicketEntityData extends AbstractZendeskFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     protected static $ticketsData = array(
         array(
             'id' => 42,
-            'assignee' => 'orocrm_zendesk_user',
-            'requester' => 'orocrm_zendesk_user_second',
-            'submitter' => 'orocrm_zendesk_user',
+            'assignee' => 'fred.taylor@zendeskagent.com',
+            'requester' => 'alex.taylor@zendeskagent.com',
+            'submitter' => 'fred.taylor@zendeskagent.com',
             'recipient' => 'test@mail.com',
             'externalId' => '7e24caa0-87f7-44d6-922b-0330ed9fd06c',
             'url' => 'test.com',
@@ -34,22 +33,9 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
             'status_label' => null,
             'type' => TicketType::TYPE_PROBLEM,
             'type_label' => null,
-            'collaborators' => array('orocrm_zendesk_user', 'orocrm_zendesk_user_second')
+            'collaborators' => array('fred.taylor@zendeskagent.com', 'alex.taylor@zendeskagent.com')
          )
     );
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     /**
      * {@inheritdoc}
@@ -105,7 +91,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     {
         return array(
             'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadCaseEntityData',
-            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadUserEntityData',
+            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData',
         );
     }
 
