@@ -40,7 +40,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $repository->expects($this->once())
             ->method('findOneBy')
-            ->with(array('case' => $entity))
+            ->with(array('relatedCase' => $entity))
             ->will($this->returnValue(true));
 
         $this->assertTrue($this->filter->filter($entity));

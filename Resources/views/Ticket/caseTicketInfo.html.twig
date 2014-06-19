@@ -46,8 +46,8 @@
                         {{ _self.render_zendesk_user('orocrm.zendesk.ticket.requester.label'|trans, ticket.requester) }}
                         {{ UI.renderProperty('orocrm.zendesk.ticket.priority.label'|trans, ticket.priority.label) }}
                         {% set problem %}
-                            {% if ticket.problem and ticket.problem.case %}
-                                <a href="{{ path('orocrm_case_view', {'id': ticket.problem.case.id}) }}">
+                            {% if ticket.problem and ticket.problem.relatedCase %}
+                                <a href="{{ path('orocrm_case_view', {'id': ticket.problem.relatedCase.id}) }}">
                                     {{ ticket.problem.subject }}
                                 </a>
                             {% endif %}

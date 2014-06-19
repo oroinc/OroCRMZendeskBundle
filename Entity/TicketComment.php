@@ -30,8 +30,15 @@ class TicketComment
      * @var int
      * @ORM\Column(type="integer")
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @var int
+     * @ORM\Column(name="origin_id", type="integer", nullable=true, unique=true)
+     */
+    protected $originId;
 
     /**
      * @var string
@@ -81,26 +88,34 @@ class TicketComment
      * @var CaseComment
      *
      * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseComment")
-     * @ORM\JoinColumn(name="case_comment_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="related_comment_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    protected $caseComment;
+    protected $relatedComment;
 
     /**
-     * @param User $author
-     * @return TicketComment
+     * @return int
      */
-    public function setAuthor(User $author)
+    public function getId()
     {
-        $this->author = $author;
-        return $this;
+        return $this->id;
     }
 
     /**
-     * @return User
+     * @return int
      */
-    public function getAuthor()
+    public function getOriginId()
     {
-        return $this->author;
+        return $this->originId;
+    }
+
+    /**
+     * @param int $originId
+     * @return TicketComment
+     */
+    public function setOriginId($originId)
+    {
+        $this->originId = $originId;
+        return $this;
     }
 
     /**
@@ -119,44 +134,6 @@ class TicketComment
     public function getBody()
     {
         return $this->body;
-    }
-
-    /**
-     * @param CaseComment $caseComment
-     * @return TicketComment
-     */
-    public function setCaseComment(CaseComment $caseComment)
-    {
-        $this->caseComment = $caseComment;
-
-        return $this;
-    }
-
-    /**
-     * @return CaseComment
-     */
-    public function getCaseComment()
-    {
-        return $this->caseComment;
-    }
-
-    /**
-     * @param \DateTime $createdAt
-     * @return TicketComment
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
     }
 
     /**
@@ -179,20 +156,12 @@ class TicketComment
     }
 
     /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * @param boolean $public
      * @return TicketComment
      */
     public function setPublic($public)
     {
-        $this->public = $public;
+        $this->public = (bool)$public;
 
         return $this;
     }
@@ -203,6 +172,24 @@ class TicketComment
     public function getPublic()
     {
         return $this->public;
+    }
+
+    /**
+     * @param User $author
+     * @return TicketComment
+     */
+    public function setAuthor(User $author)
+    {
+        $this->author = $author;
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getAuthor()
+    {
+        return $this->author;
     }
 
     /**
@@ -222,5 +209,43 @@ class TicketComment
     public function getTicket()
     {
         return $this->ticket;
+    }
+
+    /**
+     * @param CaseComment $caseComment
+     * @return TicketComment
+     */
+    public function setRelatedComment(CaseComment $caseComment)
+    {
+        $this->relatedComment = $caseComment;
+
+        return $this;
+    }
+
+    /**
+     * @return CaseComment
+     */
+    public function getRelatedComment()
+    {
+        return $this->relatedComment;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     * @return TicketComment
+     */
+    public function setCreatedAt(\DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }

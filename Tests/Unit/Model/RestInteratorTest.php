@@ -16,6 +16,9 @@ class RestIteratorTest extends \PHPUnit_Framework_TestCase
      */
     protected $action = 'users';
 
+    /**
+     * @var array
+     */
     protected $params = array('foo' => 'bar');
 
     /**

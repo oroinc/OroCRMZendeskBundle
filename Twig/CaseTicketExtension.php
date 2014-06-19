@@ -44,6 +44,6 @@ class CaseTicketExtension extends \Twig_Extension
     public function getCaseTicket(CaseEntity $case)
     {
         $repository = $this->entityManager->getRepository('OroCRMZendeskBundle:Ticket');
-        return $repository->findOneBy(array('case' => $case));
+        return $repository->findOneBy(array('relatedCase' => $case));
     }
 }

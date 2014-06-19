@@ -38,7 +38,7 @@ class UserSyncStrategyTest extends WebTestCase
 
     public function testProcessNewZendeskUser()
     {
-        $zendeskUser = $this->createZendeskUser()->setId(1);
+        $zendeskUser = $this->createZendeskUser()->setOriginId(1);
 
         $this->assertEquals($zendeskUser, $this->strategy->process($zendeskUser));
         $this->assertFalse($this->entityManager->contains($zendeskUser));
@@ -47,7 +47,7 @@ class UserSyncStrategyTest extends WebTestCase
     public function testProcessExistingZendeskUser()
     {
         $zendeskUser = $this->createZendeskUser()
-            ->setId(1015)
+            ->setOriginId(1015)
             ->setUrl('https://foo.zendesk.com/api/v2/users/1015.json?1')
             ->setName('John Doe')
             ->setEmail('john.doe@example.com')
@@ -68,8 +68,25 @@ class UserSyncStrategyTest extends WebTestCase
 
         $result = $this->strategy->process($zendeskUser);
 
-        $this->assertEquals($zendeskUser, $result);
         $this->assertNotSame($zendeskUser, $result);
+        $this->assertNotNull($result->getId());
+        $this->assertEquals($zendeskUser->getOriginId(), $result->getOriginId());
+        $this->assertEquals($zendeskUser->getName(), $result->getName());
+        $this->assertEquals($zendeskUser->getEmail(), $result->getEmail());
+        $this->assertEquals($zendeskUser->getRole(), $result->getRole());
+        $this->assertEquals($zendeskUser->getPhone(), $result->getPhone());
+        $this->assertEquals($zendeskUser->getActive(), $result->getActive());
+        $this->assertEquals($zendeskUser->getAlias(), $result->getAlias());
+        $this->assertEquals($zendeskUser->getDetails(), $result->getDetails());
+        $this->assertEquals($zendeskUser->getExternalId(), $result->getExternalId());
+        $this->assertEquals($zendeskUser->getCreatedAt(), $result->getCreatedAt());
+        $this->assertEquals($zendeskUser->getUpdatedAt(), $result->getUpdatedAt());
+        $this->assertEquals($zendeskUser->getLastLoginAt(), $result->getLastLoginAt());
+        $this->assertEquals($zendeskUser->getOnlyPrivateComments(), $result->getOnlyPrivateComments());
+        $this->assertEquals($zendeskUser->getTicketRestriction(), $result->getTicketRestriction());
+        $this->assertEquals($zendeskUser->getVerified(), $result->getVerified());
+        $this->assertEquals($zendeskUser->getTimeZone(), $result->getTimeZone());
+        $this->assertEquals($zendeskUser->getLocale(), $result->getLocale());
         $this->assertFalse($this->entityManager->contains($zendeskUser));
         $this->assertTrue($this->entityManager->contains($result));
     }
@@ -79,7 +96,7 @@ class UserSyncStrategyTest extends WebTestCase
         $roleName = ZendeskUserRole::ROLE_AGENT;
 
         $zendeskUser = $this->createZendeskUser()
-            ->setId(1)
+            ->setOriginId(1)
             ->setRole(new ZendeskUserRole($roleName));
 
         $this->assertEquals($zendeskUser, $this->strategy->process($zendeskUser));
@@ -97,7 +114,7 @@ class UserSyncStrategyTest extends WebTestCase
         $email = 'bob.miller@orouser.com';
 
         $zendeskUser = $this->createZendeskUser()
-            ->setId(1)
+            ->setOriginId(1)
             ->setEmail($email)
             ->setRole(new ZendeskUserRole($roleName));
 
@@ -121,7 +138,7 @@ class UserSyncStrategyTest extends WebTestCase
         $email = 'bob.miller@orouser.com';
 
         $zendeskUser = $this->createZendeskUser()
-            ->setId(1)
+            ->setOriginId(1)
             ->setEmail($email);
 
         $this->assertEquals($zendeskUser, $this->strategy->process($zendeskUser));
@@ -134,7 +151,7 @@ class UserSyncStrategyTest extends WebTestCase
         $email = 'mike.johnson@contact.com';
 
         $zendeskUser = $this->createZendeskUser()
-            ->setId(1)
+            ->setOriginId(1)
             ->setEmail($email)
             ->setRole(new ZendeskUserRole($roleName));
 
@@ -152,7 +169,7 @@ class UserSyncStrategyTest extends WebTestCase
         $email = 'bob.miller@orouser.com';
 
         $zendeskUser = $this->createZendeskUser()
-            ->setId(1)
+            ->setOriginId(1)
             ->setEmail($email)
             ->setName('Bob Miller Jr.')
             ->setRole(new ZendeskUserRole($roleName));

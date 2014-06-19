@@ -53,6 +53,7 @@ class TicketTest extends \PHPUnit_Framework_TestCase
         $ticket = new Ticket();
         $collaborators = new ArrayCollection(array($zendeskUser));
         return array(
+            array('originId', 123456789),
             array('url', 'test.com'),
             array('subject', 'test subject'),
             array('description', 'test description'),
@@ -66,7 +67,7 @@ class TicketTest extends \PHPUnit_Framework_TestCase
             array('requester', $zendeskUser),
             array('assignee', $zendeskUser),
             array('submitter', $zendeskUser),
-            array('case', $case),
+            array('relatedCase', $case),
             array('externalId', uniqid()),
             array('problem', $ticket),
             array('collaborators', $collaborators),

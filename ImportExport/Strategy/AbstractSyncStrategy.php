@@ -114,7 +114,9 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
         $existingEntity = null;
         if ($entity) {
             $identifier = $this->getPropertyAccessor()->getValue($entity, $identifierName);
-            $existingEntity = $this->entityManager->find(get_class($entity), $identifier);
+            $existingEntity = $this->entityManager
+                ->getRepository(get_class($entity))
+                ->findOneBy(array($identifierName => $identifier));
         }
 
         return $existingEntity;

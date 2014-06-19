@@ -24,6 +24,8 @@ use OroCRM\Bundle\ContactBundle\Entity\Contact;
  *      }
  *  }
  * )
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 class User
 {
@@ -32,8 +34,15 @@ class User
      *
      * @ORM\Column(type="integer")
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @var int
+     * @ORM\Column(name="origin_id", type="integer", nullable=true, unique=true)
+     */
+    protected $originId;
 
     /**
      * @var string
@@ -83,27 +92,6 @@ class User
      * @ORM\Column(name="notes", type="text", nullable=true)
      */
     protected $notes;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    protected $createdAt;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    protected $updatedAt;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    protected $lastLoginAt;
 
     /**
      * @var bool
@@ -163,6 +151,27 @@ class User
     protected $locale;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $lastLoginAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $updatedAt;
+
+    /**
      * @var Contact
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\ContactBundle\Entity\Contact", cascade={"persist"})
@@ -179,63 +188,6 @@ class User
     protected $relatedUser;
 
     /**
-     * @param Contact $contact
-     * @return User
-     */
-    public function setRelatedContact(Contact $contact = null)
-    {
-        $this->relatedContact = $contact;
-
-        return $this;
-    }
-
-    /**
-     * @return Contact
-     */
-    public function getRelatedContact()
-    {
-        return $this->relatedContact;
-    }
-
-    /**
-     * @param \DateTime $createdAt
-     * @return User
-     */
-    public function setCreatedAt(\DateTime $createdAt = null)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param string $email
-     * @return User
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
      * @return int
      */
     public function getId()
@@ -244,22 +196,30 @@ class User
     }
 
     /**
-     * @param int $id
+     * @return int
+     */
+    public function getOriginId()
+    {
+        return $this->originId;
+    }
+
+    /**
+     * @param int $originId
      * @return User
      */
-    public function setId($id)
+    public function setOriginId($originId)
     {
-        $this->id = $id;
+        $this->originId = $originId;
         return $this;
     }
 
     /**
-     * @param string $locale
+     * @param string $url
      * @return User
      */
-    public function setLocale($locale)
+    public function setUrl($url)
     {
-        $this->locale = $locale;
+        $this->url = $url;
 
         return $this;
     }
@@ -267,9 +227,28 @@ class User
     /**
      * @return string
      */
-    public function getLocale()
+    public function getUrl()
     {
-        return $this->locale;
+        return $this->url;
+    }
+
+    /**
+     * @param string $externalId
+     * @return User
+     */
+    public function setExternalId($externalId)
+    {
+        $this->externalId = $externalId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalId()
+    {
+        return $this->externalId;
     }
 
     /**
@@ -292,12 +271,12 @@ class User
     }
 
     /**
-     * @param string $phone
+     * @param string $details
      * @return User
      */
-    public function setPhone($phone)
+    public function setDetails($details)
     {
-        $this->phone = $phone;
+        $this->details = $details;
 
         return $this;
     }
@@ -305,9 +284,123 @@ class User
     /**
      * @return string
      */
-    public function getPhone()
+    public function getDetails()
     {
-        return $this->phone;
+        return $this->details;
+    }
+
+    /**
+     * @param string $ticketRestriction
+     * @return User
+     */
+    public function setTicketRestriction($ticketRestriction)
+    {
+        $this->ticketRestriction = $ticketRestriction;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTicketRestriction()
+    {
+        return $this->ticketRestriction;
+    }
+
+    /**
+     * @param boolean $onlyPrivateComments
+     * @return User
+     */
+    public function setOnlyPrivateComments($onlyPrivateComments)
+    {
+        $this->onlyPrivateComments = (bool)$onlyPrivateComments;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getOnlyPrivateComments()
+    {
+        return $this->onlyPrivateComments;
+    }
+
+    /**
+     * @param string $notes
+     * @return User
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
+
+    /**
+     * @param boolean $verified
+     * @return User
+     */
+    public function setVerified($verified)
+    {
+        $this->verified = (bool)$verified;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getVerified()
+    {
+        return $this->verified;
+    }
+
+    /**
+     * @param boolean $active
+     * @return User
+     */
+    public function setActive($active)
+    {
+        $this->active = (bool)$active;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param string $alias
+     * @return User
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
     }
 
     /**
@@ -364,6 +457,44 @@ class User
     }
 
     /**
+     * @param string $email
+     * @return User
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $phone
+     * @return User
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
      * @param string $timeZone
      * @return User
      */
@@ -383,31 +514,12 @@ class User
     }
 
     /**
-     * @param \DateTime $updatedAt
+     * @param string $locale
      * @return User
      */
-    public function setUpdatedAt(\DateTime $updatedAt = null)
+    public function setLocale($locale)
     {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param string $url
-     * @return User
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
+        $this->locale = $locale;
 
         return $this;
     }
@@ -415,104 +527,9 @@ class User
     /**
      * @return string
      */
-    public function getUrl()
+    public function getLocale()
     {
-        return $this->url;
-    }
-
-    /**
-     * @param OroUser $user
-     * @return User
-     */
-    public function setRelatedUser(OroUser $user = null)
-    {
-        $this->relatedUser = $user;
-
-        return $this;
-    }
-
-    /**
-     * @return OroUser
-     */
-    public function getRelatedUser()
-    {
-        return $this->relatedUser;
-    }
-
-    /**
-     * @param string $externalId
-     * @return User
-     */
-    public function setExternalId($externalId)
-    {
-        $this->externalId = $externalId;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExternalId()
-    {
-        return $this->externalId;
-    }
-
-    /**
-     * @param boolean $active
-     * @return User
-     */
-    public function setActive($active)
-    {
-        $this->active = (bool)$active;
-
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getActive()
-    {
-        return $this->active;
-    }
-
-    /**
-     * @param string $alias
-     * @return User
-     */
-    public function setAlias($alias)
-    {
-        $this->alias = $alias;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @param string $details
-     * @return User
-     */
-    public function setDetails($details)
-    {
-        $this->details = $details;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDetails()
-    {
-        return $this->details;
+        return $this->locale;
     }
 
     /**
@@ -535,78 +552,78 @@ class User
     }
 
     /**
-     * @param string $notes
+     * @param \DateTime $createdAt
      * @return User
      */
-    public function setNotes($notes)
+    public function setCreatedAt(\DateTime $createdAt = null)
     {
-        $this->notes = $notes;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
-    public function getNotes()
+    public function getCreatedAt()
     {
-        return $this->notes;
+        return $this->createdAt;
     }
 
     /**
-     * @param boolean $onlyPrivateComments
+     * @param \DateTime $updatedAt
      * @return User
      */
-    public function setOnlyPrivateComments($onlyPrivateComments)
+    public function setUpdatedAt(\DateTime $updatedAt = null)
     {
-        $this->onlyPrivateComments = (bool)$onlyPrivateComments;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return \DateTime
      */
-    public function getOnlyPrivateComments()
+    public function getUpdatedAt()
     {
-        return $this->onlyPrivateComments;
+        return $this->updatedAt;
     }
 
     /**
-     * @param string $ticketRestriction
+     * @param Contact $contact
      * @return User
      */
-    public function setTicketRestriction($ticketRestriction)
+    public function setRelatedContact(Contact $contact = null)
     {
-        $this->ticketRestriction = $ticketRestriction;
+        $this->relatedContact = $contact;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return Contact
      */
-    public function getTicketRestriction()
+    public function getRelatedContact()
     {
-        return $this->ticketRestriction;
+        return $this->relatedContact;
     }
 
     /**
-     * @param boolean $verified
+     * @param OroUser $user
      * @return User
      */
-    public function setVerified($verified)
+    public function setRelatedUser(OroUser $user = null)
     {
-        $this->verified = (bool)$verified;
+        $this->relatedUser = $user;
 
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return OroUser
      */
-    public function getVerified()
+    public function getRelatedUser()
     {
-        return $this->verified;
+        return $this->relatedUser;
     }
 }

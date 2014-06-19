@@ -77,7 +77,8 @@ class OroCRMZendeskBundle implements Migration
     {
         /** Generate table orocrm_zd_ticket **/
         $table = $schema->createTable('orocrm_zd_ticket');
-        $table->addColumn('id', 'integer', array());
+        $table->addColumn('id', 'integer', array('autoincrement' => true));
+        $table->addColumn('origin_id', 'integer', array('unique' => true, 'notnull' => false));
         $table->addColumn('case_id', 'integer', array('notnull' => false));
         $table->addColumn('assignee_id', 'integer', array('notnull' => false));
         $table->addColumn('status_name', 'string', array('notnull' => false, 'length' => 16));
@@ -86,16 +87,17 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('priority_name', 'string', array('notnull' => false, 'length' => 16));
         $table->addColumn('problem_id', 'integer', array('notnull' => false));
         $table->addColumn('requester_id', 'integer', array('notnull' => false));
-        $table->addColumn('url', 'string', array('length' => 255));
-        $table->addColumn('external_id', 'string', array('length' => 50));
-        $table->addColumn('subject', 'string', array('length' => 255));
+        $table->addColumn('url', 'string', array('length' => 255, 'notnull' => false));
+        $table->addColumn('external_id', 'string', array('length' => 50, 'notnull' => false));
+        $table->addColumn('subject', 'string', array('length' => 255, 'notnull' => false));
         $table->addColumn('description', 'text', array('notnull' => false));
-        $table->addColumn('recipient_email', 'string', array('length' => 100));
+        $table->addColumn('recipient_email', 'string', array('length' => 100, 'notnull' => false));
         $table->addColumn('has_incidents', 'boolean', array('default' => '0'));
-        $table->addColumn('dueAt', 'datetime', array());
-        $table->addColumn('createdAt', 'datetime', array());
-        $table->addColumn('updatedAt', 'datetime', array());
+        $table->addColumn('due_at', 'datetime', array('notnull' => false));
+        $table->addColumn('created_at', 'datetime', array('notnull' => false));
+        $table->addColumn('updated_at', 'datetime', array('notnull' => false));
         $table->setPrimaryKey(array('id'));
+        $table->addUniqueIndex(array('origin_id'), 'UNIQ_5CD5C9CD56A273CC');
         $table->addUniqueIndex(array('problem_id'), 'UNIQ_45472C5FA0DCED86');
         $table->addUniqueIndex(array('case_id'), 'UNIQ_45472C5FCF10D4F5');
         $table->addIndex(array('type_name'), 'IDX_45472C5F892CBB0E', array());
@@ -166,7 +168,8 @@ class OroCRMZendeskBundle implements Migration
     {
         /** Generate table orocrm_zd_user **/
         $table = $schema->createTable('orocrm_zd_user');
-        $table->addColumn('id', 'integer', array());
+        $table->addColumn('id', 'integer', array('autoincrement' => true));
+        $table->addColumn('origin_id', 'integer', array('unique' => true, 'notnull' => false));
         $table->addColumn('related_user_id', 'integer', array('notnull' => false));
         $table->addColumn('role_name', 'string', array('notnull' => false, 'length' => 16));
         $table->addColumn('related_contact_id', 'integer', array('notnull' => false));
@@ -188,6 +191,7 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('time_zone', 'string', array('length' => 30, 'notnull' => false));
         $table->addColumn('locale', 'string', array('length' => 30, 'notnull' => false));
         $table->setPrimaryKey(array('id'));
+        $table->addUniqueIndex(array('origin_id'), 'UNIQ_5CD5C9CD56A273CC');
         $table->addIndex(array('role_name'), 'IDX_5CD5C9CDE09C0C92', array());
         $table->addIndex(array('related_contact_id'), 'IDX_5CD5C9CD6D6C2DFA', array());
         $table->addIndex(array('related_user_id'), 'IDX_5CD5C9CD98771930', array());
@@ -311,8 +315,9 @@ class OroCRMZendeskBundle implements Migration
     {
         /** Generate table orocrm_zd_comment **/
         $table = $schema->createTable('orocrm_zd_comment');
-        $table->addColumn('id', 'integer', array());
-        $table->addColumn('case_comment_id', 'integer', array('notnull' => false));
+        $table->addColumn('id', 'integer', array('autoincrement' => true));
+        $table->addColumn('origin_id', 'integer', array('notnull' => false, 'unique' => true));
+        $table->addColumn('related_comment_id', 'integer', array('notnull' => false));
         $table->addColumn('ticket_id', 'integer', array('notnull' => false));
         $table->addColumn('author_id', 'integer', array('notnull' => false));
         $table->addColumn('body', 'text', array());
@@ -320,7 +325,8 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('public', 'boolean', array('default' => '0'));
         $table->addColumn('createdAt', 'datetime', array());
         $table->setPrimaryKey(array('id'));
-        $table->addUniqueIndex(array('case_comment_id'), 'UNIQ_20AD0BDAD22875F7');
+        $table->addUniqueIndex(array('origin_id'), 'UNIQ_20AD0BDA56A273CC');
+        $table->addUniqueIndex(array('related_comment_id'), 'UNIQ_20AD0BDA72A475A3');
         $table->addIndex(array('author_id'), 'IDX_20AD0BDAF675F31B', array());
         $table->addIndex(array('ticket_id'), 'IDX_20AD0BDA700047D2', array());
         /** End of generate table orocrm_zd_comment **/
@@ -329,7 +335,7 @@ class OroCRMZendeskBundle implements Migration
         $table = $schema->getTable('orocrm_zd_comment');
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_case_comment'),
-            array('case_comment_id'),
+            array('related_comment_id'),
             array('id'),
             array('onDelete' => 'SET NULL', 'onUpdate' => null)
         );

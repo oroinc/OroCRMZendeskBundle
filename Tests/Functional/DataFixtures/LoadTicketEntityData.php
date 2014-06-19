@@ -18,7 +18,7 @@ class LoadTicketEntityData extends AbstractZendeskFixture implements ContainerAw
 {
     protected static $ticketsData = array(
         array(
-            'id' => 42,
+            'originId' => 42,
             'assignee' => 'fred.taylor@zendeskagent.com',
             'requester' => 'alex.taylor@zendeskagent.com',
             'submitter' => 'fred.taylor@zendeskagent.com',
@@ -59,7 +59,7 @@ class LoadTicketEntityData extends AbstractZendeskFixture implements ContainerAw
             $ticketParams['priority_label'] = $priority->getLabel();
             $ticketParams['status_label'] = $status->getLabel();
             $ticketParams['type_label'] = $type->getLabel();
-            $ticket->setId($ticketParams['id'])
+            $ticket->setOriginId($ticketParams['originId'])
                 ->setAssignee($this->getReference($ticketParams['assignee']))
                 ->setRecipient($ticketParams['recipient'])
                 ->setRequester($this->getReference($ticketParams['requester']))
@@ -75,7 +75,7 @@ class LoadTicketEntityData extends AbstractZendeskFixture implements ContainerAw
                 ->setCreatedAt(new \DateTime())
                 ->setUpdatedAt(new \DateTime())
                 ->setCollaborators($collaborators)
-                ->setCase($this->getReference($ticketParams['case']))
+                ->setRelatedCase($this->getReference($ticketParams['case']))
                 ->setProblem($ticket);
 
             $manager->persist($ticket);

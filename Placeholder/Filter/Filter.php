@@ -27,7 +27,7 @@ class Filter
         }
 
         $repository = $this->entityManager->getRepository('OroCRMZendeskBundle:Ticket');
-        $ticket = $repository->findOneBy(array('case' => $entity));
+        $ticket = $repository->findOneBy(array('relatedCase' => $entity));
 
         return $ticket != null;
     }

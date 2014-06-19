@@ -31,7 +31,7 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
     /**
      * @var string
      */
-    private $primaryFieldName;
+    private $primaryField;
 
     /**
      * List of rules that declare (de)normalization, for example
@@ -79,8 +79,8 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
         $fieldRules = $this->getProcessedFieldRules();
 
         if (!is_array($data)) {
-            if ($this->primaryFieldName) {
-                $data = array($this->primaryFieldName => $data);
+            if ($this->primaryField) {
+                $data = array($this->primaryField['normalized'] => $data);
             } else {
                 return $this->createNewObject();
             }
@@ -89,22 +89,22 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
         $object = $this->createNewObject();
 
         foreach ($fieldRules as $field) {
-            if (!array_key_exists($field['name'], $data)) {
+            if (!array_key_exists($field['normalized'], $data)) {
                 continue;
             }
 
             if (!isset($field['type'])) {
-                $value = $data[$field['name']];
+                $value = $data[$field['normalized']];
             } else {
                 $value = $this->serializer->denormalize(
-                    $data[$field['name']],
+                    $data[$field['normalized']],
                     $field['type'],
                     $format,
                     array_merge($context, $field['context'])
                 );
             }
 
-            $this->getPropertyAccessor()->setValue($object, $field['name'], $value);
+            $this->getPropertyAccessor()->setValue($object, $field['denormalized'], $value);
         }
 
         return $object;
@@ -139,12 +139,20 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
                     $field['name'] = $key;
                 }
 
+                if (isset($field['name']) && !isset($field['normalized'])) {
+                    $field['normalized'] = $field['name'];
+                }
+
+                if (isset($field['name']) && !isset($field['denormalized'])) {
+                    $field['denormalized'] = $field['name'];
+                }
+
                 if (!isset($field['context'])) {
                     $field['context'] = array();
                 }
 
                 if (!empty($field['primary'])) {
-                    $this->primaryFieldName = $field['name'];
+                    $this->primaryField = $field;
                 }
 
                 $this->fieldRules[] = $field;

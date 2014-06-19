@@ -48,7 +48,7 @@ class UserSyncStrategy extends AbstractSyncStrategy
             throw new InvalidArgumentException('Imported entity must be instance of Zendesk User');
         }
 
-        if (!$entity->getId()) {
+        if (!$entity->getOriginId()) {
             $message = $this->buildMessage(
                 'Can\'t process record [id=null].',
                 $this->getContext()->getReadCount(),
@@ -75,9 +75,9 @@ class UserSyncStrategy extends AbstractSyncStrategy
         }
         $entity->setRole($role);
 
-        $existingUser = $this->findExistingEntity($entity);
+        $existingUser = $this->findExistingEntity($entity, 'originId');
         if ($existingUser) {
-            $this->syncProperties($existingUser, $entity, array('relatedUser', 'relatedContact'));
+            $this->syncProperties($existingUser, $entity, array('relatedUser', 'relatedContact', 'id'));
             $entity = $existingUser;
 
             $this->getLogger()->debug($this->buildMessage("Update found record.", $entity));

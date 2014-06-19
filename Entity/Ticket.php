@@ -32,20 +32,41 @@ class Ticket
      *
      * @ORM\Column(type="integer")
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
+     * @var int
+     * @ORM\Column(name="origin_id", type="integer", nullable=true, unique=true)
+     */
+    protected $originId;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="url", type="string", length=255)
+     * @ORM\Column(name="url", type="string", length=255, nullable=true)
      */
     protected $url;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="external_id", type="string", length=50)
+     * @ORM\Column(name="subject", type="string", length=255, nullable=true)
+     */
+    protected $subject;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    protected $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="external_id", type="string", length=50, nullable=true)
      */
     protected $externalId;
 
@@ -67,20 +88,6 @@ class Ticket
      * )
      */
     protected $collaborators;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="subject", type="string", length=255)
-     */
-    protected $subject;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="text", nullable=true)
-     */
-    protected $description;
 
     /**
      * @var TicketType
@@ -109,7 +116,7 @@ class Ticket
     /**
      * @var string
      *
-     * @ORM\Column(name="recipient_email", type="string", length=100)
+     * @ORM\Column(name="recipient_email", type="string", length=100, nullable=true)
      */
     protected $recipient;
 
@@ -142,26 +149,26 @@ class Ticket
      *
      * @ORM\Column(name="has_incidents", type="boolean", options={"default"=false})
      */
-    protected $hasIncidents;
+    protected $hasIncidents = false;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="due_at", type="datetime", nullable=true)
      */
     protected $dueAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     protected $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     protected $updatedAt;
 
@@ -171,63 +178,71 @@ class Ticket
      * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseEntity")
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    protected $case;
+    protected $relatedCase;
 
     /**
-     * @param User $assignee
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOriginId()
+    {
+        return $this->originId;
+    }
+
+    /**
+     * @param int $originId
      * @return Ticket
      */
-    public function setAssignee(User $assignee)
+    public function setOriginId($originId)
     {
-        $this->assignee = $assignee;
+        $this->originId = $originId;
 
         return $this;
     }
 
     /**
-     * @return User
-     */
-    public function getAssignee()
-    {
-        return $this->assignee;
-    }
-
-    /**
-     * @param CaseEntity $case
+     * @param string $url
      * @return Ticket
      */
-    public function setCase(CaseEntity $case)
+    public function setUrl($url)
     {
-        $this->case = $case;
+        $this->url = $url;
 
         return $this;
     }
 
     /**
-     * @return CaseEntity
+     * @return string
      */
-    public function getCase()
+    public function getUrl()
     {
-        return $this->case;
+        return $this->url;
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param string $subject
      * @return Ticket
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setSubject($subject)
     {
-        $this->createdAt = $createdAt;
+        $this->subject = $subject;
 
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getCreatedAt()
+    public function getSubject()
     {
-        return $this->createdAt;
+        return $this->subject;
     }
 
     /**
@@ -250,60 +265,98 @@ class Ticket
     }
 
     /**
-     * @param \DateTime $dueAt
+     * @param string $externalId
      * @return Ticket
      */
-    public function setDueAt(\DateTime $dueAt)
+    public function setExternalId($externalId)
     {
-        $this->dueAt = $dueAt;
+        $this->externalId = $externalId;
 
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getDueAt()
+    public function getExternalId()
     {
-        return $this->dueAt;
+        return $this->externalId;
     }
 
     /**
-     * @param boolean $hasIncidents
+     * @param Ticket $problem
      * @return Ticket
      */
-    public function setHasIncidents($hasIncidents)
+    public function setProblem(Ticket $problem)
     {
-        $this->hasIncidents = $hasIncidents;
+        $this->problem = $problem;
 
         return $this;
     }
 
     /**
-     * @return boolean
-     */
-    public function getHasIncidents()
-    {
-        return $this->hasIncidents;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
      * @return Ticket
      */
-    public function setId($id)
+    public function getProblem()
     {
-        $this->id = $id;
+        return $this->problem;
+    }
+
+    /**
+     * @param ArrayCollection $collaborators
+     * @return Ticket
+     */
+    public function setCollaborators(ArrayCollection $collaborators)
+    {
+        $this->collaborators = $collaborators;
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCollaborators()
+    {
+        return $this->collaborators;
+    }
+
+    /**
+     * @param TicketType $type
+     * @return Ticket
+     */
+    public function setType(TicketType $type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return TicketType
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param TicketStatus $status
+     * @return Ticket
+     */
+    public function setStatus(TicketStatus $status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return TicketStatus
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /**
@@ -364,44 +417,6 @@ class Ticket
     }
 
     /**
-     * @param TicketStatus $status
-     * @return Ticket
-     */
-    public function setStatus(TicketStatus $status)
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * @return TicketStatus
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param string $subject
-     * @return Ticket
-     */
-    public function setSubject($subject)
-    {
-        $this->subject = $subject;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSubject()
-    {
-        return $this->subject;
-    }
-
-    /**
      * @param User $submitter
      * @return Ticket
      */
@@ -421,22 +436,79 @@ class Ticket
     }
 
     /**
-     * @param TicketType $type
+     * @param User $assignee
      * @return Ticket
      */
-    public function setType(TicketType $type)
+    public function setAssignee(User $assignee)
     {
-        $this->type = $type;
+        $this->assignee = $assignee;
 
         return $this;
     }
 
     /**
-     * @return TicketType
+     * @return User
      */
-    public function getType()
+    public function getAssignee()
     {
-        return $this->type;
+        return $this->assignee;
+    }
+
+    /**
+     * @param boolean $hasIncidents
+     * @return Ticket
+     */
+    public function setHasIncidents($hasIncidents)
+    {
+        $this->hasIncidents = $hasIncidents;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getHasIncidents()
+    {
+        return $this->hasIncidents;
+    }
+
+    /**
+     * @param \DateTime $dueAt
+     * @return Ticket
+     */
+    public function setDueAt(\DateTime $dueAt)
+    {
+        $this->dueAt = $dueAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDueAt()
+    {
+        return $this->dueAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     * @return Ticket
+     */
+    public function setCreatedAt(\DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 
     /**
@@ -459,78 +531,21 @@ class Ticket
     }
 
     /**
-     * @param string $url
+     * @param CaseEntity $case
      * @return Ticket
      */
-    public function setUrl($url)
+    public function setRelatedCase(CaseEntity $case)
     {
-        $this->url = $url;
+        $this->relatedCase = $case;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return CaseEntity
      */
-    public function getUrl()
+    public function getRelatedCase()
     {
-        return $this->url;
-    }
-
-    /**
-     * @param string $externalId
-     * @return Ticket
-     */
-    public function setExternalId($externalId)
-    {
-        $this->externalId = $externalId;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExternalId()
-    {
-        return $this->externalId;
-    }
-
-    /**
-     * @param Ticket $problem
-     * @return Ticket
-     */
-    public function setProblem(Ticket $problem)
-    {
-        $this->problem = $problem;
-
-        return $this;
-    }
-
-    /**
-     * @return Ticket
-     */
-    public function getProblem()
-    {
-        return $this->problem;
-    }
-
-    /**
-     * @param ArrayCollection $collaborators
-     * @return Ticket
-     */
-    public function setCollaborators(ArrayCollection $collaborators)
-    {
-        $this->collaborators = $collaborators;
-
-        return $this;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getCollaborators()
-    {
-        return $this->collaborators;
+        return $this->relatedCase;
     }
 }

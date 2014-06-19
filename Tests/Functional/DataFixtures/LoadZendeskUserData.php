@@ -15,14 +15,14 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
      */
     protected $data = array(
         array(
-            'id' => 1015,
+            'originId' => 1015,
             'url' => 'https://foo.zendesk.com/api/v2/users/1015.json',
             'name' => 'Fred Taylor',
             'email' => 'fred.taylor@zendeskagent.com',
             'role' => UserRole::ROLE_AGENT,
         ),
         array(
-            'id' => 1011,
+            'originId' => 1011,
             'url' => 'https://foo.zendesk.com/api/v2/users/1011.json',
             'name' => 'Alex Taylor',
             'email' => 'alex.taylor@zendeskagent.com',

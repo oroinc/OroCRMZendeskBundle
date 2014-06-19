@@ -55,7 +55,7 @@ class UserNormalizerTest extends WebTestCase
                     'role' => 'agent',
                 ),
                 'expected' => $this->createUser()
-                    ->setId(1)
+                    ->setOriginId(1)
                     ->setUrl($url)
                     ->setExternalId($externalId)
                     ->setName($name)
@@ -76,7 +76,7 @@ class UserNormalizerTest extends WebTestCase
             ),
             'short' => array(
                 'data' => 100,
-                'expected' => $this->createUser()->setId(100)
+                'expected' => $this->createUser()->setOriginId(100)
             ),
         );
     }

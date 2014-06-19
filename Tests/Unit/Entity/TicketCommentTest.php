@@ -44,13 +44,14 @@ class TicketCommentTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         return array(
+            array('originId', 123456789),
             array('body', 'test message'),
             array('htmlBody', '<strong>test message</strong>'),
             array('public', true),
             array('author', $zendeskUser),
             array('ticket', $ticket),
             array('createdAt', new \DateTime()),
-            array('caseComment', $comment)
+            array('relatedComment', $comment)
         );
     }
 }

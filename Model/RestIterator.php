@@ -101,11 +101,10 @@ class RestIterator implements \Iterator
 
         if (!isset($this->rows[$this->offset]) && !$this->loadNextPage()) {
             $this->current = null;
-            $this->position++;
         } else {
             $this->current  = $this->rows[$this->offset];
-            $this->position++;
         }
+        $this->position++;
     }
 
     /**

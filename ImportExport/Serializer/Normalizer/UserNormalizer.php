@@ -10,7 +10,9 @@ class UserNormalizer extends AbstractNormalizer
     protected function getFieldRules()
     {
         return array(
-            'id' => array(
+            array(
+                'denormalized' => 'originId',
+                'normalized' => 'id',
                 'primary' => true,
             ),
             'url',
