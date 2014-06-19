@@ -37,7 +37,7 @@ class ConfigurationProviderTest extends \PHPUnit_Framework_TestCase
         $expected = 'admin@example.com';
         $this->configurationManager->expects($this->once())
             ->method('get')
-            ->with(ConfigurationProvider::EMAIL_FIELD_NAME)
+            ->with(ConfigurationProvider::API_EMAIL_FIELD_NAME)
             ->will($this->returnValue($expected));
         $email = $this->target->getEmail();
         $this->assertEquals($email, $expected);
@@ -65,7 +65,7 @@ class ConfigurationProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetZendeskDefaultUser()
+    public function testGetZendeskDefaultUserEmail()
     {
         $expected = 'Alex Smith';
         $this->configurationManager->expects($this->once())
@@ -76,26 +76,57 @@ class ConfigurationProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetDefaultUser()
+    public function testGetOroDefaultUser()
     {
         $username = 'username';
-        $expects = $this->getMock('Oro\Bundle\UserBundle\Entity\User');
+        $expectedUser = $this->getMock('Oro\Bundle\UserBundle\Entity\User');
+
         $this->configurationManager->expects($this->once())
             ->method('get')
-            ->with(ConfigurationProvider::OROCRM_DEFAULT_USERNAME_FIELD_NAME)
+            ->with(ConfigurationProvider::ORO_DEFAULT_USERNAME_FIELD_NAME)
             ->will($this->returnValue($username));
+
         $repository = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
             ->disableOriginalConstructor()
             ->getMock();
         $repository->expects($this->once())
             ->method('findOneBy')
             ->with(array('username' => $username))
-            ->will($this->returnValue($expects));
+            ->will($this->returnValue($expectedUser));
+
         $this->entityManager->expects($this->once())
             ->method('getRepository')
             ->with('OroUserBundle:User')
             ->will($this->returnValue($repository));
-        $actual = $this->target->getDefaultUser();
-        $this->assertEquals($expects, $actual);
+
+        $actual = $this->target->getOroDefaultUser();
+        $this->assertEquals($expectedUser, $actual);
+    }
+
+    public function testGetZendeskDefaultUser()
+    {
+        $email = 'user@example.com';
+        $expectedUser = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\User');
+
+        $this->configurationManager->expects($this->once())
+            ->method('get')
+            ->with(ConfigurationProvider::ZENDESK_DEFAULT_USER_EMAIL_FIELD_NAME)
+            ->will($this->returnValue($email));
+
+        $repository = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $repository->expects($this->once())
+            ->method('findOneBy')
+            ->with(array('email' => $email))
+            ->will($this->returnValue($expectedUser));
+
+        $this->entityManager->expects($this->once())
+            ->method('getRepository')
+            ->with('OroCRMZendeskBundle:User')
+            ->will($this->returnValue($repository));
+
+        $actual = $this->target->getZendeskDefaultUser();
+        $this->assertEquals($expectedUser, $actual);
     }
 }

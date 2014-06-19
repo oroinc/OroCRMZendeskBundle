@@ -57,7 +57,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
             array('updatedAt', new \DateTime()),
             array('lastLoginAt', new \DateTime()),
             array('role', $role),
-            array('user', $user),
+            array('relatedUser', $user),
             array('externalId', uniqid()),
             array('details', 'details'),
             array('notes', 'notes'),
@@ -65,7 +65,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
             array('onlyPrivateComments', true),
             array('verified', true),
             array('active', true),
-            array('contact', $contact),
+            array('relatedContact', $contact),
         );
     }
 }

@@ -7,16 +7,17 @@ use Doctrine\ORM\EntityManager;
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\UserBundle\Entity\User;
 
+use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use OroCRM\Bundle\ZendeskBundle\Exception\ConfigurationException;
 
 class ConfigurationProvider
 {
-    const EMAIL_FIELD_NAME = 'oro_crm_zendesk.zendesk_email';
-    const API_TOKEN_FIELD_NAME = 'oro_crm_zendesk.zendesk_api_token';
+    const API_EMAIL_FIELD_NAME = 'oro_crm_zendesk.api_email';
+    const API_TOKEN_FIELD_NAME = 'oro_crm_zendesk.api_token';
     const SYNC_TIMEOUT_FIELD_NAME = 'oro_crm_zendesk.zendesk_sync_timeout';
     const ZENDESK_DEFAULT_USER_EMAIL_FIELD_NAME = 'oro_crm_zendesk.zendesk_default_user_email';
-    const OROCRM_DEFAULT_USERNAME_FIELD_NAME = 'oro_crm_zendesk.orocrm_default_username';
-    const USERNAME_FIELD_NAME = 'oro_crm_zendesk.zendesk_username';
+    const ORO_DEFAULT_USERNAME_FIELD_NAME = 'oro_crm_zendesk.oro_default_username';
+    const SUBDOMAIN_FIELD_NAME = 'oro_crm_zendesk.zendesk_username';
 
     /**
      * @var EntityManager
@@ -39,7 +40,7 @@ class ConfigurationProvider
      */
     public function getEmail()
     {
-        return $this->getConfigurationSetting(self::EMAIL_FIELD_NAME, true);
+        return $this->getConfigurationSetting(self::API_EMAIL_FIELD_NAME, true);
     }
 
     /**
@@ -67,21 +68,46 @@ class ConfigurationProvider
     }
 
     /**
+     * @return ZendeskUser|null
+     */
+    public function getZendeskDefaultUser()
+    {
+        $email = $this->getZendeskDefaultUserEmail();
+
+        if (!$email) {
+            return null;
+        }
+
+        $user = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
+            ->findOneBy(array('email' => $email));
+
+        return $user;
+    }
+
+    /**
      * @return string
      */
     public function getSubDomain()
     {
-        return $this->getConfigurationSetting(self::USERNAME_FIELD_NAME, true);
+        return $this->getConfigurationSetting(self::SUBDOMAIN_FIELD_NAME, true);
+    }
+
+    /**
+     * @return string
+     */
+    public function getOroDefaultUsername()
+    {
+        return $this->getConfigurationSetting(self::ORO_DEFAULT_USERNAME_FIELD_NAME);
     }
 
     /**
      * @return null|User
      */
-    public function getDefaultUser()
+    public function getOroDefaultUser()
     {
-        $username = $this->getConfigurationSetting(self::OROCRM_DEFAULT_USERNAME_FIELD_NAME);
+        $username = $this->getOroDefaultUsername();
 
-        if (empty($username)) {
+        if (!$username) {
             return null;
         }
 

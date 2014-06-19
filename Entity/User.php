@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
-use Oro\Bundle\UserBundle\Entity\User as OroCRMUser;
+use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 
 /**
@@ -38,35 +38,35 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="url", type="string", length=255)
+     * @ORM\Column(name="url", type="string", length=255, nullable=true)
      */
     protected $url;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="external_id", type="string", length=50)
+     * @ORM\Column(name="external_id", type="string", length=50, nullable=true)
      */
     protected $externalId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=100)
+     * @ORM\Column(name="name", type="string", length=100, nullable=true)
      */
     protected $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="details", type="text")
+     * @ORM\Column(name="details", type="text", nullable=true)
      */
     protected $details;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="ticket_restrictions", type="string", length=30)
+     * @ORM\Column(name="ticket_restrictions", type="string", length=30, nullable=true)
      */
     protected $ticketRestriction;
 
@@ -75,33 +75,33 @@ class User
      *
      * @ORM\Column(name="only_private_comments", type="boolean", options={"default"=false})
      */
-    protected $onlyPrivateComments;
+    protected $onlyPrivateComments = false;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="notes", type="text")
+     * @ORM\Column(name="notes", type="text", nullable=true)
      */
     protected $notes;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $updatedAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $lastLoginAt;
 
@@ -110,19 +110,19 @@ class User
      *
      * @ORM\Column(name="verified", type="boolean", options={"default"=false})
      */
-    protected $verified;
+    protected $verified = false;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="active", type="boolean", options={"default"=false})
      */
-    protected $active;
+    protected $active = false;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="alias", type="string", length=100)
+     * @ORM\Column(name="alias", type="string", length=100, nullable=true)
      */
     protected $alias;
 
@@ -137,54 +137,54 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=100)
+     * @ORM\Column(name="email", type="string", length=100, nullable=true)
      */
     protected $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="phone", type="string", length=30)
+     * @ORM\Column(name="phone", type="string", length=30, nullable=true)
      */
     protected $phone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="time_zone", type="string", length=30)
+     * @ORM\Column(name="time_zone", type="string", length=30, nullable=true)
      */
     protected $timeZone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="locale", type="string", length=30)
+     * @ORM\Column(name="locale", type="string", length=30, nullable=true)
      */
     protected $locale;
 
     /**
      * @var Contact
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\ContactBundle\Entity\Contact")
-     * @ORM\JoinColumn(name="contact_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\ContactBundle\Entity\Contact", cascade={"persist"})
+     * @ORM\JoinColumn(name="related_contact_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    protected $contact;
+    protected $relatedContact;
 
     /**
-     * @var OroCRMUser
+     * @var OroUser
      *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User", cascade={"persist"})
+     * @ORM\JoinColumn(name="related_user_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    protected $user;
+    protected $relatedUser;
 
     /**
      * @param Contact $contact
      * @return User
      */
-    public function setContact($contact)
+    public function setRelatedContact(Contact $contact = null)
     {
-        $this->contact = $contact;
+        $this->relatedContact = $contact;
 
         return $this;
     }
@@ -192,16 +192,16 @@ class User
     /**
      * @return Contact
      */
-    public function getContact()
+    public function getRelatedContact()
     {
-        return $this->contact;
+        return $this->relatedContact;
     }
 
     /**
      * @param \DateTime $createdAt
      * @return User
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTime $createdAt = null)
     {
         $this->createdAt = $createdAt;
 
@@ -314,7 +314,7 @@ class User
      * @param UserRole $role
      * @return User
      */
-    public function setRole(UserRole $role)
+    public function setRole(UserRole $role = null)
     {
         $this->role = $role;
 
@@ -327,6 +327,40 @@ class User
     public function getRole()
     {
         return $this->role;
+    }
+
+    /**
+     * @param UserRole[]|string[] $roles
+     * @return bool
+     */
+    public function isRoleIn(array $roles)
+    {
+        if (!$this->getRole()) {
+            return false;
+        }
+        foreach ($roles as $role) {
+            if ($this->isRoleEqual($role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param UserRole|string $role
+     * @return bool
+     */
+    public function isRoleEqual($role)
+    {
+        if (!$this->getRole()) {
+            return false;
+        }
+        if ($role instanceof UserRole) {
+            $roleName = $role->getName();
+        } else {
+            $roleName = $role;
+        }
+        return $this->getRole() && $roleName == $this->getRole()->getName();
     }
 
     /**
@@ -352,7 +386,7 @@ class User
      * @param \DateTime $updatedAt
      * @return User
      */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt(\DateTime $updatedAt = null)
     {
         $this->updatedAt = $updatedAt;
 
@@ -387,22 +421,22 @@ class User
     }
 
     /**
-     * @param OroCRMUser $user
+     * @param OroUser $user
      * @return User
      */
-    public function setUser(OroCRMUser $user)
+    public function setRelatedUser(OroUser $user = null)
     {
-        $this->user = $user;
+        $this->relatedUser = $user;
 
         return $this;
     }
 
     /**
-     * @return OroCRMUser
+     * @return OroUser
      */
-    public function getUser()
+    public function getRelatedUser()
     {
-        return $this->user;
+        return $this->relatedUser;
     }
 
     /**
@@ -430,7 +464,7 @@ class User
      */
     public function setActive($active)
     {
-        $this->active = $active;
+        $this->active = (bool)$active;
 
         return $this;
     }
@@ -485,7 +519,7 @@ class User
      * @param \DateTime $lastLoginAt
      * @return User
      */
-    public function setLastLoginAt(\DateTime $lastLoginAt)
+    public function setLastLoginAt(\DateTime $lastLoginAt = null)
     {
         $this->lastLoginAt = $lastLoginAt;
 
@@ -525,7 +559,7 @@ class User
      */
     public function setOnlyPrivateComments($onlyPrivateComments)
     {
-        $this->onlyPrivateComments = $onlyPrivateComments;
+        $this->onlyPrivateComments = (bool)$onlyPrivateComments;
 
         return $this;
     }
@@ -563,7 +597,7 @@ class User
      */
     public function setVerified($verified)
     {
-        $this->verified = $verified;
+        $this->verified = (bool)$verified;
 
         return $this;
     }

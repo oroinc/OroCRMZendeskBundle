@@ -21,11 +21,11 @@ class Configuration implements ConfigurationInterface
             $rootNode,
             array(
                 'zendesk_sync_timeout' => array('type'  => 'scalar', 'value' => 60),
-                'zendesk_email'        => array('type' => 'scalar', 'value' => ''),
-                'zendesk_api_token'    => array('type' => 'scalar', 'value' => ''),
+                'api_email'        => array('type' => 'scalar', 'value' => ''),
+                'api_token'    => array('type' => 'scalar', 'value' => ''),
                 'zendesk_subdomain'     => array('type' => 'scalar', 'value' => ''),
                 'zendesk_default_user_email' => array('type' => 'scalar', 'value' => ''),
-                'orocrm_default_username'  => array('type' => 'scalar', 'value' => ''),
+                'oro_default_username'  => array('type' => 'scalar', 'value' => ''),
             )
         );
 
