@@ -43,7 +43,7 @@ class TicketPriority implements Translatable
     /**
      * @param string $name
      */
-    public function __construct($name)
+    public function __construct($name = null)
     {
         $this->name = $name;
     }
@@ -57,12 +57,12 @@ class TicketPriority implements Translatable
     }
 
     /**
-     * @param string $label
+     * @param string $name
      * @return TicketPriority
      */
-    public function setLabel($label)
+    public function setName($name)
     {
-        $this->label = $label;
+        $this->name = $name;
 
         return $this;
     }
@@ -73,6 +73,17 @@ class TicketPriority implements Translatable
     public function getLabel()
     {
         return $this->label;
+    }
+
+    /**
+     * @param string $label
+     * @return TicketPriority
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
     }
 
     /**
