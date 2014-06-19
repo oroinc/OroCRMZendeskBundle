@@ -116,13 +116,13 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
             $type = $this->getRandomEntity('OroCRMZendeskBundle:TicketType');
         }
 
-        $mapper = $this->container->get('orocrm_zendesk.mapper');
+        $entityMapper = $this->container->get('orocrm_zendesk.entity_mapper');
 
         $status = $this->entityManager->getRepository('OroCRMZendeskBundle:TicketStatus')
-            ->findOneBy(array('name' => $mapper->getTicketStatus($case->getStatus()->getName())));
+            ->findOneBy(array('name' => $entityMapper->getTicketStatus($case->getStatus()->getName())));
 
         $priority = $this->entityManager->getRepository('OroCRMZendeskBundle:TicketPriority')
-            ->findOneBy(array('name' => $mapper->getTicketPriority($case->getPriority()->getName())));
+            ->findOneBy(array('name' => $entityMapper->getTicketPriority($case->getPriority()->getName())));
 
         if (!$type || !$status || !$priority) {
             return null;

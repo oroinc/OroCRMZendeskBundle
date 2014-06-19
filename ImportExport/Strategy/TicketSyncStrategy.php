@@ -4,10 +4,25 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
+use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
+use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 
 class TicketSyncStrategy extends AbstractSyncStrategy
 {
+    /**
+     * @var CaseEntityManager
+     */
+    protected $caseEntityManager;
+
+    /**
+     * @param CaseEntityManager $caseEntityManager
+     */
+    public function __construct(CaseEntityManager $caseEntityManager)
+    {
+        $this->caseEntityManager = $caseEntityManager;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -43,76 +58,33 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     }
 
     /**
-     * @param ZendeskUser $entity
+     * @param Ticket $entity
      */
-    protected function syncRelatedEntities(ZendeskUser $entity)
+    protected function syncRelatedEntities(Ticket $entity)
     {
-        if ($this->isRelativeWithUser($entity) && $entity->getRelatedContact()) {
-            $relatedId = $entity->getRelatedContact()->getId();
-            $this->getLogger()->info(
-                $this->buildMessage(
-                    "Unset related contact [id=$relatedId] due to incompatible role change.",
-                    $entity
-                )
-            );
-            $entity->setRelatedContact(null);
-        }
-
-        if ($this->isRelativeWithContact($entity) && $entity->getRelatedUser()) {
-            $relatedId = $entity->getRelatedUser()->getId();
-            $this->getLogger()->info(
-                $this->buildMessage(
-                    "Unset related user [id=$relatedId] due to incompatible role change.",
-                    $entity
-                )
-            );
-            $entity->setRelatedUser(null);
-        }
-
-        if ($entity->getRelatedUser() || $entity->getRelatedContact() || !$entity->getEmail()) {
-            return;
-        }
-
-        if ($entity->isRoleIn(array(ZendeskUserRole::ROLE_ADMIN, ZendeskUserRole::ROLE_AGENT))) {
-            $relatedUser = $this->oroUserProvider->getUser($entity);
-            if ($relatedUser) {
-                $this->getLogger()->debug(
-                    $this->buildMessage(
-                        "Related user found [id={$relatedUser->getId()}]",
-                        $entity
-                    )
-                );
-                $entity->setRelatedUser($relatedUser);
-            }
-        } elseif ($entity->isRoleEqual(ZendeskUserRole::ROLE_END_USER)) {
-            $relatedContact = $this->contactProvider->getContact($entity);
-            if ($relatedContact) {
-                $this->getLogger()->debug(
-                    $this->buildMessage(
-                        "Related contact found [id={$relatedContact->getId()}]",
-                        $entity
-                    )
-                );
-                $entity->setRelatedContact($relatedContact);
-            }
-        }
+        $this->syncRelatedCase($entity);
     }
 
     /**
-     * @param ZendeskUser $entity
-     * @return bool
+     * @param Ticket $entity
      */
-    protected function isRelativeWithUser(ZendeskUser $entity)
+    protected function syncRelatedCase(Ticket $entity)
     {
-        return $entity->isRoleIn(array(ZendeskUserRole::ROLE_ADMIN, ZendeskUserRole::ROLE_AGENT));
+        $relatedCase = $entity->getRelatedCase();
+        if (!$relatedCase) {
+            $relatedCase = $this->caseEntityManager->createCase();
+            $entity->setRelatedCase($relatedCase);
+        }
+        $this->syncCaseByTicket($entity, $relatedCase);
     }
 
     /**
-     * @param ZendeskUser $entity
-     * @return bool
+     * @param CaseEntity $case
+     * @param Ticket $ticket
+     * @return CaseEntity
      */
-    protected function isRelativeWithContact(ZendeskUser $entity)
+    protected function syncCaseByTicket(CaseEntity $case, Ticket $ticket)
     {
-        return $entity->isRoleEqual(ZendeskUserRole::ROLE_END_USER);
+        $case->setPriority();
     }
 }

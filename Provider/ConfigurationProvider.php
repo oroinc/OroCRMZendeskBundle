@@ -17,7 +17,7 @@ class ConfigurationProvider
     const SYNC_TIMEOUT_FIELD_NAME = 'oro_crm_zendesk.zendesk_sync_timeout';
     const ZENDESK_DEFAULT_USER_EMAIL_FIELD_NAME = 'oro_crm_zendesk.zendesk_default_user_email';
     const ORO_DEFAULT_USERNAME_FIELD_NAME = 'oro_crm_zendesk.oro_default_username';
-    const SUBDOMAIN_FIELD_NAME = 'oro_crm_zendesk.zendesk_username';
+    const SUBDOMAIN_FIELD_NAME = 'oro_crm_zendesk.zendesk_subdomain';
 
     /**
      * @var EntityManager

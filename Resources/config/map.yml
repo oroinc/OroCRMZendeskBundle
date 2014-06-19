@@ -1,6 +1,6 @@
 parameters:
     orocrm_zendesk.map:
-        status_map:
+        status:
             -
               case: open
               ticket: new
@@ -20,7 +20,7 @@ parameters:
               case: closed
               ticket: closed
 
-        priority_map:
+        priority:
             -
               case: low
               ticket: low

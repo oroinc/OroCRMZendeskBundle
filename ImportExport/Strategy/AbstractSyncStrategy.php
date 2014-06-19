@@ -238,14 +238,16 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
      * @param string $message
      * @param mixed $record
      * @param string $property
+     * @param string $displayProperty
      * @return string
      */
-    protected function buildMessage($message, $record, $property = 'id')
+    protected function buildMessage($message, $record, $property = 'id', $displayProperty = null)
     {
+        $displayProperty = $property ? : $displayProperty;
         if (is_object($record)) {
             $record = $record->{'get' . ucfirst($property)}();
         }
 
-        return sprintf('Record [%s=%s]: %s', $property, $record, $message);
+        return sprintf('Record [%s=%s]: %s', $displayProperty, $record, $message);
     }
 }
