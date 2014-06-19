@@ -102,9 +102,10 @@ class RestClient implements RestClientInterface
         }
 
         $path = $this->settings['url'] . static::API_PATH . $action;
-        $url = Url::buildUrl(array('scheme' => 'https', 'host' => $path, 'query' => $query));
 
-        return $url;
+        $url = Url::factory($path)->setQuery($query);
+
+        return (string)$url;
     }
 
     /**

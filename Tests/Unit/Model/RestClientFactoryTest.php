@@ -11,7 +11,7 @@ class RestClientFactoryTest extends \PHPUnit_Framework_TestCase
         $settings = array(
             'email' => 'test@mail.com',
             'api_token' => uniqid(),
-            'sub_domain' => 'domain'
+            'url' => 'https://foo.zendesk.com'
         );
         $provider = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider')
             ->disableOriginalConstructor()
@@ -23,8 +23,8 @@ class RestClientFactoryTest extends \PHPUnit_Framework_TestCase
             ->method('getApiToken')
             ->will($this->returnValue($settings['api_token']));
         $provider->expects($this->once())
-            ->method('getSubDomain')
-            ->will($this->returnValue($settings['sub_domain']));
+            ->method('getZendeskUrl')
+            ->will($this->returnValue($settings['url']));
         $factory = new RestClientFactory($provider);
         $restClient = $factory->getRestClient();
         $this->assertInstanceOf('OroCRM\Bundle\ZendeskBundle\Model\RestClient', $restClient);

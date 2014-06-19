@@ -56,16 +56,15 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
     {
         $action = 'users.json';
 
-        $subDomain = 'oro_test';
         $settings = array(
             'email' => 'test@mail.com',
-            'sub_domain' => $subDomain,
+            'url' => 'https://foo.zendesk.com',
             'api_token' => uniqid()
         );
         $paramName = 'test_name';
         $paramValue = 'test_value';
         $params = array($paramName => $paramValue);
-        $expected = "https://{$subDomain}.zendesk.com/api/v2/{$action}?{$paramName}={$paramValue}";
+        $expected = "https://foo.zendesk.com/api/v2/{$action}?{$paramName}={$paramValue}";
         $expectedBody = array('test json' => array('test param' => 'test value'));
         $expectedAuth = array('auth' => array('test@mail.com/token', $settings['api_token']));
 
@@ -82,15 +81,13 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
     public function testPost()
     {
         $action = 'users.json';
-
-        $subDomain = 'oro_test';
         $settings = array(
             'email' => 'test@mail.com',
-            'sub_domain' => $subDomain,
+            'url' => 'https://foo.zendesk.com',
             'api_token' => uniqid()
         );
         $expectedData = array('user' => array('name' => 'Roger Smith'));
-        $expectedUrl = "https://{$subDomain}.zendesk.com/api/v2/{$action}?";
+        $expectedUrl = "https://foo.zendesk.com/api/v2/{$action}";
         $expectedBody = array('test json' => array('test param' => 'test value'));
         $expectedAuth = array('auth' => array('test@mail.com/token', $settings['api_token']));
         $expectedHeaders = array('Content-Type' => 'application/json');
@@ -109,14 +106,13 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
     {
         $action = 'users.json';
 
-        $subDomain = 'oro_test';
         $settings = array(
             'email' => 'test@mail.com',
-            'sub_domain' => $subDomain,
+            'url' => 'https://foo.zendesk.com',
             'api_token' => uniqid()
         );
         $expectedData = array('user' => array('name' => 'Roger Smith'));
-        $expectedUrl = "https://{$subDomain}.zendesk.com/api/v2/{$action}?";
+        $expectedUrl = "https://foo.zendesk.com/api/v2/{$action}";
         $expectedBody = array('test json' => array('test param' => 'test value'));
         $expectedAuth = array('auth' => array('test@mail.com/token', $settings['api_token']));
         $expectedHeaders = array('Content-Type' => 'application/json');
@@ -135,13 +131,12 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
     {
         $action = 'users.json';
 
-        $subDomain = 'oro_test';
         $settings = array(
             'email' => 'test@mail.com',
-            'sub_domain' => $subDomain,
+            'url' => 'https://foo.zendesk.com',
             'api_token' => uniqid()
         );
-        $expectedUrl = "https://{$subDomain}.zendesk.com/api/v2/{$action}?";
+        $expectedUrl = "https://foo.zendesk.com/api/v2/{$action}";
         $expectedBody = array('test json' => array('test param' => 'test value'));
         $expectedAuth = array('auth' => array('test@mail.com/token', $settings['api_token']));
 
@@ -163,7 +158,7 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
     {
         $settings = array(
             'email' => 'test@mail.com',
-            'sub_domain' => 'test_sub_domain',
+            'url' => 'https://foo.zendesk.com',
             'api_token' => uniqid()
         );
 
@@ -190,7 +185,7 @@ class RestClientTest extends \PHPUnit_Framework_TestCase
     {
         $settings = array(
             'email' => 'test@mail.com',
-            'sub_domain' => 'test_sub_domain',
+            'url' => 'https://foo.zendesk.com',
             'api_token' => uniqid()
         );
 
