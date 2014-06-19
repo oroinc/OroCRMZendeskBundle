@@ -20,12 +20,12 @@ class Configuration implements ConfigurationInterface
         SettingsBuilder::append(
             $rootNode,
             array(
-                'zendesk_sync_timeout' => array('type'  => 'scalar', 'value' => 60),
-                'api_email'        => array('type' => 'scalar', 'value' => ''),
-                'api_token'    => array('type' => 'scalar', 'value' => ''),
-                'zendesk_subdomain'     => array('type' => 'scalar', 'value' => ''),
+                'zendesk_sync_timeout'       => array('type' => 'scalar', 'value' => 60),
+                'api_email'                  => array('type' => 'scalar', 'value' => ''),
+                'api_token'                  => array('type' => 'scalar', 'value' => ''),
+                'zendesk_url'                => array('type' => 'scalar', 'value' => ''),
                 'zendesk_default_user_email' => array('type' => 'scalar', 'value' => ''),
-                'oro_default_username'  => array('type' => 'scalar', 'value' => ''),
+                'oro_default_username'       => array('type' => 'scalar', 'value' => ''),
             )
         );
 

@@ -108,7 +108,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
         $requester = $this->getZendeskUserByUser($this->getRandomEntity('OroUserBundle:User'));
         $assignee = $this->getZendeskUserByUser($case->getAssignedTo());
         $data = array(
-            'origin_id' => $this->ticketOriginId,
+            'originId' => $this->ticketOriginId,
             'url' => "https://company.zendesk.com/api/v2/tickets/{$this->ticketOriginId}.json",
             'recipient' => "{$this->ticketOriginId}_support@company.com",
             'requester' => $requester,
@@ -121,7 +121,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
             'externalId' => uniqid(),
             'subject' => $case->getSubject(),
             'description' => $case->getDescription(),
-            'collaborators' => new ArrayCollection(array($requester, $assignee))
+            'collaborators' => new ArrayCollection(array($requester))
         );
 
         if ($data['hasIncidents']) {

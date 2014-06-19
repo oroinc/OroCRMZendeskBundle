@@ -34,7 +34,7 @@ class RestClientFactory implements RestClientFactoryInterface
         $settings = array(
             'api_token'  => $this->provider->getApiToken(),
             'email'      => $this->provider->getEmail(),
-            'sub_domain' => $this->provider->getSubDomain()
+            'url' => $this->provider->getZendeskUrl()
         );
         return new RestClient($this->getClient(), $settings);
     }

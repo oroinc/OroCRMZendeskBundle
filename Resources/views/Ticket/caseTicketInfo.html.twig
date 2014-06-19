@@ -32,13 +32,21 @@
                 </div>
                 <div class="row-fluid form-horizontal">
                     <div class="responsive-block">
-                        {{ UI.renderProperty('orocrm.zendesk.ticket.external_id.label'|trans, ticket.externalId) }}
-                        {{ UI.renderProperty('orocrm.zendesk.ticket.url.label'|trans, ticket.url) }}
+                        {{ UI.renderProperty('orocrm.zendesk.ticket.origin_id.label'|trans, ticket.originId) }}
+
+                        {% set href = orocrm_zendesk_ticket_path(ticket) %}
+                        {% set url %}
+                            {% if href %}
+                                <a href="{{ href }}">
+                                    {{ href }}
+                                </a>
+                            {% endif %}
+                        {% endset %}
+                        {{ UI.renderHtmlProperty('orocrm.zendesk.ticket.url.label'|trans, url|trim) }}
                         {% set recipient %}
                             {{ email.email_address_simple(ticket.recipient) }}
                         {% endset %}
                         {{ UI.renderHtmlProperty('orocrm.zendesk.ticket.recipient.label'|trans, recipient) }}
-                        {{ UI.renderProperty('orocrm.zendesk.ticket.has_incidents.label'|trans, ticket.hasIncidents ? "Yes"|trans : "No"|trans) }}
                         {{ UI.renderProperty('orocrm.zendesk.ticket.status.label'|trans, ticket.status.label) }}
                         {{ UI.renderProperty('orocrm.zendesk.ticket.type.label'|trans, ticket.type.label) }}
                         {{ _self.render_zendesk_user('orocrm.zendesk.ticket.submitter.label'|trans, ticket.submitter) }}

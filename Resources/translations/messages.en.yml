@@ -2,77 +2,78 @@ orocrm:
     zendesk:
         ticket_info_title: Zendesk ticket info
         ticket:
-            entity_label: Ticket
-            entity_plural_label: Tickets
-            assignee.label: Assignee
-            case.label: Case
-            collaborators.label: Collaborators
-            created_at.label: Created At
-            updated_at.label: Updated At
-            due_at.label: Due At
-            description.label: Description
-            subject.label: Subject
-            external_id.label: External id
-            has_incidents.label: Has incidents
-            id.label: Id
-            priority.label: Priority
-            problem.label: Problem
-            recipient.label: Recipient email
-            requester.label: Requester
-            status.label: Status
-            submitter.label: Submitter
-            type.label: Type
-            url.label: Url
+            entity_label:         Ticket
+            entity_plural_label:  Tickets
+            assignee.label:       Assignee
+            case.label:           Case
+            collaborators.label:  Collaborators
+            created_at.label:     Created At
+            updated_at.label:     Updated At
+            due_at.label:         Due At
+            description.label:    Description
+            subject.label:        Subject
+            external_id.label:    External id
+            has_incidents.label:  Has incidents
+            id.label:             Id
+            origin_id.label:      Ticket Number
+            priority.label:       Priority
+            problem.label:        Problem
+            recipient.label:      Recipient email
+            requester.label:      Requester
+            status.label:         Status
+            submitter.label:      Submitter
+            type.label:           Type
+            url.label:            Url
 
         ticketcomment:
-            entity_label: Ticket comment
-            entity_plural_label: Ticket comments
-            author.label: Author
-            body.label:   Body
-            case_comment.label: Case comment
-            created_at.label: Created At
-            html_body.label: Html body
-            id.label: Id
-            public.label: Public
-            ticket.label: Ticket
+            entity_label:         Ticket comment
+            entity_plural_label:  Ticket comments
+            author.label:         Author
+            body.label:           Body
+            case_comment.label:   Case comment
+            created_at.label:     Created At
+            html_body.label:      Html body
+            id.label:             Id
+            public.label:         Public
+            ticket.label:         Ticket
 
         user:
-            entity_label: Zendesk User
-            entity_plural_label: Zendesk Users
-            active.label: Active
-            alias.label: Alias
-            contact.label: Contact
-            created_at.label: Created At
-            details.label: Details
-            email.label: Email
-            external_id.label: External id
-            id.label: Id
-            last_login_at.label: Last login at
-            locale.label: Locale
-            name.label: Name
-            notes.label: Notes
-            ticket_restriction.label: Ticket restriction
-            only_private_comments.label: Only private comments
-            time_zone.label: Time-zone
-            updated_at.label: Updated At
-            url.label: Url
-            user.label: User
-            verified.label: Verified
-            phone.label: Phone
-            role.label: Role
+            entity_label:                 Zendesk User
+            entity_plural_label:          Zendesk Users
+            active.label:                 Active
+            alias.label:                  Alias
+            contact.label:                Contact
+            created_at.label:             Created At
+            details.label:                Details
+            email.label:                  Email
+            external_id.label:            External id
+            id.label:                     Id
+            last_login_at.label:          Last login at
+            locale.label:                 Locale
+            name.label:                   Name
+            notes.label:                  Notes
+            ticket_restriction.label:     Ticket restriction
+            only_private_comments.label:  Only private comments
+            time_zone.label:              Time-zone
+            updated_at.label:             Updated At
+            url.label:                    Url
+            user.label:                   User
+            verified.label:               Verified
+            phone.label:                  Phone
+            role.label:                   Role
 
         system_configuration:
-            integrations.title: 'Integrations'
-            zendesk_integration.title: 'Zendesk'
-            zendesk_settings.title: 'Settings'
+            integrations.title:         'Integrations'
+            zendesk_integration.title:  'Zendesk'
+            zendesk_settings.title:     'Settings'
 
         form:
             api_email:
                 label: API email
             api_token:
                 label: API Token
-            subdomain:
-                label: Subdomain
+            zendesk_url:
+                label: Full Zendesk url
             sync_timeout:
                 label: Sync Timeout
             zendesk_default_user_email:

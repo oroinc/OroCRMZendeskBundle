@@ -93,11 +93,11 @@ class CaseControllerTest extends WebTestCase
         $ticketData = LoadTicketEntityData::getTicketsData();
         $expectedTicket = $ticketData[0];
 
-        $externalId = $this->getFieldValue("External id", $crawler);
-        $this->assertEquals($expectedTicket['externalId'], $externalId->html());
+        $externalId = $this->getFieldValue("Ticket Number", $crawler);
+        $this->assertEquals($expectedTicket['originId'], $externalId->html());
 
         $url = $this->getFieldValue("Url", $crawler);
-        $this->assertEquals($expectedTicket['url'], $url->html());
+        $this->assertNotEmpty($url->html());
 
         $problem = $this->getFieldValue("Problem", $crawler);
         $this->assertContains(static::$caseSubject, $problem->html());
@@ -118,9 +118,6 @@ class CaseControllerTest extends WebTestCase
         $requester = $this->getFieldValue("Requester", $crawler);
         $this->assertContains('Alex Taylor', $requester->html());
 
-        $hasIncidents = $this->getFieldValue("Has incidents", $crawler);
-        $this->assertContains($expectedTicket['hasIncidents'] ? 'Yes' : 'No', $hasIncidents->html());
-
         $status = $this->getFieldValue("Status", $crawler);
         $this->assertContains($expectedTicket['status_label'], $status->html());
 
@@ -133,10 +130,10 @@ class CaseControllerTest extends WebTestCase
 
     protected function getFieldValue($label, Crawler $crawler)
     {
-        $label = $crawler->filterXPath("//label[text()=\"{$label}\"]");
-        $this->assertTrue($label->count() > 0, 'label not found');
-        $value = $label->parents()->first()->filterXPath('//div[@class="control-label"]');
-        $this->assertTrue($value->count() > 0, 'value not found');
+        $labelNode = $crawler->filterXPath("//label[text()=\"{$label}\"]");
+        $this->assertTrue($labelNode->count() > 0, "label({$label}) not found");
+        $value = $labelNode->parents()->first()->filterXPath('//div[@class="control-label"]');
+        $this->assertTrue($value->count() > 0, "value({$label}) not found");
         return $value;
     }
 }

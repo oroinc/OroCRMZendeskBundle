@@ -1,21 +1,21 @@
 ticket_type:
     incident: Incident
-    problem: Problem
+    problem:  Problem
     question: Question
-    task: Task
+    task:     Task
 ticket_status:
-    open: Open
-    new: New
-    hold: Hold
-    pending: Pending
-    solved: Solved
-    closed: Closed
+    open:     Open
+    new:      New
+    hold:     Hold
+    pending:  Pending
+    solved:   Solved
+    closed:   Closed
 ticket_priority:
-    low: Low
+    low:    Low
     normal: Normal
-    high: High
+    high:   High
     urgent: Urgent
 zendesk_user_role:
-    admin: Admin
-    agent: Agent
+    admin:    Admin
+    agent:    Agent
     end-user: End-user

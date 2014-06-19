@@ -5,8 +5,8 @@ orocrm:
                 tooltip: Zendesk API email
             api_token:
                 tooltip: Zendesk API token
-            subdomain:
-                tooltip: Zendesk subdomain (https://{subdomain}.zendesk.com)
+            zendesk_url:
+                tooltip: Full Zendesk url
             sync_timeout:
                 tooltip: Syncronization with Zendesk timeout (in minutes)
             zendesk_default_user_email:

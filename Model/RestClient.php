@@ -11,7 +11,7 @@ use OroCRM\Bundle\ZendeskBundle\Exception\RestException;
 
 class RestClient implements RestClientInterface
 {
-    const BASE_URL = '.zendesk.com/api/v2/';
+    const API_PATH = '/api/v2/';
 
     /**
      * @var array
@@ -101,7 +101,7 @@ class RestClient implements RestClientInterface
             $query->set($name, $value);
         }
 
-        $path = $this->settings['sub_domain'] . static::BASE_URL . $action;
+        $path = $this->settings['url'] . static::API_PATH . $action;
         $url = Url::buildUrl(array('scheme' => 'https', 'host' => $path, 'query' => $query));
 
         return $url;
