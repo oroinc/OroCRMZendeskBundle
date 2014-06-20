@@ -47,12 +47,12 @@
                             {{ email.email_address_simple(ticket.recipient) }}
                         {% endset %}
                         {{ UI.renderHtmlProperty('orocrm.zendesk.ticket.recipient.label'|trans, recipient) }}
-                        {{ UI.renderProperty('orocrm.zendesk.ticket.status.label'|trans, ticket.status.label) }}
-                        {{ UI.renderProperty('orocrm.zendesk.ticket.type.label'|trans, ticket.type.label) }}
+                        {{ UI.renderProperty('orocrm.zendesk.ticket.status.label'|trans, ticket.status.label|default(false)) }}
+                        {{ UI.renderProperty('orocrm.zendesk.ticket.type.label'|trans, ticket.type.label|default(false)) }}
                         {{ _self.render_zendesk_user('orocrm.zendesk.ticket.submitter.label'|trans, ticket.submitter) }}
                         {{ _self.render_zendesk_user('orocrm.zendesk.ticket.assignee.label'|trans, ticket.assignee) }}
                         {{ _self.render_zendesk_user('orocrm.zendesk.ticket.requester.label'|trans, ticket.requester) }}
-                        {{ UI.renderProperty('orocrm.zendesk.ticket.priority.label'|trans, ticket.priority.label) }}
+                        {{ UI.renderProperty('orocrm.zendesk.ticket.priority.label'|trans, ticket.priority.label|default(false)) }}
                         {% set problem %}
                             {% if ticket.problem and ticket.problem.relatedCase %}
                                 <a href="{{ path('orocrm_case_view', {'id': ticket.problem.relatedCase.id}) }}">

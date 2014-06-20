@@ -60,7 +60,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
         }
         $this->getLogger()->setMessagePrefix("Zendesk Ticket [id={$entity->getOriginId()}]: ");
 
-        $this->refreshDictionaryField($entity, 'status', 'ticketStatus');
+        $this->refreshDictionaryField($entity, 'status', 'ticketStatus', true);
         $this->refreshDictionaryField($entity, 'priority', 'ticketPriority');
         $this->refreshDictionaryField($entity, 'type', 'ticketType');
 

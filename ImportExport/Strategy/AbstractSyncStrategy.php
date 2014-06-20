@@ -96,8 +96,9 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
      * @param mixed $entity
      * @param string $fieldName
      * @param string $dictionaryEntityAlias
+     * @param boolean $required
      */
-    protected function refreshDictionaryField($entity, $fieldName, $dictionaryEntityAlias = null)
+    protected function refreshDictionaryField($entity, $fieldName, $dictionaryEntityAlias = null, $required = false)
     {
         $dictionaryEntityAlias = $dictionaryEntityAlias ? : $fieldName;
         $value = null;
@@ -110,7 +111,7 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
                 $valueName = $entity->$entityGetter()->getName();
                 $this->getLogger()->warning("Can't find Zendesk $fieldName [name=$valueName].");
             }
-        } else {
+        } elseif ($required) {
             $this->getLogger()->warning("Zendesk $fieldName is empty.");
         }
         $entity->$entitySetter($value);
