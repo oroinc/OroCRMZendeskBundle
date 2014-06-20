@@ -73,7 +73,7 @@ orocrm:
             api_token:
                 label: API Token
             zendesk_url:
-                label: Full Zendesk url
+                label: Url
             cron_schedule:
                 label: Cron schedule
             zendesk_default_user_email:

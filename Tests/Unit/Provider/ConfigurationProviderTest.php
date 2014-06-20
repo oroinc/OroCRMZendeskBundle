@@ -32,6 +32,28 @@ class ConfigurationProviderTest extends \PHPUnit_Framework_TestCase
         $this->target = new ConfigurationProvider($this->entityManager, $this->configurationManager);
     }
 
+    public function testGetZendeskUrl()
+    {
+        $withSchema = 'https://company.zendesk.com';
+        $withoutSchema = 'company.zendesk.com';
+
+        $this->configurationManager->expects($this->at(0))
+            ->method('get')
+            ->with(ConfigurationProvider::ZENDESK_URL_FIELD_NAME)
+            ->will($this->returnValue($withSchema));
+
+        $this->configurationManager->expects($this->at(1))
+            ->method('get')
+            ->with(ConfigurationProvider::ZENDESK_URL_FIELD_NAME)
+            ->will($this->returnValue($withoutSchema));
+
+        $actual = $this->target->getZendeskUrl();
+        $this->assertEquals($withSchema, $actual, 'failed if url full');
+        $actual = $this->target->getZendeskUrl();
+
+        $this->assertEquals($withSchema, $actual, 'failed if url partial');
+    }
+
     public function testGetEmail()
     {
         $expected = 'admin@example.com';

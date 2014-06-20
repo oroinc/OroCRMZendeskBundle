@@ -54,7 +54,6 @@ oro_system_configuration:
                 resettable: false
                 constraints:
                     - NotBlank: ~
-                    - Url: ~
 
         oro_crm_zendesk.zendesk_default_user_email:
             type: text

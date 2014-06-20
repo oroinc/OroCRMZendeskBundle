@@ -6,7 +6,7 @@ orocrm:
             api_token:
                 tooltip: Zendesk API token
             zendesk_url:
-                tooltip: Full Zendesk url
+                tooltip: Example: https://company.zendesk.com or company.zendesk.com
             cron_schedule:
                 tooltip: Synchronization Cron schedule
             zendesk_default_user_email:

@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Provider;
 
+use Guzzle\Http\Url;
+
 use Doctrine\ORM\EntityManager;
 
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
@@ -89,7 +91,18 @@ class ConfigurationProvider
      */
     public function getZendeskUrl()
     {
-        return $this->getConfigurationSetting(self::ZENDESK_URL_FIELD_NAME, true);
+        $url = $this->getConfigurationSetting(self::ZENDESK_URL_FIELD_NAME, true);
+
+        $url = Url::factory($url);
+        $scheme = $url->getScheme();
+
+        if (empty($scheme)) {
+            $url->setHost($url->getPath())
+                ->setPath('')
+                ->setScheme('https');
+        }
+
+        return (string)$url;
     }
 
     /**
