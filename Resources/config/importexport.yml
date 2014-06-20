@@ -1,5 +1,6 @@
 parameters:
-    orocrm_zendesk.importexport.reader.zendesk_api.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Reader\ZendeskAPIReader
+    orocrm_zendesk.importexport.reader.zendesk_api.class:   OroCRM\Bundle\ZendeskBundle\ImportExport\Reader\ZendeskAPIReader
+    orocrm_zendesk.importexport.reader.ticket_reader.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Reader\TicketReader
 
     orocrm_zendesk.importexport.normalizer.user.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserNormalizer
     orocrm_zendesk.importexport.normalizer.user_role.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserRoleNormalizer
@@ -22,6 +23,10 @@ services:
         arguments:
           - @oro_importexport.context_registry
           - @orocrm_zendesk.rest_client_factory
+
+    orocrm_zendesk.importexport.reader.ticket_reader:
+        parent: orocrm_zendesk.importexport.reader.zendesk_api
+        class: %orocrm_zendesk.importexport.reader.ticket_reader.class%
 
     # Processors
     orocrm_zendesk.importexport.processor.user_sync:
