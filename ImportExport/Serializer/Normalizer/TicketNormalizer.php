@@ -10,8 +10,7 @@ class TicketNormalizer extends AbstractNormalizer
     protected function getFieldRules()
     {
         return array(
-            array(
-                'denormalized' => 'originId',
+            'originId' => array(
                 'normalized' => 'id',
                 'primary' => true,
             ),
