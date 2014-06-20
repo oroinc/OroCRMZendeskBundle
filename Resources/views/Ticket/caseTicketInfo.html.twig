@@ -37,7 +37,7 @@
                         {% set href = orocrm_zendesk_ticket_path(ticket) %}
                         {% set url %}
                             {% if href %}
-                                <a href="{{ href }}">
+                                <a href="{{ href }}" target="_blank" class="no-hash">
                                     {{ href }}
                                 </a>
                             {% endif %}

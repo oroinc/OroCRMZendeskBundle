@@ -17,6 +17,7 @@ use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\ImportExportBundle\Strategy\StrategyInterface;
+use Symfony\Component\Security\Core\Util\ClassUtils;
 
 abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareInterface
 {
@@ -141,15 +142,19 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
             );
         }
 
-        if (get_class($target) !== get_class($source)) {
+        $targetClass = ClassUtils::getRealClass($target);
+        $sourceClass = ClassUtils::getRealClass($source);
+        if ($targetClass !== $sourceClass) {
             throw new InvalidArgumentException(
-                'Expect argument $source is instance of %s but %s given.',
-                get_class($target),
-                get_class($source)
+                sprintf(
+                    'Expect argument $sourceClass is instance of %s but %s given.',
+                    $targetClass,
+                    $sourceClass
+                )
             );
         }
 
-        $reflectionClass = new \ReflectionClass($target);
+        $reflectionClass = new \ReflectionClass($targetClass);
 
         foreach ($reflectionClass->getProperties() as $property) {
             $propertyName = $property->getName();
