@@ -8,6 +8,7 @@ parameters:
     orocrm_zendesk.importexport.normalizer.ticket_status.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketStatusNormalizer
     orocrm_zendesk.importexport.normalizer.ticket_priority.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketPriorityNormalizer
     orocrm_zendesk.importexport.normalizer.ticket_type.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketTypeNormalizer
+    orocrm_zendesk.importexport.normalizer.ticket_comment.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketCommentNormalizer
 
     orocrm_zendesk.importexport.strategy.abstract_sync.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\AbstractSyncStrategy
     orocrm_zendesk.importexport.strategy.user_sync.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\UserSyncStrategy
@@ -79,6 +80,11 @@ services:
 
     orocrm_zendesk.importexport.normalizer.ticket_type:
         class: %orocrm_zendesk.importexport.normalizer.ticket_type.class%
+        tags:
+            - { name: oro_importexport.normalizer }
+
+    orocrm_zendesk.importexport.normalizer.ticket_comment:
+        class: %orocrm_zendesk.importexport.normalizer.ticket_comment.class%
         tags:
             - { name: oro_importexport.normalizer }
 
