@@ -1,6 +1,7 @@
 parameters:
     orocrm_zendesk.entity.user.class:                          OroCRM\Bundle\ZendeskBundle\Entity\User
     orocrm_zendesk.entity.ticket.class:                        OroCRM\Bundle\ZendeskBundle\Entity\Ticket
+    orocrm_zendesk.entity.ticket_comment.class:                OroCRM\Bundle\ZendeskBundle\Entity\TicketComment
     orocrm_zendesk.configuration_provider.class:               OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider
     orocrm_zendesk.entity_mapper.class:                        OroCRM\Bundle\ZendeskBundle\Model\EntityMapper
     orocrm_zendesk.rest_client_factory.class:                  OroCRM\Bundle\ZendeskBundle\Model\RestClientFactory

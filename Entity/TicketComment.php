@@ -36,7 +36,7 @@ class TicketComment
 
     /**
      * @var int
-     * @ORM\Column(name="origin_id", type="integer", nullable=true, unique=true)
+     * @ORM\Column(name="origin_id", type="bigint", nullable=true, unique=true)
      */
     protected $originId;
 
@@ -87,7 +87,7 @@ class TicketComment
     /**
      * @var CaseComment
      *
-     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseComment")
+     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseComment", cascade={"persist"})
      * @ORM\JoinColumn(name="related_comment_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedComment;
@@ -178,7 +178,7 @@ class TicketComment
      * @param User $author
      * @return TicketComment
      */
-    public function setAuthor(User $author)
+    public function setAuthor(User $author = null)
     {
         $this->author = $author;
         return $this;
@@ -196,7 +196,7 @@ class TicketComment
      * @param Ticket $ticket
      * @return TicketComment
      */
-    public function setTicket(Ticket $ticket)
+    public function setTicket(Ticket $ticket = null)
     {
         $this->ticket = $ticket;
 
@@ -215,7 +215,7 @@ class TicketComment
      * @param CaseComment $caseComment
      * @return TicketComment
      */
-    public function setRelatedComment(CaseComment $caseComment)
+    public function setRelatedComment(CaseComment $caseComment = null)
     {
         $this->relatedComment = $caseComment;
 
@@ -234,7 +234,7 @@ class TicketComment
      * @param \DateTime $createdAt
      * @return TicketComment
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTime $createdAt = null)
     {
         $this->createdAt = $createdAt;
 

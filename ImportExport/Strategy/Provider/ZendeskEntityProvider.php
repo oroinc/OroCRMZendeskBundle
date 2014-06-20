@@ -56,8 +56,17 @@ class ZendeskEntityProvider
      */
     public function getTicket(Ticket $ticket)
     {
+        return $this->getTicketByOriginId($ticket->getOriginId());
+    }
+
+    /**
+     * @param string $originId
+     * @return Ticket|null
+     */
+    public function getTicketByOriginId($originId)
+    {
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:Ticket')
-            ->findOneBy(array('originId' => $ticket->getOriginId()));
+            ->findOneBy(array('originId' => $originId));
 
         return $result;
     }

@@ -78,7 +78,7 @@ class OroCRMZendeskBundle implements Migration
         /** Generate table orocrm_zd_ticket **/
         $table = $schema->createTable('orocrm_zd_ticket');
         $table->addColumn('id', 'integer', array('autoincrement' => true));
-        $table->addColumn('origin_id', 'integer', array('unique' => true, 'notnull' => false));
+        $table->addColumn('origin_id', 'bigint', array('unique' => true, 'notnull' => false));
         $table->addColumn('case_id', 'integer', array('notnull' => false));
         $table->addColumn('assignee_id', 'integer', array('notnull' => false));
         $table->addColumn('status_name', 'string', array('notnull' => false, 'length' => 16));
@@ -169,7 +169,7 @@ class OroCRMZendeskBundle implements Migration
         /** Generate table orocrm_zd_user **/
         $table = $schema->createTable('orocrm_zd_user');
         $table->addColumn('id', 'integer', array('autoincrement' => true));
-        $table->addColumn('origin_id', 'integer', array('unique' => true, 'notnull' => false));
+        $table->addColumn('origin_id', 'bigint', array('unique' => true, 'notnull' => false));
         $table->addColumn('related_user_id', 'integer', array('notnull' => false));
         $table->addColumn('role_name', 'string', array('notnull' => false, 'length' => 16));
         $table->addColumn('related_contact_id', 'integer', array('notnull' => false));
@@ -316,7 +316,7 @@ class OroCRMZendeskBundle implements Migration
         /** Generate table orocrm_zd_comment **/
         $table = $schema->createTable('orocrm_zd_comment');
         $table->addColumn('id', 'integer', array('autoincrement' => true));
-        $table->addColumn('origin_id', 'integer', array('notnull' => false, 'unique' => true));
+        $table->addColumn('origin_id', 'bigint', array('notnull' => false, 'unique' => true));
         $table->addColumn('related_comment_id', 'integer', array('notnull' => false));
         $table->addColumn('ticket_id', 'integer', array('notnull' => false));
         $table->addColumn('author_id', 'integer', array('notnull' => false));

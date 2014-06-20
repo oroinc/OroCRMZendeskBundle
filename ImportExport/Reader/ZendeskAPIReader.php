@@ -53,6 +53,10 @@ class ZendeskAPIReader extends IteratorBasedReader
 
         $client = $this->clientFactory->getRestClient();
 
-        return new RestIterator($client, $resource, $params);
+        $result = new RestIterator($client, $resource, $params);
+        if ($context->hasOption('readerDataKeyName')) {
+            $result->setDataKeyName($context->getOption('readerDataKeyName'));
+        }
+        return $result;
     }
 }

@@ -25,6 +25,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
  *      }
  *  }
  * )
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 class Ticket
 {
@@ -39,7 +40,7 @@ class Ticket
 
     /**
      * @var int
-     * @ORM\Column(name="origin_id", type="integer", nullable=true, unique=true)
+     * @ORM\Column(name="origin_id", type="bigint", nullable=true, unique=true)
      */
     protected $originId;
 
@@ -74,7 +75,7 @@ class Ticket
     /**
      * @var Ticket
      *
-     * @ORM\OneToOne(targetEntity="Ticket", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Ticket")
      * @ORM\JoinColumn(name="problem_id", referencedColumnName="id")
      */
     protected $problem;
@@ -82,7 +83,7 @@ class Ticket
     /**
      * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="User", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="User")
      * @ORM\JoinTable(name="orocrm_zd_ticket_collaborators",
      *      joinColumns={@ORM\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="CASCADE")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")}
@@ -93,7 +94,7 @@ class Ticket
     /**
      * @var TicketType
      *
-     * @ORM\ManyToOne(targetEntity="TicketType", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="TicketType")
      * @ORM\JoinColumn(name="type_name", referencedColumnName="name", onDelete="SET NULL")
      */
     protected $type;
@@ -101,7 +102,7 @@ class Ticket
     /**
      * @var TicketStatus
      *
-     * @ORM\ManyToOne(targetEntity="TicketStatus", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="TicketStatus")
      * @ORM\JoinColumn(name="status_name", referencedColumnName="name", onDelete="SET NULL")
      */
     protected $status;
@@ -109,7 +110,7 @@ class Ticket
     /**
      * @var TicketPriority
      *
-     * @ORM\ManyToOne(targetEntity="TicketPriority", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="TicketPriority")
      * @ORM\JoinColumn(name="priority_name", referencedColumnName="name", onDelete="SET NULL")
      */
     protected $priority;
@@ -124,7 +125,7 @@ class Ticket
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="requester_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $requester;
@@ -132,7 +133,7 @@ class Ticket
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="submitter_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $submitter;
@@ -140,7 +141,7 @@ class Ticket
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="assignee_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $assignee;
@@ -174,6 +175,17 @@ class Ticket
     protected $updatedAt;
 
     /**
+     * @var Collection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="TicketComment",
+     *     mappedBy="ticket",
+     *     orphanRemoval=true
+     * )
+     */
+    protected $comments;
+
+    /**
      * @var CaseEntity
      *
      * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseEntity", cascade={"persist"})
@@ -187,6 +199,7 @@ class Ticket
     public function __construct()
     {
         $this->collaborators = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     /**
@@ -334,7 +347,7 @@ class Ticket
      * @param User $user
      * @return Ticket
      */
-    public function addCollaborator(User $user = null)
+    public function addCollaborator(User $user)
     {
         if (!$this->getCollaborators()->contains($user)) {
             $this->getCollaborators()->add($user);
@@ -346,7 +359,7 @@ class Ticket
      * @param User $user
      * @return Ticket
      */
-    public function removeCollaborator(User $user = null)
+    public function removeCollaborator(User $user)
     {
         if (!$this->getCollaborators()->contains($user)) {
             $this->getCollaborators()->remove($user);
@@ -561,6 +574,50 @@ class Ticket
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Collection $comments
+     * @return Ticket
+     */
+    public function setComments(Collection $comments)
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
+
+    /**
+     * @param TicketComment $comment
+     * @return Ticket
+     */
+    public function addComment(TicketComment $comment)
+    {
+        $this->getComments()->add($comment);
+        $comment->setTicket($this);
+
+        return $this;
+    }
+
+    /**
+     * @param TicketComment $comment
+     * @return Ticket
+     */
+    public function removeComment(TicketComment $comment)
+    {
+        if (!$this->getComments()->contains($comment)) {
+            $this->getComments()->remove($comment);
+            $comment->setTicket(null);
+        }
+        return $this;
     }
 
     /**

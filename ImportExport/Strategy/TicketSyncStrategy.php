@@ -12,6 +12,8 @@ use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
 
 class TicketSyncStrategy extends AbstractSyncStrategy
 {
+    const COMMENT_TICKETS = 'comment_tickets';
+
     /**
      * @var CaseEntityManager
      */
@@ -78,7 +80,19 @@ class TicketSyncStrategy extends AbstractSyncStrategy
 
         $this->syncRelatedEntities($entity);
 
+        $this->saveCommentTickets($entity);
+
         return $entity;
+    }
+
+    /**
+     * @param Ticket $entity
+     */
+    protected function saveCommentTickets(Ticket $entity)
+    {
+        $value = (array)$this->getContext()->getValue(self::COMMENT_TICKETS);
+        $value[] = $entity->getOriginId();
+        $this->getContext()->setValue(self::COMMENT_TICKETS, $value);
     }
 
     /**
@@ -109,13 +123,12 @@ class TicketSyncStrategy extends AbstractSyncStrategy
      */
     protected function syncCollaborators(Ticket $entity)
     {
-        $collaborators = $entity->getCollaborators();
-        foreach ($collaborators as $key => $value) {
+        $collaborators = $entity->getCollaborators()->getValues();
+        $entity->getCollaborators()->clear();
+        foreach ($collaborators as $value) {
             $user = $this->zendeskProvider->getUser($value);
             if ($user) {
-                $collaborators->set($key, $user);
-            } else {
-                $collaborators->remove($key);
+                $entity->addCollaborator($user);
             }
         }
     }

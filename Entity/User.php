@@ -40,7 +40,7 @@ class User
 
     /**
      * @var int
-     * @ORM\Column(name="origin_id", type="integer", nullable=true, unique=true)
+     * @ORM\Column(name="origin_id", type="bigint", nullable=true, unique=true)
      */
     protected $originId;
 

@@ -50,8 +50,12 @@ class TicketTest extends \PHPUnit_Framework_TestCase
         $case = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Entity\CaseEntity')
             ->disableOriginalConstructor()
             ->getMock();
+        $comment = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment')
+            ->disableOriginalConstructor()
+            ->getMock();
         $ticket = new Ticket();
         $collaborators = new ArrayCollection(array($zendeskUser));
+        $comments = new ArrayCollection(array($comment));
         return array(
             array('originId', 123456789),
             array('url', 'test.com'),
@@ -71,7 +75,8 @@ class TicketTest extends \PHPUnit_Framework_TestCase
             array('externalId', uniqid()),
             array('problem', $ticket),
             array('collaborators', $collaborators),
-            array('hasIncidents', true)
+            array('hasIncidents', true),
+            array('comments', $comments),
         );
     }
 }

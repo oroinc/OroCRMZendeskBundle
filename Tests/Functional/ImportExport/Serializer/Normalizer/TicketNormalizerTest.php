@@ -9,8 +9,8 @@ use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 
 class TicketNormalizerTest extends WebTestCase
 {
@@ -58,6 +58,16 @@ class TicketNormalizerTest extends WebTestCase
                     'due_at' => $dueAt = '2014-06-10T10:26:21Z',
                     'created_at' => $createdAt = '2014-06-12T11:45:21Z',
                     'updated_at' => $updatedAt = '2014-06-13T09:57:54Z',
+                    'comments' => array(
+                        array(
+                            'id' => $commentOriginId = 100,
+                            'author_id' => $commentAuthorId = 105,
+                            'body' => $commentBody = 'Body',
+                            'html_body' => $commentHtmlBody = '<p>Body</p>',
+                            'public' => $commentPublic = true,
+                            'created_at' => $commentCreatedAt = '2014-06-12T11:45:21Z',
+                        ),
+                    ),
                 ),
                 'expected' => $this->createTicket()
                     ->setOriginId($originId)
@@ -80,6 +90,14 @@ class TicketNormalizerTest extends WebTestCase
                     ->setDueAt(new \DateTime($dueAt))
                     ->setCreatedAt(new \DateTime($createdAt))
                     ->setUpdatedAt(new \DateTime($updatedAt))
+                    ->addComment(
+                        $this->createTicketComment($commentOriginId)
+                            ->setAuthor($this->createUser($commentAuthorId))
+                            ->setBody($commentBody)
+                            ->setHtmlBody($commentHtmlBody)
+                            ->setPublic($commentPublic)
+                            ->setCreatedAt(new \DateTime($commentCreatedAt))
+                    )
             ),
             'short' => array(
                 'data' => 100,
@@ -94,6 +112,17 @@ class TicketNormalizerTest extends WebTestCase
     protected function createTicket()
     {
         $result = new Ticket();
+        return $result;
+    }
+
+    /**
+     * @param int $id
+     * @return TicketComment
+     */
+    protected function createTicketComment($id)
+    {
+        $result = new TicketComment();
+        $result->setOriginId($id);
         return $result;
     }
 
