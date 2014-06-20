@@ -1,6 +1,7 @@
 parameters:
     orocrm_zendesk.entity.user.class:                          OroCRM\Bundle\ZendeskBundle\Entity\User
-    orocrm_zendesk.provider.type.configuration_provider.class: OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider
+    orocrm_zendesk.entity.ticket.class:                        OroCRM\Bundle\ZendeskBundle\Entity\Ticket
+    orocrm_zendesk.configuration_provider.class:               OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider
     orocrm_zendesk.entity_mapper.class:                        OroCRM\Bundle\ZendeskBundle\Model\EntityMapper
     orocrm_zendesk.rest_client_factory.class:                  OroCRM\Bundle\ZendeskBundle\Model\RestClientFactory
     orocrm_zendesk.twig.extension.case_ticket.class:           OroCRM\Bundle\ZendeskBundle\Twig\CaseTicketExtension
@@ -14,8 +15,8 @@ services:
             - @doctrine.orm.entity_manager
             - %orocrm_zendesk.map%
 
-    orocrm_zendesk.provider.type.configuration_provider:
-        class: %orocrm_zendesk.provider.type.configuration_provider.class%
+    orocrm_zendesk.configuration_provider:
+        class: %orocrm_zendesk.configuration_provider.class%
         arguments:
             - @doctrine.orm.entity_manager
             - @oro_config.global
@@ -23,7 +24,7 @@ services:
     orocrm_zendesk.rest_client_factory:
         class: %orocrm_zendesk.rest_client_factory.class%
         arguments:
-            - @orocrm_zendesk.provider.type.configuration_provider
+            - @orocrm_zendesk.configuration_provider
 
     orocrm_zendesk.twig.extension.case_ticket:
         class: %orocrm_zendesk.twig.extension.case_ticket.class%
@@ -35,7 +36,7 @@ services:
     orocrm_zendesk.twig.extension.ticket_path:
         class: %orocrm_zendesk.twig.extension.ticket_path.class%
         arguments:
-            - @orocrm_zendesk.provider.type.configuration_provider
+            - @orocrm_zendesk.configuration_provider
         tags:
             - { name: twig.extension }
 

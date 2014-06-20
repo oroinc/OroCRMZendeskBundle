@@ -11,15 +11,21 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
     /**
      * @var array
      */
-    protected static $casesData = array(
+    protected static $data = array(
         array(
             'subject'       => 'Case #1',
             'description'   => 'Case #1: Description',
-            'reference'     => 'orocrm_zendesk_case'
+            'reference'     => 'orocrm_zendesk_case_1'
         ),
         array(
             'subject'       => 'Case #2',
-            'description'   => 'Case #2: Description'
+            'description'   => 'Case #2: Description',
+            'reference'     => 'orocrm_zendesk_case_2'
+        ),
+        array(
+            'subject'       => 'Case #3',
+            'description'   => 'Case #3: Description',
+            'reference'     => 'orocrm_zendesk_case_3'
         ),
     );
 
@@ -30,23 +36,23 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
     {
         $caseManager = $this->container->get('orocrm_case.manager');
 
-        foreach (static::$casesData as $caseData) {
-            $case = $caseManager->createCase()
-                ->setSubject($caseData['subject'])
-                ->setDescription($caseData['description']);
+        foreach (static::$data as $data) {
+            $entity = $caseManager->createCase();
 
-            $manager->persist($case);
-
-            if (isset($caseData['reference'])) {
-                $this->setReference($caseData['reference'], $case);
+            if (isset($data['reference'])) {
+                $this->setReference($data['reference'], $entity);
             }
+
+            $this->setEntityPropertyValues($entity, $data, array('reference'));
+
+            $manager->persist($entity);
         }
 
         $manager->flush();
     }
 
-    public static function getCaseData()
+    public static function getData()
     {
-        return self::$casesData;
+        return self::$data;
     }
 }

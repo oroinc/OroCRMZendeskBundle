@@ -22,12 +22,28 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             'role' => UserRole::ROLE_AGENT,
         ),
         array(
+            'originId' => 1016,
+            'url' => 'https://foo.zendesk.com/api/v2/users/1016.json',
+            'name' => 'James Cook',
+            'email' => 'james.cook@orouser.com',
+            'role' => UserRole::ROLE_AGENT,
+            'relatedUser' => 'james.cook@orouser.com',
+        ),
+        array(
+            'originId' => 1010,
+            'url' => 'https://foo.zendesk.com/api/v2/users/1010.json',
+            'name' => 'Robert Williams',
+            'email' => 'robert.williams@zendeskagent.com',
+            'role' => UserRole::ROLE_END_USER,
+            'relatedContact' => 'jim.smith@contact.com',
+        ),
+        array(
             'originId' => 1011,
             'url' => 'https://foo.zendesk.com/api/v2/users/1011.json',
             'name' => 'Alex Taylor',
             'email' => 'alex.taylor@zendeskagent.com',
             'role' => UserRole::ROLE_END_USER,
-        )
+        ),
     );
 
     /**
@@ -37,10 +53,16 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
     {
         foreach ($this->data as $data) {
             $entity = new User();
-            $this->setEntityPropertyValues($entity, $data, array('role'));
             if (isset($data['role'])) {
-                $entity->setRole($manager->find('OroCRMZendeskBundle:UserRole', $data['role']));
+                $data['role'] = $manager->find('OroCRMZendeskBundle:UserRole', $data['role']);
             }
+            if (isset($data['relatedUser'])) {
+                $data['relatedUser'] = $this->getReference($data['relatedUser']);
+            }
+            if (isset($data['relatedContact'])) {
+                $data['relatedContact'] = $this->getReference($data['relatedContact']);
+            }
+            $this->setEntityPropertyValues($entity, $data);
             $this->setReference($entity->getEmail(), $entity);
 
             $manager->persist($entity);

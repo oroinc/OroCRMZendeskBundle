@@ -296,7 +296,7 @@ class Ticket
      * @param Ticket $problem
      * @return Ticket
      */
-    public function setProblem(Ticket $problem)
+    public function setProblem(Ticket $problem = null)
     {
         $this->problem = $problem;
 
@@ -312,10 +312,10 @@ class Ticket
     }
 
     /**
-     * @param ArrayCollection $collaborators
+     * @param Collection $collaborators
      * @return Ticket
      */
-    public function setCollaborators(ArrayCollection $collaborators)
+    public function setCollaborators(Collection $collaborators)
     {
         $this->collaborators = $collaborators;
 
@@ -334,7 +334,7 @@ class Ticket
      * @param User $user
      * @return Ticket
      */
-    public function addCollaborator(User $user)
+    public function addCollaborator(User $user = null)
     {
         if (!$this->getCollaborators()->contains($user)) {
             $this->getCollaborators()->add($user);
@@ -346,7 +346,7 @@ class Ticket
      * @param User $user
      * @return Ticket
      */
-    public function removeCollaborator(User $user)
+    public function removeCollaborator(User $user = null)
     {
         if (!$this->getCollaborators()->contains($user)) {
             $this->getCollaborators()->remove($user);
@@ -358,7 +358,7 @@ class Ticket
      * @param TicketType $type
      * @return Ticket
      */
-    public function setType(TicketType $type)
+    public function setType(TicketType $type = null)
     {
         $this->type = $type;
 
@@ -377,7 +377,7 @@ class Ticket
      * @param TicketStatus $status
      * @return Ticket
      */
-    public function setStatus(TicketStatus $status)
+    public function setStatus(TicketStatus $status = null)
     {
         $this->status = $status;
 
@@ -396,7 +396,7 @@ class Ticket
      * @param TicketPriority $priority
      * @return Ticket
      */
-    public function setPriority(TicketPriority $priority)
+    public function setPriority(TicketPriority $priority = null)
     {
         $this->priority = $priority;
 
@@ -434,7 +434,7 @@ class Ticket
      * @param User $requester
      * @return Ticket
      */
-    public function setRequester(User $requester)
+    public function setRequester(User $requester = null)
     {
         $this->requester = $requester;
 
@@ -453,7 +453,7 @@ class Ticket
      * @param User $submitter
      * @return Ticket
      */
-    public function setSubmitter(User $submitter)
+    public function setSubmitter(User $submitter = null)
     {
         $this->submitter = $submitter;
 
@@ -472,7 +472,7 @@ class Ticket
      * @param User $assignee
      * @return Ticket
      */
-    public function setAssignee(User $assignee)
+    public function setAssignee(User $assignee = null)
     {
         $this->assignee = $assignee;
 
@@ -493,7 +493,7 @@ class Ticket
      */
     public function setHasIncidents($hasIncidents)
     {
-        $this->hasIncidents = $hasIncidents;
+        $this->hasIncidents = (bool)$hasIncidents;
 
         return $this;
     }
@@ -510,7 +510,7 @@ class Ticket
      * @param \DateTime $dueAt
      * @return Ticket
      */
-    public function setDueAt(\DateTime $dueAt)
+    public function setDueAt(\DateTime $dueAt = null)
     {
         $this->dueAt = $dueAt;
 
@@ -529,7 +529,7 @@ class Ticket
      * @param \DateTime $createdAt
      * @return Ticket
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTime $createdAt = null)
     {
         $this->createdAt = $createdAt;
 
@@ -548,7 +548,7 @@ class Ticket
      * @param \DateTime $updatedAt
      * @return Ticket
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTime $updatedAt = null)
     {
         $this->updatedAt = $updatedAt;
 
@@ -567,7 +567,7 @@ class Ticket
      * @param CaseEntity $case
      * @return Ticket
      */
-    public function setRelatedCase(CaseEntity $case)
+    public function setRelatedCase(CaseEntity $case = null)
     {
         $this->relatedCase = $case;
 

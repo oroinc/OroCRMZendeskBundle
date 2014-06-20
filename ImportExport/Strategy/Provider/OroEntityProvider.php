@@ -4,11 +4,13 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider;
 
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\UserBundle\Entity\User as OroUser;
+use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ContactBundle\Entity\ContactPhone;
-use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
+use OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider;
 
-class ContactProvider
+class OroEntityProvider
 {
     /**
      * @var EntityManager
@@ -16,11 +18,38 @@ class ContactProvider
     protected $entityManager;
 
     /**
-     * @param EntityManager $entityManager
+     * @var ConfigurationProvider
      */
-    public function __construct(EntityManager $entityManager)
+    protected $configurationProvider;
+
+    /**
+     * @param EntityManager $entityManager
+     * @param ConfigurationProvider $configurationProvider
+     */
+    public function __construct(EntityManager $entityManager, ConfigurationProvider $configurationProvider)
     {
         $this->entityManager = $entityManager;
+        $this->configurationProvider = $configurationProvider;
+    }
+
+    /**
+     * @param ZendeskUser $user
+     * @return OroUser|null
+     */
+    public function getUser(ZendeskUser $user)
+    {
+        $oroUser = $this->entityManager->getRepository('OroUserBundle:User')
+            ->findOneBy(array('email' => $user->getEmail()));
+
+        return $oroUser;
+    }
+
+    /**
+     * @return OroUser|null
+     */
+    public function getDefaultUser()
+    {
+        return $this->configurationProvider->getOroDefaultUser();
     }
 
     /**

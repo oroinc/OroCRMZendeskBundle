@@ -36,6 +36,16 @@ class UserSyncStrategyTest extends WebTestCase
         $this->strategy->setImportExportContext($context);
     }
 
+    /**
+     * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Imported entity must be instance of OroCRM\Bundle\ZendeskBundle\Entity\User,
+     * stdClass given.
+     */
+    public function testProcessInvalidArgumentFails()
+    {
+        $this->strategy->process(new \stdClass());
+    }
+
     public function testProcessNewZendeskUser()
     {
         $zendeskUser = $this->createZendeskUser()->setOriginId(1);

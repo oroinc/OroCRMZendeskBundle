@@ -10,7 +10,7 @@ use Psr\Log\NullLogger;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskProvider;
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskEntityProvider;
 
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
@@ -31,7 +31,7 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     protected $entityManager;
 
     /**
-     * @var ZendeskProvider
+     * @var ZendeskEntityProvider
      */
     protected $zendeskProvider;
 
@@ -54,11 +54,8 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     public function validateOriginId($entity)
     {
         if (!$entity->getOriginId()) {
-            $message = $this->buildMessage(
-                'Can\'t process record [id=null].',
-                $this->getContext()->getReadCount(),
-                'read_index'
-            );
+            $readPosition = $this->getContext()->getReadCount();
+            $message = "Can't process record with empty id at read position $readPosition.";
 
             $this->getContext()->addError($message);
             $this->getLogger()->error($message);
@@ -80,9 +77,9 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     }
 
     /**
-     * @param ZendeskProvider $zendeskProvider
+     * @param ZendeskEntityProvider $zendeskProvider
      */
-    public function setZendeskProvider(ZendeskProvider $zendeskProvider)
+    public function setZendeskProvider(ZendeskEntityProvider $zendeskProvider)
     {
         $this->zendeskProvider = $zendeskProvider;
     }
@@ -111,12 +108,10 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
             $value = $this->zendeskProvider->$providerGetter($entity->$entityGetter());
             if (!$value) {
                 $valueName = $entity->$entityGetter()->getName();
-                $this->getLogger()->warning(
-                    $this->buildMessage("Can't find $fieldName [name=$valueName].", $entity)
-                );
+                $this->getLogger()->warning("Can't find Zendesk $fieldName [name=$valueName].");
             }
         } else {
-            $this->getLogger()->warning($this->buildMessage(ucfirst($fieldName) . " is empty.", $entity));
+            $this->getLogger()->warning("Zendesk $fieldName is empty.");
         }
         $entity->$entitySetter($value);
     }
@@ -216,38 +211,14 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     }
 
     /**
-     * @return LoggerInterface
+     * @return SyncLogger
      */
     protected function getLogger()
     {
         if (null === $this->logger) {
-            $logger = $this->context->getOption('logger');
-            if ($logger instanceof LoggerInterface) {
-                $this->logger = $logger;
-            } else {
-                $this->logger = new NullLogger();
-            }
+            $this->logger = new SyncLogger($this->context->getOption('logger'));
         }
 
         return $this->logger;
-    }
-
-    /**
-     * Build message for log
-     *
-     * @param string $message
-     * @param mixed $record
-     * @param string $property
-     * @param string $displayProperty
-     * @return string
-     */
-    protected function buildMessage($message, $record, $property = 'id', $displayProperty = null)
-    {
-        $displayProperty = $property ? : $displayProperty;
-        if (is_object($record)) {
-            $record = $record->{'get' . ucfirst($property)}();
-        }
-
-        return sprintf('Record [%s=%s]: %s', $displayProperty, $record, $message);
     }
 }

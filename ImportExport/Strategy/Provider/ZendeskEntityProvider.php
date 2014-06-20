@@ -10,8 +10,9 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
 
-class ZendeskProvider
+class ZendeskEntityProvider
 {
     /**
      * @var EntityManager
@@ -24,6 +25,18 @@ class ZendeskProvider
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @param User $user
+     * @return User|null
+     */
+    public function getUser(User $user)
+    {
+        $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
+            ->findOneByOriginId($user->getOriginId());
+
+        return $result;
     }
 
     /**

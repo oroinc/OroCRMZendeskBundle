@@ -2,11 +2,11 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\Controller;
 
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadCaseEntityData;
-use OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketEntityData;
-use OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadUserEntityData;
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use Symfony\Component\DomCrawler\Crawler;
+
+use Doctrine\ORM\EntityManager;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 /**
  * @outputBuffering enabled
@@ -16,94 +16,91 @@ use Symfony\Component\DomCrawler\Crawler;
 class CaseControllerTest extends WebTestCase
 {
     /**
-     * @var int
+     * @var string
      */
-    protected static $caseId;
+    protected static $caseWithTicketSubject = 'Case #1';
 
     /**
      * @var string
      */
-    protected static $caseSubject;
+    protected static $caseWithoutTicketSubject = 'Case #3';
 
     /**
      * @var int
      */
-    protected static $secondCaseId;
+    protected static $caseWithTicketId;
 
     /**
-     * @var string
+     * @var int
      */
-    protected static $secondCaseSubject;
+    protected static $caseWithoutTicketId;
 
     protected function setUp()
     {
         $this->initClient(array(), $this->generateBasicAuthHeader());
 
-        $this->loadFixtures(array('OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketEntityData'));
+        $this->loadFixtures(array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'));
     }
 
     protected function postFixtureLoad()
     {
-        $caseData = LoadCaseEntityData::getCaseData();
-
         $repository = $this->getContainer()->get('doctrine.orm.entity_manager')
             ->getRepository('OroCRMCaseBundle:CaseEntity');
-        static::$caseSubject = $caseData[0]['subject'];
-        $case = $repository->findOneBySubject(static::$caseSubject);
 
+        $case = $repository->findOneBySubject(static::$caseWithTicketSubject);
         $this->assertNotNull($case);
 
-        static::$caseId = $case->getId();
+        static::$caseWithTicketId = $case->getId();
 
-        static::$secondCaseSubject = $caseData[1]['subject'];
-        $case = $repository->findOneBySubject(static::$secondCaseSubject);
-
+        $case = $repository->findOneBySubject(static::$caseWithoutTicketSubject);
         $this->assertNotNull($case);
 
-        static::$secondCaseId = $case->getId();
+        static::$caseWithoutTicketId = $case->getId();
     }
 
     public function testViewContainTicketInfoOnlyIfTicketLinked()
     {
         $crawler = $this->client->request(
             'GET',
-            $this->getUrl('orocrm_case_view', array('id' => static::$secondCaseId))
+            $this->getUrl('orocrm_case_view', array('id' => static::$caseWithoutTicketId))
         );
 
         $result = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
-        $this->assertContains(static::$secondCaseSubject." - Cases - Activities", $crawler->html());
+        $this->assertContains(static::$caseWithoutTicketSubject." - Cases - Activities", $crawler->html());
         $this->assertNotContains("Zendesk ticket info", $crawler->html());
     }
 
     public function testViewHaveCorrectFields()
     {
+        /** @var Ticket $expectedTicket */
+        $expectedTicket = $this->getContainer()->get('doctrine.orm.entity_manager')
+            ->getRepository('OroCRMZendeskBundle:Ticket')->findOneByOriginId(42);
+        $this->assertNotNull($expectedTicket);
+
         $crawler = $this->client->request(
             'GET',
-            $this->getUrl('orocrm_case_view', array('id' => static::$caseId))
+            $this->getUrl('orocrm_case_view', array('id' => static::$caseWithTicketId))
         );
         $result = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
 
-        $this->assertContains(static::$caseSubject." - Cases - Activities", $crawler->html());
+        $this->assertContains(static::$caseWithTicketSubject." - Cases - Activities", $crawler->html());
         $this->assertContains("Zendesk ticket info", $crawler->html());
 
         $crawler = $crawler->filterXPath('//span[text()="Zendesk ticket info"]')->parents();
 
-        $ticketData = LoadTicketEntityData::getTicketsData();
-        $expectedTicket = $ticketData[0];
-
         $externalId = $this->getFieldValue("Ticket Number", $crawler);
-        $this->assertEquals($expectedTicket['originId'], $externalId->html());
+        $this->assertEquals($expectedTicket->getOriginId(), $externalId->html());
 
         $url = $this->getFieldValue("Url", $crawler);
         $this->assertNotEmpty($url->html());
 
         $problem = $this->getFieldValue("Problem", $crawler);
-        $this->assertContains(static::$caseSubject, $problem->html());
+        $this->assertContains($expectedTicket->getProblem()->getSubject(), $problem->html());
 
         $recipient = $this->getFieldValue("Recipient email", $crawler);
-        $this->assertContains($expectedTicket['recipient'], $recipient->html());
+        $this->assertContains($expectedTicket->getRecipient(), $recipient->html());
 
         $collaborators = $this->getFieldValue("Collaborators", $crawler);
         $this->assertContains('Fred Taylor', $collaborators->html());
@@ -119,13 +116,13 @@ class CaseControllerTest extends WebTestCase
         $this->assertContains('Alex Taylor', $requester->html());
 
         $status = $this->getFieldValue("Status", $crawler);
-        $this->assertContains($expectedTicket['status_label'], $status->html());
+        $this->assertContains($expectedTicket->getStatus()->getLabel(), $status->html());
 
         $priority = $this->getFieldValue("Priority", $crawler);
-        $this->assertContains($expectedTicket['priority_label'], $priority->html());
+        $this->assertContains($expectedTicket->getPriority()->getLabel(), $priority->html());
 
         $type = $this->getFieldValue("Type", $crawler);
-        $this->assertContains($expectedTicket['type_label'], $type->html());
+        $this->assertContains($expectedTicket->getType()->getLabel(), $type->html());
     }
 
     protected function getFieldValue($label, Crawler $crawler)

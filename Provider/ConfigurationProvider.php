@@ -129,7 +129,7 @@ class ConfigurationProvider
     {
         $value = $this->configManager->get($name);
 
-        if ($value === null && $required) {
+        if ($value === '' && $required) {
             throw ConfigurationException::settingValueRequired($name);
         }
 

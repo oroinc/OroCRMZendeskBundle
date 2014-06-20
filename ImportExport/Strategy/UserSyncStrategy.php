@@ -6,32 +6,21 @@ use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
-
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ContactProvider;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroUserProvider;
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroEntityProvider;
 
 class UserSyncStrategy extends AbstractSyncStrategy
 {
     /**
-     * @var ContactProvider
+     * @var OroEntityProvider
      */
-    protected $contactProvider;
+    protected $oroEntityProvider;
 
     /**
-     * @var OroUserProvider
+     * @param OroEntityProvider $oroEntityProvider
      */
-    protected $oroUserProvider;
-
-    /**
-     * @param ContactProvider $contactProvider
-     * @param OroUserProvider $oroUserProvider
-     */
-    public function __construct(
-        ContactProvider $contactProvider,
-        OroUserProvider $oroUserProvider
-    ) {
-        $this->contactProvider = $contactProvider;
-        $this->oroUserProvider = $oroUserProvider;
+    public function __construct(OroEntityProvider $oroEntityProvider)
+    {
+        $this->oroEntityProvider = $oroEntityProvider;
     }
 
     /**
@@ -40,12 +29,19 @@ class UserSyncStrategy extends AbstractSyncStrategy
     public function process($entity)
     {
         if (!$entity instanceof ZendeskUser) {
-            throw new InvalidArgumentException('Imported entity must be instance of Zendesk User');
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Imported entity must be instance of OroCRM\\Bundle\\ZendeskBundle\\Entity\\User, %s given.',
+                    is_object($entity) ? get_class($entity) : gettype($entity)
+                )
+            );
         }
 
         if (!$this->validateOriginId($entity)) {
             return null;
         }
+
+        $this->getLogger()->setMessagePrefix("Zendesk User [id={$entity->getOriginId()}]: ");
 
         $this->refreshDictionaryField($entity, 'role', 'userRole');
 
@@ -54,10 +50,10 @@ class UserSyncStrategy extends AbstractSyncStrategy
             $this->syncProperties($existingUser, $entity, array('relatedUser', 'relatedContact', 'id'));
             $entity = $existingUser;
 
-            $this->getLogger()->debug($this->buildMessage("Update found record.", $entity));
+            $this->getLogger()->debug("Update found Zendesk user.");
             $this->getContext()->incrementUpdateCount();
         } else {
-            $this->getLogger()->debug($this->buildMessage("Add new record.", $entity));
+            $this->getLogger()->debug("Add new Zendesk user.");
             $this->getContext()->incrementAddCount();
         }
 
@@ -72,51 +68,41 @@ class UserSyncStrategy extends AbstractSyncStrategy
     protected function syncRelatedEntities(ZendeskUser $entity)
     {
         if ($this->isRelativeWithUser($entity) && $entity->getRelatedContact()) {
-            $relatedId = $entity->getRelatedContact()->getId();
             $this->getLogger()->info(
-                $this->buildMessage(
-                    "Unset related contact [id=$relatedId] due to incompatible role change.",
-                    $entity
-                )
+                "Unset related contact [id={$entity->getRelatedContact()->getId()}] due to incompatible role change."
             );
             $entity->setRelatedContact(null);
         }
 
         if ($this->isRelativeWithContact($entity) && $entity->getRelatedUser()) {
-            $relatedId = $entity->getRelatedUser()->getId();
             $this->getLogger()->info(
-                $this->buildMessage(
-                    "Unset related user [id=$relatedId] due to incompatible role change.",
-                    $entity
-                )
+                "Unset related user [id={$entity->getRelatedUser()->getId()}] due to incompatible role change."
             );
             $entity->setRelatedUser(null);
         }
 
-        if ($entity->getRelatedUser() || $entity->getRelatedContact() || !$entity->getEmail()) {
+        if ($entity->getRelatedUser() || $entity->getRelatedContact()) {
             return;
         }
 
-        if ($entity->isRoleIn(array(ZendeskUserRole::ROLE_ADMIN, ZendeskUserRole::ROLE_AGENT))) {
-            $relatedUser = $this->oroUserProvider->getUser($entity);
+        if ($this->isRelativeWithUser($entity)) {
+            $relatedUser = $this->oroEntityProvider->getUser($entity);
             if ($relatedUser) {
-                $this->getLogger()->debug(
-                    $this->buildMessage(
-                        "Related user found [id={$relatedUser->getId()}]",
-                        $entity
-                    )
-                );
+                if ($relatedUser->getId()) {
+                    $this->getLogger()->debug("Related user found [email={$relatedUser->getEmail()}].");
+                } else {
+                    $this->getLogger()->debug("Related user created [email={$relatedUser->getEmail()}].");
+                }
                 $entity->setRelatedUser($relatedUser);
             }
-        } elseif ($entity->isRoleEqual(ZendeskUserRole::ROLE_END_USER)) {
-            $relatedContact = $this->contactProvider->getContact($entity);
+        } elseif ($this->isRelativeWithContact($entity)) {
+            $relatedContact = $this->oroEntityProvider->getContact($entity);
             if ($relatedContact) {
-                $this->getLogger()->debug(
-                    $this->buildMessage(
-                        "Related contact found [id={$relatedContact->getId()}]",
-                        $entity
-                    )
-                );
+                if ($relatedContact->getId()) {
+                    $this->getLogger()->debug("Related contact found [email={$relatedContact->getEmail()}].");
+                } else {
+                    $this->getLogger()->debug("Related contact created [email={$relatedContact->getEmail()}].");
+                }
                 $entity->setRelatedContact($relatedContact);
             }
         }
