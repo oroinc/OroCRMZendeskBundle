@@ -34,12 +34,12 @@ oro_system_configuration:
                 constraints:
                     - NotBlank: ~
 
-        oro_crm_zendesk.zendesk_sync_timeout:
-            type: number
+        oro_crm_zendesk.zendesk_cron_schedule:
+            type: text
             priority: 8
             options:
-                label: orocrm.zendesk.form.sync_timeout.label
-                tooltip: orocrm.zendesk.form.sync_timeout.tooltip
+                label: orocrm.zendesk.form.cron_schedule.label
+                tooltip: orocrm.zendesk.form.cron_schedule.tooltip
                 required: true
                 constraints:
                     - NotBlank: ~
@@ -94,5 +94,5 @@ oro_system_configuration:
                                             - oro_crm_zendesk.api_token
                                             - oro_crm_zendesk.zendesk_default_user_email
                                             - oro_crm_zendesk.oro_default_username
-                                            - oro_crm_zendesk.zendesk_sync_timeout
+                                            - oro_crm_zendesk.zendesk_cron_schedule
                                             - oro_crm_zendesk.zendesk_url

@@ -7,8 +7,8 @@ orocrm:
                 tooltip: Zendesk API token
             zendesk_url:
                 tooltip: Full Zendesk url
-            sync_timeout:
-                tooltip: Syncronization with Zendesk timeout (in minutes)
+            cron_schedule:
+                tooltip: Synchronization Cron schedule
             zendesk_default_user_email:
                 tooltip: Email of Zendesk user that will be used by default when relevant user linked with OroCRM wasn't found
             oro_default_username:

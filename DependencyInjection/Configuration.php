@@ -20,7 +20,7 @@ class Configuration implements ConfigurationInterface
         SettingsBuilder::append(
             $rootNode,
             array(
-                'zendesk_sync_timeout'       => array('type' => 'scalar', 'value' => 60),
+                'zendesk_cron_schedule'      => array('type' => 'scalar', 'value' => '*/5 * * * *'),
                 'api_email'                  => array('type' => 'scalar', 'value' => ''),
                 'api_token'                  => array('type' => 'scalar', 'value' => ''),
                 'zendesk_url'                => array('type' => 'scalar', 'value' => ''),

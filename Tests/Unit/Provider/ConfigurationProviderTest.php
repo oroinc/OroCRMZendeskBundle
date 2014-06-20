@@ -54,14 +54,14 @@ class ConfigurationProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetSyncTimeout()
+    public function testGetCronSchedule()
     {
         $expected = 42;
         $this->configurationManager->expects($this->once())
             ->method('get')
-            ->with(ConfigurationProvider::SYNC_TIMEOUT_FIELD_NAME)
+            ->with(ConfigurationProvider::CRON_SCHEDULE_FIELD_NAME)
             ->will($this->returnValue($expected));
-        $actual = $this->target->getSyncTimeOut();
+        $actual = $this->target->getCronSchedule();
         $this->assertEquals($expected, $actual);
     }
 

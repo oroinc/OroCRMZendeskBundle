@@ -23,7 +23,9 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
      */
     public function getDefaultDefinition()
     {
-        return '*/5 * * * *';
+        return $this->getContainer()
+            ->get('orocrm_zendesk.configuration_provider')
+            ->getCronSchedule();
     }
 
     /**

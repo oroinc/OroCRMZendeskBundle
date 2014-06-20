@@ -14,7 +14,7 @@ class ConfigurationProvider
 {
     const API_EMAIL_FIELD_NAME = 'oro_crm_zendesk.api_email';
     const API_TOKEN_FIELD_NAME = 'oro_crm_zendesk.api_token';
-    const SYNC_TIMEOUT_FIELD_NAME = 'oro_crm_zendesk.zendesk_sync_timeout';
+    const CRON_SCHEDULE_FIELD_NAME = 'oro_crm_zendesk.zendesk_cron_schedule';
     const ZENDESK_DEFAULT_USER_EMAIL_FIELD_NAME = 'oro_crm_zendesk.zendesk_default_user_email';
     const ORO_DEFAULT_USERNAME_FIELD_NAME = 'oro_crm_zendesk.oro_default_username';
     const ZENDESK_URL_FIELD_NAME = 'oro_crm_zendesk.zendesk_url';
@@ -54,9 +54,9 @@ class ConfigurationProvider
     /**
      * @return int
      */
-    public function getSyncTimeOut()
+    public function getCronSchedule()
     {
-        return $this->getConfigurationSetting(self::SYNC_TIMEOUT_FIELD_NAME);
+        return $this->getConfigurationSetting(self::CRON_SCHEDULE_FIELD_NAME);
     }
 
     /**

@@ -74,8 +74,8 @@ orocrm:
                 label: API Token
             zendesk_url:
                 label: Full Zendesk url
-            sync_timeout:
-                label: Sync Timeout
+            cron_schedule:
+                label: Cron schedule
             zendesk_default_user_email:
                 label: Default Zendesk user email
             oro_default_username:
