@@ -17,6 +17,7 @@ use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\ImportExportBundle\Strategy\StrategyInterface;
+use Symfony\Component\Security\Core\Util\ClassUtils;
 
 abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareInterface
 {
@@ -96,8 +97,9 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
      * @param mixed $entity
      * @param string $fieldName
      * @param string $dictionaryEntityAlias
+     * @param boolean $required
      */
-    protected function refreshDictionaryField($entity, $fieldName, $dictionaryEntityAlias = null)
+    protected function refreshDictionaryField($entity, $fieldName, $dictionaryEntityAlias = null, $required = false)
     {
         $dictionaryEntityAlias = $dictionaryEntityAlias ? : $fieldName;
         $value = null;
@@ -110,7 +112,7 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
                 $valueName = $entity->$entityGetter()->getName();
                 $this->getLogger()->warning("Can't find Zendesk $fieldName [name=$valueName].");
             }
-        } else {
+        } elseif ($required) {
             $this->getLogger()->warning("Zendesk $fieldName is empty.");
         }
         $entity->$entitySetter($value);
@@ -140,15 +142,19 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
             );
         }
 
-        if (get_class($target) !== get_class($source)) {
+        $targetClass = ClassUtils::getRealClass($target);
+        $sourceClass = ClassUtils::getRealClass($source);
+        if ($targetClass !== $sourceClass) {
             throw new InvalidArgumentException(
-                'Expect argument $source is instance of %s but %s given.',
-                get_class($target),
-                get_class($source)
+                sprintf(
+                    'Expect argument $sourceClass is instance of %s but %s given.',
+                    $targetClass,
+                    $sourceClass
+                )
             );
         }
 
-        $reflectionClass = new \ReflectionClass($target);
+        $reflectionClass = new \ReflectionClass($targetClass);
 
         foreach ($reflectionClass->getProperties() as $property) {
             $propertyName = $property->getName();

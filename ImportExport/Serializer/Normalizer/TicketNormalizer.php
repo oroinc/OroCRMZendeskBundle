@@ -22,9 +22,11 @@ class TicketNormalizer extends AbstractNormalizer
             'recipient',
             'has_incidents',
             'problem' => array(
+                'normalized' => 'problem_id',
                 'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket'
             ),
             'collaborators' => array(
+                'normalized' => 'collaborator_ids',
                 'type' => 'ArrayCollection<OroCRM\\Bundle\\ZendeskBundle\\Entity\\User>',
             ),
             'type' => array(
@@ -37,12 +39,15 @@ class TicketNormalizer extends AbstractNormalizer
                 'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketPriority'
             ),
             'requester' => array(
+                'normalized' => 'requester_id',
                 'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User'
             ),
             'submitter' => array(
+                'normalized' => 'submitter_id',
                 'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User'
             ),
             'assignee' => array(
+                'normalized' => 'assignee_id',
                 'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User'
             ),
             'has_incidents',

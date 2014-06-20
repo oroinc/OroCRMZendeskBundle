@@ -50,18 +50,18 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     /**
      * @var int
      */
-    protected $ticketOriginId = 100;
+    protected $ticketOriginId = 1000000;
 
 
     /**
      * @var int
      */
-    protected $ticketCommentOriginId = 100;
+    protected $ticketCommentOriginId = 1000000;
 
     /**
      * @var int
      */
-    protected $userOriginId = 100;
+    protected $userOriginId = 1000000;
 
     protected $zendeskUsers = array();
 

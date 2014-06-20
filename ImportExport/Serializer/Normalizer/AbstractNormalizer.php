@@ -94,9 +94,8 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
                 continue;
             }
 
-            if (!isset($field['type'])) {
-                $value = $data[$field['normalized']];
-            } else {
+            $value = $data[$field['normalized']];
+            if (isset($field['type']) && $value !== null) {
                 $value = $this->serializer->denormalize(
                     $data[$field['normalized']],
                     $field['type'],
