@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Model;
 
 class RestIterator implements \Iterator
 {
+    protected $dataKeyName = 'results';
     /**
      * @var RestClientInterface
      */
@@ -157,6 +158,25 @@ class RestIterator implements \Iterator
     }
 
     /**
+     * @param string $dataKeyName
+     * @return RestIterator
+     */
+    public function setDataKeyName($dataKeyName)
+    {
+        $this->dataKeyName = $dataKeyName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDataKeyName()
+    {
+        return $this->dataKeyName;
+    }
+
+    /**
      * Attempts to load next page
      *
      * @return bool If page loaded successfully
@@ -174,8 +194,8 @@ class RestIterator implements \Iterator
             return false;
         }
 
-        if (isset($this->pageData['results'])) {
-            $this->rows = (array)$this->pageData['results'];
+        if (isset($this->pageData[$this->dataKeyName])) {
+            $this->rows = (array)$this->pageData[$this->dataKeyName];
         } else {
             $this->rows = null;
         }

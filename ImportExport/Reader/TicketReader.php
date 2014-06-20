@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Reader;
 
 use OroCRM\Bundle\ZendeskBundle\Model\RestClient;
+use OroCRM\Bundle\ZendeskBundle\Model\RestIterator;
 
 class TicketReader extends ZendeskAPIReader
 {
@@ -38,13 +39,16 @@ class TicketReader extends ZendeskAPIReader
      */
     protected function readTicketComments($id)
     {
-        $result = $this->client->get(sprintf($this->commentsActionPattern, $id));
+        $iterator = new RestIterator($this->client, sprintf($this->commentsActionPattern, $id));
+        $iterator->setDataKeyName('comments');
 
-        if (!isset($result['comments'])) {
-            return array();
+        $result = array();
+
+        foreach ($iterator as $value) {
+            $result[] = $value;
         }
 
-        return $result['comments'];
+        return $result;
     }
 
     /**

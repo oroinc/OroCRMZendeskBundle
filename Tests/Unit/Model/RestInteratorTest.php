@@ -112,6 +112,15 @@ class RestIteratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedItems, $actualItems);
     }
 
+    public function testGetDataKeyName()
+    {
+        $expectedKeyName = 'comments';
+        $actual = $this->iterator->setDataKeyName($expectedKeyName);
+        $this->assertEquals($this->iterator, $actual);
+        $actual = $this->iterator->getDataKeyName($expectedKeyName);
+        $this->assertEquals($expectedKeyName, $actual);
+    }
+
     public function iteratorDataProvider()
     {
         return array(

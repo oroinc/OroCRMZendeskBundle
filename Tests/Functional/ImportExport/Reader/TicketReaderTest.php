@@ -30,7 +30,7 @@ class TicketReaderTest extends WebTestCase
             ->will($this->returnValue('46PliuoNsoYjZYpIM0OOt50RpemP56QrvcpB7Nx3'));
         $provider->expects($this->any())
             ->method('getEmail')
-            ->will($this->returnValue('info@magecore.com'));
+            ->will($this->returnValue('info@example.com'));
         $provider->expects($this->any())
             ->method('getZendeskUrl')
             ->will($this->returnValue('https://testoro.zendesk.com'));
@@ -50,7 +50,7 @@ class TicketReaderTest extends WebTestCase
 
     public function testTrue()
     {
-      /*  $reader = $this->client->getContainer()->get('orocrm_zendesk.importexport.reader.ticket_reader');
+        /*$reader = $this->client->getContainer()->get('orocrm_zendesk.importexport.reader.ticket_reader');
 
         $configuration = array(
             'resource' => 'search.json',
