@@ -169,7 +169,7 @@ class UserSyncStrategyTest extends WebTestCase
 
         $relatedContact = $zendeskUser->getRelatedContact();
         $this->assertInstanceOf('OroCRM\\Bundle\\ContactBundle\\Entity\\Contact', $relatedContact);
-        $this->assertEquals($email, $relatedContact->getEmail());
+        $this->assertEquals($email, $relatedContact->getPrimaryEmail());
         $this->assertTrue($this->entityManager->contains($relatedContact));
     }
 
@@ -189,7 +189,7 @@ class UserSyncStrategyTest extends WebTestCase
         $relatedContact = $zendeskUser->getRelatedContact();
         $this->assertInstanceOf('OroCRM\\Bundle\\ContactBundle\\Entity\\Contact', $relatedContact);
         $this->assertFalse($this->entityManager->contains($relatedContact));
-        $this->assertEquals($email, $relatedContact->getEmail());
+        $this->assertEquals($email, $relatedContact->getPrimaryEmail());
         $this->assertEquals('Bob', $relatedContact->getFirstName());
         $this->assertEquals('Miller Jr.', $relatedContact->getLastName());
     }

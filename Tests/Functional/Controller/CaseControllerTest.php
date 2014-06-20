@@ -91,10 +91,7 @@ class CaseControllerTest extends WebTestCase
         $crawler = $crawler->filterXPath('//span[text()="Zendesk ticket info"]')->parents();
 
         $externalId = $this->getFieldValue("Ticket Number", $crawler);
-        $this->assertEquals($expectedTicket->getOriginId(), $externalId->html());
-
-        $url = $this->getFieldValue("Url", $crawler);
-        $this->assertNotEmpty($url->html());
+        $this->assertContains($expectedTicket->getOriginId(), $externalId->html());
 
         $problem = $this->getFieldValue("Problem", $crawler);
         $this->assertContains($expectedTicket->getProblem()->getSubject(), $problem->html());

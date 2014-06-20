@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use OroCRM\Bundle\ContactBundle\Entity\ContactEmail;
 
 class LoadContactData extends AbstractZendeskFixture
 {
@@ -33,6 +34,10 @@ class LoadContactData extends AbstractZendeskFixture
             $entity = new Contact();
 
             $this->setEntityPropertyValues($entity, $data);
+            $email = new ContactEmail();
+            $email->setPrimary(true);
+            $email->setEmail($data['email']);
+            $entity->addEmail($email);
             $this->setReference($entity->getEmail(), $entity);
 
             $manager->persist($entity);
