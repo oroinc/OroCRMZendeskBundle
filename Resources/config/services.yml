@@ -8,6 +8,7 @@ parameters:
     orocrm_zendesk.twig.extension.case_ticket.class:           OroCRM\Bundle\ZendeskBundle\Twig\CaseTicketExtension
     orocrm_zendesk.twig.extension.ticket_path.class:           OroCRM\Bundle\ZendeskBundle\Twig\TicketPathExtension
     orocrm_zendesk.placeholder.filter.class:                   OroCRM\Bundle\ZendeskBundle\Placeholder\Filter\Filter
+    orocrm_zendesk.sync_state_manager.class:                   OroCRM\Bundle\ZendeskBundle\Model\SyncStateManager
 
 services:
     orocrm_zendesk.entity_mapper:
@@ -43,5 +44,10 @@ services:
 
     orocrm_zendesk.placeholder.filter:
         class: %orocrm_zendesk.placeholder.filter.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+
+    orocrm_zendesk.sync_state_manager:
+        class: %orocrm_zendesk.sync_state_manager.class%
         arguments:
             - @doctrine.orm.entity_manager

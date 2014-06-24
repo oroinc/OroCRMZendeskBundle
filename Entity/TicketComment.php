@@ -80,9 +80,23 @@ class TicketComment
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="created_at", type="datetime")
      */
     protected $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="origin_created_at", type="datetime")
+     */
+    protected $originCreatedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime")
+     */
+    protected $updatedAt;
 
     /**
      * @var CaseComment
@@ -91,6 +105,8 @@ class TicketComment
      * @ORM\JoinColumn(name="related_comment_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedComment;
+
+    private $updatedAtLocked = false;
 
     /**
      * @return int
@@ -247,5 +263,64 @@ class TicketComment
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $originCreatedAt
+     * @return TicketComment
+     */
+    public function setOriginCreatedAt($originCreatedAt)
+    {
+        $this->originCreatedAt = $originCreatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOriginCreatedAt()
+    {
+        return $this->originCreatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     * @return TicketComment
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        $this->updatedAtLocked = true;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->createdAt  = $this->createdAt ? $this->createdAt : new \DateTime('now', new \DateTimeZone('UTC'));
+        $this->updatedAt = $this->updatedAt? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate()
+    {
+        if (!$this->updatedAtLocked) {
+            $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
     }
 }

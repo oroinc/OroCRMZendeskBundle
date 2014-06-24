@@ -3,7 +3,6 @@
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\Twig;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ZendeskBundle\Twig\CaseTicketExtension;
 
 /**

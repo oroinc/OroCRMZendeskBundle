@@ -170,9 +170,23 @@ class Ticket
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="origin_created_at", type="datetime", nullable=true)
+     */
+    protected $originCreatedAt;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     protected $updatedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="origin_updated_at", type="datetime", nullable=true)
+     */
+    protected $originUpdatedAt;
 
     /**
      * @var Collection
@@ -192,6 +206,8 @@ class Ticket
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedCase;
+
+    private $updatedAtLocked = false;
 
     /**
      * Constructor
@@ -550,6 +566,44 @@ class Ticket
     }
 
     /**
+     * @param \DateTime $originCreatedAt
+     * @return Ticket
+     */
+    public function setOriginCreatedAt($originCreatedAt)
+    {
+        $this->originCreatedAt = $originCreatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOriginCreatedAt()
+    {
+        return $this->originCreatedAt;
+    }
+
+    /**
+     * @param \DateTime $originUpdatedAt
+     * @return Ticket
+     */
+    public function setOriginUpdatedAt($originUpdatedAt)
+    {
+        $this->originUpdatedAt = $originUpdatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOriginUpdatedAt()
+    {
+        return $this->originUpdatedAt;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt()
@@ -564,6 +618,8 @@ class Ticket
     public function setUpdatedAt(\DateTime $updatedAt = null)
     {
         $this->updatedAt = $updatedAt;
+
+        $this->updatedAtLocked = true;
 
         return $this;
     }
@@ -637,5 +693,24 @@ class Ticket
     public function getRelatedCase()
     {
         return $this->relatedCase;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->createdAt  = $this->createdAt ? $this->createdAt : new \DateTime('now', new \DateTimeZone('UTC'));
+        $this->updatedAt = $this->updatedAt? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate()
+    {
+        if (!$this->updatedAtLocked) {
+            $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
     }
 }

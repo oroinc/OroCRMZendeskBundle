@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ZendeskSyncState
 {
+    const STATE_ID = 0;
+
     /**
      * @var int
      *
@@ -21,17 +23,9 @@ class ZendeskSyncState
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="last_sync", type="datetime", nullable=true)
      */
-    protected $userSync;
-
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     */
-    protected $ticketSync;
+    protected $lastSync;
 
     /**
      * @param int $id
@@ -50,12 +44,12 @@ class ZendeskSyncState
     }
 
     /**
-     * @param \DateTime $ticketSync
+     * @param \DateTime $lastSync
      * @return ZendeskSyncState
      */
-    public function setTicketSync(\DateTime $ticketSync)
+    public function setLastSync(\DateTime $lastSync)
     {
-        $this->ticketSync = $ticketSync;
+        $this->lastSync = $lastSync;
 
         return $this;
     }
@@ -63,27 +57,8 @@ class ZendeskSyncState
     /**
      * @return \DateTime
      */
-    public function getTicketSync()
+    public function getLastSync()
     {
-        return $this->ticketSync;
-    }
-
-    /**
-     * @param \DateTime $userSync
-     * @return ZendeskSyncState
-     */
-    public function setUserSync(\DateTime $userSync)
-    {
-        $this->userSync = $userSync;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getUserSync()
-    {
-        return $this->userSync;
+        return $this->lastSync;
     }
 }

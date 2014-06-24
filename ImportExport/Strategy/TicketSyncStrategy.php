@@ -68,7 +68,11 @@ class TicketSyncStrategy extends AbstractSyncStrategy
 
         $existingTicket = $this->zendeskProvider->getTicket($entity);
         if ($existingTicket) {
-            $this->syncProperties($existingTicket, $entity, array('relatedCase', 'id'));
+            $this->syncProperties(
+                $existingTicket,
+                $entity,
+                array('relatedCase', 'id', 'updatedAtLocked', 'createdAt', 'updatedAt')
+            );
             $entity = $existingTicket;
 
             $this->getLogger()->debug("Update found Zendesk ticket.");

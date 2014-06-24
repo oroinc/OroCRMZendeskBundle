@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Command;
 
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketSyncStrategy;
 use Psr\Log\LoggerInterface;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -11,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Oro\Bundle\ImportExportBundle\Job\JobResult;
 
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketSyncStrategy;
 use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
 use Oro\Bundle\CronBundle\Command\Logger\OutputLogger;
 use Oro\Bundle\CronBundle\Command\CronCommandInterface;
@@ -66,21 +66,29 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
     {
         $this->logger = new OutputLogger($output);
 
-        $this->executeSyncFromZendeskJob(
+        $syncStateManager = $this->getContainer()->get('orocrm_zendesk.sync_state_manager');
+        $lastSync = $syncStateManager->getLastSyncDate();
+        $startSyncDate = new \DateTime('now', new \DateTimeZone('UTC'));
+        $userParams = array(
+            'query' => $lastSync ? "updated>{$lastSync->format(\DateTime::ISO8601)} type:user" : 'type:user'
+        );
+        $syncUserResult = $this->executeSyncFromZendeskJob(
             'zendesk_users',
             'Synchronization of Zendesk users',
             [
                 'processorAlias' => 'orocrm_zendesk.sync_from_zendesk_user',
-                'entityName' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
-                'resource' => 'search.json',
-                'logger' => $this->logger,
-                'params' => array(
-                    'query' => 'type:user'
-                )
+                'entityName'     => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                'resource'       => 'search.json',
+                'logger'         => $this->logger,
+                'params'         => $userParams
             ]
         );
 
-        $result = $this->executeSyncFromZendeskJob(
+        $ticketParams = array(
+            'query' => $lastSync ? "updated>{$lastSync->format(\DateTime::ISO8601)} type:ticket" : 'type:ticket'
+        );
+
+        $syncTicketsResult = $this->executeSyncFromZendeskJob(
             'zendesk_tickets',
             'Synchronization of Zendesk tickets',
             [
@@ -88,13 +96,16 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
                 'entityName' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
                 'resource' => 'search.json',
                 'logger' => $this->logger,
-                'params' => array(
-                    'query' => 'type:ticket'
-                )
+                'params' => $ticketParams
             ]
         );
 
-        $commentTickets = $result->getContext()->getValue(TicketSyncStrategy::COMMENT_TICKETS);
+        if ($syncUserResult->isSuccessful() && $syncTicketsResult->isSuccessful()) {
+            $syncStateManager->setLastSyncDate($startSyncDate, true);
+        }
+
+        $commentTickets = $syncTicketsResult->getContext()->getValue(TicketSyncStrategy::COMMENT_TICKETS);
+        $commentTickets = $commentTickets ? $commentTickets : array();
 
         foreach ($commentTickets as $ticketId) {
             $this->executeSyncFromZendeskJob(
