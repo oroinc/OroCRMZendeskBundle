@@ -64,8 +64,7 @@ class OroCRMZendeskBundle implements Migration
         /** Generate table orocrm_zd_sync_state **/
         $table = $schema->createTable('orocrm_zd_sync_state');
         $table->addColumn('id', 'integer', array());
-        $table->addColumn('userSync', 'datetime', array());
-        $table->addColumn('ticketSync', 'datetime', array());
+        $table->addColumn('last_sync', 'datetime', array('notnull' => false));
         $table->setPrimaryKey(array('id'));
         /** End of generate table orocrm_zd_sync_state **/
     }

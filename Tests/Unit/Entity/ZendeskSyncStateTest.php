@@ -46,8 +46,7 @@ class ZendeskSyncStateTest extends \PHPUnit_Framework_TestCase
     public function settersAndGettersDataProvider()
     {
         return array(
-            array('userSync', new \DateTime()),
-            array('ticketSync', new \DateTime())
+            array('lastSync', new \DateTime())
         );
     }
 }
