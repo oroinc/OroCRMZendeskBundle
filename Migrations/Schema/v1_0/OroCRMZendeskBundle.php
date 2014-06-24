@@ -93,8 +93,10 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('recipient_email', 'string', array('length' => 100, 'notnull' => false));
         $table->addColumn('has_incidents', 'boolean', array('default' => '0'));
         $table->addColumn('due_at', 'datetime', array('notnull' => false));
+        $table->addColumn('origin_created_at', 'datetime', array('notnull' => false));
         $table->addColumn('created_at', 'datetime', array('notnull' => false));
         $table->addColumn('updated_at', 'datetime', array('notnull' => false));
+        $table->addColumn('origin_updated_at', 'datetime', array('notnull' => false));
         $table->setPrimaryKey(array('id'));
         $table->addUniqueIndex(array('origin_id'), 'UNIQ_5CD5C9CD56A273CC');
         $table->addUniqueIndex(array('problem_id'), 'UNIQ_45472C5FA0DCED86');
@@ -179,9 +181,13 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('ticket_restrictions', 'string', array('length' => 30, 'notnull' => false));
         $table->addColumn('only_private_comments', 'boolean', array('default' => '0'));
         $table->addColumn('notes', 'text', array('notnull' => false));
-        $table->addColumn('createdAt', 'datetime', array('notnull' => false));
-        $table->addColumn('updatedAt', 'datetime', array('notnull' => false));
-        $table->addColumn('lastLoginAt', 'datetime', array('notnull' => false));
+        $table->addColumn('created_at', 'datetime', array('notnull' => false));
+        $table->addColumn('updated_at', 'datetime', array('notnull' => false));
+
+        $table->addColumn('origin_created_at', 'datetime', array('notnull' => false));
+        $table->addColumn('origin_updated_at', 'datetime', array('notnull' => false));
+
+        $table->addColumn('last_login_at', 'datetime', array('notnull' => false));
         $table->addColumn('verified', 'boolean', array('default' => '0'));
         $table->addColumn('active', 'boolean', array('default' => '0'));
         $table->addColumn('alias', 'string', array('length' => 100, 'notnull' => false));
@@ -322,7 +328,9 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('body', 'text', array());
         $table->addColumn('html_body', 'text', array());
         $table->addColumn('public', 'boolean', array('default' => '0'));
-        $table->addColumn('createdAt', 'datetime', array());
+        $table->addColumn('created_at', 'datetime', array());
+        $table->addColumn('origin_created_at', 'datetime', array('notnull' => false));
+        $table->addColumn('updated_at', 'datetime', array());
         $table->setPrimaryKey(array('id'));
         $table->addUniqueIndex(array('origin_id'), 'UNIQ_20AD0BDA56A273CC');
         $table->addUniqueIndex(array('related_comment_id'), 'UNIQ_20AD0BDA72A475A3');

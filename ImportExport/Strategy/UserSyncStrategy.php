@@ -47,7 +47,11 @@ class UserSyncStrategy extends AbstractSyncStrategy
 
         $existingUser = $this->findExistingEntity($entity, 'originId');
         if ($existingUser) {
-            $this->syncProperties($existingUser, $entity, array('relatedUser', 'relatedContact', 'id'));
+            $this->syncProperties(
+                $existingUser,
+                $entity,
+                array('relatedUser', 'relatedContact', 'id', 'updatedAtLocked', 'createdAt', 'updatedAt')
+            );
             $entity = $existingUser;
 
             $this->getLogger()->debug("Update found Zendesk user.");

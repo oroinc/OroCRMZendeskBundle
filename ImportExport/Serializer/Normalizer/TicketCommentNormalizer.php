@@ -23,8 +23,10 @@ class TicketCommentNormalizer extends AbstractNormalizer
                 'normalized' => 'html_body',
             ),
             'public',
-            'created_at' => array(
+            'origin_created_at' => array(
                 'type' => 'DateTime',
+                'denormalized' => 'origin_created_at',
+                'normalized' => 'created_at',
                 'context' => array('type' => 'datetime'),
             ),
         );

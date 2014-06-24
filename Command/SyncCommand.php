@@ -68,26 +68,27 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
 
         $syncStateManager = $this->getContainer()->get('orocrm_zendesk.sync_state_manager');
         $lastSync = $syncStateManager->getLastSyncDate();
-
-        $this->executeSyncFromZendeskJob(
+        $startSyncDate = new \DateTime('now', new \DateTimeZone('UTC'));
+        $userParams = array(
+            'query' => $lastSync ? "updated>{$lastSync->format(\DateTime::ISO8601)} type:user" : 'type:user'
+        );
+        $syncUserResult = $this->executeSyncFromZendeskJob(
             'zendesk_users',
             'Synchronization of Zendesk users',
             [
                 'processorAlias' => 'orocrm_zendesk.sync_from_zendesk_user',
-                'entityName' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
-                'resource' => 'search.json',
-                'logger' => $this->logger,
-                'params' => array(
-                    'query' => 'type:user'
-                )
+                'entityName'     => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                'resource'       => 'search.json',
+                'logger'         => $this->logger,
+                'params'         => $userParams
             ]
         );
 
         $ticketParams = array(
             'query' => $lastSync ? "updated>{$lastSync->format(\DateTime::ISO8601)} type:ticket" : 'type:ticket'
         );
-        $lastSyncDate = new \DateTime('now', new \DateTimeZone('UTC'));
-        $result = $this->executeSyncFromZendeskJob(
+
+        $syncTicketsResult = $this->executeSyncFromZendeskJob(
             'zendesk_tickets',
             'Synchronization of Zendesk tickets',
             [
@@ -99,11 +100,11 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
             ]
         );
 
-        if ($result->isSuccessful()) {
-            $syncStateManager->setLastSyncDate($lastSyncDate, true);
+        if ($syncUserResult->isSuccessful() && $syncTicketsResult->isSuccessful()) {
+            $syncStateManager->setLastSyncDate($startSyncDate, true);
         }
 
-        $commentTickets = $result->getContext()->getValue(TicketSyncStrategy::COMMENT_TICKETS);
+        $commentTickets = $syncTicketsResult->getContext()->getValue(TicketSyncStrategy::COMMENT_TICKETS);
         $commentTickets = $commentTickets ? $commentTickets : array();
 
         foreach ($commentTickets as $ticketId) {

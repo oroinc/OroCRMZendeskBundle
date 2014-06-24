@@ -153,23 +153,37 @@ class User
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(name="last_login_at", type="datetime", nullable=true)
      */
     protected $lastLoginAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     protected $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     protected $updatedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="origin_created_at", type="datetime", nullable=true)
+     */
+    protected $originCreatedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="origin_updated_at", type="datetime", nullable=true)
+     */
+    protected $originUpdatedAt;
 
     /**
      * @var Contact
@@ -186,6 +200,8 @@ class User
      * @ORM\JoinColumn(name="related_user_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedUser;
+
+    private $updatedAtLocked = false;
 
     /**
      * @return int
@@ -578,6 +594,8 @@ class User
     {
         $this->updatedAt = $updatedAt;
 
+        $this->updatedAtLocked = true;
+
         return $this;
     }
 
@@ -625,5 +643,62 @@ class User
     public function getRelatedUser()
     {
         return $this->relatedUser;
+    }
+
+    /**
+     * @param \DateTime $originCreatedAt
+     * @return User
+     */
+    public function setOriginCreatedAt($originCreatedAt)
+    {
+        $this->originCreatedAt = $originCreatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOriginCreatedAt()
+    {
+        return $this->originCreatedAt;
+    }
+
+    /**
+     * @param \DateTime $originUpdatedAt
+     * @return User
+     */
+    public function setOriginUpdatedAt($originUpdatedAt)
+    {
+        $this->originUpdatedAt = $originUpdatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOriginUpdatedAt()
+    {
+        return $this->originUpdatedAt;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->createdAt  = $this->createdAt ? $this->createdAt : new \DateTime('now', new \DateTimeZone('UTC'));
+        $this->updatedAt = $this->updatedAt? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate()
+    {
+        if (!$this->updatedAtLocked) {
+            $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
     }
 }

@@ -29,12 +29,16 @@ class UserNormalizer extends AbstractNormalizer
             'phone',
             'time_zone',
             'locale',
-            'created_at' => array(
+            'origin_created_at' => array(
                 'type' => 'DateTime',
+                'denormalized' => 'origin_created_at',
+                'normalized' => 'created_at',
                 'context' => array('type' => 'datetime'),
             ),
-            'updated_at' => array(
+            'origin_updated_at' => array(
                 'type' => 'DateTime',
+                'normalized' => 'updated_at',
+                'denormalized' => 'origin_updated_at',
                 'context' => array('type' => 'datetime'),
             ),
             'role' => array(

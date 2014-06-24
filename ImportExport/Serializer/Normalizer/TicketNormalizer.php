@@ -54,12 +54,16 @@ class TicketNormalizer extends AbstractNormalizer
                 'type' => 'DateTime',
                 'context' => array('type' => 'datetime'),
             ),
-            'created_at' => array(
+            'origin_created_at' => array(
                 'type' => 'DateTime',
+                'normalized' => 'created_at',
+                'denormalized' => 'origin_created_at',
                 'context' => array('type' => 'datetime'),
             ),
-            'updated_at' => array(
+            'origin_updated_at' => array(
                 'type' => 'DateTime',
+                'normalized' => 'updated_at',
+                'denormalized' => 'origin_updated_at',
                 'context' => array('type' => 'datetime'),
             ),
             'comments' => array(

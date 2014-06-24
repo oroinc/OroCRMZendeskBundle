@@ -73,7 +73,11 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
         $existingComment = $this->zendeskProvider->getTicketComment($entity);
 
         if ($existingComment) {
-            $this->syncProperties($existingComment, $entity, array('id', 'originId', 'ticket', 'relatedComment'));
+            $this->syncProperties(
+                $existingComment,
+                $entity,
+                array('id', 'originId', 'ticket', 'relatedComment', 'updatedAtLocked', 'createdAt', 'updatedAt')
+            );
             $entity = $existingComment;
 
             $this->getLogger()->debug("Update found Zendesk ticket comment.");
@@ -128,7 +132,7 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
     protected function syncCaseCommentFields(CaseComment $caseComment, TicketComment $ticketComment)
     {
         $caseComment->setPublic($ticketComment->getPublic());
-        $caseComment->setCreatedAt($ticketComment->getCreatedAt());
+        $caseComment->setCreatedAt($ticketComment->getOriginCreatedAt());
         $caseComment->setMessage($ticketComment->getBody());
         $this->syncCaseCommentOwnerAndUser($caseComment, $ticketComment);
     }
