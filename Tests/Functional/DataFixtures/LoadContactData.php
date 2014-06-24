@@ -14,14 +14,16 @@ class LoadContactData extends AbstractZendeskFixture
      */
     protected $data = array(
         array(
+            'reference' => 'contact:jim.smith@example.com',
             'firstName' => 'Jim',
             'lastName' => 'Smith',
-            'email' => 'jim.smith@contact.com',
+            'email' => 'jim.smith@example.com',
         ),
         array(
+            'reference' => 'contact:mike.johnson@example.com',
             'firstName' => 'Mike',
             'lastName' => 'Johnson',
-            'email' => 'mike.johnson@contact.com',
+            'email' => 'mike.johnson@example.com',
         ),
     );
 
@@ -33,16 +35,30 @@ class LoadContactData extends AbstractZendeskFixture
         foreach ($this->data as $data) {
             $entity = new Contact();
 
-            $this->setEntityPropertyValues($entity, $data);
-            $email = new ContactEmail();
-            $email->setPrimary(true);
-            $email->setEmail($data['email']);
-            $entity->addEmail($email);
-            $this->setReference($entity->getEmail(), $entity);
+            $this->setEntityPropertyValues($entity, $data, array('email', 'reference'));
+
+            if (isset($data['reference'])) {
+                $this->setReference($data['reference'], $entity);
+            }
+
+            $entity->addEmail($this->createContactEmail($data['email'], true));
 
             $manager->persist($entity);
         }
 
         $manager->flush();
+    }
+
+    /**
+     * @param string $email
+     * @param bool $primary
+     * @return ContactEmail
+     */
+    protected function createContactEmail($email, $primary = true)
+    {
+        $result = new ContactEmail();
+        $result->setEmail($email);
+        $result->setPrimary($primary);
+        return $result;
     }
 }

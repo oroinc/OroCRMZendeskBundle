@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
@@ -29,9 +30,9 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'type' => TicketType::TYPE_PROBLEM,
             'status' => TicketStatus::STATUS_OPEN,
             'priority' => TicketPriority::PRIORITY_NORMAL,
-            'requester' => 'alex.taylor@zendeskagent.com',
-            'submitter' => 'fred.taylor@zendeskagent.com',
-            'assignee' => 'fred.taylor@zendeskagent.com',
+            'requester' => 'zendesk_user:alex.taylor@example.com',
+            'submitter' => 'zendesk_user:fred.taylor@example.com',
+            'assignee' => 'zendesk_user:fred.taylor@example.com',
             'createdAt' => '2014-06-05T12:24:23Z',
             'updatedAt' => '2014-06-05T13:43:21Z',
             'relatedCase' => 'orocrm_zendesk_case_2',
@@ -44,25 +45,48 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'description' => 'Zendesk Ticket 42 Description',
             'externalId' => '7e24caa0-87f7-44d6-922b-0330ed9fd06c',
             'problem' => 'zendesk_ticket_43',
-            'collaborators' => array('fred.taylor@zendeskagent.com', 'alex.taylor@zendeskagent.com'),
+            'collaborators' => array('zendesk_user:fred.taylor@example.com', 'zendesk_user:alex.taylor@example.com'),
             'type' => TicketType::TYPE_TASK,
             'status' => TicketStatus::STATUS_PENDING,
             'priority' => TicketPriority::PRIORITY_URGENT,
             'recipient' => 'test@mail.com',
-            'requester' => 'alex.taylor@zendeskagent.com',
-            'submitter' => 'fred.taylor@zendeskagent.com',
-            'assignee' => 'fred.taylor@zendeskagent.com',
+            'requester' => 'zendesk_user:alex.taylor@example.com',
+            'submitter' => 'zendesk_user:fred.taylor@example.com',
+            'assignee' => 'zendesk_user:fred.taylor@example.com',
             'hasIncidents' => true,
             'createdAt' => '2014-06-10T15:54:22Z',
             'updatedAt' => '2014-06-10T17:45:31Z',
             'dueAt' => '2014-06-11T12:13:11Z',
-            'relatedCase' => 'orocrm_zendesk_case_1',
+            'relatedCase' => 'case_1',
+            'comments' => array(
+                array(
+                    'reference' => 'zendesk_ticket_comment_1000',
+                    'originId' => 1000,
+                    'body' => 'Comment 1',
+                    'htmlBody' => '<p>Comment 1</p>',
+                    'public' => true,
+                    'author' => 'zendesk_user:james.cook@example.com',
+                    'createdAt' => '2014-06-05T12:24:23Z',
+                    'relatedComment' => 'case_comment_1',
+                ),
+                array(
+                    'reference' => 'zendesk_ticket_comment_1002',
+                    'originId' => 1001,
+                    'body' => 'Comment 2',
+                    'htmlBody' => '<p>Comment 2</p>',
+                    'public' => false,
+                    'author' => 'zendesk_user:jim.smith@example.com',
+                    'createdAt' => '2014-06-05T12:24:23Z',
+                    'relatedComment' => 'case_comment_2',
+                ),
+            )
          ),
     );
 
     /**
      * {@inheritdoc}
      * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function load(ObjectManager $manager)
     {
@@ -110,9 +134,33 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
                 $data['relatedCase'] = $this->getReference($data['relatedCase']);
             }
 
-            $this->setEntityPropertyValues($entity, $data, array('reference'));
+            $this->setEntityPropertyValues($entity, $data, array('reference', 'comments'));
 
             $manager->persist($entity);
+
+            if (isset($data['comments'])) {
+                foreach ($data['comments'] as $commentData) {
+                    $comment = new TicketComment();
+                    $entity->addComment($comment);
+
+                    if (isset($commentData['reference'])) {
+                        $this->addReference($commentData['reference'], $comment);
+                    }
+                    if (isset($commentData['author'])) {
+                        $commentData['author'] = $this->getReference($commentData['author']);
+                    }
+                    if (isset($commentData['relatedComment'])) {
+                        $commentData['relatedComment'] = $this->getReference($commentData['relatedComment']);
+                    }
+                    if (isset($commentData['createdAt'])) {
+                        $commentData['createdAt'] = new \DateTime($commentData['createdAt']);
+                    }
+
+                    $this->setEntityPropertyValues($comment, $commentData, array('reference'));
+
+                    $manager->persist($comment);
+                }
+            }
         }
 
         $manager->flush();

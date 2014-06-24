@@ -15,33 +15,37 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
      */
     protected $data = array(
         array(
+            'reference' => 'zendesk_user:fred.taylor@example.com',
             'originId' => 1015,
             'url' => 'https://foo.zendesk.com/api/v2/users/1015.json',
             'name' => 'Fred Taylor',
-            'email' => 'fred.taylor@zendeskagent.com',
+            'email' => 'fred.taylor@example.com',
             'role' => UserRole::ROLE_AGENT,
         ),
         array(
+            'reference' => 'zendesk_user:james.cook@example.com',
             'originId' => 1016,
             'url' => 'https://foo.zendesk.com/api/v2/users/1016.json',
             'name' => 'James Cook',
-            'email' => 'james.cook@orouser.com',
+            'email' => 'james.cook@example.com',
             'role' => UserRole::ROLE_AGENT,
-            'relatedUser' => 'james.cook@orouser.com',
+            'relatedUser' => 'user:james.cook@example.com',
         ),
         array(
+            'reference' => 'zendesk_user:jim.smith@example.com',
             'originId' => 1010,
             'url' => 'https://foo.zendesk.com/api/v2/users/1010.json',
             'name' => 'Robert Williams',
-            'email' => 'robert.williams@zendeskagent.com',
+            'email' => 'jim.smith@example.com',
             'role' => UserRole::ROLE_END_USER,
-            'relatedContact' => 'jim.smith@contact.com',
+            'relatedContact' => 'contact:jim.smith@example.com',
         ),
         array(
+            'reference' => 'zendesk_user:alex.taylor@example.com',
             'originId' => 1011,
             'url' => 'https://foo.zendesk.com/api/v2/users/1011.json',
             'name' => 'Alex Taylor',
-            'email' => 'alex.taylor@zendeskagent.com',
+            'email' => 'alex.taylor@example.com',
             'role' => UserRole::ROLE_END_USER,
         ),
     );
@@ -53,6 +57,9 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
     {
         foreach ($this->data as $data) {
             $entity = new User();
+            if (isset($data['reference'])) {
+                $this->addReference($data['reference'], $entity);
+            }
             if (isset($data['role'])) {
                 $data['role'] = $manager->find('OroCRMZendeskBundle:UserRole', $data['role']);
             }
@@ -62,7 +69,7 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             if (isset($data['relatedContact'])) {
                 $data['relatedContact'] = $this->getReference($data['relatedContact']);
             }
-            $this->setEntityPropertyValues($entity, $data);
+            $this->setEntityPropertyValues($entity, $data, array('reference'));
             $this->setReference($entity->getEmail(), $entity);
 
             $manager->persist($entity);

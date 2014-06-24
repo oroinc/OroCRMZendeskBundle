@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
-use Oro\Bundle\UserBundle\Entity\User;
+use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
 
 class LoadOroUserData extends AbstractZendeskFixture
 {
@@ -13,13 +13,15 @@ class LoadOroUserData extends AbstractZendeskFixture
      */
     protected $data = array(
         array(
+            'reference' => 'user:bob.miller@example.com',
             'username' => 'bob.miller',
-            'email' => 'bob.miller@orouser.com',
+            'email' => 'bob.miller@example.com',
             'plainPassword' => 'password',
         ),
         array(
+            'reference' => 'user:james.cook@example.com',
             'username' => 'james.cook',
-            'email' => 'james.cook@orouser.com',
+            'email' => 'james.cook@example.com',
             'plainPassword' => 'password',
         ),
     );
@@ -30,18 +32,24 @@ class LoadOroUserData extends AbstractZendeskFixture
     public function load(ObjectManager $manager)
     {
         $userManager = $this->container->get('oro_user.manager');
-        /**
-         * @var User $adminUser
-         */
-        $adminUser = $manager->getRepository('OroUserBundle:User')->findOneByUsername('admin');
+
+        $admin = $userManager->findUserByEmail(LoadAdminUserData::DEFAULT_ADMIN_EMAIL);
+        if ($admin) {
+            $this->setReference('user:' . LoadAdminUserData::DEFAULT_ADMIN_EMAIL, $admin);
+        }
+
         foreach ($this->data as $data) {
             $entity = $userManager->createUser();
 
-            $this->setEntityPropertyValues($entity, $data);
+            if (isset($data['reference'])) {
+                $this->setReference($data['reference'], $entity);
+            }
+
+            $this->setEntityPropertyValues($entity, $data, array('reference'));
+
             $userManager->updateUser($entity, false);
 
-            $this->setReference($entity->getEmail(), $entity);
-            $entity->setOwner($adminUser->getOwner());//for case controller test
+            $entity->setOwner($admin->getOwner()); //for case controller test
             $manager->persist($entity);
         }
 

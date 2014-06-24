@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
 
 use Doctrine\ORM\EntityManager;
+
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\UserSyncStrategy;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
@@ -121,7 +122,7 @@ class UserSyncStrategyTest extends WebTestCase
      */
     public function testProcessLinksRelatedUser($roleName)
     {
-        $email = 'bob.miller@orouser.com';
+        $email = 'bob.miller@example.com';
 
         $zendeskUser = $this->createZendeskUser()
             ->setOriginId(1)
@@ -145,7 +146,7 @@ class UserSyncStrategyTest extends WebTestCase
 
     public function testProcessSkipsRelatedUser()
     {
-        $email = 'bob.miller@orouser.com';
+        $email = 'bob.miller@example.com';
 
         $zendeskUser = $this->createZendeskUser()
             ->setOriginId(1)
@@ -158,7 +159,7 @@ class UserSyncStrategyTest extends WebTestCase
     public function testProcessLinksRelatedContact()
     {
         $roleName = ZendeskUserRole::ROLE_END_USER;
-        $email = 'mike.johnson@contact.com';
+        $email = 'mike.johnson@example.com';
 
         $zendeskUser = $this->createZendeskUser()
             ->setOriginId(1)
@@ -176,7 +177,7 @@ class UserSyncStrategyTest extends WebTestCase
     public function testProcessCreatesRelatedContact()
     {
         $roleName = ZendeskUserRole::ROLE_END_USER;
-        $email = 'bob.miller@orouser.com';
+        $email = 'bob.miller@example.com';
 
         $zendeskUser = $this->createZendeskUser()
             ->setOriginId(1)
