@@ -68,8 +68,8 @@ class UserSyncStrategyTest extends WebTestCase
             ->setAlias('johndoe')
             ->setDetails('Some details')
             ->setExternalId(115)
-            ->setCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
-            ->setUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
+            ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
             ->setLastLoginAt(new \DateTime('2014-06-11T15:26:11Z'))
             ->setOnlyPrivateComments(true)
             ->setTicketRestriction('ticket_restriction')
@@ -90,8 +90,8 @@ class UserSyncStrategyTest extends WebTestCase
         $this->assertEquals($zendeskUser->getAlias(), $result->getAlias());
         $this->assertEquals($zendeskUser->getDetails(), $result->getDetails());
         $this->assertEquals($zendeskUser->getExternalId(), $result->getExternalId());
-        $this->assertEquals($zendeskUser->getCreatedAt(), $result->getCreatedAt());
-        $this->assertEquals($zendeskUser->getUpdatedAt(), $result->getUpdatedAt());
+        $this->assertEquals($zendeskUser->getOriginCreatedAt(), $result->getOriginCreatedAt());
+        $this->assertEquals($zendeskUser->getOriginUpdatedAt(), $result->getOriginUpdatedAt());
         $this->assertEquals($zendeskUser->getLastLoginAt(), $result->getLastLoginAt());
         $this->assertEquals($zendeskUser->getOnlyPrivateComments(), $result->getOnlyPrivateComments());
         $this->assertEquals($zendeskUser->getTicketRestriction(), $result->getTicketRestriction());

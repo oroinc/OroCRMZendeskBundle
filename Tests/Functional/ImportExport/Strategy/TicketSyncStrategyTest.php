@@ -71,8 +71,8 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setExternalId('123456')
             ->setRecipient('user@example.com')
             ->setHasIncidents(false)
-            ->setCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
-            ->setUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
+            ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
             ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'));
 
         $result = $this->strategy->process($zendeskTicket);
@@ -86,8 +86,8 @@ class TicketSyncStrategyTest extends WebTestCase
         $this->assertEquals($zendeskTicket->getExternalId(), $result->getExternalId());
         $this->assertEquals($zendeskTicket->getRecipient(), $result->getRecipient());
         $this->assertEquals($zendeskTicket->getHasIncidents(), $result->getHasIncidents());
-        $this->assertEquals($zendeskTicket->getCreatedAt(), $result->getCreatedAt());
-        $this->assertEquals($zendeskTicket->getUpdatedAt(), $result->getUpdatedAt());
+        $this->assertEquals($zendeskTicket->getOriginCreatedAt(), $result->getOriginCreatedAt());
+        $this->assertEquals($zendeskTicket->getOriginUpdatedAt(), $result->getOriginUpdatedAt());
         $this->assertEquals($zendeskTicket->getDueAt(), $result->getDueAt());
 
         $this->assertFalse($this->entityManager->contains($zendeskTicket));

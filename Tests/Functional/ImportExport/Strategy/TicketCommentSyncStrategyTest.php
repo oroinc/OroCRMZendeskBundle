@@ -76,7 +76,9 @@ class TicketCommentSyncStrategyTest extends WebTestCase
     {
         $this->setExpectedContextOptions(['ticketId' => self::$ticketId]);
 
-        $ticketComment = $this->createZendeskTicketComment()->setOriginId(1);
+        $ticketComment = $this->createZendeskTicketComment()
+            ->setOriginId(1)
+            ->setOriginCreatedAt(new \DateTime());
 
         $this->assertEquals($ticketComment, $this->strategy->process($ticketComment));
         $this->assertFalse($this->entityManager->contains($ticketComment));
@@ -91,7 +93,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
             ->setBody('Updated body')
             ->setHtmlBody('Updated body html')
             ->setPublic(false)
-            ->setCreatedAt(new \DateTime('2014-04-10T12:12:21Z'));
+            ->setOriginCreatedAt(new \DateTime('2014-04-10T12:12:21Z'));
 
         $result = $this->strategy->process($ticketComment);
 
@@ -103,7 +105,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
         $this->assertEquals($ticketComment->getBody(), $result->getBody());
         $this->assertEquals($ticketComment->getHtmlBody(), $result->getHtmlBody());
         $this->assertEquals($ticketComment->getPublic(), $result->getPublic());
-        $this->assertEquals($ticketComment->getCreatedAt(), $result->getCreatedAt());
+        $this->assertEquals($ticketComment->getOriginCreatedAt(), $result->getOriginCreatedAt());
 
         $this->assertFalse($this->entityManager->contains($ticketComment));
         $this->assertTrue($this->entityManager->contains($result));
@@ -112,12 +114,12 @@ class TicketCommentSyncStrategyTest extends WebTestCase
     public function testProcessLinksAuthor()
     {
         $this->setExpectedContextOptions(['ticketId' => self::$ticketId]);
-
         $user = $this->getReference('zendesk_user:james.cook@example.com');
         $originId = $user->getOriginId();
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
-            ->setAuthor($this->createZendeskUser()->setOriginId($originId));
+            ->setAuthor($this->createZendeskUser()->setOriginId($originId))
+            ->setOriginCreatedAt(new \DateTime());
 
         $this->assertSame($ticketComment, $this->strategy->process($ticketComment));
 
@@ -133,7 +135,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
             ->setBody('Comment body')
-            ->setCreatedAt(new \DateTime('2014-04-10T12:12:21Z'))
+            ->setOriginCreatedAt(new \DateTime('2014-04-10T12:12:21Z'))
             ->setPublic(true);
 
         $this->assertEquals($ticketComment, $this->strategy->process($ticketComment));
@@ -143,7 +145,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
         $this->assertFalse($this->entityManager->contains($comment));
 
         $this->assertEquals($ticketComment->getBody(), $comment->getMessage());
-        $this->assertEquals($ticketComment->getCreatedAt(), $comment->getCreatedAt());
+        $this->assertEquals($ticketComment->getOriginCreatedAt(), $comment->getCreatedAt());
         $this->assertEquals($ticketComment->getPublic(), $comment->isPublic());
     }
 
@@ -156,7 +158,8 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
-            ->setAuthor($agentUser);
+            ->setAuthor($agentUser)
+            ->setOriginCreatedAt(new \DateTime());
 
         $this->assertSame($ticketComment, $this->strategy->process($ticketComment));
 
@@ -176,7 +179,8 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
-            ->setAuthor($endUser);
+            ->setAuthor($endUser)
+            ->setOriginCreatedAt(new \DateTime());
 
         $this->assertSame($ticketComment, $this->strategy->process($ticketComment));
 

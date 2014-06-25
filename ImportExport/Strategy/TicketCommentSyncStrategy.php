@@ -108,8 +108,9 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
     {
         if ($entity->getAuthor()) {
             $entity->setAuthor($this->zendeskProvider->getUser($entity->getAuthor()));
+        } else {
+            $entity->setAuthor(null);
         }
-        $entity->setAuthor(null);
     }
 
     /**
@@ -132,7 +133,7 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
     protected function syncCaseCommentFields(CaseComment $caseComment, TicketComment $ticketComment)
     {
         $caseComment->setPublic($ticketComment->getPublic());
-        $caseComment->setCreatedAt($ticketComment->getCreatedAt());
+        $caseComment->setCreatedAt($ticketComment->getOriginCreatedAt());
         $caseComment->setMessage($ticketComment->getBody());
         $this->syncCaseCommentOwnerAndUser($caseComment, $ticketComment);
     }

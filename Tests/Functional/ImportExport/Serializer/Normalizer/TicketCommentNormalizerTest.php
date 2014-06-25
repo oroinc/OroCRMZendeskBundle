@@ -49,7 +49,7 @@ class TicketCommentNormalizerTest extends WebTestCase
                     ->setBody($body)
                     ->setHtmlBody($htmlBody)
                     ->setPublic($public)
-                    ->setCreatedAt(new \DateTime($createdAt))
+                    ->setOriginCreatedAt(new \DateTime($createdAt))
             ),
             'short' => array(
                 'data' => 100,

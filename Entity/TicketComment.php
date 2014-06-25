@@ -87,7 +87,7 @@ class TicketComment
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="origin_created_at", type="datetime")
+     * @ORM\Column(name="origin_created_at", type="datetime", nullable=true)
      */
     protected $originCreatedAt;
 

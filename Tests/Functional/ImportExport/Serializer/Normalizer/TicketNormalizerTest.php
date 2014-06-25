@@ -88,15 +88,15 @@ class TicketNormalizerTest extends WebTestCase
                     ->setAssignee($this->createUser($assigneeId))
                     ->setHasIncidents($hasIncidents)
                     ->setDueAt(new \DateTime($dueAt))
-                    ->setCreatedAt(new \DateTime($createdAt))
-                    ->setUpdatedAt(new \DateTime($updatedAt))
+                    ->setOriginCreatedAt(new \DateTime($createdAt))
+                    ->setOriginUpdatedAt(new \DateTime($updatedAt))
                     ->addComment(
                         $this->createTicketComment($commentOriginId)
                             ->setAuthor($this->createUser($commentAuthorId))
                             ->setBody($commentBody)
                             ->setHtmlBody($commentHtmlBody)
                             ->setPublic($commentPublic)
-                            ->setCreatedAt(new \DateTime($commentCreatedAt))
+                            ->setOriginCreatedAt(new \DateTime($commentCreatedAt))
                     )
             ),
             'short' => array(

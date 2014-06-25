@@ -70,8 +70,8 @@ class UserNormalizerTest extends WebTestCase
                     ->setPhone($phone)
                     ->setTimeZone($timeZone)
                     ->setLocale($locale)
-                    ->setCreatedAt(new \DateTime($createdAt))
-                    ->setUpdatedAt(new \DateTime($updatedAt))
+                    ->setOriginCreatedAt(new \DateTime($createdAt))
+                    ->setOriginUpdatedAt(new \DateTime($updatedAt))
                     ->setRole(new UserRole('agent'))
             ),
             'short' => array(
