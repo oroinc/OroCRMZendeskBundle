@@ -106,6 +106,9 @@ class TicketComment
      */
     protected $relatedComment;
 
+    /**
+     * @var bool
+     */
     private $updatedAtLocked = false;
 
     /**
@@ -269,7 +272,7 @@ class TicketComment
      * @param \DateTime $originCreatedAt
      * @return TicketComment
      */
-    public function setOriginCreatedAt($originCreatedAt)
+    public function setOriginCreatedAt(\DateTime $originCreatedAt = null)
     {
         $this->originCreatedAt = $originCreatedAt;
 
@@ -288,7 +291,7 @@ class TicketComment
      * @param \DateTime $updatedAt
      * @return TicketComment
      */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt(\DateTime $updatedAt = null)
     {
         $this->updatedAt = $updatedAt;
 

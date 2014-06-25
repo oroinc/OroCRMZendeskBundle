@@ -25,6 +25,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
  *      }
  *  }
  * )
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 class Ticket
@@ -207,6 +208,9 @@ class Ticket
      */
     protected $relatedCase;
 
+    /**
+     * @var bool
+     */
     private $updatedAtLocked = false;
 
     /**
@@ -566,10 +570,18 @@ class Ticket
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
      * @param \DateTime $originCreatedAt
      * @return Ticket
      */
-    public function setOriginCreatedAt($originCreatedAt)
+    public function setOriginCreatedAt(\DateTime $originCreatedAt = null)
     {
         $this->originCreatedAt = $originCreatedAt;
 
@@ -582,33 +594,6 @@ class Ticket
     public function getOriginCreatedAt()
     {
         return $this->originCreatedAt;
-    }
-
-    /**
-     * @param \DateTime $originUpdatedAt
-     * @return Ticket
-     */
-    public function setOriginUpdatedAt($originUpdatedAt)
-    {
-        $this->originUpdatedAt = $originUpdatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getOriginUpdatedAt()
-    {
-        return $this->originUpdatedAt;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
     }
 
     /**
@@ -630,6 +615,25 @@ class Ticket
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $originUpdatedAt
+     * @return Ticket
+     */
+    public function setOriginUpdatedAt(\DateTime $originUpdatedAt = null)
+    {
+        $this->originUpdatedAt = $originUpdatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOriginUpdatedAt()
+    {
+        return $this->originUpdatedAt;
     }
 
     /**

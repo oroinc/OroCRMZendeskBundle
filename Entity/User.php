@@ -201,6 +201,9 @@ class User
      */
     protected $relatedUser;
 
+    /**
+     * @var bool
+     */
     private $updatedAtLocked = false;
 
     /**
@@ -608,6 +611,44 @@ class User
     }
 
     /**
+     * @param \DateTime $originCreatedAt
+     * @return User
+     */
+    public function setOriginCreatedAt(\DateTime $originCreatedAt = null)
+    {
+        $this->originCreatedAt = $originCreatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOriginCreatedAt()
+    {
+        return $this->originCreatedAt;
+    }
+
+    /**
+     * @param \DateTime $originUpdatedAt
+     * @return User
+     */
+    public function setOriginUpdatedAt(\DateTime $originUpdatedAt = null)
+    {
+        $this->originUpdatedAt = $originUpdatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getOriginUpdatedAt()
+    {
+        return $this->originUpdatedAt;
+    }
+
+    /**
      * @param Contact $contact
      * @return User
      */
@@ -643,44 +684,6 @@ class User
     public function getRelatedUser()
     {
         return $this->relatedUser;
-    }
-
-    /**
-     * @param \DateTime $originCreatedAt
-     * @return User
-     */
-    public function setOriginCreatedAt($originCreatedAt)
-    {
-        $this->originCreatedAt = $originCreatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getOriginCreatedAt()
-    {
-        return $this->originCreatedAt;
-    }
-
-    /**
-     * @param \DateTime $originUpdatedAt
-     * @return User
-     */
-    public function setOriginUpdatedAt($originUpdatedAt)
-    {
-        $this->originUpdatedAt = $originUpdatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getOriginUpdatedAt()
-    {
-        return $this->originUpdatedAt;
     }
 
     /**
