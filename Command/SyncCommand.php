@@ -79,6 +79,7 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
         }
 
         $commentTickets = $syncTicketsResult->getContext()->getValue(TicketSyncStrategy::COMMENT_TICKETS);
+        $commentTickets = $commentTickets ? $commentTickets : array();
         $this->executeSyncTicketCommentsJob($commentTickets);
 
         $this->logger->notice('Result report');
@@ -150,8 +151,6 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
      */
     protected function executeSyncTicketCommentsJob(array $commentTickets)
     {
-        $commentTickets = $commentTickets ? $commentTickets : array();
-
         foreach ($commentTickets as $ticketId) {
             $this->executeSyncFromZendeskJob(
                 'zendesk_ticket_comments',
