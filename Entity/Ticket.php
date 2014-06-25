@@ -28,7 +28,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class Ticket
+class Ticket implements OriginUpdatedAtInterface
 {
     /**
      * @var int

@@ -32,6 +32,11 @@ class TicketSyncStrategyTest extends WebTestCase
      */
     protected $entityManager;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $context;
+
     protected function setUp()
     {
         $this->initClient();
@@ -39,8 +44,8 @@ class TicketSyncStrategyTest extends WebTestCase
 
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->strategy = $this->getContainer()->get('orocrm_zendesk.importexport.strategy.ticket_sync');
-        $context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
-        $this->strategy->setImportExportContext($context);
+        $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->strategy->setImportExportContext($this->context);
     }
 
     /**
@@ -63,6 +68,14 @@ class TicketSyncStrategyTest extends WebTestCase
 
     public function testProcessExistingZendeskTicket()
     {
+        $map = array(
+            array('syncStartAt', null, new \DateTime()),
+            array('lastSyncAt', null, null)
+        );
+        $this->context->expects($this->exactly(2))
+            ->method('getOption')
+            ->will($this->returnValueMap($map));
+
         $zendeskTicket = $this->createZendeskTicket()
             ->setOriginId(42)
             ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
@@ -92,6 +105,60 @@ class TicketSyncStrategyTest extends WebTestCase
 
         $this->assertFalse($this->entityManager->contains($zendeskTicket));
         $this->assertTrue($this->entityManager->contains($result));
+    }
+
+    public function testProcessSkipSyncExistingZendeskTicketIfItAlreadyUpdated()
+    {
+        $zendeskTicket = $this->createZendeskTicket()
+            ->setOriginId(42)
+            ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
+            ->setSubject('Updated subject')
+            ->setDescription('Updated description')
+            ->setExternalId('123456')
+            ->setRecipient('user@example.com')
+            ->setHasIncidents(false)
+            ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
+            ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'));
+
+        $map = array(
+            array('syncStartAt', null, new \DateTime()),
+            array('lastSyncAt', null, new \DateTime())
+        );
+        $this->context->expects($this->exactly(2))
+            ->method('getOption')
+            ->will($this->returnValueMap($map));
+
+        $result = $this->strategy->process($zendeskTicket);
+
+        $this->assertNull($result);
+    }
+
+    public function testProcessSkipSyncExistingZendeskTicketIfItUpdatedAfterJobStarted()
+    {
+        $zendeskTicket = $this->createZendeskTicket()
+            ->setOriginId(42)
+            ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
+            ->setSubject('Updated subject')
+            ->setDescription('Updated description')
+            ->setExternalId('123456')
+            ->setRecipient('user@example.com')
+            ->setHasIncidents(false)
+            ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
+            ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'));
+
+        $map = array(
+            array('syncStartAt', null, new \DateTime('2014-06-09T17:44:22Z')),
+            array('lastSyncAt', null, new \DateTime('2014-06-09T16:45:22Z'))
+        );
+        $this->context->expects($this->exactly(2))
+            ->method('getOption')
+            ->will($this->returnValueMap($map));
+
+        $result = $this->strategy->process($zendeskTicket);
+
+        $this->assertNull($result);
     }
 
     public function testProcessLinksProblem()

@@ -27,7 +27,7 @@ use OroCRM\Bundle\ContactBundle\Entity\Contact;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class User
+class User implements OriginUpdatedAtInterface
 {
     /**
      * @var int

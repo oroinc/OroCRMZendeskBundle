@@ -26,6 +26,11 @@ class UserSyncStrategyTest extends WebTestCase
      */
     protected $entityManager;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $context;
+
     protected function setUp()
     {
         $this->initClient();
@@ -33,8 +38,8 @@ class UserSyncStrategyTest extends WebTestCase
 
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->strategy = $this->getContainer()->get('orocrm_zendesk.importexport.strategy.user_sync');
-        $context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
-        $this->strategy->setImportExportContext($context);
+        $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->strategy->setImportExportContext($this->context);
     }
 
     /**
@@ -77,6 +82,14 @@ class UserSyncStrategyTest extends WebTestCase
             ->setTimeZone('Arizona')
             ->setLocale('en-US');
 
+        $map = array(
+            array('syncStartAt', null, new \DateTime()),
+            array('lastSyncAt', null, null)
+        );
+        $this->context->expects($this->exactly(2))
+            ->method('getOption')
+            ->will($this->returnValueMap($map));
+
         $result = $this->strategy->process($zendeskUser);
 
         $this->assertNotSame($zendeskUser, $result);
@@ -100,6 +113,76 @@ class UserSyncStrategyTest extends WebTestCase
         $this->assertEquals($zendeskUser->getLocale(), $result->getLocale());
         $this->assertFalse($this->entityManager->contains($zendeskUser));
         $this->assertTrue($this->entityManager->contains($result));
+    }
+
+    public function testProcessSkipSyncExistingZendeskUserIfItAlreadyUpdated()
+    {
+        $zendeskUser = $this->createZendeskUser()
+            ->setOriginId(1015)
+            ->setUrl('https://foo.zendesk.com/api/v2/users/1015.json?1')
+            ->setName('John Doe')
+            ->setEmail('john.doe@example.com')
+            ->setRole(new ZendeskUserRole(ZendeskUserRole::ROLE_AGENT))
+            ->setPhone('555-111-222')
+            ->setActive(true)
+            ->setAlias('johndoe')
+            ->setDetails('Some details')
+            ->setExternalId(115)
+            ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
+            ->setLastLoginAt(new \DateTime('2014-06-11T15:26:11Z'))
+            ->setOnlyPrivateComments(true)
+            ->setTicketRestriction('ticket_restriction')
+            ->setVerified(true)
+            ->setTimeZone('Arizona')
+            ->setLocale('en-US');
+
+        $map = array(
+            array('syncStartAt', null, new \DateTime()),
+            array('lastSyncAt', null, new \DateTime())
+        );
+        $this->context->expects($this->exactly(2))
+            ->method('getOption')
+            ->will($this->returnValueMap($map));
+
+        $result = $this->strategy->process($zendeskUser);
+
+        $this->assertNull($result);
+    }
+
+    public function testProcessSkipSyncExistingZendeskUserIfItUpdatedAfterJobStarted()
+    {
+        $zendeskUser = $this->createZendeskUser()
+            ->setOriginId(1015)
+            ->setUrl('https://foo.zendesk.com/api/v2/users/1015.json?1')
+            ->setName('John Doe')
+            ->setEmail('john.doe@example.com')
+            ->setRole(new ZendeskUserRole(ZendeskUserRole::ROLE_AGENT))
+            ->setPhone('555-111-222')
+            ->setActive(true)
+            ->setAlias('johndoe')
+            ->setDetails('Some details')
+            ->setExternalId(115)
+            ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
+            ->setLastLoginAt(new \DateTime('2014-06-11T15:26:11Z'))
+            ->setOnlyPrivateComments(true)
+            ->setTicketRestriction('ticket_restriction')
+            ->setVerified(true)
+            ->setTimeZone('Arizona')
+            ->setLocale('en-US');
+
+        $map = array(
+            array('syncStartAt', null, new \DateTime('2014-06-09T17:44:22Z')),
+            array('lastSyncAt', null, new \DateTime('2014-06-09T16:45:22Z'))
+        );
+        $this->context->expects($this->exactly(2))
+            ->method('getOption')
+            ->will($this->returnValueMap($map));
+
+        $result = $this->strategy->process($zendeskUser);
+
+        $this->assertNull($result);
     }
 
     public function testProcessLinksZendeskUserRole()
