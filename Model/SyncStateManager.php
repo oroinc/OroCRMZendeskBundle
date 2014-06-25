@@ -13,6 +13,9 @@ class SyncStateManager
      */
     private $entityManager;
 
+    /**
+     * @param EntityManager $entityManager
+     */
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -28,6 +31,10 @@ class SyncStateManager
         return $syncState->getLastSync();
     }
 
+    /**
+     * @param \DateTime $dateTime
+     * @param bool      $flush
+     */
     public function setLastSyncDate(\DateTime $dateTime, $flush = false)
     {
         $syncState = $this->getSyncState();

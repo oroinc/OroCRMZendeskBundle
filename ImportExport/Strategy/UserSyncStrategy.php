@@ -47,6 +47,10 @@ class UserSyncStrategy extends AbstractSyncStrategy
 
         $existingUser = $this->findExistingEntity($entity, 'originId');
         if ($existingUser) {
+            if (!$this->needSync($entity)) {
+                return null;
+            }
+
             $this->syncProperties(
                 $existingUser,
                 $entity,

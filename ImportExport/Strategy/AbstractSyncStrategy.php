@@ -5,19 +5,20 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 use Doctrine\ORM\EntityManager;
 
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Security\Core\Util\ClassUtils;
 
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskEntityProvider;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
+use OroCRM\Bundle\ZendeskBundle\Entity\OriginUpdatedAtInterface;
 
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\ImportExportBundle\Strategy\StrategyInterface;
-use Symfony\Component\Security\Core\Util\ClassUtils;
 
 abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareInterface
 {
@@ -187,6 +188,26 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
         }
 
         return $existingEntity;
+    }
+
+    protected function needSync(OriginUpdatedAtInterface $entity)
+    {
+        $startSync = $this->getContext()->getOption('syncStartAt');
+        $lastSync = $this->getContext()->getOption('lastSyncAt');
+
+        if (!$startSync) {
+            throw new InvalidConfigurationException(
+                'Configuration must contain "syncStartAt" parameter.'
+            );
+        }
+
+        if (!$lastSync) {
+            return true;
+        }
+
+        $originUpdatedAt = $entity->getOriginUpdatedAt();
+
+        return $originUpdatedAt > $lastSync && $originUpdatedAt < $startSync;
     }
 
     /**
