@@ -139,6 +139,7 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
                 'resource'       => 'search.json',
                 'logger'         => $this->logger,
                 'syncStartAt'    => $startSync,
+                'lastSyncAt'     => $lastSync,
                 'params'         => $ticketParams
             ]
         );
