@@ -14,6 +14,8 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
 {
+    const SHORT_MODE = 'short';
+
     /**
      * @var PropertyAccessor
      */
@@ -65,7 +67,36 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        throw new \BadMethodCallException('Method is not implemented.');
+        $targetClass = $this->getTargetClassName();
+        if (!$object instanceof $targetClass) {
+            return null;
+        }
+
+        $fieldRules = $this->getProcessedFieldRules();
+
+        if (isset($context['mode']) && $context['mode'] == self::SHORT_MODE && $this->primaryField) {
+            return $this->getPropertyAccessor()->getValue($object, $this->primaryField['denormalizeName']);
+        }
+
+        $result = array();
+        foreach ($fieldRules as $field) {
+            if (!$field['normalize']) {
+                continue;
+            }
+
+            $value = $this->getPropertyAccessor()->getValue($object, $field['denormalizeName']);
+            if (isset($field['type']) && $value !== null) {
+                $value = $this->serializer->normalize(
+                    $value,
+                    $format,
+                    array_merge($context, $field['context'])
+                );
+            }
+
+            $result[$field['normalizeName']] = $value;
+        }
+
+        return $result;
     }
 
     /**
@@ -81,7 +112,7 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
 
         if (!is_array($data)) {
             if ($this->primaryField) {
-                $data = array($this->primaryField['normalized'] => $data);
+                $data = array($this->primaryField['normalizeName'] => $data);
             } else {
                 return $this->createNewObject();
             }
@@ -90,21 +121,21 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
         $object = $this->createNewObject();
 
         foreach ($fieldRules as $field) {
-            if (!array_key_exists($field['normalized'], $data)) {
+            if (!$field['denormalize'] || !array_key_exists($field['normalizeName'], $data)) {
                 continue;
             }
 
-            $value = $data[$field['normalized']];
+            $value = $data[$field['normalizeName']];
             if (isset($field['type']) && $value !== null) {
                 $value = $this->serializer->denormalize(
-                    $data[$field['normalized']],
+                    $data[$field['normalizeName']],
                     $field['type'],
                     $format,
                     array_merge($context, $field['context'])
                 );
             }
 
-            $this->getPropertyAccessor()->setValue($object, $field['denormalized'], $value);
+            $this->getPropertyAccessor()->setValue($object, $field['denormalizeName'], $value);
         }
 
         return $object;
@@ -132,26 +163,27 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
             $this->fieldRules = array();
             foreach ($this->getFieldRules() as $key => $field) {
                 if (is_string($field)) {
-                    $field = array('name' => $field);
+                    $fieldName = $field;
+                    $field = array();
+                } elseif (isset($field['name'])) {
+                    $fieldName = $field['name'];
+                } else {
+                    $fieldName = $key;
                 }
 
-                if (!isset($field['name'])) {
-                    $field['name'] = $key;
-                }
+                $defaultValues = array(
+                    'name' => $fieldName,
+                    'normalize' => true,
+                    'denormalize' => true,
+                    'context' => array(),
+                    'primary' => false,
+                    'normalizeName' => $fieldName,
+                    'denormalizeName' => $fieldName,
+                );
 
-                if (isset($field['name']) && !isset($field['normalized'])) {
-                    $field['normalized'] = $field['name'];
-                }
+                $field = array_merge($defaultValues, (array)$field);
 
-                if (isset($field['name']) && !isset($field['denormalized'])) {
-                    $field['denormalized'] = $field['name'];
-                }
-
-                if (!isset($field['context'])) {
-                    $field['context'] = array();
-                }
-
-                if (!empty($field['primary'])) {
+                if ($field['primary']) {
                     $this->primaryField = $field;
                 }
 

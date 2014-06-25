@@ -11,8 +11,8 @@ class UserNormalizer extends AbstractNormalizer
     {
         return array(
             array(
-                'denormalized' => 'originId',
-                'normalized' => 'id',
+                'denormalizeName' => 'originId',
+                'normalizeName' => 'id',
                 'primary' => true,
             ),
             'url',
@@ -29,16 +29,14 @@ class UserNormalizer extends AbstractNormalizer
             'phone',
             'time_zone',
             'locale',
-            'origin_created_at' => array(
+            'originCreatedAt' => array(
                 'type' => 'DateTime',
-                'denormalized' => 'origin_created_at',
-                'normalized' => 'created_at',
+                'normalizeName' => 'created_at',
                 'context' => array('type' => 'datetime'),
             ),
-            'origin_updated_at' => array(
+            'originUpdatedAt' => array(
                 'type' => 'DateTime',
-                'normalized' => 'updated_at',
-                'denormalized' => 'origin_updated_at',
+                'normalizeName' => 'updated_at',
                 'context' => array('type' => 'datetime'),
             ),
             'role' => array(

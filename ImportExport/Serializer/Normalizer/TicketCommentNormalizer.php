@@ -11,22 +11,21 @@ class TicketCommentNormalizer extends AbstractNormalizer
     {
         return array(
             'originId' => array(
-                'normalized' => 'id',
+                'normalizeName' => 'id',
                 'primary' => true,
             ),
             'author' => array(
-                'normalized' => 'author_id',
+                'normalizeName' => 'author_id',
                 'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User'
             ),
             'body',
             'htmlBody' => array(
-                'normalized' => 'html_body',
+                'normalizeName' => 'html_body',
             ),
             'public',
-            'origin_created_at' => array(
+            'originCreatedAt' => array(
                 'type' => 'DateTime',
-                'denormalized' => 'origin_created_at',
-                'normalized' => 'created_at',
+                'normalizeName' => 'created_at',
                 'context' => array('type' => 'datetime'),
             ),
         );

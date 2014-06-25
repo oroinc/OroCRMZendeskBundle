@@ -9,8 +9,8 @@ use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketNormalizer;
 
 class TicketNormalizerTest extends WebTestCase
 {
@@ -26,20 +26,20 @@ class TicketNormalizerTest extends WebTestCase
     }
 
     /**
-     * @dataProvider denormalizeProvider
+     * @dataProvider denormalizeDataProvider
      */
-    public function testDenormalize($data, $expected)
+    public function testDenormalize($normalized, $denormalized)
     {
-        $actual = $this->serializer->deserialize($data, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket', null);
+        $actual = $this->serializer->deserialize($normalized, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket', null);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($denormalized, $actual);
     }
 
-    public function denormalizeProvider()
+    public function denormalizeDataProvider()
     {
         return array(
             'full' => array(
-                'data' => array(
+                'normalized' => array(
                     'id' => $originId = 100,
                     'url' => $url = 'https://foo.zendesk.com/api/v2/tickets/123.json',
                     'external_id' => $externalId = 123,
@@ -58,18 +58,8 @@ class TicketNormalizerTest extends WebTestCase
                     'due_at' => $dueAt = '2014-06-10T10:26:21Z',
                     'created_at' => $createdAt = '2014-06-12T11:45:21Z',
                     'updated_at' => $updatedAt = '2014-06-13T09:57:54Z',
-                    'comments' => array(
-                        array(
-                            'id' => $commentOriginId = 100,
-                            'author_id' => $commentAuthorId = 105,
-                            'body' => $commentBody = 'Body',
-                            'html_body' => $commentHtmlBody = '<p>Body</p>',
-                            'public' => $commentPublic = true,
-                            'created_at' => $commentCreatedAt = '2014-06-12T11:45:21Z',
-                        ),
-                    ),
                 ),
-                'expected' => $this->createTicket()
+                'denormalized' => $this->createTicket()
                     ->setOriginId($originId)
                     ->setUrl($url)
                     ->setExternalId($externalId)
@@ -90,18 +80,79 @@ class TicketNormalizerTest extends WebTestCase
                     ->setDueAt(new \DateTime($dueAt))
                     ->setOriginCreatedAt(new \DateTime($createdAt))
                     ->setOriginUpdatedAt(new \DateTime($updatedAt))
-                    ->addComment(
-                        $this->createTicketComment($commentOriginId)
-                            ->setAuthor($this->createUser($commentAuthorId))
-                            ->setBody($commentBody)
-                            ->setHtmlBody($commentHtmlBody)
-                            ->setPublic($commentPublic)
-                            ->setOriginCreatedAt(new \DateTime($commentCreatedAt))
-                    )
             ),
             'short' => array(
                 'data' => 100,
                 'expected' => $this->createTicket()->setOriginId(100)
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider normalizeDataProvider
+     */
+    public function testNormalize($denormalized, $normalized, $context = array())
+    {
+        $actual = $this->serializer->serialize($denormalized, null, $context);
+
+        $this->assertEquals($normalized, $actual);
+    }
+
+    public function normalizeDataProvider()
+    {
+        return array(
+            'full' => array(
+                'denormalized' => $this->createTicket()
+                    ->setOriginId($originId = 100)
+                    ->setExternalId($externalId = 123)
+                    ->setSubject($subject = 'Ticket subject')
+                    ->addCollaborator($this->createUser($collaboratorIds[] = 102))
+                    ->addCollaborator($this->createUser($collaboratorIds[] = 103))
+                    ->addCollaborator($this->createUser($collaboratorIds[] = 104))
+                    ->setType(new TicketType($typeName = TicketType::TYPE_TASK))
+                    ->setStatus(new TicketStatus($statusName = TicketStatus::STATUS_OPEN))
+                    ->setPriority(new TicketPriority($priorityName = TicketPriority::PRIORITY_NORMAL))
+                    ->setRequester($this->createUser($requesterId = 105))
+                    ->setSubmitter($this->createUser($submitterId = 106))
+                    ->setAssignee($this->createUser($assigneeId = 107))
+                    ->setDueAt(new \DateTime($dueAt = '2014-06-10T10:26:21+0000')),
+                'normalized' => array(
+                    'id' => $originId,
+                    'external_id' => $externalId,
+                    'subject' => $subject,
+                    'collaborator_ids' => $collaboratorIds,
+                    'type' => $typeName,
+                    'status' => $statusName,
+                    'priority' => $priorityName,
+                    'requester_id' => $requesterId,
+                    'submitter_id' => $submitterId,
+                    'assignee_id' => $assigneeId,
+                    'due_at' => $dueAt,
+                ),
+            ),
+            'new' => array(
+                'denormalized' => $this->createTicket()
+                    ->setDescription($description = 'Ticket description'),
+                'normalized' => array(
+                    'comment' => array(
+                        'body' => $description,
+                    ),
+                    'external_id' => null,
+                    'subject' => null,
+                    'collaborator_ids' => array(),
+                    'type' => null,
+                    'status' => null,
+                    'priority' => null,
+                    'requester_id' => null,
+                    'submitter_id' => null,
+                    'assignee_id' => null,
+                    'due_at' => null,
+                ),
+            ),
+            'short' => array(
+                'denormalized' => $this->createTicket()->setOriginId($originId = 100),
+                'normalized' => $originId,
+                'context' => array('mode' => TicketNormalizer::SHORT_MODE),
             ),
         );
     }
@@ -112,17 +163,6 @@ class TicketNormalizerTest extends WebTestCase
     protected function createTicket()
     {
         $result = new Ticket();
-        return $result;
-    }
-
-    /**
-     * @param int $id
-     * @return TicketComment
-     */
-    protected function createTicketComment($id)
-    {
-        $result = new TicketComment();
-        $result->setOriginId($id);
         return $result;
     }
 

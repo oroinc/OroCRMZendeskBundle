@@ -11,66 +11,100 @@ class TicketNormalizer extends AbstractNormalizer
     {
         return array(
             'originId' => array(
-                'normalized' => 'id',
+                'normalizeName' => 'id',
                 'primary' => true,
             ),
-            'url',
+            'url' => array(
+                'normalize' => false,
+            ),
             'external_id',
             'subject',
-            'description',
-            'recipient',
-            'has_incidents',
+            'description' => array(
+                'normalize' => false,
+            ),
+            'recipient' => array(
+                'normalize' => false,
+            ),
+            'has_incidents' => array(
+                'normalize' => false,
+            ),
             'problem' => array(
-                'normalized' => 'problem_id',
+                'normalize' => false,
+                'normalizeName' => 'problem_id',
                 'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket'
             ),
             'collaborators' => array(
-                'normalized' => 'collaborator_ids',
+                'normalizeName' => 'collaborator_ids',
                 'type' => 'ArrayCollection<OroCRM\\Bundle\\ZendeskBundle\\Entity\\User>',
+                'context' => array('mode' => self::SHORT_MODE),
             ),
             'type' => array(
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketType'
+                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketType',
+                'context' => array('mode' => self::SHORT_MODE),
             ),
             'status' => array(
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketStatus'
+                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketStatus',
+                'context' => array('mode' => self::SHORT_MODE),
             ),
             'priority' => array(
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketPriority'
+                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketPriority',
+                'context' => array('mode' => self::SHORT_MODE),
             ),
             'requester' => array(
-                'normalized' => 'requester_id',
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User'
+                'normalizeName' => 'requester_id',
+                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                'context' => array('mode' => self::SHORT_MODE),
             ),
             'submitter' => array(
-                'normalized' => 'submitter_id',
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User'
+                'normalizeName' => 'submitter_id',
+                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                'context' => array('mode' => self::SHORT_MODE),
             ),
             'assignee' => array(
-                'normalized' => 'assignee_id',
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User'
+                'normalizeName' => 'assignee_id',
+                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                'context' => array('mode' => self::SHORT_MODE),
             ),
-            'has_incidents',
             'due_at' => array(
                 'type' => 'DateTime',
                 'context' => array('type' => 'datetime'),
             ),
-            'origin_created_at' => array(
+            'originCreatedAt' => array(
                 'type' => 'DateTime',
-                'normalized' => 'created_at',
-                'denormalized' => 'origin_created_at',
+                'normalize' => false,
+                'normalizeName' => 'created_at',
                 'context' => array('type' => 'datetime'),
             ),
-            'origin_updated_at' => array(
+            'originUpdatedAt' => array(
                 'type' => 'DateTime',
-                'normalized' => 'updated_at',
-                'denormalized' => 'origin_updated_at',
+                'normalize' => false,
+                'normalizeName' => 'updated_at',
                 'context' => array('type' => 'datetime'),
-            ),
-            'comments' => array(
-                'type' => 'ArrayCollection<OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment>',
             ),
         );
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function normalize($object, $format = null, array $context = array())
+    {
+        $result = parent::normalize($object, $format, $context);
+
+        if (!is_array($result) || $object->getOriginId()) {
+            return $result;
+        }
+
+        // Comment is required by Zendesk API when create ticket
+        // @see http://developer.zendesk.com/documentation/rest_api/tickets.html#creating-tickets
+        unset($result['id']);
+        $result['comment'] = array(
+            'body' => $object->getDescription(),
+        );
+
+        return $result;
+    }
+
 
     /**
      * {@inheritdoc}
