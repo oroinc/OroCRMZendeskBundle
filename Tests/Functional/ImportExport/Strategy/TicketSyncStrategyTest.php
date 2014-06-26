@@ -68,14 +68,6 @@ class TicketSyncStrategyTest extends WebTestCase
 
     public function testProcessExistingZendeskTicket()
     {
-        $map = array(
-            array('syncStartAt', null, new \DateTime()),
-            array('lastSyncAt', null, null)
-        );
-        $this->context->expects($this->exactly(2))
-            ->method('getOption')
-            ->will($this->returnValueMap($map));
-
         $zendeskTicket = $this->createZendeskTicket()
             ->setOriginId(42)
             ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
@@ -85,7 +77,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setRecipient('user@example.com')
             ->setHasIncidents(false)
             ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
-            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-10T17:45:22Z'))
             ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'));
 
         $result = $this->strategy->process($zendeskTicket);
@@ -109,6 +101,7 @@ class TicketSyncStrategyTest extends WebTestCase
 
     public function testProcessSkipSyncExistingZendeskTicketIfItAlreadyUpdated()
     {
+        $existingTicket = $this->getReference('zendesk_ticket_42');
         $zendeskTicket = $this->createZendeskTicket()
             ->setOriginId(42)
             ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
@@ -118,43 +111,8 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setRecipient('user@example.com')
             ->setHasIncidents(false)
             ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
-            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
+            ->setOriginUpdatedAt($existingTicket->getOriginUpdatedAt())
             ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'));
-
-        $map = array(
-            array('syncStartAt', null, new \DateTime()),
-            array('lastSyncAt', null, new \DateTime())
-        );
-        $this->context->expects($this->exactly(2))
-            ->method('getOption')
-            ->will($this->returnValueMap($map));
-
-        $result = $this->strategy->process($zendeskTicket);
-
-        $this->assertNull($result);
-    }
-
-    public function testProcessSkipSyncExistingZendeskTicketIfItUpdatedAfterJobStarted()
-    {
-        $zendeskTicket = $this->createZendeskTicket()
-            ->setOriginId(42)
-            ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
-            ->setSubject('Updated subject')
-            ->setDescription('Updated description')
-            ->setExternalId('123456')
-            ->setRecipient('user@example.com')
-            ->setHasIncidents(false)
-            ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
-            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
-            ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'));
-
-        $map = array(
-            array('syncStartAt', null, new \DateTime('2014-06-09T17:44:22Z')),
-            array('lastSyncAt', null, new \DateTime('2014-06-09T16:45:22Z'))
-        );
-        $this->context->expects($this->exactly(2))
-            ->method('getOption')
-            ->will($this->returnValueMap($map));
 
         $result = $this->strategy->process($zendeskTicket);
 

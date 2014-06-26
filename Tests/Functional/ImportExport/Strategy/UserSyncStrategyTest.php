@@ -74,21 +74,13 @@ class UserSyncStrategyTest extends WebTestCase
             ->setDetails('Some details')
             ->setExternalId(115)
             ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
-            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-10T17:45:22Z'))
             ->setLastLoginAt(new \DateTime('2014-06-11T15:26:11Z'))
             ->setOnlyPrivateComments(true)
             ->setTicketRestriction('ticket_restriction')
             ->setVerified(true)
             ->setTimeZone('Arizona')
             ->setLocale('en-US');
-
-        $map = array(
-            array('syncStartAt', null, new \DateTime()),
-            array('lastSyncAt', null, null)
-        );
-        $this->context->expects($this->exactly(2))
-            ->method('getOption')
-            ->will($this->returnValueMap($map));
 
         $result = $this->strategy->process($zendeskUser);
 
@@ -117,6 +109,8 @@ class UserSyncStrategyTest extends WebTestCase
 
     public function testProcessSkipSyncExistingZendeskUserIfItAlreadyUpdated()
     {
+        $existingUser = $this->getReference('zendesk_user:fred.taylor@example.com');
+
         $zendeskUser = $this->createZendeskUser()
             ->setOriginId(1015)
             ->setUrl('https://foo.zendesk.com/api/v2/users/1015.json?1')
@@ -129,56 +123,13 @@ class UserSyncStrategyTest extends WebTestCase
             ->setDetails('Some details')
             ->setExternalId(115)
             ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
-            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
+            ->setOriginUpdatedAt($existingUser->getOriginUpdatedAt())
             ->setLastLoginAt(new \DateTime('2014-06-11T15:26:11Z'))
             ->setOnlyPrivateComments(true)
             ->setTicketRestriction('ticket_restriction')
             ->setVerified(true)
             ->setTimeZone('Arizona')
             ->setLocale('en-US');
-
-        $map = array(
-            array('syncStartAt', null, new \DateTime()),
-            array('lastSyncAt', null, new \DateTime())
-        );
-        $this->context->expects($this->exactly(2))
-            ->method('getOption')
-            ->will($this->returnValueMap($map));
-
-        $result = $this->strategy->process($zendeskUser);
-
-        $this->assertNull($result);
-    }
-
-    public function testProcessSkipSyncExistingZendeskUserIfItUpdatedAfterJobStarted()
-    {
-        $zendeskUser = $this->createZendeskUser()
-            ->setOriginId(1015)
-            ->setUrl('https://foo.zendesk.com/api/v2/users/1015.json?1')
-            ->setName('John Doe')
-            ->setEmail('john.doe@example.com')
-            ->setRole(new ZendeskUserRole(ZendeskUserRole::ROLE_AGENT))
-            ->setPhone('555-111-222')
-            ->setActive(true)
-            ->setAlias('johndoe')
-            ->setDetails('Some details')
-            ->setExternalId(115)
-            ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
-            ->setOriginUpdatedAt(new \DateTime('2014-06-09T17:45:22Z'))
-            ->setLastLoginAt(new \DateTime('2014-06-11T15:26:11Z'))
-            ->setOnlyPrivateComments(true)
-            ->setTicketRestriction('ticket_restriction')
-            ->setVerified(true)
-            ->setTimeZone('Arizona')
-            ->setLocale('en-US');
-
-        $map = array(
-            array('syncStartAt', null, new \DateTime('2014-06-09T17:44:22Z')),
-            array('lastSyncAt', null, new \DateTime('2014-06-09T16:45:22Z'))
-        );
-        $this->context->expects($this->exactly(2))
-            ->method('getOption')
-            ->will($this->returnValueMap($map));
 
         $result = $this->strategy->process($zendeskUser);
 

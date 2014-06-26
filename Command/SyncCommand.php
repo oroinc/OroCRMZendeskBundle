@@ -70,9 +70,9 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
         $lastSync = $syncStateManager->getLastSyncDate();
         $startSyncDate = new \DateTime('now', new \DateTimeZone('UTC'));
 
-        $syncUserResult = $this->executeSyncUsersJob($startSyncDate, $lastSync);
+        $syncUserResult = $this->executeSyncUsersJob($lastSync);
 
-        $syncTicketsResult = $this->executeSyncTicketsJob($startSyncDate, $lastSync);
+        $syncTicketsResult = $this->executeSyncTicketsJob($lastSync);
 
         if ($syncUserResult->isSuccessful() && $syncTicketsResult->isSuccessful()) {
             $syncStateManager->setLastSyncDate($startSyncDate, true);
@@ -92,11 +92,10 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
     }
 
     /**
-     * @param \DateTime $startSync
      * @param \DateTime|null $lastSync
      * @return JobResult
      */
-    protected function executeSyncUsersJob(\DateTime $startSync, \DateTime $lastSync = null)
+    protected function executeSyncUsersJob(\DateTime $lastSync = null)
     {
         $userParams = array(
             'query' => $lastSync ? "updated>{$lastSync->format(\DateTime::ISO8601)} type:user" : 'type:user'
@@ -110,8 +109,6 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
                 'entityName'     => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
                 'resource'       => 'search.json',
                 'logger'         => $this->logger,
-                'syncStartAt'    => $startSync,
-                'lastSyncAt'     => $lastSync,
                 'params'         => $userParams
             ]
         );
@@ -120,11 +117,10 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
     }
 
     /**
-     * @param \DateTime $startSync
      * @param \DateTime|null $lastSync
      * @return JobResult
      */
-    protected function executeSyncTicketsJob(\DateTime $startSync, \DateTime $lastSync = null)
+    protected function executeSyncTicketsJob(\DateTime $lastSync = null)
     {
         $ticketParams = array(
             'query' => $lastSync ? "updated>{$lastSync->format(\DateTime::ISO8601)} type:ticket" : 'type:ticket'
@@ -138,8 +134,6 @@ class SyncCommand extends ContainerAwareCommand implements CronCommandInterface
                 'entityName'     => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
                 'resource'       => 'search.json',
                 'logger'         => $this->logger,
-                'syncStartAt'    => $startSync,
-                'lastSyncAt'     => $lastSync,
                 'params'         => $ticketParams
             ]
         );

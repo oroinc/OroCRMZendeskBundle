@@ -190,26 +190,6 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
         return $existingEntity;
     }
 
-    protected function needSync(OriginUpdatedAtInterface $entity)
-    {
-        $startSync = $this->getContext()->getOption('syncStartAt');
-        $lastSync = $this->getContext()->getOption('lastSyncAt');
-
-        if (!$startSync) {
-            throw new InvalidConfigurationException(
-                'Configuration must contain "syncStartAt" parameter.'
-            );
-        }
-
-        if (!$lastSync) {
-            return true;
-        }
-
-        $originUpdatedAt = $entity->getOriginUpdatedAt();
-
-        return $originUpdatedAt > $lastSync && $originUpdatedAt < $startSync;
-    }
-
     /**
      * @return PropertyAccessor
      */

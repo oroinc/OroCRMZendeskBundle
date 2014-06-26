@@ -68,7 +68,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
 
         $existingTicket = $this->zendeskProvider->getTicket($entity);
         if ($existingTicket) {
-            if (!$this->needSync($entity)) {
+            if ($existingTicket->getOriginUpdatedAt() == $entity->getOriginUpdatedAt()) {
                 return null;
             }
 

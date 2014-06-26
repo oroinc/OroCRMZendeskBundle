@@ -21,6 +21,7 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             'name' => 'Fred Taylor',
             'email' => 'fred.taylor@example.com',
             'role' => UserRole::ROLE_AGENT,
+            'originUpdatedAt' => '2014-06-09T17:45:22Z'
         ),
         array(
             'reference' => 'zendesk_user:james.cook@example.com',
@@ -68,6 +69,9 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             }
             if (isset($data['relatedContact'])) {
                 $data['relatedContact'] = $this->getReference($data['relatedContact']);
+            }
+            if (isset($data['originUpdatedAt'])) {
+                $data['originUpdatedAt'] = new \DateTime($data['originUpdatedAt']);
             }
             $this->setEntityPropertyValues($entity, $data, array('reference'));
             $this->setReference($entity->getEmail(), $entity);

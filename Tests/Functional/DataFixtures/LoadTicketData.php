@@ -36,6 +36,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'createdAt' => '2014-06-05T12:24:23Z',
             'updatedAt' => '2014-06-05T13:43:21Z',
             'relatedCase' => 'orocrm_zendesk_case_2',
+            'originUpdatedAt' => '2014-06-09T17:45:22Z'
         ),
         array(
             'reference' => 'zendesk_ticket_42',
@@ -133,7 +134,9 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             if (isset($data['relatedCase'])) {
                 $data['relatedCase'] = $this->getReference($data['relatedCase']);
             }
-
+            if (isset($data['originUpdatedAt'])) {
+                $data['originUpdatedAt'] = new \DateTime($data['originUpdatedAt']);
+            }
             $this->setEntityPropertyValues($entity, $data, array('reference', 'comments'));
 
             $manager->persist($entity);
