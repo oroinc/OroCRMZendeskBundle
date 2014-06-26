@@ -3,6 +3,7 @@ parameters:
     orocrm_zendesk.entity.ticket.class:                        OroCRM\Bundle\ZendeskBundle\Entity\Ticket
     orocrm_zendesk.entity.ticket_comment.class:                OroCRM\Bundle\ZendeskBundle\Entity\TicketComment
     orocrm_zendesk.configuration_provider.class:               OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider
+    orocrm_zendesk.provider.channel_type.class:                OroCRM\Bundle\ZendeskBundle\Provider\ChannelType
     orocrm_zendesk.entity_mapper.class:                        OroCRM\Bundle\ZendeskBundle\Model\EntityMapper
     orocrm_zendesk.rest_client_factory.class:                  OroCRM\Bundle\ZendeskBundle\Model\RestClientFactory
     orocrm_zendesk.twig.extension.case_ticket.class:           OroCRM\Bundle\ZendeskBundle\Twig\CaseTicketExtension
@@ -51,3 +52,8 @@ services:
         class: %orocrm_zendesk.sync_state_manager.class%
         arguments:
             - @doctrine.orm.entity_manager
+
+    orocrm_zendesk.provider.channel_type:
+        class: %orocrm_zendesk.provider.channel_type.class%
+        tags:
+            - { name: oro_integration.channel, type: zendesk }

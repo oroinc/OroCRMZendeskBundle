@@ -80,3 +80,5 @@ orocrm:
                 label: Default Zendesk user email
             oro_default_username:
                 label: Default OroCRM username
+
+        channel_type.label: 'Zendesk'
