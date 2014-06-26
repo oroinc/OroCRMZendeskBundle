@@ -26,6 +26,15 @@ abstract class AbstractZendeskConnector extends AbstractConnector
     }
 
     /**
+     * @return \DateTime|null
+     */
+    protected function getLastSyncDate()
+    {
+        $channel = $this->contextMediator->getChannel($this->getContext());
+        return $this->syncState->getLastSyncDate($channel, $this->getType());
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function validateConfiguration()

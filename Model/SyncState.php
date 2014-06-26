@@ -2,19 +2,48 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model;
 
+use Doctrine\ORM\EntityManager;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Entity\Status;
+
 class SyncState
 {
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
+
+    /**
+     * @param EntityManager $entityManager
+     */
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     /**
      * @var array
      */
     protected $ticketIds = array();
 
     /**
-     * return \DateTime|null
+     * @param Channel $channel
+     * @param string $connector
+     * @return \DateTime|null
      */
-    public function getLastSyncDate()
+    public function getLastSyncDate(Channel $channel, $connector)
     {
-        return null;
+        $repository = $this->entityManager->getRepository('OroIntegrationBundle:Status');
+
+        /**
+         * @var Status $status
+         */
+        $status = $repository->findOneBy(
+            array('code' => Status::STATUS_COMPLETED, 'channel' => $channel, 'connector' => $connector),
+            array('date', 'DESC')
+        );
+
+        return $status ? $status->getDate() : null;
     }
 
     /**

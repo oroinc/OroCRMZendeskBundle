@@ -11,7 +11,7 @@ class TicketConnector extends AbstractZendeskConnector
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getTickets($this->syncState->getLastSyncDate());
+        return $this->transport->getTickets($this->getLastSyncDate());
     }
 
     /**

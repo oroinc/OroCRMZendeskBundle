@@ -11,7 +11,7 @@ class UserConnector extends AbstractZendeskConnector
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getUsers($this->syncState->getLastSyncDate());
+        return $this->transport->getUsers($this->getLastSyncDate());
     }
 
     /**
