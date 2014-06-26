@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\ZendeskBundle\Model;
 
 use Doctrine\ORM\EntityManager;
+
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
 

@@ -17,6 +17,12 @@ parameters:
     orocrm_zendesk.importexport.provider.oro_entity.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroEntityProvider
     orocrm_zendesk.importexport.provider.zendesk_entity.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskEntityProvider
 
+    orocrm_zendesk.provider.channel_type.class: OroCRM\Bundle\ZendeskBundle\Provider\ChannelType
+
+    orocrm_zendesk.zendesk.ticket_connector.class: OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector
+    orocrm_zendesk.zendesk.user_connector.class: OroCRM\Bundle\ZendeskBundle\Provider\UserConnector
+    orocrm_zendesk.zendesk.ticket_comment_connector.class: OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector
+
 services:
     # Readers
     orocrm_zendesk.importexport.reader.zendesk_api:
@@ -135,3 +141,39 @@ services:
         class: %orocrm_zendesk.importexport.provider.zendesk_entity.class%
         arguments:
             - @doctrine.orm.entity_manager
+
+    orocrm_zendesk.provider.channel_type:
+        class: %orocrm_zendesk.provider.channel_type.class%
+        tags:
+            - { name: oro_integration.channel, type: zendesk }
+
+    #connectors
+    orocrm_zendesk.zendesk.ticket_connector:
+        class: %orocrm_zendesk.zendesk.ticket_connector.class%
+        arguments:
+          - @orocrm_zendesk.sync_state
+          - @oro_importexport.context_registry
+          - @oro_integration.logger.strategy
+          - @oro_integration.provider.connector_context_mediator
+        tags:
+          - { name: oro_integration.connector, type: ticket, channel_type: zendesk }
+
+    orocrm_zendesk.zendesk.user_connector:
+        class: %orocrm_zendesk.zendesk.user_connector.class%
+        arguments:
+          - @orocrm_zendesk.sync_state
+          - @oro_importexport.context_registry
+          - @oro_integration.logger.strategy
+          - @oro_integration.provider.connector_context_mediator
+        tags:
+          - { name: oro_integration.connector, type: user, channel_type: zendesk }
+
+    orocrm_zendesk.zendesk.ticket_comment_connector:
+        class: %orocrm_zendesk.zendesk.ticket_comment_connector.class%
+        arguments:
+          - @orocrm_zendesk.sync_state
+          - @oro_importexport.context_registry
+          - @oro_integration.logger.strategy
+          - @oro_integration.provider.connector_context_mediator
+        tags:
+          - { name: oro_integration.connector, type: ticket_comment, channel_type: zendesk }

@@ -2,7 +2,10 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Provider;
 
+use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
+use Oro\Bundle\IntegrationBundle\Logger\LoggerStrategy;
 use Oro\Bundle\IntegrationBundle\Provider\AbstractConnector;
+use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
 
 abstract class AbstractZendeskConnector extends AbstractConnector
@@ -18,11 +21,19 @@ abstract class AbstractZendeskConnector extends AbstractConnector
     protected $transport;
 
     /**
-     * @param SyncState $syncState
+     * @param SyncState                $syncState
+     * @param ContextRegistry          $contextRegistry
+     * @param LoggerStrategy           $logger
+     * @param ConnectorContextMediator $contextMediator
      */
-    public function setSyncState(SyncState $syncState)
-    {
+    public function __construct(
+        SyncState $syncState,
+        ContextRegistry $contextRegistry,
+        LoggerStrategy $logger,
+        ConnectorContextMediator $contextMediator
+    ) {
         $this->syncState = $syncState;
+        parent::__construct($contextRegistry, $logger, $contextMediator);
     }
 
     /**
