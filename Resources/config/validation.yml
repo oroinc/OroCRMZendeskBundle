@@ -1,0 +1,9 @@
+OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport:
+    properties:
+        url:
+          - NotBlank: ~
+        email:
+          - NotBlank: ~
+          - email: ~
+        token:
+          - NotBlank: ~

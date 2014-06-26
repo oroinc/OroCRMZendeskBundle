@@ -35,6 +35,7 @@ class TicketStatusTest extends \PHPUnit_Framework_TestCase
         $other = new TicketStatus(TicketStatus::STATUS_CLOSED);
         $this->assertTrue($this->target->isEqualTo($other));
     }
+
     /**
      * @dataProvider settersAndGettersDataProvider
      */

@@ -62,6 +62,13 @@ orocrm:
             phone.label:                  Phone
             role.label:                   Role
 
+        zendeskresttransport:
+            entity_label: Zendesk Rest transport
+            email.label:  API Email
+            url.label:    URL
+            token.label:  API Token
+            id.label:     Id
+
         system_configuration:
             integrations.title:         'Integrations'
             zendesk_integration.title:  'Zendesk'
