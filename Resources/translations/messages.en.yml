@@ -89,3 +89,7 @@ orocrm:
                 label: Default OroCRM username
 
         channel_type.label: 'Zendesk'
+        connector:
+            ticket_comment.label: Comments connector
+            ticket.label:         Tickets connector
+            user.label:           Users connector
