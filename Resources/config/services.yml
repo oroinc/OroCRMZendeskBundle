@@ -9,8 +9,11 @@ parameters:
     orocrm_zendesk.twig.extension.ticket_path.class:          OroCRM\Bundle\ZendeskBundle\Twig\TicketPathExtension
     orocrm_zendesk.placeholder.filter.class:                  OroCRM\Bundle\ZendeskBundle\Placeholder\Filter\Filter
     orocrm_zendesk.sync_state_manager.class:                  OroCRM\Bundle\ZendeskBundle\Model\SyncStateManager
-    orocrm_zendesk.form.type.rest_transport_setting.class:    OroCRM\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType
     orocrm_zendesk.sync_state.class:                          OroCRM\Bundle\ZendeskBundle\Model\SyncState
+
+    # Integration related parameters
+    orocrm_zendesk.form.type.rest_transport_setting.class:    OroCRM\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType
+    orocrm_zendesk.transport.rest_transport.class:            OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport
 
 services:
     orocrm_zendesk.entity_mapper:
@@ -59,7 +62,14 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
 
+    # Integration related services
     orocrm_zendesk.form.type.rest_transport_setting:
         class: %orocrm_zendesk.form.type.rest_transport_setting.class%
         tags:
             - { name: form.type, alias: orocrm_zendesk_rest_transport_setting_form_type }
+
+    orocrm_zendesk.transport.rest_transport:
+        class: %orocrm_zendesk.transport.rest_transport.class%
+        parent: oro_integration.transport.rest.abstract_transport
+        tags:
+            - { name: oro_integration.transport, type: zendesk_rest, channel_type: zendesk }
