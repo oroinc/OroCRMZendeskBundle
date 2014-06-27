@@ -7,12 +7,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
+use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 
 /**
  * @ORM\Entity
  * @ORM\Table(
- *      name="orocrm_zd_comment"
+ *      name="orocrm_zd_comment",
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="unq_origin_id_channel_id", columns={"origin_id", "channel_id"})
+ *     }
  * )
  * @ORM\HasLifecycleCallbacks()
  * @Oro\Loggable
@@ -26,6 +30,8 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
  */
 class TicketComment
 {
+    use IntegrationEntityTrait;
+
     /**
      * @var int
      * @ORM\Column(type="integer")
@@ -36,7 +42,7 @@ class TicketComment
 
     /**
      * @var int
-     * @ORM\Column(name="origin_id", type="bigint", nullable=true, unique=true)
+     * @ORM\Column(name="origin_id", type="bigint", nullable=true)
      */
     protected $originId;
 

@@ -68,36 +68,50 @@ services:
     # Normalizers
     orocrm_zendesk.importexport.normalizer.user:
         class: %orocrm_zendesk.importexport.normalizer.user.class%
+        arguments:
+            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.user_role:
         class: %orocrm_zendesk.importexport.normalizer.user_role.class%
+        arguments:
+            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.ticket:
         class: %orocrm_zendesk.importexport.normalizer.ticket.class%
+        arguments:
+            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.ticket_status:
         class: %orocrm_zendesk.importexport.normalizer.ticket_status.class%
+        arguments:
+            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.ticket_priority:
         class: %orocrm_zendesk.importexport.normalizer.ticket_priority.class%
+        arguments:
+            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.ticket_type:
         class: %orocrm_zendesk.importexport.normalizer.ticket_type.class%
+        arguments:
+            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.ticket_comment:
         class: %orocrm_zendesk.importexport.normalizer.ticket_comment.class%
+        arguments:
+            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 

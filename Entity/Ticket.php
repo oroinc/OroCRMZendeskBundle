@@ -9,12 +9,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
+use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 
 /**
  * @ORM\Entity
  * @ORM\Table(
- *      name="orocrm_zd_ticket"
+ *      name="orocrm_zd_ticket",
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="unq_origin_id_channel_id", columns={"origin_id", "channel_id"})
+ *     }
  * )
  * @ORM\HasLifecycleCallbacks()
  * @Oro\Loggable
@@ -30,6 +34,8 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
  */
 class Ticket
 {
+    use IntegrationEntityTrait;
+
     /**
      * @var int
      *
@@ -41,7 +47,7 @@ class Ticket
 
     /**
      * @var int
-     * @ORM\Column(name="origin_id", type="bigint", nullable=true, unique=true)
+     * @ORM\Column(name="origin_id", type="bigint", nullable=true)
      */
     protected $originId;
 

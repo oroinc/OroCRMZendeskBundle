@@ -7,13 +7,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
+use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 
 /**
  * @ORM\Entity
  * @ORM\Table(
- *      name="orocrm_zd_user"
+ *      name="orocrm_zd_user",
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="unq_origin_id_channel_id", columns={"origin_id", "channel_id"})
+ *     }
  * )
  * @ORM\HasLifecycleCallbacks()
  * @Oro\Loggable
@@ -29,6 +33,8 @@ use OroCRM\Bundle\ContactBundle\Entity\Contact;
  */
 class User
 {
+    use IntegrationEntityTrait;
+
     /**
      * @var int
      *
@@ -40,7 +46,7 @@ class User
 
     /**
      * @var int
-     * @ORM\Column(name="origin_id", type="bigint", nullable=true, unique=true)
+     * @ORM\Column(name="origin_id", type="bigint", nullable=true)
      */
     protected $originId;
 

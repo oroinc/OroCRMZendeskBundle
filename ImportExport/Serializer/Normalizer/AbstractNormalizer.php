@@ -2,19 +2,32 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
+use Doctrine\ORM\EntityManager;
+
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Entity\Repository\ChannelRepository;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\DenormalizerInterface;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\NormalizerInterface;
 
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
-
 abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
 {
     const SHORT_MODE = 'short';
+
+    /**
+     * @var ChannelRepository
+     */
+    protected $channelRepository;
+
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->channelRepository = $entityManager->getRepository('OroIntegrationBundle:Channel');
+    }
 
     /**
      * @var PropertyAccessor
@@ -238,5 +251,19 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
             );
         }
         $this->serializer = $serializer;
+    }
+
+    /**
+     * @param array $context
+     * @throws \LogicException
+     * @return Channel
+     */
+    public function getChannel(array $context)
+    {
+        if (!isset($context['channel'])) {
+            throw new \LogicException('Context should contain reference to channel');
+        }
+
+        return $this->channelRepository->getOrLoadById($context['channel']);
     }
 }

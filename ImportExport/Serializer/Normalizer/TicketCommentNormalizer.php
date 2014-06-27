@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+
 class TicketCommentNormalizer extends AbstractNormalizer
 {
     /**
@@ -29,6 +31,19 @@ class TicketCommentNormalizer extends AbstractNormalizer
                 'context' => array('type' => 'datetime'),
             ),
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function denormalize($data, $class, $format = null, array $context = array())
+    {
+        /**
+         * @var TicketComment $ticketComment
+         */
+        $ticketComment = parent::denormalize($data, $class, $format, $context);
+        $ticketComment->setChannel($this->getChannel($context));
+        return $ticketComment;
     }
 
     /**

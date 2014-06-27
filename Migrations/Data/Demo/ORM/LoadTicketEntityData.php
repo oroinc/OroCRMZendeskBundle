@@ -8,6 +8,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -80,8 +81,10 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     {
         $this->entityManager = $manager;
 
+        $demoZendeskChannel = $this->getReference('orocrm_zendesk:zendesk_demo_channel');
+
         for ($i = 0; $i < static::TICKET_COUNT; ++$i) {
-            $ticket = $this->createTicketEntity();
+            $ticket = $this->createTicketEntity($demoZendeskChannel);
 
             if (!$ticket) {
                 continue;
@@ -96,9 +99,10 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     }
 
     /**
+     * @param Channel $channel
      * @return Ticket|null
      */
-    protected function createTicketEntity()
+    protected function createTicketEntity(Channel $channel)
     {
         $this->ticketOriginId++;
         $case = $this->getCase();
@@ -147,6 +151,8 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
         $data['type'] = $type;
         $data['status'] = $status;
         $data['priority'] = $priority;
+
+        $data['channel'] = $channel;
 
         $contact = $case->getRelatedContact();
         if (!$contact) {
@@ -314,7 +320,8 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     public function getDependencies()
     {
         return array(
-            'OroCRM\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData'
+            'OroCRM\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData',
+            'OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM\LoadChannelData'
         );
     }
 

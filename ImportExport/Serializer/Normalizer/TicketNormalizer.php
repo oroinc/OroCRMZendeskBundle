@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+
 class TicketNormalizer extends AbstractNormalizer
 {
     /**
@@ -105,6 +107,18 @@ class TicketNormalizer extends AbstractNormalizer
         return $result;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function denormalize($data, $class, $format = null, array $context = array())
+    {
+        /**
+         * @var Ticket $ticket
+         */
+        $ticket = parent::denormalize($data, $class, $format, $context);
+        $ticket->setChannel($this->getChannel($context));
+        return $ticket;
+    }
 
     /**
      * {@inheritdoc}

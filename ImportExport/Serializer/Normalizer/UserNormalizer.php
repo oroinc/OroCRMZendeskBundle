@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
+
 class UserNormalizer extends AbstractNormalizer
 {
     /**
@@ -43,6 +45,19 @@ class UserNormalizer extends AbstractNormalizer
                 'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\UserRole',
             ),
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function denormalize($data, $class, $format = null, array $context = array())
+    {
+        /**
+         * @var User $user
+         */
+        $user = parent::denormalize($data, $class, $format, $context);
+        $user->setChannel($this->getChannel($context));
+        return $user;
     }
 
     /**
