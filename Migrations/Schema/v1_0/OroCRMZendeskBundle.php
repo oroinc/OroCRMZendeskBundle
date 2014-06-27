@@ -23,6 +23,15 @@ class OroCRMZendeskBundle implements Migration
         $this->createSyncStateTable($schema);
         $this->createCommentTable($schema);
         $this->createTicketCollaboratorTable($schema);
+        $this->updateOroIntegrationTransportTable($schema);
+    }
+
+    public function updateOroIntegrationTransportTable(Schema $schema)
+    {
+        $table = $schema->getTable('oro_integration_transport');
+        $table->addColumn('url', 'string', ['notnull' => false, 'length' => 255]);
+        $table->addColumn('email', 'string', ['notnull' => false, 'length' => 100]);
+        $table->addColumn('token', 'string', ['notnull' => false, 'length' => 255]);
     }
 
     /**
