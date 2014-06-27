@@ -7,6 +7,7 @@ use Oro\Bundle\IntegrationBundle\Logger\LoggerStrategy;
 use Oro\Bundle\IntegrationBundle\Provider\AbstractConnector;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
+use OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
 abstract class AbstractZendeskConnector extends AbstractConnector
 {
