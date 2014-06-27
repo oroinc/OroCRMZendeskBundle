@@ -5,6 +5,8 @@ namespace OroCRM\Bundle\ZendeskBundle\Provider;
 class UserConnector extends AbstractZendeskConnector
 {
     const IMPORT_ENTITY = 'OroCRM\Bundle\ZendeskBundle\Entity\User';
+    const TYPE = 'user';
+    const IMPORT_JOB = 'zendesk_user_import';
 
     /**
      * {@inheritdoc}
@@ -35,7 +37,7 @@ class UserConnector extends AbstractZendeskConnector
      */
     public function getImportJobName()
     {
-        return 'zendesk_user_import';
+        return self::IMPORT_JOB;
     }
 
     /**
@@ -43,6 +45,6 @@ class UserConnector extends AbstractZendeskConnector
      */
     public function getType()
     {
-        return 'user';
+        return self::TYPE;
     }
 }

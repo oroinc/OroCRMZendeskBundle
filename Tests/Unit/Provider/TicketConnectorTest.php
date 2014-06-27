@@ -2,12 +2,12 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Provider;
 
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
+use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
 
-class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
+class TicketConnectorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var TicketCommentConnector
+     * @var TicketConnector
      */
     protected $connector;
 
@@ -77,7 +77,7 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
             ->method('getByStepExecution')
             ->will($this->returnValue($this->context));
 
-        $this->connector = new TicketCommentConnector(
+        $this->connector = new TicketConnector(
             $this->syncState,
             $this->registry,
             $this->logger,
@@ -87,54 +87,27 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConnectorSource()
     {
-        $firstTicketId = 10;
-        $secondTicketId = 20;
-        $thirdTicketId = 30;
-
-        $firstComment = array(
-            'id' => 1
-        );
-
-        $secondComment = array(
-            'id' => 2
-        );
-
-        $thirdComment = array(
-            'id' => 3
-        );
-
-        $fourthComment = array(
-            'id' => 4
-        );
-
         $expectedResults = array(
-            $firstComment,
-            $secondComment,
-            $thirdComment,
-            $fourthComment
+            array('id' => 1),
+            array('id' => 12),
+            array('id' => 3),
+            array('id' => 46),
+            array('id' => 51),
         );
-
-        $map = array(
-            array($firstTicketId, new \ArrayIterator(array($firstComment))),
-            array($secondTicketId, new \ArrayIterator(array($secondComment, $thirdComment))),
-            array($thirdTicketId, new \ArrayIterator(array($fourthComment)))
-        );
-
-        $this->transport->expects($this->exactly(3))
-            ->method('getTicketComments')
-            ->will($this->returnValueMap($map));
+        $expectedSyncDate = new \DateTime('2014-06-10T12:12:21Z');
+        $expectedChannel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $this->mediator->expects($this->atLeastOnce())
+            ->method('getChannel')
+            ->will($this->returnValue($expectedChannel));
+        $this->transport->expects($this->once())
+            ->method('getTickets')
+            ->with($expectedSyncDate)
+            ->will($this->returnValue(new \ArrayIterator($expectedResults)));
 
         $this->syncState->expects($this->once())
-            ->method('getTicketIds')
-            ->will(
-                $this->returnValue(
-                    array(
-                        $firstTicketId,
-                        $secondTicketId,
-                        $thirdTicketId
-                    )
-                )
-            );
+            ->method('getLastSyncDate')
+            ->with($expectedChannel, 'ticket')
+            ->will($this->returnValue($expectedSyncDate));
 
         $stepExecutor = $this->getMockBuilder('Akeneo\Bundle\BatchBundle\Entity\StepExecution')
             ->disableOriginalConstructor()
@@ -148,16 +121,16 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetImportEntityFQCN()
     {
-        $this->assertEquals(TicketCommentConnector::IMPORT_ENTITY, $this->connector->getImportEntityFQCN());
+        $this->assertEquals(TicketConnector::IMPORT_ENTITY, $this->connector->getImportEntityFQCN());
     }
 
     public function testGetType()
     {
-        $this->assertEquals(TicketCommentConnector::TYPE, $this->connector->getType());
+        $this->assertEquals(TicketConnector::TYPE, $this->connector->getType());
     }
 
     public function testGetImportJobName()
     {
-        $this->assertEquals(TicketCommentConnector::IMPORT_JOB, $this->connector->getImportJobName());
+        $this->assertEquals(TicketConnector::IMPORT_JOB, $this->connector->getImportJobName());
     }
 }

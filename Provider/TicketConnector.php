@@ -5,6 +5,8 @@ namespace OroCRM\Bundle\ZendeskBundle\Provider;
 class TicketConnector extends AbstractZendeskConnector
 {
     const IMPORT_ENTITY = 'OroCRM\Bundle\ZendeskBundle\Entity\Ticket';
+    const IMPORT_JOB = 'zendesk_ticket_import';
+    const TYPE = 'ticket';
 
     /**
      * {@inheritdoc}
@@ -35,7 +37,7 @@ class TicketConnector extends AbstractZendeskConnector
      */
     public function getImportJobName()
     {
-        return 'zendesk_ticket_import';
+        return self::IMPORT_JOB;
     }
 
     /**
@@ -43,6 +45,6 @@ class TicketConnector extends AbstractZendeskConnector
      */
     public function getType()
     {
-        return 'ticket';
+        return self::TYPE;
     }
 }
