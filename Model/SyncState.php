@@ -57,9 +57,23 @@ class SyncState
 
     /**
      * @param int $id
+     * @return SyncState
      */
     public function addTicketId($id)
     {
         $this->ticketIds[] = $id;
+
+        return $this;
+    }
+
+    /**
+     * @param array $ticketIds
+     * @return SyncState
+     */
+    public function setTicketIds($ticketIds)
+    {
+        $this->ticketIds = $ticketIds;
+
+        return $this;
     }
 }
