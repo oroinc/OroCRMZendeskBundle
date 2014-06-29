@@ -18,17 +18,43 @@ class TicketCommentNormalizerTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
+        $fixtures = array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadSyncStatusData');
+        $this->loadFixtures($fixtures);
         $this->serializer = $this->getContainer()->get('oro_importexport.serializer');
     }
 
     /**
      * @dataProvider denormalizeProvider
      */
-    public function testDenormalize($data, $expected)
+    public function testDenormalize($data, TicketComment $expected)
     {
-        $actual = $this->serializer->deserialize($data, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment', null);
-
+        $channel = $this->getReference('zendesk_channel:test@mail.com');
+        $actual = $this->serializer->deserialize(
+            $data,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
+            null,
+            array('channel' => $channel->getId())
+        );
+        $expected->setChannel($channel);
+        if ($expected->getAuthor()) {
+            $expected->getAuthor()->setChannel($channel);
+        }
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @dataProvider denormalizeProvider
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Context should contain reference to channel
+     */
+    public function testLogicException($data)
+    {
+        $this->serializer->deserialize(
+            $data,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+            null,
+            array()
+        );
     }
 
     public function denormalizeProvider()

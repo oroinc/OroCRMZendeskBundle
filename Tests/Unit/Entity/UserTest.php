@@ -79,6 +79,10 @@ class UserTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $channel = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Entity\Channel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         return array(
             array('name', 'test name'),
             array('url', 'test.com'),
@@ -101,6 +105,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
             array('onlyPrivateComments', true),
             array('verified', true),
             array('active', true),
+            array('channel', $channel),
             array('relatedContact', $contact),
         );
     }

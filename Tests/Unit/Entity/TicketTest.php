@@ -90,6 +90,11 @@ class TicketTest extends \PHPUnit_Framework_TestCase
         $ticket = new Ticket();
         $collaborators = new ArrayCollection(array($zendeskUser));
         $comments = new ArrayCollection(array($comment));
+
+        $channel = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Entity\Channel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         return array(
             array('originId', 123456789),
             array('url', 'test.com'),
@@ -110,6 +115,7 @@ class TicketTest extends \PHPUnit_Framework_TestCase
             array('relatedCase', $case),
             array('externalId', uniqid()),
             array('problem', $ticket),
+            array('channel', $channel),
             array('collaborators', $collaborators),
             array('hasIncidents', true),
             array('comments', $comments),

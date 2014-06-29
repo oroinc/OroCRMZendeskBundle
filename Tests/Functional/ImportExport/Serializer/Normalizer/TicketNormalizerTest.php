@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Serializer\Normalizer;
 
 use Oro\Bundle\ImportExportBundle\Serializer\Serializer;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
@@ -19,20 +20,80 @@ class TicketNormalizerTest extends WebTestCase
      */
     protected $serializer;
 
+    /**
+     * @var Channel
+     */
+    protected $channel;
+
     protected function setUp()
     {
         $this->initClient();
+        $fixtures = array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadSyncStatusData');
+        $this->loadFixtures($fixtures);
+        //if move to postFixtureLoad we need make channel property static
+        $this->channel = $this->getReference('zendesk_channel:test@mail.com');
         $this->serializer = $this->getContainer()->get('oro_importexport.serializer');
     }
 
     /**
      * @dataProvider denormalizeDataProvider
      */
-    public function testDenormalize($normalized, $denormalized)
+    public function testDenormalize($normalized, Ticket $denormalized)
     {
-        $actual = $this->serializer->deserialize($normalized, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket', null);
+
+        $actual = $this->serializer->deserialize(
+            $normalized,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+            null,
+            array('channel' => $this->channel->getId())
+        );
+
+        // we can't move this logic to data provider or function called by data provider
+        // because channel property not initialized yet
+        $this->denormalizedValueBeforeAssertHandler($denormalized);
 
         $this->assertEquals($denormalized, $actual);
+    }
+
+    /**
+     * @dataProvider denormalizeDataProvider
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Context should contain reference to channel
+     */
+    public function testLogicException($data)
+    {
+        $this->serializer->deserialize(
+            $data,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+            null,
+            array()
+        );
+    }
+
+    protected function denormalizedValueBeforeAssertHandler(Ticket $entity)
+    {
+        $this->setChannelToEntity($entity);
+        if ($entity->getProblem()) {
+            $this->setChannelToEntity($entity->getProblem());
+        }
+        if ($entity->getRequester()) {
+            $this->setChannelToEntity($entity->getRequester());
+        }
+        if ($entity->getSubmitter()) {
+            $this->setChannelToEntity($entity->getSubmitter());
+        }
+        if ($entity->getAssignee()) {
+            $this->setChannelToEntity($entity->getAssignee());
+        }
+        foreach ($entity->getCollaborators() as $collaborator) {
+            $this->setChannelToEntity($collaborator);
+        }
+    }
+
+    protected function setChannelToEntity($entity)
+    {
+        $entity->setChannel($this->channel);
+        return $entity;
     }
 
     public function denormalizeDataProvider()

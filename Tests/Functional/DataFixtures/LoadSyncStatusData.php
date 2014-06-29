@@ -62,7 +62,7 @@ class LoadSyncStatusData extends AbstractZendeskFixture implements DependentFixt
 
             $this->setEntityPropertyValues($entity, $data, array('reference'));
 
-            if ($data['reference']) {
+            if (isset($data['reference'])) {
                 $this->setReference($data['reference'], $entity);
             }
 
