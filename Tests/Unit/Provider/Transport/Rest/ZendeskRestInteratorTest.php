@@ -43,7 +43,7 @@ class ZendeskRestIteratorTest extends \PHPUnit_Framework_TestCase
     public function testIteratorForeach(array $clientExpectations, array $expectedItems)
     {
         foreach ($clientExpectations as $index => $data) {
-            $stub = $this->client->expects($this->at($index))->method('get');
+            $stub = $this->client->expects($this->at($index))->method('getJSON');
             call_user_func_array(array($stub, 'with'), $data['request']);
             $stub->will($this->returnValue($data['response']));
         }
@@ -63,7 +63,7 @@ class ZendeskRestIteratorTest extends \PHPUnit_Framework_TestCase
     public function testIteratorWhile(array $clientExpectations, array $expectedItems)
     {
         foreach ($clientExpectations as $index => $data) {
-            $stub = $this->client->expects($this->at($index))->method('get');
+            $stub = $this->client->expects($this->at($index))->method('getJSON');
             call_user_func_array(array($stub, 'with'), $data['request']);
             $stub->will($this->returnValue($data['response']));
         }
@@ -85,13 +85,13 @@ class ZendeskRestIteratorTest extends \PHPUnit_Framework_TestCase
     {
         $callIndex = 0;
         foreach ($clientExpectations as $data) {
-            $stub = $this->client->expects($this->at($callIndex++))->method('get');
+            $stub = $this->client->expects($this->at($callIndex++))->method('getJSON');
             call_user_func_array(array($stub, 'with'), $data['request']);
             $stub->will($this->returnValue($data['response']));
         }
 
         foreach ($clientExpectations as $data) {
-            $stub = $this->client->expects($this->at($callIndex++))->method('get');
+            $stub = $this->client->expects($this->at($callIndex++))->method('getJSON');
             call_user_func_array(array($stub, 'with'), $data['request']);
             $stub->will($this->returnValue($data['response']));
         }
@@ -222,7 +222,7 @@ class ZendeskRestIteratorTest extends \PHPUnit_Framework_TestCase
     public function testCount(array $response, $expectedCount)
     {
         $this->client->expects($this->once())
-            ->method('get')
+            ->method('getJSON')
             ->with($this->resource, $this->params)
             ->will($this->returnValue($response));
 

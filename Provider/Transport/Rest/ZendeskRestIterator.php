@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\AbstractRestIterator;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface;
+use Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException;
 
 class ZendeskRestIterator extends AbstractRestIterator
 {
@@ -46,21 +47,21 @@ class ZendeskRestIterator extends AbstractRestIterator
      */
     protected function loadPage(RestClientInterface $client)
     {
-        $result = null;
+        $data = null;
 
         if (!$this->firstLoaded) {
-            $result = $client->get($this->resource, $this->params);
+            $data = $client->getJSON($this->resource, $this->params);
         } elseif ($this->nextPageUrl) {
-            $result = $this->client->get($this->nextPageUrl);
+            $data = $this->client->getJSON($this->nextPageUrl);
         }
 
-        if (isset($result['next_page'])) {
-            $this->nextPageUrl = (string)$result['next_page'];
+        if (isset($data['next_page'])) {
+            $this->nextPageUrl = (string)$data['next_page'];
         } else {
             $this->nextPageUrl = null;
         }
 
-        return $result;
+        return $data;
     }
 
     /**
