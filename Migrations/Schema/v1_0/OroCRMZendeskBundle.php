@@ -29,9 +29,10 @@ class OroCRMZendeskBundle implements Migration
     public function updateOroIntegrationTransportTable(Schema $schema)
     {
         $table = $schema->getTable('oro_integration_transport');
-        $table->addColumn('url', 'string', array('notnull' => false, 'length' => 255));
-        $table->addColumn('email', 'string', array('notnull' => false, 'length' => 100));
-        $table->addColumn('token', 'string', array('notnull' => false, 'length' => 255));
+        $table->addColumn('orocrm_zd_email', 'string', array('notnull' => false, 'length' => 100));
+        $table->addColumn('orocrm_zd_url', 'string', array('notnull' => false, 'length' => 255));
+        $table->addColumn('orocrm_zd_token', 'string', array('notnull' => false, 'length' => 255));
+        $table->addColumn('orocrm_zd_default_user_email', 'string', array('notnull' => false, 'length' => 100));
     }
 
     /**

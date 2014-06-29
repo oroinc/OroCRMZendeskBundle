@@ -53,14 +53,6 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     private $connectorContextMediator;
 
     /**
-     * @param ConnectorContextMediator $connectorContextMediator
-     */
-    public function setConnectorContextMediator(ConnectorContextMediator $connectorContextMediator)
-    {
-        $this->connectorContextMediator = $connectorContextMediator;
-    }
-
-    /**
      * Validates availability of origin id field
      *
      * @param mixed $entity
@@ -97,6 +89,13 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     public function setEntityManager(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+    /**
+     * @param ConnectorContextMediator $connectorContextMediator
+     */
+    public function setConnectorContextMediator(ConnectorContextMediator $connectorContextMediator)
+    {
+        $this->connectorContextMediator = $connectorContextMediator;
     }
 
     /**

@@ -63,12 +63,13 @@ orocrm:
             role.label:                   Role
 
         zendeskresttransport:
-            entity_label: Zendesk Integration
-            entity_plural_label: Zendesk Integrations
-            email.label:  API Email
-            url.label:    URL
-            token.label:  API Token
-            id.label:     Id
+            entity_label:             Zendesk Integration
+            entity_plural_label:      Zendesk Integrations
+            email.label:              API Email
+            url.label:                URL
+            token.label:              API Token
+            id.label:                 Id
+            zendesk_user_email.label: Default Zendesk user email
 
         transport:
             rest:

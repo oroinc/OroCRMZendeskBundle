@@ -52,7 +52,8 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         return array(
             array('url', 'test_url.com'),
             array('token', uniqid()),
-            array('email', 'test@mail.com')
+            array('email', 'test@mail.com'),
+            array('zendeskUserEmail', 'zendesk_test@mail.com')
         );
     }
 }

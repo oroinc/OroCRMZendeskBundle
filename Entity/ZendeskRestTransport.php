@@ -23,7 +23,7 @@ class ZendeskRestTransport extends Transport
     /**
      * @var string
      *
-     * @ORM\Column(name="url", type="string", length=255, nullable=false)
+     * @ORM\Column(name="orocrm_zd_url", type="string", length=255, nullable=false)
      * @Oro\Versioned()
      */
     protected $url;
@@ -31,7 +31,7 @@ class ZendeskRestTransport extends Transport
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=100, nullable=false)
+     * @ORM\Column(name="orocrm_zd_email", type="string", length=100, nullable=false)
      * @Oro\Versioned()
      */
     protected $email;
@@ -39,10 +39,18 @@ class ZendeskRestTransport extends Transport
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string", length=255, nullable=false)
+     * @ORM\Column(name="orocrm_zd_token", type="string", length=255, nullable=false)
      * @Oro\Versioned()
      */
     protected $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="orocrm_zd_default_user_email", type="string", length=100, nullable=false)
+     * @Oro\Versioned()
+     */
+    protected $zendeskUserEmail;
 
     /**
      * @var ParameterBag
@@ -107,6 +115,25 @@ class ZendeskRestTransport extends Transport
     }
 
     /**
+     * @param string $zendeskUserEmail
+     * @return ZendeskRestTransport
+     */
+    public function setZendeskUserEmail($zendeskUserEmail)
+    {
+        $this->zendeskUserEmail = $zendeskUserEmail;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getZendeskUserEmail()
+    {
+        return $this->zendeskUserEmail;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getSettingsBag()
@@ -114,9 +141,10 @@ class ZendeskRestTransport extends Transport
         if (null === $this->settings) {
             $this->settings = new ParameterBag(
                 array(
-                    'email' => $this->getEmail(),
-                    'url'   => $this->getUrl(),
-                    'token' => $this->getToken()
+                    'email'            => $this->getEmail(),
+                    'url'              => $this->getUrl(),
+                    'token'            => $this->getToken(),
+                    'zendeskUserEmail' => $this->getZendeskUserEmail()
                 )
             );
         }

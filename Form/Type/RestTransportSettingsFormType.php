@@ -30,6 +30,11 @@ class RestTransportSettingsFormType extends AbstractType
             'text',
             ['label' => 'orocrm.zendesk.zendeskresttransport.token.label', 'required' => true]
         );
+        $builder->add(
+            'zendeskUserEmail',
+            'text',
+            ['label' => 'orocrm.zendesk.zendeskresttransport.zendesk_user_email.label', 'required' => true]
+        );
     }
 
     /**

@@ -2,8 +2,8 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
 
-use Doctrine\Common\DataFixtures\Doctrine;
 use Doctrine\Common\Persistence\ObjectManager;
+
 use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 use OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\AbstractZendeskFixture;
 
@@ -14,6 +14,7 @@ class LoadTransportData extends AbstractZendeskFixture
             'url' => 'https://demo.zendesk.com',
             'email' => 'demo@mail.com',
             'token' => 'c8541140-fdfe-11e3-a3ac-0800200c9a66',
+            'zendeskUserEmail' => 'demo_user@mail.com',
             'reference' => 'orocrm_zendesk:zendesk_demo_transport'
         )
     );
