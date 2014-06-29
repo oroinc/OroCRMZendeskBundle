@@ -7,6 +7,10 @@ use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 
+/**
+ * @outputBuffering enabled
+ * @dbIsolation
+ */
 class UserNormalizerTest extends WebTestCase
 {
     /**
@@ -17,17 +21,42 @@ class UserNormalizerTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
+        $fixtures = array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadSyncStatusData');
+        $this->loadFixtures($fixtures);
         $this->serializer = $this->getContainer()->get('oro_importexport.serializer');
     }
 
     /**
      * @dataProvider denormalizeProvider
      */
-    public function testDenormalize($data, $expected)
+    public function testDenormalize($data, User $expected)
     {
-        $actual = $this->serializer->deserialize($data, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User', null);
+        $channel = $this->getReference('zendesk_channel:test@mail.com');
+        $actual = $this->serializer->deserialize(
+            $data,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+            null,
+            array('channel' => $channel->getId())
+        );
+
+        $expected->setChannel($channel);
 
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @dataProvider denormalizeProvider
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Context should contain reference to channel
+     */
+    public function testLogicException($data)
+    {
+        $this->serializer->deserialize(
+            $data,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+            null,
+            array()
+        );
     }
 
     public function denormalizeProvider()

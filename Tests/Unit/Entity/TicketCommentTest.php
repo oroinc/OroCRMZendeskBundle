@@ -77,6 +77,10 @@ class TicketCommentTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $channel = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Entity\Channel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         return array(
             array('originId', 123456789),
             array('body', 'test message'),
@@ -87,6 +91,7 @@ class TicketCommentTest extends \PHPUnit_Framework_TestCase
             array('createdAt', new \DateTime()),
             array('originCreatedAt', new \DateTime()),
             array('updatedAt', new \DateTime()),
+            array('channel', $channel),
             array('relatedComment', $comment)
         );
     }
