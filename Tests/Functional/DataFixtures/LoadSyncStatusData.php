@@ -13,21 +13,21 @@ class LoadSyncStatusData extends AbstractZendeskFixture implements DependentFixt
 {
     protected $statusData = array(
         array(
-            'channel' => 'zendesk_channel:test@mail.com',
+            'channel' => 'zendesk_channel:first_test_channel',
             'code' => Status::STATUS_COMPLETED,
             'connector' => UserConnector::TYPE,
             'message' => '',
             'date' => '2014-06-05T10:24:23Z'
         ),
         array(
-            'channel' => 'zendesk_channel:test@mail.com',
+            'channel' => 'zendesk_channel:first_test_channel',
             'code' => Status::STATUS_FAILED,
             'connector' => UserConnector::TYPE,
             'message' => '',
             'date' => '2014-06-05T11:24:23Z'
         ),
         array(
-            'channel' => 'zendesk_channel:test@mail.com',
+            'channel' => 'zendesk_channel:first_test_channel',
             'code' => Status::STATUS_COMPLETED,
             'connector' => UserConnector::TYPE,
             'message' => '',
@@ -35,14 +35,14 @@ class LoadSyncStatusData extends AbstractZendeskFixture implements DependentFixt
             'reference' => 'zendesk_sync_state:last_user_complete_state'
         ),
         array(
-            'channel' => 'zendesk_channel:test@mail.com',
+            'channel' => 'zendesk_channel:first_test_channel',
             'code' => Status::STATUS_FAILED,
             'connector' => UserConnector::TYPE,
             'message' => '',
             'date' => '2014-06-06T11:24:23Z'
         ),
         array(
-            'channel' => 'zendesk_channel:test@mail.com',
+            'channel' => 'zendesk_channel:first_test_channel',
             'code' => Status::STATUS_COMPLETED,
             'connector' => TicketConnector::TYPE,
             'message' => '',

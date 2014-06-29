@@ -31,7 +31,7 @@ class UserNormalizerTest extends WebTestCase
      */
     public function testDenormalize($data, User $expected)
     {
-        $channel = $this->getReference('zendesk_channel:test@mail.com');
+        $channel = $this->getReference('zendesk_channel:first_test_channel');
         $actual = $this->serializer->deserialize(
             $data,
             'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',

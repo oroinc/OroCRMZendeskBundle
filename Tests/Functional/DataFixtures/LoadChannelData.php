@@ -14,9 +14,9 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
         array(
             'name' => 'zendesk',
             'type' => 'zendesk',
-            'transport' => 'zendesk_transport:test@mail.com',
+            'transport' => 'zendesk_transport:first_test_transport',
             'enabled' => true,
-            'reference' => 'zendesk_channel:test@mail.com'
+            'reference' => 'zendesk_channel:first_test_channel'
         )
     );
     /**

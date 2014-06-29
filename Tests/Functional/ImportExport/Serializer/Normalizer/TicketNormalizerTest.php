@@ -13,6 +13,10 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketNormalizer;
 
+/**
+ * @outputBuffering enabled
+ * @dbIsolation
+ */
 class TicketNormalizerTest extends WebTestCase
 {
     /**
@@ -31,7 +35,7 @@ class TicketNormalizerTest extends WebTestCase
         $fixtures = array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadSyncStatusData');
         $this->loadFixtures($fixtures);
         //if move to postFixtureLoad we need make channel property static
-        $this->channel = $this->getReference('zendesk_channel:test@mail.com');
+        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->serializer = $this->getContainer()->get('oro_importexport.serializer');
     }
 

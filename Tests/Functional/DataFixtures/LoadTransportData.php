@@ -9,7 +9,7 @@ class LoadTransportData extends AbstractZendeskFixture
 {
     protected $transportData = array(
         array(
-            'reference' => 'zendesk_transport:test@mail.com',
+            'reference' => 'zendesk_transport:first_test_transport',
             'url' => 'https://zendesk.com',
             'email' => 'test@mail.com',
             'token' => '12e25c5f-ec0b-4578-bf95-6a02ffd44f1c'

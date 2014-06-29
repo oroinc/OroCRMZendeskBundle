@@ -52,7 +52,7 @@ class SyncStateTest extends WebTestCase
 
     public function getLastSyncDate()
     {
-        $channel = $this->getReference('zendesk_channel:test@mail.com');
+        $channel = $this->getReference('zendesk_channel:first_test_channel');
         $expected = $this->getReference('zendesk_sync_state:last_user_complete_state')->getDate();
         $actual = $this->target->getLastSyncDate($channel, UserConnector::TYPE);
         $this->assertNotNull($actual);
