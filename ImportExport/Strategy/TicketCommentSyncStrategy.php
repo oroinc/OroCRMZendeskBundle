@@ -8,7 +8,6 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroEntityProvider;
 
 class TicketCommentSyncStrategy extends AbstractSyncStrategy
 {
@@ -18,20 +17,12 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
     protected $caseEntityManager;
 
     /**
-     * @var OroEntityProvider
-     */
-    protected $oroEntityProvider;
-
-    /**
      * @param CaseEntityManager $caseEntityManager
-     * @param OroEntityProvider $oroEntityProvider
      */
     public function __construct(
-        CaseEntityManager $caseEntityManager,
-        OroEntityProvider $oroEntityProvider
+        CaseEntityManager $caseEntityManager
     ) {
         $this->caseEntityManager = $caseEntityManager;
-        $this->oroEntityProvider = $oroEntityProvider;
     }
 
     /**
@@ -154,7 +145,7 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
         }
 
         if (!$caseComment->getOwner()) {
-            $caseComment->setOwner($this->oroEntityProvider->getDefaultUser());
+            $caseComment->setOwner($this->getDefaultUser());
         }
     }
 }

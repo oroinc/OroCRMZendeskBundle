@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
+use Oro\Bundle\UserBundle\Entity\User;
 use Psr\Log\LoggerInterface;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -38,6 +39,11 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     protected $zendeskProvider;
 
     /**
+     * @var ConnectorContextMediator
+     */
+    protected $connectorContextMediator;
+
+    /**
      * @var ContextInterface
      */
     private $context;
@@ -48,9 +54,9 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     private $logger;
 
     /**
-     * @var ConnectorContextMediator
+     * @var Channel
      */
-    private $connectorContextMediator;
+    private $channel = null;
 
     /**
      * Validates availability of origin id field
@@ -80,7 +86,19 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
      */
     protected function getChannel()
     {
-        return $this->connectorContextMediator->getChannel($this->context);
+        if ($this->channel === null) {
+            $this->channel = $this->connectorContextMediator->getChannel($this->context);
+        }
+
+        return $this->channel;
+    }
+
+    /**
+     * @return User
+     */
+    protected function getDefaultUser()
+    {
+        return $this->getChannel()->getDefaultUserOwner();
     }
 
     /**

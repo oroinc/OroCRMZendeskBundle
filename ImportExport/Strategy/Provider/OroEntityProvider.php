@@ -10,7 +10,6 @@ use OroCRM\Bundle\ContactBundle\Entity\ContactEmail;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ContactBundle\Entity\ContactPhone;
-use OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider;
 
 class OroEntityProvider
 {
@@ -20,18 +19,11 @@ class OroEntityProvider
     protected $entityManager;
 
     /**
-     * @var ConfigurationProvider
-     */
-    protected $configurationProvider;
-
-    /**
      * @param EntityManager $entityManager
-     * @param ConfigurationProvider $configurationProvider
      */
-    public function __construct(EntityManager $entityManager, ConfigurationProvider $configurationProvider)
+    public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->configurationProvider = $configurationProvider;
     }
 
     /**
@@ -60,14 +52,6 @@ class OroEntityProvider
         }
 
         return $oroUser;
-    }
-
-    /**
-     * @return OroUser|null
-     */
-    public function getDefaultUser()
-    {
-        return $this->configurationProvider->getOroDefaultUser();
     }
 
     /**

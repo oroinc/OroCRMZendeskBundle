@@ -7,7 +7,6 @@ use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
 
 class TicketSyncStrategy extends AbstractSyncStrategy
@@ -25,23 +24,15 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     protected $entityMapper;
 
     /**
-     * @var OroEntityProvider
-     */
-    protected $oroEntityProvider;
-
-    /**
      * @param CaseEntityManager $caseEntityManager
      * @param EntityMapper $entityMapper
-     * @param OroEntityProvider $oroEntityProvider
      */
     public function __construct(
         CaseEntityManager $caseEntityManager,
-        EntityMapper $entityMapper,
-        OroEntityProvider $oroEntityProvider
+        EntityMapper $entityMapper
     ) {
         $this->caseEntityManager = $caseEntityManager;
         $this->entityMapper = $entityMapper;
-        $this->oroEntityProvider = $oroEntityProvider;
     }
 
     /**
@@ -212,7 +203,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
         } elseif ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedUser()) {
             $owner = $ticket->getAssignee()->getRelatedUser();
         } else {
-            $owner = $this->oroEntityProvider->getDefaultUser();
+            $owner = $this->getDefaultUser();
         }
         $case->setOwner($owner);
     }
@@ -230,7 +221,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
         } elseif ($ticket->getRequester() && $ticket->getRequester()->getRelatedUser()) {
             $assignedTo = $ticket->getRequester()->getRelatedUser();
         } else {
-            $assignedTo = $this->oroEntityProvider->getDefaultUser();
+            $assignedTo = $this->getDefaultUser();
         }
         $case->setAssignedTo($assignedTo);
     }

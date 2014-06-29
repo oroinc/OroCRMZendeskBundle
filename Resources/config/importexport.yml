@@ -136,21 +136,18 @@ services:
         arguments:
             - @orocrm_case.manager
             - @orocrm_zendesk.entity_mapper
-            - @orocrm_zendesk.importexport.provider.oro_entity
 
     orocrm_zendesk.importexport.strategy.ticket_comment_sync:
         class: %orocrm_zendesk.importexport.strategy.ticket_comment_sync.class%
         parent: orocrm_zendesk.importexport.strategy.abstract_sync
         arguments:
             - @orocrm_case.manager
-            - @orocrm_zendesk.importexport.provider.oro_entity
 
     # Providers
     orocrm_zendesk.importexport.provider.oro_entity:
         class: %orocrm_zendesk.importexport.provider.oro_entity.class%
         arguments:
             - @doctrine.orm.entity_manager
-            - @orocrm_zendesk.configuration_provider
 
     orocrm_zendesk.importexport.provider.zendesk_entity:
         class: %orocrm_zendesk.importexport.provider.zendesk_entity.class%
