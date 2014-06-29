@@ -36,7 +36,8 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'createdAt' => '2014-06-05T12:24:23Z',
             'updatedAt' => '2014-06-05T13:43:21Z',
             'relatedCase' => 'orocrm_zendesk_case_2',
-            'originUpdatedAt' => '2014-06-09T17:45:22Z'
+            'originUpdatedAt' => '2014-06-09T17:45:22Z',
+            'channel' => 'zendesk_channel:first_test_channel'
         ),
         array(
             'reference' => 'zendesk_ticket_42',
@@ -69,6 +70,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
                     'author' => 'zendesk_user:james.cook@example.com',
                     'createdAt' => '2014-06-05T12:24:23Z',
                     'relatedComment' => 'case_comment_1',
+                    'channel' => 'zendesk_channel:first_test_channel'
                 ),
                 array(
                     'reference' => 'zendesk_ticket_comment_1002',
@@ -79,8 +81,10 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
                     'author' => 'zendesk_user:jim.smith@example.com',
                     'createdAt' => '2014-06-05T12:24:23Z',
                     'relatedComment' => 'case_comment_2',
+                    'channel' => 'zendesk_channel:first_test_channel'
                 ),
-            )
+            ),
+            'channel' => 'zendesk_channel:first_test_channel'
          ),
     );
 
@@ -110,6 +114,9 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             $data['status'] = $manager->find('OroCRMZendeskBundle:TicketStatus', $data['status']);
             $data['type'] = $manager->find('OroCRMZendeskBundle:TicketType', $data['type']);
 
+            if (isset($data['channel'])) {
+                $data['channel'] = $this->getReference($data['channel']);
+            }
             if (isset($data['createdAt'])) {
                 $data['createdAt'] = new \DateTime($data['createdAt']);
             }
@@ -152,6 +159,9 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
                     if (isset($commentData['author'])) {
                         $commentData['author'] = $this->getReference($commentData['author']);
                     }
+                    if (isset($commentData['channel'])) {
+                        $commentData['channel'] = $this->getReference($commentData['channel']);
+                    }
                     if (isset($commentData['relatedComment'])) {
                         $commentData['relatedComment'] = $this->getReference($commentData['relatedComment']);
                     }
@@ -177,6 +187,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
         return array(
             'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadCaseEntityData',
             'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData',
+            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData'
         );
     }
 }

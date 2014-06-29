@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
 
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketCommentSyncStrategy;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
@@ -37,6 +38,11 @@ class TicketCommentSyncStrategyTest extends WebTestCase
      */
     protected $entityManager;
 
+    /**
+     * @var Channel
+     */
+    protected $channel;
+
     protected function setUp()
     {
         $this->initClient();
@@ -45,6 +51,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->strategy = $this->getContainer()->get('orocrm_zendesk.importexport.strategy.ticket_comment_sync');
         $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->strategy->setImportExportContext($this->context);
     }
 
@@ -74,7 +81,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessNewZendeskTicketComment()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId]);
+        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
 
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
@@ -86,13 +93,14 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessExistingZendeskTicketComment()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId]);
+        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
 
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1000)
             ->setBody('Updated body')
             ->setHtmlBody('Updated body html')
             ->setPublic(false)
+            ->setChannel($this->channel)
             ->setOriginCreatedAt(new \DateTime('2014-04-10T12:12:21Z'));
 
         $result = $this->strategy->process($ticketComment);
@@ -113,7 +121,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessLinksAuthor()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId]);
+        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
         $user = $this->getReference('zendesk_user:james.cook@example.com');
         $originId = $user->getOriginId();
         $ticketComment = $this->createZendeskTicketComment()
@@ -130,7 +138,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessCreatesNewCaseComment()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId]);
+        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
 
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
@@ -151,7 +159,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessSyncsCaseCommentOwner()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId]);
+        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
 
         $expectedOwner = $this->getReference('user:james.cook@example.com');
         $agentUser = $this->getReference('zendesk_user:james.cook@example.com');
@@ -172,7 +180,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessSyncsCaseCommentContact()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId]);
+        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
 
         $expectedContact = $this->getReference('contact:jim.smith@example.com');
         $endUser = $this->getReference('zendesk_user:jim.smith@example.com');

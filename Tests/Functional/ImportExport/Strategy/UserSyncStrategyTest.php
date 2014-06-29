@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
 
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\UserSyncStrategy;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
@@ -31,6 +32,11 @@ class UserSyncStrategyTest extends WebTestCase
      */
     protected $context;
 
+    /**
+     * @var Channel
+     */
+    protected $channel;
+
     protected function setUp()
     {
         $this->initClient();
@@ -39,6 +45,10 @@ class UserSyncStrategyTest extends WebTestCase
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->strategy = $this->getContainer()->get('orocrm_zendesk.importexport.strategy.user_sync');
         $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
+        $this->context->expects($this->any())
+            ->method('getOption')
+            ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
         $this->strategy->setImportExportContext($this->context);
     }
 
@@ -80,7 +90,8 @@ class UserSyncStrategyTest extends WebTestCase
             ->setTicketRestriction('ticket_restriction')
             ->setVerified(true)
             ->setTimeZone('Arizona')
-            ->setLocale('en-US');
+            ->setLocale('en-US')
+            ->setChannel($this->channel);
 
         $result = $this->strategy->process($zendeskUser);
 

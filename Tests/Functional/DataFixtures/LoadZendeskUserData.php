@@ -21,6 +21,7 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             'name' => 'Fred Taylor',
             'email' => 'fred.taylor@example.com',
             'role' => UserRole::ROLE_AGENT,
+            'channel' => 'zendesk_channel:first_test_channel',
             'originUpdatedAt' => '2014-06-09T17:45:22Z'
         ),
         array(
@@ -31,6 +32,7 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             'email' => 'james.cook@example.com',
             'role' => UserRole::ROLE_AGENT,
             'relatedUser' => 'user:james.cook@example.com',
+            'channel' => 'zendesk_channel:first_test_channel'
         ),
         array(
             'reference' => 'zendesk_user:jim.smith@example.com',
@@ -40,6 +42,7 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             'email' => 'jim.smith@example.com',
             'role' => UserRole::ROLE_END_USER,
             'relatedContact' => 'contact:jim.smith@example.com',
+            'channel' => 'zendesk_channel:first_test_channel'
         ),
         array(
             'reference' => 'zendesk_user:alex.taylor@example.com',
@@ -48,6 +51,7 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             'name' => 'Alex Taylor',
             'email' => 'alex.taylor@example.com',
             'role' => UserRole::ROLE_END_USER,
+            'channel' => 'zendesk_channel:first_test_channel'
         ),
     );
 
@@ -66,6 +70,9 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             }
             if (isset($data['relatedUser'])) {
                 $data['relatedUser'] = $this->getReference($data['relatedUser']);
+            }
+            if (isset($data['channel'])) {
+                $data['channel'] = $this->getReference($data['channel']);
             }
             if (isset($data['relatedContact'])) {
                 $data['relatedContact'] = $this->getReference($data['relatedContact']);
@@ -90,6 +97,7 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
         return array(
             'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadContactData',
             'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadOroUserData',
+            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData'
         );
     }
 }

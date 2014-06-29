@@ -45,7 +45,7 @@ class UserSyncStrategy extends AbstractSyncStrategy
 
         $this->refreshDictionaryField($entity, 'role', 'userRole');
 
-        $existingUser = $this->findExistingEntity($entity, 'originId');
+        $existingUser = $this->zendeskProvider->getUser($entity, $this->getChannel());
         if ($existingUser) {
             if ($existingUser->getOriginUpdatedAt() == $entity->getOriginUpdatedAt()) {
                 return null;

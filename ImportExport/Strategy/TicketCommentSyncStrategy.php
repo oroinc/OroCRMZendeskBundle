@@ -59,7 +59,7 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
 
         $this->getLogger()->setMessagePrefix("Zendesk Ticket Comment [id={$entity->getOriginId()}]: ");
 
-        $ticket = $this->zendeskProvider->getTicketByOriginId($ticketId);
+        $ticket = $this->zendeskProvider->getTicketByOriginId($ticketId, $this->getChannel());
         if (!$ticket) {
             $message = "Ticket not found [id={$entity->getTicket()->getOriginId()}].";
             $this->getContext()->addError($message);
@@ -70,7 +70,7 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
             $entity->setTicket($ticket);
         }
 
-        $existingComment = $this->zendeskProvider->getTicketComment($entity);
+        $existingComment = $this->zendeskProvider->getTicketComment($entity, $this->getChannel());
 
         if ($existingComment) {
             $this->syncProperties(
@@ -107,7 +107,7 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
     protected function syncAuthor(TicketComment $entity)
     {
         if ($entity->getAuthor()) {
-            $entity->setAuthor($this->zendeskProvider->getUser($entity->getAuthor()));
+            $entity->setAuthor($this->zendeskProvider->getUser($entity->getAuthor(), $this->getChannel()));
         } else {
             $entity->setAuthor(null);
         }

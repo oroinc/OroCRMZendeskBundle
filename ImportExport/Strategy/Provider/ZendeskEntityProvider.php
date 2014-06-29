@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider;
 
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
@@ -28,13 +29,14 @@ class ZendeskEntityProvider
     }
 
     /**
-     * @param User $user
+     * @param User    $user
+     * @param Channel $channel
      * @return User|null
      */
-    public function getUser(User $user)
+    public function getUser(User $user, Channel $channel)
     {
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
-            ->findOneByOriginId($user->getOriginId());
+            ->findOneBy(array('originId' => $user->getOriginId(), 'channel' => $channel));
 
         return $result;
     }
@@ -51,34 +53,37 @@ class ZendeskEntityProvider
     }
 
     /**
-     * @param Ticket $ticket
+     * @param Ticket  $ticket
+     * @param Channel $channel
      * @return Ticket|null
      */
-    public function getTicket(Ticket $ticket)
+    public function getTicket(Ticket $ticket, Channel $channel)
     {
-        return $this->getTicketByOriginId($ticket->getOriginId());
+        return $this->getTicketByOriginId($ticket->getOriginId(), $channel);
     }
 
     /**
-     * @param string $originId
+     * @param string  $originId
+     * @param Channel $channel
      * @return Ticket|null
      */
-    public function getTicketByOriginId($originId)
+    public function getTicketByOriginId($originId, Channel $channel)
     {
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:Ticket')
-            ->findOneBy(array('originId' => $originId));
+            ->findOneBy(array('originId' => $originId, 'channel' => $channel));
 
         return $result;
     }
 
     /**
      * @param TicketComment $ticketComment
+     * @param Channel       $channel
      * @return TicketComment|null
      */
-    public function getTicketComment(TicketComment $ticketComment)
+    public function getTicketComment(TicketComment $ticketComment, Channel $channel)
     {
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:TicketComment')
-            ->findOneBy(array('originId' => $ticketComment->getOriginId()));
+            ->findOneBy(array('originId' => $ticketComment->getOriginId(), 'channel' => $channel));
 
         return $result;
     }

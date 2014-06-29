@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
 
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
 use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
@@ -37,14 +38,23 @@ class TicketSyncStrategyTest extends WebTestCase
      */
     protected $context;
 
+    /**
+     * @var Channel
+     */
+    protected $channel;
+
     protected function setUp()
     {
         $this->initClient();
-        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData', ]);
 
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->strategy = $this->getContainer()->get('orocrm_zendesk.importexport.strategy.ticket_sync');
         $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
+        $this->context->expects($this->any())
+            ->method('getOption')
+            ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
         $this->strategy->setImportExportContext($this->context);
     }
 
@@ -61,13 +71,13 @@ class TicketSyncStrategyTest extends WebTestCase
     public function testProcessNewZendeskTicket()
     {
         $zendeskTicket = $this->createZendeskTicket()->setOriginId(1);
-
         $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
         $this->assertFalse($this->entityManager->contains($zendeskTicket));
     }
 
     public function testProcessExistingZendeskTicket()
     {
+
         $zendeskTicket = $this->createZendeskTicket()
             ->setOriginId(42)
             ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
@@ -78,7 +88,8 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setHasIncidents(false)
             ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
             ->setOriginUpdatedAt(new \DateTime('2014-06-10T17:45:22Z'))
-            ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'));
+            ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'))
+            ->setChannel($this->channel);
 
         $result = $this->strategy->process($zendeskTicket);
 

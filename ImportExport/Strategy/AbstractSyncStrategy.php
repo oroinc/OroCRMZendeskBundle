@@ -4,6 +4,8 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
 use Psr\Log\LoggerInterface;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -11,8 +13,6 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Security\Core\Util\ClassUtils;
 
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskEntityProvider;
-use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
-use OroCRM\Bundle\ZendeskBundle\Entity\OriginUpdatedAtInterface;
 
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
@@ -48,6 +48,19 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     private $logger;
 
     /**
+     * @var ConnectorContextMediator
+     */
+    private $connectorContextMediator;
+
+    /**
+     * @param ConnectorContextMediator $connectorContextMediator
+     */
+    public function setConnectorContextMediator(ConnectorContextMediator $connectorContextMediator)
+    {
+        $this->connectorContextMediator = $connectorContextMediator;
+    }
+
+    /**
      * Validates availability of origin id field
      *
      * @param mixed $entity
@@ -68,6 +81,14 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
         }
 
         return true;
+    }
+
+    /**
+     * @return Channel
+     */
+    protected function getChannel()
+    {
+        return $this->connectorContextMediator->getChannel($this->context);
     }
 
     /**
@@ -172,7 +193,7 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
 
     /**
      * Returns managed entity
-     *
+     * @deprecated not sure we need this
      * @param mixed $entity
      * @param string $identifierName
      * @return mixed|null

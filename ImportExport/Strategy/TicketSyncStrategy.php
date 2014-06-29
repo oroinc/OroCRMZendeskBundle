@@ -66,7 +66,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
         $this->refreshDictionaryField($entity, 'priority', 'ticketPriority');
         $this->refreshDictionaryField($entity, 'type', 'ticketType');
 
-        $existingTicket = $this->zendeskProvider->getTicket($entity);
+        $existingTicket = $this->zendeskProvider->getTicket($entity, $this->getChannel());
         if ($existingTicket) {
             if ($existingTicket->getOriginUpdatedAt() == $entity->getOriginUpdatedAt()) {
                 return null;
@@ -122,7 +122,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     protected function syncProblem(Ticket $entity)
     {
         if ($entity->getProblem()) {
-            $entity->setProblem($this->zendeskProvider->getTicket($entity->getProblem()));
+            $entity->setProblem($this->zendeskProvider->getTicket($entity->getProblem(), $this->getChannel()));
         }
     }
 
@@ -134,7 +134,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
         $collaborators = $entity->getCollaborators()->getValues();
         $entity->getCollaborators()->clear();
         foreach ($collaborators as $value) {
-            $user = $this->zendeskProvider->getUser($value);
+            $user = $this->zendeskProvider->getUser($value, $this->getChannel());
             if ($user) {
                 $entity->addCollaborator($user);
             }
@@ -147,7 +147,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     protected function syncRequester(Ticket $entity)
     {
         if ($entity->getRequester()) {
-            $entity->setRequester($this->zendeskProvider->getUser($entity->getRequester()));
+            $entity->setRequester($this->zendeskProvider->getUser($entity->getRequester(), $this->getChannel()));
         }
     }
 
@@ -157,7 +157,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     protected function syncSubmitter(Ticket $entity)
     {
         if ($entity->getSubmitter()) {
-            $entity->setSubmitter($this->zendeskProvider->getUser($entity->getSubmitter()));
+            $entity->setSubmitter($this->zendeskProvider->getUser($entity->getSubmitter(), $this->getChannel()));
         }
     }
 
@@ -167,7 +167,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     protected function syncAssignee(Ticket $entity)
     {
         if ($entity->getAssignee()) {
-            $entity->setAssignee($this->zendeskProvider->getUser($entity->getAssignee()));
+            $entity->setAssignee($this->zendeskProvider->getUser($entity->getAssignee(), $this->getChannel()));
         }
     }
 

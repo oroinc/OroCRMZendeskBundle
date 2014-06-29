@@ -120,6 +120,7 @@ services:
         class: %orocrm_zendesk.importexport.strategy.abstract_sync.class%
         abstract: true
         calls:
+             - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
              - [setEntityManager, [@doctrine.orm.entity_manager]]
              - [setZendeskProvider, [@orocrm_zendesk.importexport.provider.zendesk_entity]]
 
