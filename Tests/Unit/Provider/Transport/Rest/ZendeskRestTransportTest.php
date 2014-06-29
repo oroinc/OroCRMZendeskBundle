@@ -118,7 +118,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         $result = $this->transport->getTicketComments($ticketId);
 
         $this->client->expects($this->once())
-            ->method('get')
+            ->method('getJSON')
             ->with('tickets/1/comments.json')
             ->will(
                 $this->returnValue(
