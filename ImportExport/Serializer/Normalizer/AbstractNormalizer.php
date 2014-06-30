@@ -24,11 +24,6 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
      */
     protected $channelRepository;
 
-    public function __construct(EntityManager $entityManager)
-    {
-        $this->channelRepository = $entityManager->getRepository('OroIntegrationBundle:Channel');
-    }
-
     /**
      * @var PropertyAccessor
      */
@@ -48,6 +43,14 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
      * @var string
      */
     private $primaryField;
+
+    /**
+     * @param EntityManager $entityManager
+     */
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->channelRepository = $entityManager->getRepository('OroIntegrationBundle:Channel');
+    }
 
     /**
      * List of rules that declare (de)normalization, for example
@@ -258,7 +261,7 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
      * @throws \LogicException
      * @return Channel
      */
-    public function getChannel(array $context)
+    protected function getChannel(array $context)
     {
         if (!isset($context['channel'])) {
             throw new \LogicException('Context should contain reference to channel');

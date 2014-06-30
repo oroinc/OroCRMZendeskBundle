@@ -32,7 +32,7 @@ class TicketNormalizerTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $fixtures = array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadSyncStatusData');
+        $fixtures = array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData');
         $this->loadFixtures($fixtures);
         //if move to postFixtureLoad we need make channel property static
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
