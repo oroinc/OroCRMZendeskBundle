@@ -46,6 +46,11 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
      */
     protected $channel;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $stepExecutor;
+
     protected function setUp()
     {
         $this->registry = $this->getMockBuilder('Oro\Bundle\ImportExportBundle\Context\ContextRegistry')
@@ -73,9 +78,9 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
         $this->mediator->expects($this->any())
             ->method('getChannel')
             ->will($this->returnValue($this->channel));
-        $this->registry->expects($this->any())
-            ->method('getByStepExecution')
-            ->will($this->returnValue($this->context));
+        $this->stepExecutor = $this->getMockBuilder('Akeneo\Bundle\BatchBundle\Entity\StepExecution')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->connector = new TicketCommentConnector(
             $this->syncState,
@@ -124,6 +129,11 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
             ->method('getTicketComments')
             ->will($this->returnValueMap($map));
 
+        $this->registry->expects($this->atLeastOnce())
+            ->method('getByStepExecution')
+            ->with($this->stepExecutor)
+            ->will($this->returnValue($this->context));
+
         $this->syncState->expects($this->once())
             ->method('getTicketIds')
             ->will(
@@ -136,10 +146,8 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
                 )
             );
 
-        $stepExecutor = $this->getMockBuilder('Akeneo\Bundle\BatchBundle\Entity\StepExecution')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->connector->setStepExecution($stepExecutor);
+        $this->connector->setStepExecution($this->stepExecutor);
+
         foreach ($expectedResults as $expected) {
             $result = $this->connector->read();
             $this->assertEquals($expected, $result);

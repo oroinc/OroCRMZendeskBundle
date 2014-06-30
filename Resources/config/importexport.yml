@@ -160,16 +160,6 @@ services:
             - { name: oro_integration.channel, type: zendesk }
 
     #connectors
-    orocrm_zendesk.zendesk.ticket_connector:
-        class: %orocrm_zendesk.zendesk.ticket_connector.class%
-        arguments:
-          - @orocrm_zendesk.sync_state
-          - @oro_importexport.context_registry
-          - @oro_integration.logger.strategy
-          - @oro_integration.provider.connector_context_mediator
-        tags:
-          - { name: oro_integration.connector, type: ticket, channel_type: zendesk }
-
     orocrm_zendesk.zendesk.user_connector:
         class: %orocrm_zendesk.zendesk.user_connector.class%
         arguments:
@@ -179,6 +169,16 @@ services:
           - @oro_integration.provider.connector_context_mediator
         tags:
           - { name: oro_integration.connector, type: user, channel_type: zendesk }
+
+    orocrm_zendesk.zendesk.ticket_connector:
+        class: %orocrm_zendesk.zendesk.ticket_connector.class%
+        arguments:
+          - @orocrm_zendesk.sync_state
+          - @oro_importexport.context_registry
+          - @oro_integration.logger.strategy
+          - @oro_integration.provider.connector_context_mediator
+        tags:
+          - { name: oro_integration.connector, type: ticket, channel_type: zendesk }
 
     orocrm_zendesk.zendesk.ticket_comment_connector:
         class: %orocrm_zendesk.zendesk.ticket_comment_connector.class%

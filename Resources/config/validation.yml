@@ -4,6 +4,9 @@ OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport:
           - NotBlank: ~
         email:
           - NotBlank: ~
-          - email: ~
+          - Email: ~
+        zendeskUserEmail:
+          - NotBlank: ~
+          - Email: ~
         token:
           - NotBlank: ~

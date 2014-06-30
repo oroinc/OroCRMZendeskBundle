@@ -70,7 +70,7 @@ class SyncState
      * @param array $ticketIds
      * @return SyncState
      */
-    public function setTicketIds($ticketIds)
+    public function setTicketIds(array $ticketIds)
     {
         $this->ticketIds = $ticketIds;
 
