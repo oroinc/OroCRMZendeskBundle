@@ -9,40 +9,10 @@ use Oro\Bundle\IntegrationBundle\Provider\Rest\Transport\AbstractRestTransport;
 
 class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTransportInterface
 {
+    const API_URL_PREFIX = 'api/v2';
     const ACTION_GET_USERS = 'getUsers';
     const ACTION_GET_TICKETS = 'getTickets';
     const ACTION_GET_TICKET_COMMENTS = 'getTicketComments';
-
-    /**
-     * {@inheritdoc}
-     */
-    public function call($action, $params = [])
-    {
-        throw new \BadMethodCallException('Method is not supported.');
-        /*switch ($action) {
-            case self::ACTION_GET_USERS:
-                $lastUpdatedAt = isset($params['lastUpdatedAt']) ? $params['lastUpdatedAt'] : null;
-                if ($lastUpdatedAt && !$lastUpdatedAt instanceof \DateTime) {
-                    $lastUpdatedAt = new \DateTime($lastUpdatedAt);
-                }
-                return $this->getUsers($lastUpdatedAt, $lastUpdatedAt);
-                break;
-            case self::ACTION_GET_TICKETS:
-                $lastUpdatedAt = isset($params['lastUpdatedAt']) ? $params['lastUpdatedAt'] : null;
-                if ($lastUpdatedAt && !$lastUpdatedAt instanceof \DateTime) {
-                    $lastUpdatedAt = new \DateTime($lastUpdatedAt);
-                }
-                return $this->getTickets($lastUpdatedAt);
-                break;
-            case self::ACTION_GET_TICKET_COMMENTS:
-                $ticketId = isset($params['ticketId']) ? $params['ticketId'] : null;
-                return $this->getTicketComments($ticketId);
-                break;
-            default:
-                return $this->getUsers();
-                break;
-        }*/
-    }
 
     /**
      * {@inheritdoc}
@@ -138,7 +108,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      */
     protected function getClientBaseUrl(ParameterBag $parameterBag)
     {
-        return $parameterBag->get('url');
+        return rtrim($parameterBag->get('url'), '/') . '/' . ltrim(static::API_URL_PREFIX, '/');
     }
 
     /**

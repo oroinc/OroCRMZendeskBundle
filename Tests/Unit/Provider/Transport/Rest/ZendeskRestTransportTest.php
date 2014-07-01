@@ -6,8 +6,6 @@ use OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport;
 
 class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
 {
-    const BASE_URL = 'https://test.zendesk.com/api/v2';
-
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
@@ -140,7 +138,8 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
 
     protected function initTransport()
     {
-        $url = 'https://test.zendesk.com/api/v2';
+        $url = 'https://test.zendesk.com';
+        $expectedUrl = $url . '/' . ZendeskRestTransport::API_URL_PREFIX;
         $email = 'admin@example.com';
         $token = 'ZsOcahXwCc6rcwLRsqQH27CPCTdpwM2FTfWHDpTBDZi4kBI5';
         $clientOptions = ['auth' => [$email . '/token', $token]];
@@ -164,7 +163,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($settings));
         $this->clientFactory->expects($this->once())
             ->method('createRestClient')
-            ->with($url, $clientOptions)
+            ->with($expectedUrl, $clientOptions)
             ->will($this->returnValue($this->client));
         $this->transport->init($entity);
     }
