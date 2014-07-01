@@ -19,29 +19,7 @@ class TicketPathExtensionTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->extension = new TicketPathExtension($this->provider);
-    }
-
-    public function testGetTicketViewPathReturnNullIfZendeskUrlConfigurationNotFound()
-    {
-        $ticket = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\Ticket');
-        $this->provider->expects($this->at(0))
-            ->method('getZendeskUrl')
-            ->will($this->returnValue(''));
-
-        $this->provider->expects($this->at(1))
-            ->method('getZendeskUrl')
-            ->will($this->throwException(new ConfigurationException()));
-
-        $url = $this->extension->getTicketViewPath($ticket);
-        $this->assertNull($url);
-
-        $url = $this->extension->getTicketViewPath($ticket);
-        $this->assertNull($url);
+        $this->extension = new TicketPathExtension();
     }
 
     public function testGetTicketViewPath()
@@ -54,10 +32,17 @@ class TicketPathExtensionTest extends \PHPUnit_Framework_TestCase
         $ticket->expects($this->once())
             ->method('getOriginId')
             ->will($this->returnValue($id));
-        $this->provider->expects($this->once())
-            ->method('getZendeskUrl')
+        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $transport = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport');
+        $transport->expects($this->once())
+            ->method('getUrl')
             ->will($this->returnValue($zendeskUrl));
-
+        $ticket->expects($this->once())
+            ->method('getChannel')
+            ->will($this->returnValue($channel));
+        $channel->expects($this->once())
+            ->method('getTransport')
+            ->will($this->returnValue($transport));
         $url = $this->extension->getTicketViewPath($ticket);
         $this->assertEquals($expectedUrl, $url);
     }

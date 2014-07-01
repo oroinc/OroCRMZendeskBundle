@@ -1,20 +1,6 @@
 connector:
     name: oro_importexport
     jobs:
-        sync_from_zendesk:
-            title: "Sync from Zendesk"
-            type: import
-            steps:
-                import:
-                    title: import
-                    class: Oro\Bundle\BatchBundle\Step\ItemStep
-                    services:
-                        reader:    orocrm_zendesk.importexport.reader.zendesk_api
-                        processor: oro_importexport.processor.import_delegate
-                        writer:    oro_integration.writer.persistent_batch_writer
-                    parameters:
-                        batch_size: 25
-
         zendesk_user_import:
             title: "Sync users from Zendesk"
             type: import

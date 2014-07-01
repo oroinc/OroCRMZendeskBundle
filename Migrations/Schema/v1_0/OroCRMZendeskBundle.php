@@ -20,7 +20,6 @@ class OroCRMZendeskBundle implements Migration
         $this->createStatusTable($schema);
         $this->createTypeTable($schema);
         $this->createTicketTable($schema);
-        $this->createSyncStateTable($schema);
         $this->createCommentTable($schema);
         $this->createTicketCollaboratorTable($schema);
         $this->updateOroIntegrationTransportTable($schema);
@@ -64,19 +63,6 @@ class OroCRMZendeskBundle implements Migration
             array('onDelete' => 'CASCADE', 'onUpdate' => null)
         );
         /** End of generate foreign keys for table orocrm_zd_ticket_collaborators **/
-    }
-
-    /**
-     * @param Schema $schema
-     */
-    protected function createSyncStateTable(Schema $schema)
-    {
-        /** Generate table orocrm_zd_sync_state **/
-        $table = $schema->createTable('orocrm_zd_sync_state');
-        $table->addColumn('id', 'integer', array());
-        $table->addColumn('last_sync', 'datetime', array('notnull' => false));
-        $table->setPrimaryKey(array('id'));
-        /** End of generate table orocrm_zd_sync_state **/
     }
 
     /**
