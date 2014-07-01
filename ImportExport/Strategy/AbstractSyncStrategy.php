@@ -98,7 +98,8 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
      */
     protected function getDefaultUser()
     {
-        return $this->getChannel()->getDefaultUserOwner();
+        $user = $this->getChannel()->getDefaultUserOwner();
+        return $this->findExistingEntity($user);
     }
 
     /**
@@ -210,7 +211,7 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
 
     /**
      * Returns managed entity
-     * @deprecated not sure we need this
+     *
      * @param mixed $entity
      * @param string $identifierName
      * @return mixed|null
