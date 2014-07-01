@@ -6,6 +6,7 @@ use Oro\Bundle\ImportExportBundle\Serializer\Serializer;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
 
@@ -113,6 +114,7 @@ class TicketCommentNormalizerTest extends WebTestCase
                 'denormalized' => $this->createTicketComment()
                     ->setOriginId($originId = 100)
                     ->setAuthor($this->createUser($userId = 101))
+                    ->setTicket($this->createTicket($ticketId = 103))
                     ->setBody($body = 'Body')
                     ->setHtmlBody('<p>Body</p>')
                     ->setPublic($public = true)
@@ -120,8 +122,9 @@ class TicketCommentNormalizerTest extends WebTestCase
                 'normalized' => array(
                     'id' => $originId,
                     'author_id' => $userId,
+                    'ticket_id' => $ticketId,
                     'body' => $body,
-                    'public' => $public
+                    'public' => $public,
                 ),
             ),
         );
@@ -133,6 +136,17 @@ class TicketCommentNormalizerTest extends WebTestCase
     protected function createTicketComment()
     {
         $result = new TicketComment();
+        return $result;
+    }
+
+    /**
+     * @param int $id
+     * @return Ticket
+     */
+    protected function createTicket($id)
+    {
+        $result = new Ticket();
+        $result->setOriginId($id);
         return $result;
     }
 

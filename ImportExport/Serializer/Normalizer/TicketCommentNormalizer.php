@@ -16,6 +16,12 @@ class TicketCommentNormalizer extends AbstractNormalizer
                 'normalizeName' => 'id',
                 'primary' => true,
             ),
+            'ticket_id' => array(
+                'denormalize' => false,
+                'denormalizeName' => 'ticket',
+                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+                'context' => array('mode' => self::SHORT_MODE),
+            ),
             'author' => array(
                 'normalizeName' => 'author_id',
                 'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
