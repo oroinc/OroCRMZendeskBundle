@@ -9,6 +9,7 @@ use Oro\Bundle\IntegrationBundle\Provider\Rest\Transport\AbstractRestTransport;
 
 class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTransportInterface
 {
+    const API_URL_PREFIX = 'api/v2';
     const ACTION_GET_USERS = 'getUsers';
     const ACTION_GET_TICKETS = 'getTickets';
     const ACTION_GET_TICKET_COMMENTS = 'getTicketComments';
@@ -107,7 +108,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      */
     protected function getClientBaseUrl(ParameterBag $parameterBag)
     {
-        return $parameterBag->get('url');
+        return rtrim($parameterBag->get('url'), '/') . '/' . ltrim(static::API_URL_PREFIX, '/');
     }
 
     /**
