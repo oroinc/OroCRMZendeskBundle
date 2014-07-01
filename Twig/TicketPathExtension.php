@@ -2,22 +2,13 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Twig;
 
+use Guzzle\Http\Url;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 use OroCRM\Bundle\ZendeskBundle\Exception\ConfigurationException;
-use OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider;
 
 class TicketPathExtension extends \Twig_Extension
 {
-    /**
-     * @var ConfigurationProvider
-     */
-    protected $configurationProvider;
-
-    public function __construct(ConfigurationProvider $configurationProvider)
-    {
-        $this->configurationProvider = $configurationProvider;
-    }
-
     /**
      * @return array
      */
@@ -43,7 +34,22 @@ class TicketPathExtension extends \Twig_Extension
     public function getTicketViewPath(Ticket $ticket)
     {
         try {
-            $url = $this->configurationProvider->getZendeskUrl();
+            /**
+             * @var ZendeskRestTransport $transport
+             */
+            $transport = $ticket->getChannel()->getTransport();
+
+            $url = $transport->getUrl();
+            $url = Url::factory($url);
+            $scheme = $url->getScheme();
+
+            if (empty($scheme)) {
+                $url->setHost($url->getPath())
+                    ->setPath('')
+                    ->setScheme('https');
+            }
+
+            $url = (string)$url;
 
             if (empty($url)) {
                 return null;

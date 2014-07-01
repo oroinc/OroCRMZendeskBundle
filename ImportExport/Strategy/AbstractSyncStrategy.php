@@ -98,7 +98,8 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
      */
     protected function getDefaultUser()
     {
-        return $this->getChannel()->getDefaultUserOwner();
+        $user = $this->getChannel()->getDefaultUserOwner();
+        return $this->findExistingEntity($user);
     }
 
     /**
@@ -125,9 +126,9 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     }
 
     /**
-     * @param LoggerInterface $logger
+     * @param SyncLogger $logger
      */
-    protected function setLogger(LoggerInterface $logger)
+    public function setLogger(SyncLogger $logger)
     {
         $this->logger = $logger;
     }
@@ -210,7 +211,7 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
 
     /**
      * Returns managed entity
-     * @deprecated not sure we need this
+     *
      * @param mixed $entity
      * @param string $identifierName
      * @return mixed|null
@@ -260,10 +261,6 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
      */
     protected function getLogger()
     {
-        if (null === $this->logger) {
-            $this->logger = new SyncLogger($this->context->getOption('logger'));
-        }
-
         return $this->logger;
     }
 }

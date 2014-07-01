@@ -1,6 +1,4 @@
 parameters:
-    orocrm_zendesk.importexport.reader.zendesk_api.class:   OroCRM\Bundle\ZendeskBundle\ImportExport\Reader\ZendeskAPIReader
-
     orocrm_zendesk.importexport.normalizer.user.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserNormalizer
     orocrm_zendesk.importexport.normalizer.user_role.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserRoleNormalizer
     orocrm_zendesk.importexport.normalizer.ticket.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketNormalizer
@@ -24,13 +22,6 @@ parameters:
     orocrm_zendesk.zendesk.ticket_comment_connector.class: OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector
 
 services:
-    # Readers
-    orocrm_zendesk.importexport.reader.zendesk_api:
-        class: %orocrm_zendesk.importexport.reader.zendesk_api.class%
-        arguments:
-          - @oro_importexport.context_registry
-          - @orocrm_zendesk.rest_client_factory
-
     # Processors
     orocrm_zendesk.importexport.processor.user_sync:
         parent: oro_importexport.processor.import_abstract
@@ -62,7 +53,7 @@ services:
             -
               name: oro_importexport.processor
               type: import
-              entity: %orocrm_zendesk.entity.ticket.class%
+              entity: %orocrm_zendesk.entity.ticket_comment.class%
               alias: orocrm_zendesk.sync_from_zendesk_ticket_comment
 
     # Normalizers
@@ -123,6 +114,7 @@ services:
              - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
              - [setEntityManager, [@doctrine.orm.entity_manager]]
              - [setZendeskProvider, [@orocrm_zendesk.importexport.provider.zendesk_entity]]
+             - [setLogger, [@orocrm_zendesk.strategy.sync_logger]]
 
     orocrm_zendesk.importexport.strategy.user_sync:
         class: %orocrm_zendesk.importexport.strategy.user_sync.class%
@@ -136,6 +128,7 @@ services:
         arguments:
             - @orocrm_case.manager
             - @orocrm_zendesk.entity_mapper
+            - @orocrm_zendesk.sync_state
 
     orocrm_zendesk.importexport.strategy.ticket_comment_sync:
         class: %orocrm_zendesk.importexport.strategy.ticket_comment_sync.class%

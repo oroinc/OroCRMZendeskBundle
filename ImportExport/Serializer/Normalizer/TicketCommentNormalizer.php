@@ -39,6 +39,11 @@ class TicketCommentNormalizer extends AbstractNormalizer
                 'normalize' => false,
                 'context' => array('type' => 'datetime'),
             ),
+            'ticket' => array(
+                'normalize' => false,
+                'normalizeName' => 'ticket_id',
+                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket'
+            )
         );
     }
 

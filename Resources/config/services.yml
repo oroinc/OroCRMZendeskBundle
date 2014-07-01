@@ -2,18 +2,19 @@ parameters:
     orocrm_zendesk.entity.user.class:                         OroCRM\Bundle\ZendeskBundle\Entity\User
     orocrm_zendesk.entity.ticket.class:                       OroCRM\Bundle\ZendeskBundle\Entity\Ticket
     orocrm_zendesk.entity.ticket_comment.class:               OroCRM\Bundle\ZendeskBundle\Entity\TicketComment
-    orocrm_zendesk.configuration_provider.class:              OroCRM\Bundle\ZendeskBundle\Provider\ConfigurationProvider
     orocrm_zendesk.entity_mapper.class:                       OroCRM\Bundle\ZendeskBundle\Model\EntityMapper
-    orocrm_zendesk.rest_client_factory.class:                 OroCRM\Bundle\ZendeskBundle\Model\RestClientFactory
     orocrm_zendesk.twig.extension.case_ticket.class:          OroCRM\Bundle\ZendeskBundle\Twig\CaseTicketExtension
     orocrm_zendesk.twig.extension.ticket_path.class:          OroCRM\Bundle\ZendeskBundle\Twig\TicketPathExtension
     orocrm_zendesk.placeholder.filter.class:                  OroCRM\Bundle\ZendeskBundle\Placeholder\Filter\Filter
-    orocrm_zendesk.sync_state_manager.class:                  OroCRM\Bundle\ZendeskBundle\Model\SyncStateManager
     orocrm_zendesk.sync_state.class:                          OroCRM\Bundle\ZendeskBundle\Model\SyncState
 
     # Integration related parameters
     orocrm_zendesk.form.type.rest_transport_setting.class:    OroCRM\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType
     orocrm_zendesk.transport.rest_transport.class:            OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport
+
+    #logger
+    orocrm_zendesk.logger.decorator.class:                    OroCRM\Bundle\ZendeskBundle\Logger\AbstractLoggerDecorator
+    orocrm_zendesk.strategy.sync_logger.class:                OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\SyncLogger
 
 services:
     orocrm_zendesk.entity_mapper:
@@ -21,17 +22,6 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - %orocrm_zendesk.map%
-
-    orocrm_zendesk.configuration_provider:
-        class: %orocrm_zendesk.configuration_provider.class%
-        arguments:
-            - @doctrine.orm.entity_manager
-            - @oro_config.global
-
-    orocrm_zendesk.rest_client_factory:
-        class: %orocrm_zendesk.rest_client_factory.class%
-        arguments:
-            - @orocrm_zendesk.configuration_provider
 
     orocrm_zendesk.twig.extension.case_ticket:
         class: %orocrm_zendesk.twig.extension.case_ticket.class%
@@ -42,18 +32,11 @@ services:
 
     orocrm_zendesk.twig.extension.ticket_path:
         class: %orocrm_zendesk.twig.extension.ticket_path.class%
-        arguments:
-            - @orocrm_zendesk.configuration_provider
         tags:
             - { name: twig.extension }
 
     orocrm_zendesk.placeholder.filter:
         class: %orocrm_zendesk.placeholder.filter.class%
-        arguments:
-            - @doctrine.orm.entity_manager
-
-    orocrm_zendesk.sync_state_manager:
-        class: %orocrm_zendesk.sync_state_manager.class%
         arguments:
             - @doctrine.orm.entity_manager
 
@@ -73,3 +56,13 @@ services:
         parent: oro_integration.transport.rest.abstract_transport
         tags:
             - { name: oro_integration.transport, type: zendesk_rest, channel_type: zendesk }
+
+    orocrm_zendesk.logger.decorator:
+        class: %orocrm_zendesk.logger.decorator.class%
+        abstract: true
+        arguments:
+            - @oro_integration.logger.strategy
+
+    orocrm_zendesk.strategy.sync_logger:
+        class: %orocrm_zendesk.strategy.sync_logger.class%
+        parent: orocrm_zendesk.logger.decorator

@@ -13,6 +13,7 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketSyncStrategy;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
@@ -58,6 +59,11 @@ class TicketSyncStrategyTest extends WebTestCase
         $this->strategy->setImportExportContext($this->context);
     }
 
+    public function tearDown()
+    {
+        $this->getSyncStateService()->setTicketIds(array());
+    }
+
     /**
      * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
      * @expectedExceptionMessage Imported entity must be instance of OroCRM\Bundle\ZendeskBundle\Entity\Ticket,
@@ -70,16 +76,21 @@ class TicketSyncStrategyTest extends WebTestCase
 
     public function testProcessNewZendeskTicket()
     {
-        $zendeskTicket = $this->createZendeskTicket()->setOriginId(1);
+        $originId = 1;
+        $zendeskTicket = $this->createZendeskTicket()->setOriginId($originId);
+        $expected = array($originId);
         $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $actual = $this->getSyncStateService()->getTicketIds();
+        $this->assertEquals($expected, $actual);
         $this->assertFalse($this->entityManager->contains($zendeskTicket));
     }
 
     public function testProcessExistingZendeskTicket()
     {
-
+        $originId = 42;
+        $expected = array($originId);
         $zendeskTicket = $this->createZendeskTicket()
-            ->setOriginId(42)
+            ->setOriginId($originId)
             ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
             ->setSubject('Updated subject')
             ->setDescription('Updated description')
@@ -105,6 +116,9 @@ class TicketSyncStrategyTest extends WebTestCase
         $this->assertEquals($zendeskTicket->getOriginCreatedAt(), $result->getOriginCreatedAt());
         $this->assertEquals($zendeskTicket->getOriginUpdatedAt(), $result->getOriginUpdatedAt());
         $this->assertEquals($zendeskTicket->getDueAt(), $result->getDueAt());
+
+        $actual = $this->getSyncStateService()->getTicketIds();
+        $this->assertEquals($expected, $actual);
 
         $this->assertFalse($this->entityManager->contains($zendeskTicket));
         $this->assertTrue($this->entityManager->contains($result));
@@ -448,5 +462,13 @@ class TicketSyncStrategyTest extends WebTestCase
     protected function createZendeskUser()
     {
         return new ZendeskUser();
+    }
+
+    /**
+     * @return SyncState
+     */
+    protected function getSyncStateService()
+    {
+        return $this->getContainer()->get('orocrm_zendesk.sync_state');
     }
 }

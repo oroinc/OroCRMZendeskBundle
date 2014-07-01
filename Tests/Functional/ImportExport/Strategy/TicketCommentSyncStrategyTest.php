@@ -5,10 +5,10 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
 use Doctrine\ORM\EntityManager;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketCommentSyncStrategy;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
-
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 /**
@@ -70,21 +70,13 @@ class TicketCommentSyncStrategyTest extends WebTestCase
         $this->strategy->process(new \stdClass());
     }
 
-    /**
-     * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Option "ticketId" must be set.
-     */
-    public function testProcessFailsWithInvalidContext()
-    {
-        $this->strategy->process($this->createZendeskTicketComment()->setOriginId(1));
-    }
-
     public function testProcessNewZendeskTicketComment()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
-
+        $this->setExpectedContextOptions(['channel' => $this->channel->getId()]);
+        $ticketId = 43;
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
+            ->setTicket($this->createTicket($ticketId))
             ->setOriginCreatedAt(new \DateTime());
 
         $this->assertEquals($ticketComment, $this->strategy->process($ticketComment));
@@ -93,13 +85,15 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessExistingZendeskTicketComment()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
+        $this->setExpectedContextOptions(['channel' => $this->channel->getId()]);
 
+        $ticketId = 43;
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1000)
             ->setBody('Updated body')
             ->setHtmlBody('Updated body html')
             ->setPublic(false)
+            ->setTicket($this->createTicket($ticketId))
             ->setChannel($this->channel)
             ->setOriginCreatedAt(new \DateTime('2014-04-10T12:12:21Z'));
 
@@ -121,11 +115,13 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessLinksAuthor()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
+        $this->setExpectedContextOptions(['channel' => $this->channel->getId()]);
         $user = $this->getReference('zendesk_user:james.cook@example.com');
+        $ticketId = 43;
         $originId = $user->getOriginId();
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
+            ->setTicket($this->createTicket($ticketId))
             ->setAuthor($this->createZendeskUser()->setOriginId($originId))
             ->setOriginCreatedAt(new \DateTime());
 
@@ -138,11 +134,12 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessCreatesNewCaseComment()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
-
+        $this->setExpectedContextOptions(['channel' => $this->channel->getId()]);
+        $ticketId = 43;
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
             ->setBody('Comment body')
+            ->setTicket($this->createTicket($ticketId))
             ->setOriginCreatedAt(new \DateTime('2014-04-10T12:12:21Z'))
             ->setPublic(true);
 
@@ -159,14 +156,17 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessSyncsCaseCommentOwner()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
+        $this->setExpectedContextOptions(['channel' => $this->channel->getId()]);
 
         $expectedOwner = $this->getReference('user:james.cook@example.com');
         $agentUser = $this->getReference('zendesk_user:james.cook@example.com');
 
+        $ticketId = 43;
+
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
             ->setAuthor($agentUser)
+            ->setTicket($this->createTicket($ticketId))
             ->setOriginCreatedAt(new \DateTime());
 
         $this->assertSame($ticketComment, $this->strategy->process($ticketComment));
@@ -180,14 +180,17 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     public function testProcessSyncsCaseCommentContact()
     {
-        $this->setExpectedContextOptions(['ticketId' => self::$ticketId, 'channel' => $this->channel->getId()]);
+        $this->setExpectedContextOptions(['channel' => $this->channel->getId()]);
 
         $expectedContact = $this->getReference('contact:jim.smith@example.com');
         $endUser = $this->getReference('zendesk_user:jim.smith@example.com');
 
+        $ticketId = 43;
+
         $ticketComment = $this->createZendeskTicketComment()
             ->setOriginId(1)
             ->setAuthor($endUser)
+            ->setTicket($this->createTicket($ticketId))
             ->setOriginCreatedAt(new \DateTime());
 
         $this->assertSame($ticketComment, $this->strategy->process($ticketComment));
@@ -207,6 +210,11 @@ class TicketCommentSyncStrategyTest extends WebTestCase
     protected function createZendeskUser()
     {
         return new ZendeskUser();
+    }
+
+    protected function createTicket($originId)
+    {
+        return (new Ticket())->setOriginId($originId);
     }
 
     /**

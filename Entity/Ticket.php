@@ -82,8 +82,8 @@ class Ticket
     /**
      * @var Ticket
      *
-     * @ORM\OneToOne(targetEntity="Ticket")
-     * @ORM\JoinColumn(name="problem_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Ticket")
+     * @ORM\JoinColumn(name="problem_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $problem;
 
