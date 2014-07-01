@@ -16,37 +16,6 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     /**
      * {@inheritdoc}
      */
-    public function call($action, $params = [])
-    {
-        throw new \BadMethodCallException('Method is not supported.');
-        /*switch ($action) {
-            case self::ACTION_GET_USERS:
-                $lastUpdatedAt = isset($params['lastUpdatedAt']) ? $params['lastUpdatedAt'] : null;
-                if ($lastUpdatedAt && !$lastUpdatedAt instanceof \DateTime) {
-                    $lastUpdatedAt = new \DateTime($lastUpdatedAt);
-                }
-                return $this->getUsers($lastUpdatedAt, $lastUpdatedAt);
-                break;
-            case self::ACTION_GET_TICKETS:
-                $lastUpdatedAt = isset($params['lastUpdatedAt']) ? $params['lastUpdatedAt'] : null;
-                if ($lastUpdatedAt && !$lastUpdatedAt instanceof \DateTime) {
-                    $lastUpdatedAt = new \DateTime($lastUpdatedAt);
-                }
-                return $this->getTickets($lastUpdatedAt);
-                break;
-            case self::ACTION_GET_TICKET_COMMENTS:
-                $ticketId = isset($params['ticketId']) ? $params['ticketId'] : null;
-                return $this->getTicketComments($ticketId);
-                break;
-            default:
-                return $this->getUsers();
-                break;
-        }*/
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getUsers(\DateTime $lastUpdatedAt = null)
     {
         $query = 'type:user';
