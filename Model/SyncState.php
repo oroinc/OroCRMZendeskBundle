@@ -41,7 +41,7 @@ class SyncState
          */
         $status = $repository->findOneBy(
             array('code' => Status::STATUS_COMPLETED, 'channel' => $channel, 'connector' => $connector),
-            array('date', 'DESC')
+            array('date' => 'DESC')
         );
 
         return $status ? $status->getDate() : null;
