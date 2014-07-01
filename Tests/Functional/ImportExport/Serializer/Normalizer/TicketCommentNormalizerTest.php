@@ -39,6 +39,10 @@ class TicketCommentNormalizerTest extends WebTestCase
      */
     public function testDenormalize($data, TicketComment $expected)
     {
+        $expected->setChannel($this->channel);
+        if ($expected->getAuthor()) {
+            $expected->getAuthor()->setChannel($this->channel);
+        }
 
         $actual = $this->serializer->deserialize(
             $data,
@@ -46,10 +50,7 @@ class TicketCommentNormalizerTest extends WebTestCase
             null,
             array('channel' => $this->channel->getId())
         );
-        $expected->setChannel($this->channel);
-        if ($expected->getAuthor()) {
-            $expected->getAuthor()->setChannel($this->channel);
-        }
+
         $this->assertEquals($expected, $actual);
     }
 
@@ -91,6 +92,37 @@ class TicketCommentNormalizerTest extends WebTestCase
             'short' => array(
                 'data' => 100,
                 'expected' => $this->createTicketComment()->setOriginId(100)
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider normalizeDataProvider
+     */
+    public function testNormalize($denormalized, $normalized, $context = array())
+    {
+        $actual = $this->serializer->serialize($denormalized, null, $context);
+
+        $this->assertEquals($normalized, $actual);
+    }
+
+    public function normalizeDataProvider()
+    {
+        return array(
+            'full' => array(
+                'denormalized' => $this->createTicketComment()
+                    ->setOriginId($originId = 100)
+                    ->setAuthor($this->createUser($userId = 101))
+                    ->setBody($body = 'Body')
+                    ->setHtmlBody('<p>Body</p>')
+                    ->setPublic($public = true)
+                    ->setCreatedAt(new \DateTime('2014-06-10T10:26:21+0000')),
+                'normalized' => array(
+                    'id' => $originId,
+                    'author_id' => $userId,
+                    'body' => $body,
+                    'public' => $public
+                ),
             ),
         );
     }

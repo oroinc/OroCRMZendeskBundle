@@ -6,6 +6,7 @@ use Oro\Bundle\ImportExportBundle\Serializer\Serializer;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserNormalizer;
 
 /**
  * @outputBuffering enabled
@@ -81,7 +82,7 @@ class UserNormalizerTest extends WebTestCase
                     'locale' => $locale = 'en-US',
                     'created_at' => $createdAt = '2014-06-10T10:26:21Z',
                     'updated_at' => $updatedAt = '2014-06-12T11:45:21Z',
-                    'role' => 'agent',
+                    'role' => $roleName = 'agent',
                 ),
                 'expected' => $this->createUser()
                     ->setOriginId(1)
@@ -101,11 +102,65 @@ class UserNormalizerTest extends WebTestCase
                     ->setLocale($locale)
                     ->setOriginCreatedAt(new \DateTime($createdAt))
                     ->setOriginUpdatedAt(new \DateTime($updatedAt))
-                    ->setRole(new UserRole('agent'))
+                    ->setRole(new UserRole($roleName))
             ),
             'short' => array(
                 'data' => 100,
                 'expected' => $this->createUser()->setOriginId(100)
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider normalizeDataProvider
+     */
+    public function testNormalize($denormalized, $normalized, $context = array())
+    {
+        $actual = $this->serializer->serialize($denormalized, null, $context);
+
+        $this->assertEquals($normalized, $actual);
+    }
+
+    public function normalizeDataProvider()
+    {
+        return array(
+            'full' => array(
+                'denormalized' => $this->createUser()
+                        ->setOriginId($originId = 100)
+                        ->setExternalId($externalId = 123)
+                        ->setName($name = 'Jane Doe')
+                        ->setDetails($details = 'Details')
+                        ->setTicketRestriction($ticketRestriction = 'Organization')
+                        ->setOnlyPrivateComments($onlyPrivateComments = true)
+                        ->setNotes($notes = 'Notes')
+                        ->setActive($active = true)
+                        ->setAlias($alias = 'J. Doe')
+                        ->setEmail($email = 'j.doe@example.com')
+                        ->setPhone($phone = '555 666 777')
+                        ->setTimeZone($timeZone = 'Arizona')
+                        ->setLocale($locale = 'en-US')
+                        ->setRole(new UserRole($roleName = 'agent')),
+                'normalized' => array(
+                    'id' => $originId,
+                    'external_id' => $externalId,
+                    'name' => $name,
+                    'details' => $details,
+                    'ticket_restriction' => $ticketRestriction,
+                    'only_private_comments' => $onlyPrivateComments,
+                    'notes' => $notes,
+                    'active' => $active,
+                    'alias' => $alias,
+                    'email' => $email,
+                    'phone' => $phone,
+                    'time_zone' => $timeZone,
+                    'locale' => $locale,
+                    'role' => $roleName,
+                ),
+            ),
+            'short' => array(
+                'denormalized' => $this->createUser()->setOriginId($originId = 100),
+                'normalized' => $originId,
+                'context' => array('mode' => UserNormalizer::SHORT_MODE),
             ),
         );
     }
