@@ -18,16 +18,19 @@ class TicketCommentNormalizer extends AbstractNormalizer
             ),
             'author' => array(
                 'normalizeName' => 'author_id',
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User'
+                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                'context' => array('mode' => self::SHORT_MODE),
             ),
             'body',
             'htmlBody' => array(
                 'normalizeName' => 'html_body',
+                'normalize' => false,
             ),
             'public',
             'originCreatedAt' => array(
                 'type' => 'DateTime',
                 'normalizeName' => 'created_at',
+                'normalize' => false,
                 'context' => array('type' => 'datetime'),
             ),
         );

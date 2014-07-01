@@ -12,19 +12,23 @@ class UserNormalizer extends AbstractNormalizer
     protected function getFieldRules()
     {
         return array(
-            array(
+            'id' => array(
                 'denormalizeName' => 'originId',
                 'normalizeName' => 'id',
                 'primary' => true,
             ),
-            'url',
+            'url' => array(
+                'normalize' => false,
+            ),
             'external_id',
             'name',
             'details',
             'ticket_restriction',
             'only_private_comments',
             'notes',
-            'verified',
+            'verified' => array(
+                'normalize' => false,
+            ),
             'active',
             'alias',
             'email',
@@ -33,16 +37,19 @@ class UserNormalizer extends AbstractNormalizer
             'locale',
             'originCreatedAt' => array(
                 'type' => 'DateTime',
+                'normalize' => false,
                 'normalizeName' => 'created_at',
                 'context' => array('type' => 'datetime'),
             ),
             'originUpdatedAt' => array(
                 'type' => 'DateTime',
+                'normalize' => false,
                 'normalizeName' => 'updated_at',
                 'context' => array('type' => 'datetime'),
             ),
             'role' => array(
                 'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\UserRole',
+                'context' => array('mode' => self::SHORT_MODE),
             ),
         );
     }

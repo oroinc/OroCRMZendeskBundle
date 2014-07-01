@@ -44,6 +44,9 @@ class TicketNormalizerTest extends WebTestCase
      */
     public function testDenormalize($normalized, Ticket $denormalized)
     {
+        // we can't move this logic to data provider or function called by data provider
+        // because channel property not initialized yet
+        $this->setChannel($denormalized);
 
         $actual = $this->serializer->deserialize(
             $normalized,
@@ -51,10 +54,6 @@ class TicketNormalizerTest extends WebTestCase
             null,
             array('channel' => $this->channel->getId())
         );
-
-        // we can't move this logic to data provider or function called by data provider
-        // because channel property not initialized yet
-        $this->denormalizedValueBeforeAssertHandler($denormalized);
 
         $this->assertEquals($denormalized, $actual);
     }
@@ -74,30 +73,24 @@ class TicketNormalizerTest extends WebTestCase
         );
     }
 
-    protected function denormalizedValueBeforeAssertHandler(Ticket $entity)
-    {
-        $this->setChannelToEntity($entity);
-        if ($entity->getProblem()) {
-            $this->setChannelToEntity($entity->getProblem());
-        }
-        if ($entity->getRequester()) {
-            $this->setChannelToEntity($entity->getRequester());
-        }
-        if ($entity->getSubmitter()) {
-            $this->setChannelToEntity($entity->getSubmitter());
-        }
-        if ($entity->getAssignee()) {
-            $this->setChannelToEntity($entity->getAssignee());
-        }
-        foreach ($entity->getCollaborators() as $collaborator) {
-            $this->setChannelToEntity($collaborator);
-        }
-    }
-
-    protected function setChannelToEntity($entity)
+    protected function setChannel(Ticket $entity)
     {
         $entity->setChannel($this->channel);
-        return $entity;
+        if ($entity->getProblem()) {
+            $entity->getProblem()->setChannel($this->channel);
+        }
+        if ($entity->getRequester()) {
+            $entity->getRequester()->setChannel($this->channel);
+        }
+        if ($entity->getSubmitter()) {
+            $entity->getSubmitter()->setChannel($this->channel);
+        }
+        if ($entity->getAssignee()) {
+            $entity->getAssignee()->setChannel($this->channel);
+        }
+        foreach ($entity->getCollaborators() as $collaborator) {
+            $collaborator->setChannel($this->channel);
+        }
     }
 
     public function denormalizeDataProvider()
