@@ -87,14 +87,14 @@ class OroCRMZendeskBundle implements Migration
         /** Generate table orocrm_zd_ticket **/
         $table = $schema->createTable('orocrm_zd_ticket');
         $table->addColumn('id', 'integer', array('autoincrement' => true));
-        $table->addColumn('channel_id', 'smallint', array('notnull' => false));
+        $table->addColumn('problem_id', 'integer', array('notnull' => false));
         $table->addColumn('assignee_id', 'integer', array('notnull' => false));
         $table->addColumn('status_name', 'string', array('notnull' => false, 'length' => 16));
         $table->addColumn('submitter_id', 'integer', array('notnull' => false));
         $table->addColumn('priority_name', 'string', array('notnull' => false, 'length' => 16));
         $table->addColumn('requester_id', 'integer', array('notnull' => false));
         $table->addColumn('case_id', 'integer', array('notnull' => false));
-        $table->addColumn('problem_id', 'integer', array('notnull' => false));
+        $table->addColumn('channel_id', 'smallint', array('notnull' => false));
         $table->addColumn('type_name', 'string', array('notnull' => false, 'length' => 16));
         $table->addColumn('origin_id', 'bigint', array('notnull' => false));
         $table->addColumn('url', 'string', array('notnull' => false, 'length' => 255));
@@ -109,7 +109,6 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('updated_at', 'datetime', array('notnull' => false));
         $table->addColumn('origin_updated_at', 'datetime', array('notnull' => false));
         $table->setPrimaryKey(array('id'));
-        $table->addUniqueIndex(array('problem_id'), 'UNIQ_45472C5FA0DCED86');
         $table->addUniqueIndex(array('case_id'), 'UNIQ_45472C5FCF10D4F5');
         $table->addUniqueIndex(array('origin_id', 'channel_id'), 'unq_origin_id_channel_id');
         $table->addIndex(array('type_name'), 'IDX_45472C5F892CBB0E', array());
@@ -119,13 +118,14 @@ class OroCRMZendeskBundle implements Migration
         $table->addIndex(array('submitter_id'), 'IDX_45472C5F919E5513', array());
         $table->addIndex(array('assignee_id'), 'IDX_45472C5F59EC7D60', array());
         $table->addIndex(array('channel_id'), 'IDX_45472C5F72F5A1AA', array());
+        $table->addIndex(array('problem_id'), 'IDX_45472C5FA0DCED86', array());
         /** End of generate table orocrm_zd_ticket **/
 
         /** Generate foreign keys for table orocrm_zd_ticket **/
         $table = $schema->getTable('orocrm_zd_ticket');
         $table->addForeignKeyConstraint(
-            $schema->getTable('oro_integration_channel'),
-            array('channel_id'),
+            $schema->getTable('orocrm_zd_ticket'),
+            array('problem_id'),
             array('id'),
             array('onDelete' => 'SET NULL', 'onUpdate' => null)
         );
@@ -166,10 +166,10 @@ class OroCRMZendeskBundle implements Migration
             array('onDelete' => 'SET NULL', 'onUpdate' => null)
         );
         $table->addForeignKeyConstraint(
-            $schema->getTable('orocrm_zd_ticket'),
-            array('problem_id'),
+            $schema->getTable('oro_integration_channel'),
+            array('channel_id'),
             array('id'),
-            array('onDelete' => null, 'onUpdate' => null)
+            array('onDelete' => 'SET NULL', 'onUpdate' => null)
         );
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_zd_ticket_type'),

@@ -15,6 +15,10 @@ parameters:
     orocrm_zendesk.form.type.rest_transport_setting.class:    OroCRM\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType
     orocrm_zendesk.transport.rest_transport.class:            OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport
 
+    #logger
+    orocrm_zendesk.logger.decorator.class:                    OroCRM\Bundle\ZendeskBundle\Logger\AbstractLoggerDecorator
+    orocrm_zendesk.strategy.sync_logger.class:                OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\SyncLogger
+
 services:
     orocrm_zendesk.entity_mapper:
         class: %orocrm_zendesk.entity_mapper.class%
@@ -73,3 +77,13 @@ services:
         parent: oro_integration.transport.rest.abstract_transport
         tags:
             - { name: oro_integration.transport, type: zendesk_rest, channel_type: zendesk }
+
+    orocrm_zendesk.logger.decorator:
+        class: %orocrm_zendesk.logger.decorator.class%
+        abstract: true
+        arguments:
+            - @oro_integration.logger.strategy
+
+    orocrm_zendesk.strategy.sync_logger:
+        class: %orocrm_zendesk.strategy.sync_logger.class%
+        parent: orocrm_zendesk.logger.decorator

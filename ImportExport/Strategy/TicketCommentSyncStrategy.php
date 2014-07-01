@@ -43,22 +43,18 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
             return null;
         }
 
-        $ticketId = $this->getContext()->getOption('ticketId');
-        if (!$ticketId) {
-            throw new InvalidArgumentException('Option "ticketId" must be set.');
-        }
-
         $this->getLogger()->setMessagePrefix("Zendesk Ticket Comment [id={$entity->getOriginId()}]: ");
 
-        $ticket = $this->zendeskProvider->getTicketByOriginId($ticketId, $this->getChannel());
-        if (!$ticket) {
-            $message = "Ticket not found [id={$entity->getTicket()->getOriginId()}].";
-            $this->getContext()->addError($message);
-            $this->getLogger()->error($message);
-            $this->getContext()->incrementErrorEntriesCount();
-            return null;
-        } else {
+        if ($entity->getTicket()) {
+            $ticket = $this->zendeskProvider->getTicket($entity->getTicket(), $this->getChannel());
+            if (!$ticket) {
+                $this->addError("Ticket not found [id={$entity->getTicket()->getOriginId()}].");
+                return null;
+            }
             $entity->setTicket($ticket);
+        } else {
+            $this->addError("Comment Ticket required.");
+            return null;
         }
 
         $existingComment = $this->zendeskProvider->getTicketComment($entity, $this->getChannel());
@@ -147,5 +143,18 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
         if (!$caseComment->getOwner()) {
             $caseComment->setOwner($this->getDefaultUser());
         }
+    }
+
+    /**
+     * @param $message
+     */
+    protected function addError($message)
+    {
+        $this->getContext()
+            ->addError($message);
+        $this->getLogger()
+            ->error($message);
+        $this->getContext()
+            ->incrementErrorEntriesCount();
     }
 }

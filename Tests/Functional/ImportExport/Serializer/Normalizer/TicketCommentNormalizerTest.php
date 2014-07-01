@@ -6,6 +6,7 @@ use Oro\Bundle\ImportExportBundle\Serializer\Serializer;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
 
@@ -43,7 +44,9 @@ class TicketCommentNormalizerTest extends WebTestCase
         if ($expected->getAuthor()) {
             $expected->getAuthor()->setChannel($this->channel);
         }
-
+        if ($expected->getTicket()) {
+            $expected->getTicket()->setChannel($this->channel);
+        }
         $actual = $this->serializer->deserialize(
             $data,
             'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
@@ -79,6 +82,7 @@ class TicketCommentNormalizerTest extends WebTestCase
                     'body' => $body = 'Body',
                     'html_body' => $htmlBody = '<p>Body</p>',
                     'public' => $public = true,
+                    'ticket_id' => $ticketId = 202,
                     'created_at' => $createdAt = '2014-06-12T11:45:21Z',
                 ),
                 'expected' => $this->createTicketComment()
@@ -87,6 +91,7 @@ class TicketCommentNormalizerTest extends WebTestCase
                     ->setBody($body)
                     ->setHtmlBody($htmlBody)
                     ->setPublic($public)
+                    ->setTicket($this->createTicket($ticketId))
                     ->setOriginCreatedAt(new \DateTime($createdAt))
             ),
             'short' => array(
@@ -143,6 +148,17 @@ class TicketCommentNormalizerTest extends WebTestCase
     protected function createUser($id)
     {
         $result = new User();
+        $result->setOriginId($id);
+        return $result;
+    }
+
+    /**
+     * @param int $id
+     * @return Ticket
+     */
+    protected function createTicket($id)
+    {
+        $result = new Ticket();
         $result->setOriginId($id);
         return $result;
     }

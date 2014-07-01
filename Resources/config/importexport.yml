@@ -62,7 +62,7 @@ services:
             -
               name: oro_importexport.processor
               type: import
-              entity: %orocrm_zendesk.entity.ticket.class%
+              entity: %orocrm_zendesk.entity.ticket_comment.class%
               alias: orocrm_zendesk.sync_from_zendesk_ticket_comment
 
     # Normalizers
@@ -123,6 +123,7 @@ services:
              - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
              - [setEntityManager, [@doctrine.orm.entity_manager]]
              - [setZendeskProvider, [@orocrm_zendesk.importexport.provider.zendesk_entity]]
+             - [setLogger, [@orocrm_zendesk.strategy.sync_logger]]
 
     orocrm_zendesk.importexport.strategy.user_sync:
         class: %orocrm_zendesk.importexport.strategy.user_sync.class%
@@ -136,6 +137,7 @@ services:
         arguments:
             - @orocrm_case.manager
             - @orocrm_zendesk.entity_mapper
+            - @orocrm_zendesk.sync_state
 
     orocrm_zendesk.importexport.strategy.ticket_comment_sync:
         class: %orocrm_zendesk.importexport.strategy.ticket_comment_sync.class%

@@ -8,6 +8,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
 
 class TicketSyncStrategy extends AbstractSyncStrategy
 {
@@ -24,15 +25,23 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     protected $entityMapper;
 
     /**
+     * @var SyncState
+     */
+    protected $syncState;
+
+    /**
      * @param CaseEntityManager $caseEntityManager
-     * @param EntityMapper $entityMapper
+     * @param EntityMapper      $entityMapper
+     * @param SyncState $syncState
      */
     public function __construct(
         CaseEntityManager $caseEntityManager,
-        EntityMapper $entityMapper
+        EntityMapper $entityMapper,
+        SyncState $syncState
     ) {
         $this->caseEntityManager = $caseEntityManager;
         $this->entityMapper = $entityMapper;
+        $this->syncState = $syncState;
     }
 
     /**
@@ -79,19 +88,9 @@ class TicketSyncStrategy extends AbstractSyncStrategy
 
         $this->syncRelatedEntities($entity);
 
-        $this->saveCommentTickets($entity);
+        $this->syncState->addTicketId($entity->getOriginId());
 
         return $entity;
-    }
-
-    /**
-     * @param Ticket $entity
-     */
-    protected function saveCommentTickets(Ticket $entity)
-    {
-        $value = (array)$this->getContext()->getValue(self::COMMENT_TICKETS);
-        $value[] = $entity->getOriginId();
-        $this->getContext()->setValue(self::COMMENT_TICKETS, $value);
     }
 
     /**

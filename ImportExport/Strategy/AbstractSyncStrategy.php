@@ -125,9 +125,9 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     }
 
     /**
-     * @param LoggerInterface $logger
+     * @param SyncLogger $logger
      */
-    protected function setLogger(LoggerInterface $logger)
+    public function setLogger(SyncLogger $logger)
     {
         $this->logger = $logger;
     }
@@ -260,10 +260,6 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
      */
     protected function getLogger()
     {
-        if (null === $this->logger) {
-            $this->logger = new SyncLogger($this->context->getOption('logger'));
-        }
-
         return $this->logger;
     }
 }
