@@ -8,6 +8,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
 use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\TicketExportProcessor;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
 
@@ -49,6 +50,7 @@ class TicketExportProcessorTest extends WebTestCase
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
+        $this->channel->getTransport()->setZendeskUserEmail('fred.taylor@example.com');
         $this->processor->setImportExportContext($this->context);
         $this->entityMapper = $this->getContainer()->get('orocrm_zendesk.entity_mapper');
     }
@@ -83,7 +85,18 @@ class TicketExportProcessorTest extends WebTestCase
         $this->assertEquals($expected['description'], $actual->getDescription());
     }
 
-    public function testProcessorReturnNullIfRequesterDoesNotExist()
+    public function testProcessorReturnNullIfRequesterDoesNotFoundAndDefaultUserNotExist()
+    {
+        /**
+         * @var Ticket $ticket
+         */
+        $ticket = $this->getReference('orocrm_zendesk:ticket_43');
+        $ticket->setRequester(null);
+        $this->channel->getTransport()->setZendeskUserEmail('not_exist@mail.com');
+        $this->assertNull($this->processor->process($ticket));
+    }
+
+    public function testProcessorSetDefaultUserAsRequester()
     {
         /**
          * @var Ticket $ticket
@@ -91,9 +104,26 @@ class TicketExportProcessorTest extends WebTestCase
         $ticket = $this->getReference('orocrm_zendesk:ticket_43');
         $ticket->setRequester(null);
         $actual = $this->processor->process($ticket);
-
-        $this->assertTrue(true);
+        $this->assertEquals($actual->getRequester(), $this->getReference('zendesk_user:fred.taylor@example.com'));
     }
+
+    public function testProcessorCreateNewZendeskUserIfContactNotExist()
+    {
+        /**
+         * @var Ticket $ticket
+         */
+        $ticket = $this->getReference('orocrm_zendesk:ticket_43');
+        $ticket->getRelatedCase()->setRelatedContact($this->getReference('contact:alex.johnson@example.com'));
+        $actual = $this->processor->process($ticket);
+        $this->assertNotNull($actual->getRequester());
+        $requester = $actual->getRequester();
+        $this->assertEmpty($requester->getId());
+        $this->assertEmpty($requester->getOriginId());
+        $this->assertEquals($requester->getChannel(), $this->channel);
+        $this->assertEquals($requester->getEmail(), 'alex.johnson@example.com');
+        $this->assertEquals($requester->getRole()->getName(), UserRole::ROLE_END_USER);
+    }
+
 
     /**
      * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException

@@ -20,16 +20,6 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
             'synchronizationSettings' => [
                 'isTwoWaySyncEnabled' => true
             ],
-        ),
-        array(
-            'name' => 'second zendesk',
-            'type' => 'zendesk',
-            'transport' => 'zendesk_transport:second_test_transport',
-            'enabled' => true,
-            'reference' => 'zendesk_channel:second_test_channel',
-            'synchronizationSettings' => [
-                'isTwoWaySyncEnabled' => true
-            ],
         )
     );
     /**

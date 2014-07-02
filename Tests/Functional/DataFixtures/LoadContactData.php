@@ -16,14 +16,20 @@ class LoadContactData extends AbstractZendeskFixture
         array(
             'reference' => 'contact:jim.smith@example.com',
             'firstName' => 'Jim',
-            'lastName' => 'Smith',
-            'email' => 'jim.smith@example.com',
+            'lastName'  => 'Smith',
+            'email'     => 'jim.smith@example.com',
         ),
         array(
             'reference' => 'contact:mike.johnson@example.com',
             'firstName' => 'Mike',
-            'lastName' => 'Johnson',
-            'email' => 'mike.johnson@example.com',
+            'lastName'  => 'Johnson',
+            'email'     => 'mike.johnson@example.com',
+        ),
+        array(
+            'reference' => 'contact:alex.johnson@example.com',
+            'firstName' => 'Alex',
+            'lastName'  => 'Johnson',
+            'email'     => 'alex.johnson@example.com',
         ),
     );
 
