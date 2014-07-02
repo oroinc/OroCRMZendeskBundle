@@ -6,23 +6,9 @@ use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroEntityProvider;
 
 class UserSyncStrategy extends AbstractSyncStrategy
 {
-    /**
-     * @var OroEntityProvider
-     */
-    protected $oroEntityProvider;
-
-    /**
-     * @param OroEntityProvider $oroEntityProvider
-     */
-    public function __construct(OroEntityProvider $oroEntityProvider)
-    {
-        $this->oroEntityProvider = $oroEntityProvider;
-    }
-
     /**
      * {@inheritdoc}
      */

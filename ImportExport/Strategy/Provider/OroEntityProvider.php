@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider;
 
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\UserBundle\Entity\Email;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use OroCRM\Bundle\ContactBundle\Entity\ContactEmail;
@@ -24,6 +25,20 @@ class OroEntityProvider
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @param Channel $channel
+     * @return null|OroUser
+     */
+    public function getDefaultUser(Channel $channel)
+    {
+        $user = $channel->getDefaultUserOwner();
+        if ($user) {
+            $user = $this->entityManager->getRepository('OroUserBundle:User')
+                ->find($user->getId());
+        }
+        return $user;
     }
 
     /**

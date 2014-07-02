@@ -140,9 +140,9 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
          */
         $entityMapper = $this->container->get('orocrm_zendesk.entity_mapper');
 
-        $status = $entityMapper->getTicketStatus($case->getStatus()->getName());
+        $status = $entityMapper->getTicketStatus($case->getStatus()->getName(), $channel);
 
-        $priority = $entityMapper->getTicketPriority($case->getPriority()->getName());
+        $priority = $entityMapper->getTicketPriority($case->getPriority()->getName(), $channel);
 
         if (!$type || !$status || !$priority) {
             return null;

@@ -4,7 +4,9 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider;
 
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
@@ -12,6 +14,8 @@ use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
+use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
 class ZendeskEntityProvider
 {
@@ -31,14 +35,100 @@ class ZendeskEntityProvider
     /**
      * @param User    $user
      * @param Channel $channel
+     * @param bool    $defaultIfNotExist
      * @return User|null
      */
-    public function getUser(User $user, Channel $channel)
+    public function getUser(User $user, Channel $channel, $defaultIfNotExist = false)
     {
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
             ->findOneBy(array('originId' => $user->getOriginId(), 'channel' => $channel));
 
+        if (!$result && $defaultIfNotExist) {
+            return $this->getDefaultZendeskUser($channel);
+        }
+
         return $result;
+    }
+
+    /**
+     * @param OroUser $oroUser
+     * @param Channel $channel
+     * @param bool    $defaultIfNotExist
+     * @return null|object
+     */
+    public function getUserByOroUser(OroUser $oroUser, Channel $channel, $defaultIfNotExist = false)
+    {
+        $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
+            ->findOneBy(array('relatedUser' => $oroUser, 'channel' => $channel));
+
+        if (!$result && $defaultIfNotExist) {
+            return $this->getDefaultZendeskUser($channel);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param Channel $channel
+     * @return null|User
+     * @throws \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
+     */
+    public function getDefaultZendeskUser(Channel $channel)
+    {
+        $transport = $channel->getTransport();
+        if (!$transport instanceof ZendeskRestTransport) {
+            throw new InvalidArgumentException();
+        }
+
+        $email = $transport->getZendeskUserEmail();
+
+        return $this->entityManager->getRepository('OroCRMZendeskBundle:User')
+            ->findOneBy(array('email' => $email, 'channel' => $channel));
+    }
+
+    /**
+     * @param Contact $contact
+     * @param Channel $channel
+     * @return null|User
+     */
+    public function getUserByContact(Contact $contact, Channel $channel)
+    {
+        $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
+            ->findOneBy(array('relatedContact' =>$contact, 'channel' => $channel));
+
+        if ($result) {
+            return $result;
+        }
+
+        $user = new User();
+        $user->setChannel($channel);
+        $email = $contact->getPrimaryEmail();
+        if (!$email) {
+            $emails = $contact->getEmails();
+            if ($emails->count() > 0) {
+                $email = $emails->first();
+            } else {
+                $email = $contact->getEmail();
+            }
+        }
+
+        if (empty($email)) {
+            return null;
+        }
+
+        $name = "{$contact->getFirstName()} {$contact->getLastName()}";
+        $phone = $contact->getPrimaryPhone();
+        if ($phone) {
+            $user->setPhone($phone->getPhone());
+        }
+        $role = $this->getUserRoleByName(UserRole::ROLE_END_USER);
+        $user->setEmail($email)
+            ->setActive(true)
+            ->setName($name)
+            ->setRelatedContact($contact)
+            ->setRole($role);
+
+        return $user;
     }
 
     /**
@@ -48,6 +138,18 @@ class ZendeskEntityProvider
     public function getUserRole(UserRole $role)
     {
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:UserRole')->find($role->getName());
+
+        return $result;
+    }
+
+    /**
+     * @param string $roleName
+     * @return UserRole|null
+     */
+    public function getUserRoleByName($roleName)
+    {
+        $result = $this->entityManager->getRepository('OroCRMZendeskBundle:UserRole')
+            ->find($roleName);
 
         return $result;
     }

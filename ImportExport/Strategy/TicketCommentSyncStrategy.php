@@ -141,7 +141,8 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
         }
 
         if (!$caseComment->getOwner()) {
-            $caseComment->setOwner($this->getDefaultUser());
+            $defaultUser = $this->oroEntityProvider->getDefaultUser($this->getChannel());
+            $caseComment->setOwner($defaultUser);
         }
     }
 
