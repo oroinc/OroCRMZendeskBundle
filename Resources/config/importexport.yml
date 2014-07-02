@@ -21,6 +21,10 @@ parameters:
     orocrm_zendesk.zendesk.user_connector.class: OroCRM\Bundle\ZendeskBundle\Provider\UserConnector
     orocrm_zendesk.zendesk.ticket_comment_connector.class: OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector
 
+    orocrm_zendesk.importexport.processor.ticket_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\TicketExportProcessor
+
+    orocrm_zendesk.importexport.writer.ticket_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter
+
 services:
     # Processors
     orocrm_zendesk.importexport.processor.user_sync:
@@ -55,6 +59,9 @@ services:
               type: import
               entity: %orocrm_zendesk.entity.ticket_comment.class%
               alias: orocrm_zendesk.sync_from_zendesk_ticket_comment
+
+    orocrm_zendesk.importexport.processor.ticket_export:
+            class: %orocrm_zendesk.importexport.processor.ticket_export.class%
 
     # Normalizers
     orocrm_zendesk.importexport.normalizer.user:
@@ -182,3 +189,7 @@ services:
           - @oro_integration.provider.connector_context_mediator
         tags:
           - { name: oro_integration.connector, type: ticket_comment, channel_type: zendesk }
+
+    #writers
+    orocrm_zendesk.importexport.writer.ticket_export:
+        class: %orocrm_zendesk.importexport.writer.ticket_export.class%

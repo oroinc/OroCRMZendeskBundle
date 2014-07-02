@@ -29,6 +29,20 @@ connector:
                     parameters:
                         batch_size: 25
 
+        zendesk_ticket_export:
+            title: "Sync tickets to Zendesk"
+            type:  export
+            steps:
+                export:
+                    title: export
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    oro_integration.reader.entity.by_id
+                        processor: orocrm_zendesk.importexport.processor.ticket_export
+                        writer:    orocrm_zendesk.importexport.writer.ticket_export
+                    parameters:
+                        batch_size: 25
+
         zendesk_ticket_comment_import:
             title: "Sync ticket comments from Zendesk"
             type: import
