@@ -115,7 +115,7 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     /**
      * @param OroEntityProvider $oroEntityProvider
      */
-    public function setOroEntityProvider($oroEntityProvider)
+    public function setOroEntityProvider(OroEntityProvider $oroEntityProvider)
     {
         $this->oroEntityProvider = $oroEntityProvider;
     }

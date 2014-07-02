@@ -94,7 +94,7 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
     protected function syncAuthor(TicketComment $entity)
     {
         if ($entity->getAuthor()) {
-            $entity->setAuthor($this->zendeskProvider->getUser($entity->getAuthor(), $this->getChannel()));
+            $entity->setAuthor($this->zendeskProvider->getUser($entity->getAuthor(), $this->getChannel(), true));
         } else {
             $entity->setAuthor(null);
         }
