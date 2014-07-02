@@ -3,6 +3,8 @@
 namespace OroCRM\Bundle\ZendeskBundle\Model;
 
 use Doctrine\ORM\EntityManager;
+
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
 use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
@@ -40,19 +42,21 @@ class EntityMapper
 
     /**
      * @param TicketStatus|string $ticketStatus
+     * @param Channel             $channel
      * @return CaseStatus|null
      */
-    public function getCaseStatus($ticketStatus)
+    public function getCaseStatus($ticketStatus, Channel $channel)
     {
-        $name = $this->getCaseStatusName($ticketStatus);
+        $name = $this->getCaseStatusName($ticketStatus, $channel);
         return $name ? $this->entityManager->find('OroCRMCaseBundle:CaseStatus', $name) : null;
     }
 
     /**
      * @param TicketStatus|string $ticketStatus
+     * @param Channel             $channel
      * @return string|null
      */
-    public function getCaseStatusName($ticketStatus)
+    public function getCaseStatusName($ticketStatus, Channel $channel)
     {
         return $this->getTicket2CaseValue(
             $this->getEntityName($ticketStatus, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketStatus'),
@@ -62,19 +66,21 @@ class EntityMapper
 
     /**
      * @param TicketPriority|string $ticketPriority
+     * @param Channel               $channel
      * @return CaseStatus|null
      */
-    public function getCasePriority($ticketPriority)
+    public function getCasePriority($ticketPriority, Channel $channel)
     {
-        $name = $this->getCasePriorityName($ticketPriority);
+        $name = $this->getCasePriorityName($ticketPriority, $channel);
         return $name ? $this->entityManager->find('OroCRMCaseBundle:CasePriority', $name) : null;
     }
 
     /**
      * @param TicketPriority|string $ticketPriority
+     * @param Channel               $channel
      * @return string|null
      */
-    public function getCasePriorityName($ticketPriority)
+    public function getCasePriorityName($ticketPriority, Channel $channel)
     {
         return $this->getTicket2CaseValue(
             $this->getEntityName($ticketPriority, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketPriority'),
@@ -84,19 +90,21 @@ class EntityMapper
 
     /**
      * @param CaseStatus|string $caseStatus
+     * @param Channel           $channel
      * @return TicketStatus|null
      */
-    public function getTicketStatus($caseStatus)
+    public function getTicketStatus($caseStatus, Channel $channel)
     {
-        $name = $this->getTicketStatusName($caseStatus);
+        $name = $this->getTicketStatusName($caseStatus, $channel);
         return $name ? $this->entityManager->find('OroCRMZendeskBundle:TicketStatus', $name) : null;
     }
 
     /**
      * @param CaseStatus|string $caseStatus
+     * @param Channel           $channel
      * @return null|string
      */
-    public function getTicketStatusName($caseStatus)
+    public function getTicketStatusName($caseStatus, Channel $channel)
     {
         return $this->getCase2TicketValue(
             $this->getEntityName($caseStatus, 'OroCRM\\Bundle\\CaseBundle\\Entity\\CaseStatus'),
@@ -106,19 +114,21 @@ class EntityMapper
 
     /**
      * @param CasePriority|string $casePriority
+     * @param Channel             $channel
      * @return TicketPriority|null
      */
-    public function getTicketPriority($casePriority)
+    public function getTicketPriority($casePriority, Channel $channel)
     {
-        $name = $this->getTicketPriorityName($casePriority);
+        $name = $this->getTicketPriorityName($casePriority, $channel);
         return $name ? $this->entityManager->find('OroCRMZendeskBundle:TicketPriority', $name) : null;
     }
 
     /**
      * @param CasePriority|string $casePriority
+     * @param Channel             $channel
      * @return null|string
      */
-    public function getTicketPriorityName($casePriority)
+    public function getTicketPriorityName($casePriority, Channel $channel)
     {
         return $this->getCase2TicketValue(
             $this->getEntityName($casePriority, 'OroCRM\\Bundle\\CaseBundle\\Entity\\CasePriority'),

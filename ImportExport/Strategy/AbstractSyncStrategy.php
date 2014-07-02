@@ -2,22 +2,17 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 
-use Doctrine\ORM\EntityManager;
-
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
-use Oro\Bundle\UserBundle\Entity\User;
 use Psr\Log\LoggerInterface;
-
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Security\Core\Util\ClassUtils;
 
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskEntityProvider;
-
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
-
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\ImportExportBundle\Strategy\StrategyInterface;
 
@@ -29,14 +24,14 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     static private $propertyAccessor;
 
     /**
-     * @var EntityManager
-     */
-    protected $entityManager;
-
-    /**
      * @var ZendeskEntityProvider
      */
     protected $zendeskProvider;
+
+    /**
+     * @var OroEntityProvider
+     */
+    protected $oroEntityProvider;
 
     /**
      * @var ConnectorContextMediator
@@ -49,7 +44,7 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     private $context;
 
     /**
-     * @var LoggerInterface
+     * @var SyncLogger
      */
     private $logger;
 
@@ -94,22 +89,6 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     }
 
     /**
-     * @return User
-     */
-    protected function getDefaultUser()
-    {
-        $user = $this->getChannel()->getDefaultUserOwner();
-        return $this->findExistingEntity($user);
-    }
-
-    /**
-     * @param EntityManager $entityManager
-     */
-    public function setEntityManager(EntityManager $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-    /**
      * @param ConnectorContextMediator $connectorContextMediator
      */
     public function setConnectorContextMediator(ConnectorContextMediator $connectorContextMediator)
@@ -126,11 +105,19 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     }
 
     /**
-     * @param SyncLogger $logger
+     * @return OroEntityProvider
      */
-    public function setLogger(SyncLogger $logger)
+    public function getOroEntityProvider()
     {
-        $this->logger = $logger;
+        return $this->oroEntityProvider;
+    }
+
+    /**
+     * @param OroEntityProvider $oroEntityProvider
+     */
+    public function setOroEntityProvider($oroEntityProvider)
+    {
+        $this->oroEntityProvider = $oroEntityProvider;
     }
 
     /**
@@ -210,26 +197,6 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     }
 
     /**
-     * Returns managed entity
-     *
-     * @param mixed $entity
-     * @param string $identifierName
-     * @return mixed|null
-     */
-    protected function findExistingEntity($entity, $identifierName = 'id')
-    {
-        $existingEntity = null;
-        if ($entity) {
-            $identifier = $this->getPropertyAccessor()->getValue($entity, $identifierName);
-            $existingEntity = $this->entityManager
-                ->getRepository(get_class($entity))
-                ->findOneBy(array($identifierName => $identifier));
-        }
-
-        return $existingEntity;
-    }
-
-    /**
      * @return PropertyAccessor
      */
     protected function getPropertyAccessor()
@@ -262,5 +229,13 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     protected function getLogger()
     {
         return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = new SyncLogger($logger);
     }
 }

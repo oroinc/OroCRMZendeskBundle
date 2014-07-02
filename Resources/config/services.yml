@@ -56,13 +56,3 @@ services:
         parent: oro_integration.transport.rest.abstract_transport
         tags:
             - { name: oro_integration.transport, type: zendesk_rest, channel_type: zendesk }
-
-    orocrm_zendesk.logger.decorator:
-        class: %orocrm_zendesk.logger.decorator.class%
-        abstract: true
-        arguments:
-            - @oro_integration.logger.strategy
-
-    orocrm_zendesk.strategy.sync_logger:
-        class: %orocrm_zendesk.strategy.sync_logger.class%
-        parent: orocrm_zendesk.logger.decorator

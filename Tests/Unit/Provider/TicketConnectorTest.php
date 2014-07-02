@@ -141,4 +141,9 @@ class TicketConnectorTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(TicketConnector::IMPORT_JOB, $this->connector->getImportJobName());
     }
+
+    public function testGetExportJobName()
+    {
+        $this->assertEquals(TicketConnector::EXPORT_JOB, $this->connector->getExportJobName());
+    }
 }

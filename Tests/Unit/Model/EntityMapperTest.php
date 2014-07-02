@@ -54,7 +54,8 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
             )
         );
         $mapper = $this->getMapper($map);
-        $actual = $mapper->getCaseStatusName($ticketStatus);
+        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $actual = $mapper->getCaseStatusName($ticketStatus, $channel);
         $this->assertEquals($expected, $actual);
     }
 
@@ -68,7 +69,8 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
             )
         );
         $mapper = $this->getMapper($map);
-        $actual = $mapper->getCaseStatusName($ticketStatus);
+        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $actual = $mapper->getCaseStatusName($ticketStatus, $channel);
         $this->assertNull($actual);
     }
 
@@ -84,7 +86,8 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
             )
         );
         $mapper = $this->getMapper($map);
-        $actual = $mapper->getTicketStatusName($status);
+        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $actual = $mapper->getTicketStatusName($status, $channel);
         $this->assertEquals($expected, $actual);
     }
 
@@ -100,7 +103,8 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
             )
         );
         $mapper = $this->getMapper($map);
-        $actual = $mapper->getTicketPriorityName($priority);
+        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $actual = $mapper->getTicketPriorityName($priority, $channel);
         $this->assertEquals($expected, $actual);
     }
 
@@ -116,7 +120,8 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
             )
         );
         $mapper = $this->getMapper($map);
-        $actual = $mapper->getCasePriorityName($priority);
+        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $actual = $mapper->getCasePriorityName($priority, $channel);
         $this->assertEquals($expected, $actual);
     }
 

@@ -137,7 +137,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     protected function syncRequester(Ticket $entity)
     {
         if ($entity->getRequester()) {
-            $entity->setRequester($this->zendeskProvider->getUser($entity->getRequester(), $this->getChannel()));
+            $entity->setRequester($this->zendeskProvider->getUser($entity->getRequester(), $this->getChannel(), true));
         }
     }
 
@@ -147,7 +147,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     protected function syncSubmitter(Ticket $entity)
     {
         if ($entity->getSubmitter()) {
-            $entity->setSubmitter($this->zendeskProvider->getUser($entity->getSubmitter(), $this->getChannel()));
+            $entity->setSubmitter($this->zendeskProvider->getUser($entity->getSubmitter(), $this->getChannel(), true));
         }
     }
 
@@ -157,7 +157,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     protected function syncAssignee(Ticket $entity)
     {
         if ($entity->getAssignee()) {
-            $entity->setAssignee($this->zendeskProvider->getUser($entity->getAssignee(), $this->getChannel()));
+            $entity->setAssignee($this->zendeskProvider->getUser($entity->getAssignee(), $this->getChannel(), true));
         }
     }
 
@@ -202,7 +202,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
         } elseif ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedUser()) {
             $owner = $ticket->getAssignee()->getRelatedUser();
         } else {
-            $owner = $this->getDefaultUser();
+            $owner = $this->oroEntityProvider->getDefaultUser($this->getChannel());
         }
         $case->setOwner($owner);
     }
@@ -220,7 +220,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
         } elseif ($ticket->getRequester() && $ticket->getRequester()->getRelatedUser()) {
             $assignedTo = $ticket->getRequester()->getRelatedUser();
         } else {
-            $assignedTo = $this->getDefaultUser();
+            $assignedTo = $this->oroEntityProvider->getDefaultUser($this->getChannel());
         }
         $case->setAssignedTo($assignedTo);
     }
@@ -248,7 +248,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     {
         if ($ticket->getStatus()) {
             $name = $ticket->getStatus()->getName();
-            $value = $this->entityMapper->getCaseStatus($name);
+            $value = $this->entityMapper->getCaseStatus($name, $this->getChannel());
             if (!$value) {
                 $message = "Can't convert Zendesk status [name=$name]";
                 $this->getLogger()->error($message);
@@ -267,7 +267,7 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     {
         if ($ticket->getPriority()) {
             $name = $ticket->getPriority()->getName();
-            $value = $this->entityMapper->getCasePriority($name);
+            $value = $this->entityMapper->getCasePriority($name, $this->getChannel());
             if (!$value) {
                 $message = "Can't convert Zendesk priority [name=$name]";
                 $this->getLogger()->error($message);
