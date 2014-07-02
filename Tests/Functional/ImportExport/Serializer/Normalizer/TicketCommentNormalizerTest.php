@@ -164,15 +164,4 @@ class TicketCommentNormalizerTest extends WebTestCase
         $result->setOriginId($id);
         return $result;
     }
-
-    /**
-     * @param int $id
-     * @return Ticket
-     */
-    protected function createTicket($id)
-    {
-        $result = new Ticket();
-        $result->setOriginId($id);
-        return $result;
-    }
 }
