@@ -12,6 +12,9 @@ parameters:
     orocrm_zendesk.form.type.rest_transport_setting.class:    OroCRM\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType
     orocrm_zendesk.transport.rest_transport.class:            OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport
 
+    # Listeners
+    orocrm_zendesk.listener.doctrine.sync_update_case.class:  OroCRM\Bundle\ZendeskBundle\EventListener\Doctrine\SyncUpdateCaseListener
+
 services:
     orocrm_zendesk.entity_mapper:
         class: %orocrm_zendesk.entity_mapper.class%

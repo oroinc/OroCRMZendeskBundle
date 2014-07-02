@@ -335,8 +335,8 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('author_id', 'integer', array('notnull' => false));
         $table->addColumn('ticket_id', 'integer', array('notnull' => false));
         $table->addColumn('origin_id', 'bigint', array('notnull' => false));
-        $table->addColumn('body', 'text', array());
-        $table->addColumn('html_body', 'text', array());
+        $table->addColumn('body', 'text', array('notnull' => false));
+        $table->addColumn('html_body', 'text', array('notnull' => false));
         $table->addColumn('public', 'boolean', array('default' => '0'));
         $table->addColumn('created_at', 'datetime', array());
         $table->addColumn('origin_created_at', 'datetime', array('notnull' => false));

@@ -16,7 +16,10 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
             'type' => 'zendesk',
             'transport' => 'zendesk_transport:first_test_transport',
             'enabled' => true,
-            'reference' => 'zendesk_channel:first_test_channel'
+            'reference' => 'zendesk_channel:first_test_channel',
+            'synchronizationSettings' => [
+                'isTwoWaySyncEnabled' => true
+            ],
         )
     );
     /**
@@ -33,8 +36,14 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
 
             $entity->setDefaultUserOwner($admin);
 
-            $this->setEntityPropertyValues($entity, $data, array('reference'));
+            $this->setEntityPropertyValues($entity, $data, array('reference', 'synchronizationSettings'));
             $this->setReference($data['reference'], $entity);
+
+            if (isset($data['synchronizationSettings'])) {
+                foreach ($data['synchronizationSettings'] as $key => $value) {
+                    $entity->getSynchronizationSettingsReference()->offsetSet($key, $value);
+                }
+            }
 
             $manager->persist($entity);
         }

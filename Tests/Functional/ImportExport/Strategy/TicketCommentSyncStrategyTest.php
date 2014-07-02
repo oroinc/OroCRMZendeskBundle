@@ -57,7 +57,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
 
     protected function postFixtureLoad()
     {
-        self::$ticketId = $this->getReference('zendesk_ticket_42')->getOriginId();
+        self::$ticketId = $this->getReference('orocrm_zendesk:ticket_42')->getOriginId();
     }
 
     /**
