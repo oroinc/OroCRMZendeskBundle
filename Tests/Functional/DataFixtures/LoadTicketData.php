@@ -21,7 +21,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
      */
     protected $data = array(
         array(
-            'reference' => 'zendesk_ticket_43',
+            'reference' => 'orocrm_zendesk:ticket_43',
             'originId' => 43,
             'url' => 'https://foo.zendesk.com/api/v2/tickets/43.json',
             'subject' => 'Zendesk Ticket 43',
@@ -35,18 +35,18 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'assignee' => 'zendesk_user:fred.taylor@example.com',
             'createdAt' => '2014-06-05T12:24:23Z',
             'updatedAt' => '2014-06-05T13:43:21Z',
-            'relatedCase' => 'orocrm_zendesk_case_2',
+            'relatedCase' => 'orocrm_zendesk:case_2',
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
             'channel' => 'zendesk_channel:first_test_channel'
         ),
         array(
-            'reference' => 'zendesk_ticket_42',
+            'reference' => 'orocrm_zendesk:ticket_42',
             'originId' => 42,
             'url' => 'https://foo.zendesk.com/api/v2/tickets/42.json',
             'subject' => 'Zendesk Ticket 42',
             'description' => 'Zendesk Ticket 42 Description',
             'externalId' => '7e24caa0-87f7-44d6-922b-0330ed9fd06c',
-            'problem' => 'zendesk_ticket_43',
+            'problem' => 'orocrm_zendesk:ticket_43',
             'collaborators' => array('zendesk_user:fred.taylor@example.com', 'zendesk_user:alex.taylor@example.com'),
             'type' => TicketType::TYPE_TASK,
             'status' => TicketStatus::STATUS_PENDING,
@@ -59,7 +59,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'createdAt' => '2014-06-10T15:54:22Z',
             'updatedAt' => '2014-06-10T17:45:31Z',
             'dueAt' => '2014-06-11T12:13:11Z',
-            'relatedCase' => 'case_1',
+            'relatedCase' => 'orocrm_zendesk:case_1',
             'comments' => array(
                 array(
                     'reference' => 'zendesk_ticket_comment_1000',

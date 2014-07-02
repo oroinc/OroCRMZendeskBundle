@@ -16,7 +16,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
         array(
             'subject'       => 'Case #1',
             'description'   => 'Case #1: Description',
-            'reference'     => 'case_1',
+            'reference'     => 'orocrm_zendesk:case_1',
             'comments' => array(
                 array(
                     'reference' => 'case_comment_1',
@@ -38,12 +38,12 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
         array(
             'subject'       => 'Case #2',
             'description'   => 'Case #2: Description',
-            'reference'     => 'orocrm_zendesk_case_2'
+            'reference'     => 'orocrm_zendesk:case_2'
         ),
         array(
             'subject'       => 'Case #3',
             'description'   => 'Case #3: Description',
-            'reference'     => 'orocrm_zendesk_case_3'
+            'reference'     => 'orocrm_zendesk:case_3'
         ),
     );
 

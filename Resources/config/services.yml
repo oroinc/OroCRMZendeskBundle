@@ -12,6 +12,9 @@ parameters:
     orocrm_zendesk.form.type.rest_transport_setting.class:    OroCRM\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType
     orocrm_zendesk.transport.rest_transport.class:            OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport
 
+    # Listeners
+    orocrm_zendesk.listener.doctrine.sync_update_case.class:  OroCRM\Bundle\ZendeskBundle\EventListener\Doctrine\SyncUpdateCaseListener
+
     #logger
     orocrm_zendesk.logger.decorator.class:                    OroCRM\Bundle\ZendeskBundle\Logger\AbstractLoggerDecorator
     orocrm_zendesk.strategy.sync_logger.class:                OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\SyncLogger
@@ -66,3 +69,16 @@ services:
     orocrm_zendesk.strategy.sync_logger:
         class: %orocrm_zendesk.strategy.sync_logger.class%
         parent: orocrm_zendesk.logger.decorator
+
+    # Listeners
+    orocrm_zendesk.listener.doctrine.sync_abstract:
+        abstract: true
+        arguments:
+            - @oro_security.security_facade.link
+            - @oro_integration.sync_scheduler.link
+
+    orocrm_zendesk.listener.doctrine.sync_update_case:
+        parent: orocrm_zendesk.listener.doctrine.sync_abstract
+        class: %orocrm_zendesk.listener.doctrine.sync_update_case.class%
+        tags:
+            - { name: doctrine.event_subscriber }

@@ -49,14 +49,14 @@ class TicketComment
     /**
      * @var string
      *
-     * @ORM\Column(name="body", type="text")
+     * @ORM\Column(name="body", type="text", nullable=true)
      */
     protected $body;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="html_body", type="text")
+     * @ORM\Column(name="html_body", type="text", nullable=true)
      */
     protected $htmlBody;
 
@@ -65,7 +65,7 @@ class TicketComment
      *
      * @ORM\Column(name="public", type="boolean", options={"default"=false})
      */
-    protected $public;
+    protected $public = false;
 
     /**
      * @var User

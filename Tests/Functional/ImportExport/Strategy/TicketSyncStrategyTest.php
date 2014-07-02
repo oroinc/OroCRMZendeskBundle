@@ -126,7 +126,7 @@ class TicketSyncStrategyTest extends WebTestCase
 
     public function testProcessSkipSyncExistingZendeskTicketIfItAlreadyUpdated()
     {
-        $existingTicket = $this->getReference('zendesk_ticket_42');
+        $existingTicket = $this->getReference('orocrm_zendesk:ticket_42');
         $zendeskTicket = $this->createZendeskTicket()
             ->setOriginId(42)
             ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
