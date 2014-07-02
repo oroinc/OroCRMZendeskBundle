@@ -12,7 +12,15 @@ class LoadTransportData extends AbstractZendeskFixture
             'reference' => 'zendesk_transport:first_test_transport',
             'url' => 'https://zendesk.com',
             'email' => 'test@mail.com',
-            'token' => '12e25c5f-ec0b-4578-bf95-6a02ffd44f1c'
+            'token' => '12e25c5f-ec0b-4578-bf95-6a02ffd44f1c',
+            'zendeskUserEmail' => 'fred.taylor@example.com'
+        ),
+        array(
+            'reference' => 'zendesk_transport:second_test_transport',
+            'url' => 'https://zendesk.com',
+            'email' => 'test@mail.com',
+            'token' => '12e25c5f-ec0b-4578-bf95-6a02ffd44f1c',
+            'zendeskUserEmail' => 'alex.taylor@example.com'
         )
     );
     /**

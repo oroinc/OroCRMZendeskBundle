@@ -37,7 +37,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'updatedAt' => '2014-06-05T13:43:21Z',
             'relatedCase' => 'orocrm_zendesk:case_2',
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
-            'channel' => 'zendesk_channel:first_test_channel'
+            'channel' => 'zendesk_channel:second_test_channel'
         ),
         array(
             'reference' => 'orocrm_zendesk:ticket_42',

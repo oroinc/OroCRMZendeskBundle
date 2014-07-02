@@ -2,14 +2,14 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
+use Psr\Log\LoggerInterface;
+
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Processor\ContextAwareProcessor;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\SyncLogger;
-use Psr\Log\LoggerInterface;
 
 abstract class AbstractExportProcessor implements ContextAwareProcessor
 {

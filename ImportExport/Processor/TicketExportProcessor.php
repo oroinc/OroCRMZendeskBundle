@@ -51,7 +51,7 @@ class TicketExportProcessor extends AbstractExportProcessor
         $case = $ticket->getRelatedCase();
 
         if (!$case) {
-            throw new InvalidArgumentException("Ticket:'{$ticket->getId()}' does not have related case");
+            throw new InvalidArgumentException("Ticket must have related Case");
         }
 
         $this->syncFields($ticket, $case);
@@ -60,8 +60,10 @@ class TicketExportProcessor extends AbstractExportProcessor
         $this->syncPriority($ticket, $case);
         $this->syncRelatedContact($ticket, $case);
         $this->syncAssignedTo($ticket, $case);
-        if (!$ticket->getOriginId() && !$ticket->getRequester()) {
+
+        if (!$ticket->getRequester()) {
             $owner = $case->getOwner();
+
             $user = $this->zendeskProvider->getUserByOroUser($owner, $this->getChannel(), true);
 
             if (!$user) {
@@ -73,7 +75,6 @@ class TicketExportProcessor extends AbstractExportProcessor
 
             $ticket->setRequester($user);
         }
-
         return $ticket;
     }
 
@@ -147,9 +148,7 @@ class TicketExportProcessor extends AbstractExportProcessor
         if (!$ticket->getOriginId()) {
             $ticket->setSubmitter($relatedUser);
             $ticket->setRequester($relatedUser);
-        } elseif ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedContact()) {
-            $ticket->setSubmitter($relatedUser);
-        } elseif ($ticket->getRequester() && $ticket->getRequester()->getRelatedContact()) {
+        } else {
             $ticket->setRequester($relatedUser);
         }
     }

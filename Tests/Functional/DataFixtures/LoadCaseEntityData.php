@@ -38,6 +38,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
         array(
             'subject'       => 'Case #2',
             'description'   => 'Case #2: Description',
+            'owner'         => 'user:admin@example.com',
             'reference'     => 'orocrm_zendesk:case_2'
         ),
         array(
@@ -60,7 +61,9 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             if (isset($data['reference'])) {
                 $this->setReference($data['reference'], $entity);
             }
-
+            if (isset($data['owner'])) {
+                $data['owner'] = $this->getReference($data['owner']);
+            }
             $this->setEntityPropertyValues($entity, $data, array('reference', 'comments'));
 
             $manager->persist($entity);

@@ -47,7 +47,7 @@ class TicketSyncStrategyTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData', ]);
+        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
 
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->strategy = $this->getContainer()->get('orocrm_zendesk.importexport.strategy.ticket_sync');
