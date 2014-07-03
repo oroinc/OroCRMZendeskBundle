@@ -26,6 +26,11 @@ class ZendeskEntityProvider
     protected $entityManager;
 
     /**
+     * @var User[]
+     */
+    private $userList = array();
+
+    /**
      * @param EntityManager $entityManager
      */
     public function __construct(EntityManager $entityManager)
@@ -94,6 +99,12 @@ class ZendeskEntityProvider
      */
     public function getUserByContact(Contact $contact, Channel $channel)
     {
+        $userUid = "{$contact->getId()}_{$channel->getId()}";
+
+        if (isset($this->userList[$userUid])) {
+            return $this->userList[$userUid];
+        }
+
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
             ->findOneBy(array('relatedContact' =>$contact, 'channel' => $channel));
 
@@ -128,6 +139,8 @@ class ZendeskEntityProvider
             ->setName($name)
             ->setRelatedContact($contact)
             ->setRole($role);
+
+        $this->userList[$userUid] = $user;
 
         return $user;
     }

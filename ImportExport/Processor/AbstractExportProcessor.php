@@ -90,6 +90,7 @@ abstract class AbstractExportProcessor implements ContextAwareProcessor, LoggerA
 
         return $this->channel;
     }
+
     /**
      * @param ContextInterface $context
      */

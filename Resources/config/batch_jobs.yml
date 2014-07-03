@@ -38,7 +38,7 @@ connector:
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    oro_integration.reader.entity.by_id
-                        processor: orocrm_zendesk.importexport.processor.ticket_export
+                        processor: oro_importexport.processor.export_delegate
                         writer:    orocrm_zendesk.importexport.writer.ticket_export
                     parameters:
                         batch_size: 25
@@ -66,7 +66,7 @@ connector:
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    oro_integration.reader.entity.by_id
-                        processor: orocrm_zendesk.importexport.processor.ticket_comment_export
+                        processor: oro_importexport.processor.export_delegate
                         writer:    orocrm_zendesk.importexport.writer.ticket_comment_export
                     parameters:
                         batch_size: 25
