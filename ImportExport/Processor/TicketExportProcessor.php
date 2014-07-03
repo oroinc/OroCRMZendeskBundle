@@ -88,7 +88,7 @@ class TicketExportProcessor extends AbstractExportProcessor
         $ticketStatus = $this->entityMapper->getTicketStatus($statusName, $this->getChannel());
 
         if (!$ticketStatus) {
-            $this->getLogger()->error("Can't convert status [name=$statusName]");
+            $this->getLogger()->error("Can't convert Zendesk status [name=$statusName]");
         } else {
             $ticket->setStatus($ticketStatus);
         }

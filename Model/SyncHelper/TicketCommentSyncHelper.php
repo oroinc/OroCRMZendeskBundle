@@ -92,7 +92,9 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
     protected function syncCaseCommentFields(CaseComment $caseComment, TicketComment $ticketComment)
     {
         $caseComment->setPublic($ticketComment->getPublic());
-        $caseComment->setCreatedAt($ticketComment->getOriginCreatedAt());
+        if ($ticketComment->getOriginCreatedAt()) {
+            $caseComment->setCreatedAt($ticketComment->getOriginCreatedAt());
+        }
         $caseComment->setMessage($ticketComment->getBody());
         $this->syncCaseCommentOwnerAndUser($caseComment, $ticketComment);
     }
