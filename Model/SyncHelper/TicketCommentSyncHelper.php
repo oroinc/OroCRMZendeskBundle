@@ -19,12 +19,12 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
     /**
      * {@inheritdoc}
      */
-    public function syncEntities($targetTicketComment, $sourceTicketComment)
+    public function copyEntityProperties($targetTicketComment, $sourceTicketComment)
     {
         $this->syncProperties(
             $targetTicketComment,
             $sourceTicketComment,
-            ['id', 'originId', 'ticket', 'relatedComment', 'updatedAtLocked', 'createdAt', 'updatedAt']
+            ['id', 'channel', 'ticket', 'relatedComment', 'updatedAtLocked', 'createdAt', 'updatedAt']
         );
     }
 

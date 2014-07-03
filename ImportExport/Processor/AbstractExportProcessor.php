@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
 
@@ -13,7 +14,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 
-abstract class AbstractExportProcessor implements ContextAwareProcessor
+abstract class AbstractExportProcessor implements ContextAwareProcessor, LoggerAwareInterface
 {
     /**
      * @var ImportExportLogger
@@ -43,6 +44,7 @@ abstract class AbstractExportProcessor implements ContextAwareProcessor
 
     /**
      * @param LoggerInterface $logger
+     * @return null
      */
     public function setLogger(LoggerInterface $logger)
     {

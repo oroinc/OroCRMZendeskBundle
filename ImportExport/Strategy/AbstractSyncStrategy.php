@@ -2,22 +2,19 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 use OroCRM\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\SyncPropertiesHelper;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
-use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\ImportExportBundle\Strategy\StrategyInterface;
 
-abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareInterface
+abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareInterface, LoggerAwareInterface
 {
     /**
      * @var ConnectorContextMediator
@@ -137,6 +134,7 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
 
     /**
      * @param LoggerInterface $logger
+     * @return null
      */
     public function setLogger(LoggerInterface $logger)
     {

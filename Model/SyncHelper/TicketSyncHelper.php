@@ -39,12 +39,12 @@ class TicketSyncHelper extends AbstractSyncHelper
     /**
      * {@inheritdoc}
      */
-    public function syncEntities($targetTicket, $sourceTicket)
+    public function copyEntityProperties($targetTicket, $sourceTicket)
     {
         $this->syncProperties(
             $targetTicket,
             $sourceTicket,
-            ['id', 'relatedCase', 'updatedAtLocked', 'createdAt', 'updatedAt']
+            ['id', 'channel', 'relatedCase', 'updatedAtLocked', 'createdAt', 'updatedAt']
         );
     }
 

@@ -19,12 +19,12 @@ class UserSyncHelper extends AbstractSyncHelper
     /**
      * {@inheritdoc}
      */
-    public function syncEntities($targetUser, $sourceUser)
+    public function copyEntityProperties($targetUser, $sourceUser)
     {
         $this->syncProperties(
             $targetUser,
             $sourceUser,
-            ['relatedUser', 'relatedContact', 'id', 'updatedAtLocked', 'createdAt', 'updatedAt']
+            ['id', 'channel', 'relatedUser', 'relatedContact', 'updatedAtLocked', 'createdAt', 'updatedAt']
         );
     }
 

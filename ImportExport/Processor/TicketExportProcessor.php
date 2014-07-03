@@ -67,9 +67,8 @@ class TicketExportProcessor extends AbstractExportProcessor
             $user = $this->zendeskProvider->getUserByOroUser($owner, $this->getChannel(), true);
 
             if (!$user) {
-                $message = 'Default zendesk user and ticket owner not found.';
-                $this->getLogger()->error($message);
-                $this->getContext()->addError($message);
+                $this->getLogger()->error('Default Zendesk user and ticket owner not found.');
+                $this->getContext()->incrementErrorEntriesCount();
                 return null;
             }
 
@@ -89,9 +88,7 @@ class TicketExportProcessor extends AbstractExportProcessor
         $ticketStatus = $this->entityMapper->getTicketStatus($statusName, $this->getChannel());
 
         if (!$ticketStatus) {
-            $message = "Can't convert status [name=$statusName]";
-            $this->getLogger()->error($message);
-            $this->getContext()->addError($message);
+            $this->getLogger()->error("Can't convert status [name=$statusName]");
         } else {
             $ticket->setStatus($ticketStatus);
         }
@@ -108,9 +105,7 @@ class TicketExportProcessor extends AbstractExportProcessor
             $name = $priority->getName();
             $value = $this->entityMapper->getTicketPriority($name, $this->getChannel());
             if (!$value) {
-                $message = "Can't convert priority [name=$name]";
-                $this->getLogger()->error($message);
-                $this->getContext()->addError($message);
+                $this->getLogger()->error("Can't convert priority [name=$name]");
             } else {
                 $ticket->setPriority($value);
             }
@@ -140,9 +135,7 @@ class TicketExportProcessor extends AbstractExportProcessor
 
         $relatedUser = $this->zendeskProvider->getUserByContact($relatedContact, $this->getChannel());
         if (!$relatedUser) {
-            $message = "Can't sync contact [id={$relatedContact->getId()}]";
-            $this->getLogger()->error($message);
-            $this->getContext()->addError($message);
+            $this->getLogger()->error("Can't sync contact [id={$relatedContact->getId()}]");
             return;
         }
         if (!$ticket->getOriginId()) {

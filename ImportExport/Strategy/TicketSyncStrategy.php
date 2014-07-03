@@ -60,14 +60,14 @@ class TicketSyncStrategy extends AbstractSyncStrategy
                 return null;
             }
 
-            $this->helper->syncEntities($existingTicket, $entity);
+            $this->helper->copyEntityProperties($existingTicket, $entity);
 
             $entity = $existingTicket;
 
-            $this->getLogger()->debug("Update found Zendesk ticket.");
+            $this->getLogger()->info("Update found Zendesk ticket.");
             $this->getContext()->incrementUpdateCount();
         } else {
-            $this->getLogger()->debug("Add new Zendesk ticket.");
+            $this->getLogger()->info("Add new Zendesk ticket.");
             $this->getContext()->incrementAddCount();
         }
 

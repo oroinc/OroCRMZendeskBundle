@@ -29,7 +29,7 @@ interface SyncHelperInterface
      * @param mixed $target
      * @param mixed $source
      */
-    public function syncEntities($target, $source);
+    public function copyEntityProperties($target, $source);
 
     /**
      * Syncs related OroCRM entities of Zendesk entity

@@ -203,8 +203,22 @@ services:
           - { name: oro_integration.connector, type: ticket_comment, channel_type: zendesk }
 
     # Writers
+    orocrm_zendesk.importexport.writer.abstract_export:
+        abstract: true
+        arguments:
+          - @doctrine.orm.entity_manager
+          - @oro_importexport.serializer
+          - @orocrm_zendesk.transport.rest_transport
+
     orocrm_zendesk.importexport.writer.ticket_export:
         class: %orocrm_zendesk.importexport.writer.ticket_export.class%
+        parent: orocrm_zendesk.importexport.writer.abstract_export
+        arguments:
+            - @orocrm_zendesk.sync_helper.ticket
+            - @orocrm_zendesk.sync_helper.ticket_comment
 
     orocrm_zendesk.importexport.writer.ticket_comment_export:
-            class: %orocrm_zendesk.importexport.writer.ticket_comment_export.class%
+        class: %orocrm_zendesk.importexport.writer.ticket_comment_export.class%
+        parent: orocrm_zendesk.importexport.writer.abstract_export
+        arguments:
+            - @orocrm_zendesk.sync_helper.ticket_comment

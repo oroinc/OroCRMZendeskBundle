@@ -51,13 +51,13 @@ class UserSyncStrategy extends AbstractSyncStrategy
                 return null;
             }
 
-            $this->helper->syncEntities($existingUser, $entity);
+            $this->helper->copyEntityProperties($existingUser, $entity);
             $entity = $existingUser;
 
-            $this->getLogger()->debug("Update found Zendesk user.");
+            $this->getLogger()->info("Update found Zendesk user.");
             $this->getContext()->incrementUpdateCount();
         } else {
-            $this->getLogger()->debug("Add new Zendesk user.");
+            $this->getLogger()->info("Add new Zendesk user.");
             $this->getContext()->incrementAddCount();
         }
 

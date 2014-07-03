@@ -61,13 +61,13 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
         $existingComment = $this->helper->findEntity($entity, $this->getChannel());
 
         if ($existingComment) {
-            $this->helper->syncEntities($existingComment, $entity);
+            $this->helper->copyEntityProperties($existingComment, $entity);
             $entity = $existingComment;
 
-            $this->getLogger()->debug("Update found Zendesk ticket comment.");
+            $this->getLogger()->info("Update found Zendesk ticket comment.");
             $this->getContext()->incrementUpdateCount();
         } else {
-            $this->getLogger()->debug("Add new Zendesk ticket comment.");
+            $this->getLogger()->info("Add new Zendesk ticket comment.");
             $this->getContext()->incrementAddCount();
         }
 
