@@ -11,6 +11,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
+use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
 
 class SyncManager
@@ -70,14 +71,14 @@ class SyncManager
         }
 
         $this->entityManager->persist($ticket);
-        $this->entityManager->flush($ticket);
+        $this->entityManager->flush();
 
         $this->syncScheduler->schedule($channel, TicketConnector::TYPE, array('id' => $ticket->getId()), false);
-        foreach ($ticket->getComments() as $comment) {
-            $this->scheduleCommentJob($channel, $comment);
-        }
     }
 
+    /**
+     * @param CaseComment $caseComment
+     */
     public function syncComment(CaseComment $caseComment)
     {
         if ($caseComment->getId()) {
@@ -89,24 +90,20 @@ class SyncManager
         if (!$ticket) {
             return;
         }
-
+        $channel = $ticket->getChannel();
         $ticketComment = new TicketComment();
-        $ticketComment->setChannel($ticket->getChannel());
+        $ticketComment->setChannel($channel);
         $ticketComment->setRelatedComment($caseComment);
-        $ticket->addComment($ticketComment);
+        $ticketComment->setTicket($ticket);
 
-        $this->entityManager->persist($ticket);
-        $this->entityManager->flush($ticket);
+        $this->entityManager->persist($ticketComment);
+        $this->entityManager->flush();
 
-        $this->scheduleCommentJob($ticket->getChannel(), $ticketComment);
-    }
-
-    /**
-     * @param Channel $channel
-     * @param TicketComment $comment
-     */
-    protected function scheduleCommentJob(Channel $channel, TicketComment $comment)
-    {
-        $this->syncScheduler->schedule($channel, TicketConnector::TYPE, array('id' => $comment->getId()), false);
+        $this->syncScheduler->schedule(
+            $channel,
+            TicketCommentConnector::TYPE,
+            array('id' => $ticketComment->getId()),
+            false
+        );
     }
 }

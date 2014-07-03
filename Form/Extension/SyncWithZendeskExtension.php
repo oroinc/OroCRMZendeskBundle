@@ -2,13 +2,13 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Form\Extension;
 
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
+use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
+use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 
@@ -57,7 +57,7 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
                 'label'       => 'orocrm.zendesk.form.sync_to_zendesk.label',
                 'mapped'      => false,
                 'required'    => false,
-                'empty_value' => 'Not sync',
+                'empty_value' => 'orocrm.zendesk.form.sync_to_zendesk.empty',
                 'choices'     => $choicesList
             )
         );
@@ -69,7 +69,7 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
          * @var CaseEntity $data
          */
         $data = $form->getData();
-        if ($this->zendeskEntityProvider->getTicketByCase($data)) {
+        if ($data->getId() && $this->zendeskEntityProvider->getTicketByCase($data)) {
             $form->remove(self::SYNC_WITH_ZENDESK_FIELD);
         }
     }

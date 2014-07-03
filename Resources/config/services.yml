@@ -12,7 +12,7 @@ parameters:
     orocrm_zendesk.form.type.rest_transport_setting.class:    OroCRM\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType
     orocrm_zendesk.form.sync_with_zendesk_extension.class:    OroCRM\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension
     orocrm_zendesk.transport.rest_transport.class:            OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport
-    orocrm_zendesk.event_listener.case_form_handled.class:    OroCRM\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseFormHandled
+    orocrm_zendesk.event_listener.case_form_handled.class:    OroCRM\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseFormHandledListener
     orocrm_zendesk.model.sync_manager.class:                  OroCRM\Bundle\ZendeskBundle\Model\SyncManager
 
     # Listeners

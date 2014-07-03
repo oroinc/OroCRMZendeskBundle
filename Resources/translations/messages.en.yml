@@ -83,6 +83,7 @@ orocrm:
         form:
             sync_to_zendesk:
                 label: Sync with Zendesk
+                empty: Do not sync
 
         channel_type.label: 'Zendesk'
         connector:

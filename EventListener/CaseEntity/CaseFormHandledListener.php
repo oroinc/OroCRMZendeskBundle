@@ -9,7 +9,7 @@ use OroCRM\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncManager;
 
-class CaseFormHandled
+class CaseFormHandledListener
 {
     /**
      * @var SyncManager
