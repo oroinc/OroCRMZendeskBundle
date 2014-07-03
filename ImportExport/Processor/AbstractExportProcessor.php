@@ -2,19 +2,21 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
+use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
+
+use OroCRM\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
 
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Processor\ContextAwareProcessor;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskEntityProvider;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\SyncLogger;
+use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 
 abstract class AbstractExportProcessor implements ContextAwareProcessor
 {
     /**
-     * @var SyncLogger
+     * @var ImportExportLogger
      */
     protected $logger;
 
@@ -44,14 +46,18 @@ abstract class AbstractExportProcessor implements ContextAwareProcessor
      */
     public function setLogger(LoggerInterface $logger)
     {
-        $this->logger = new SyncLogger($logger);
+        $this->logger = new ImportExportLogger($logger);
     }
 
     /**
-     * @return SyncLogger
+     * @return ImportExportLogger
      */
     public function getLogger()
     {
+        if (!$this->logger) {
+            $this->logger = new ImportExportLogger(new NullLogger());
+        }
+        $this->logger->setImportExportContext($this->getContext());
         return $this->logger;
     }
 

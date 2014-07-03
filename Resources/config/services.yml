@@ -15,6 +15,15 @@ parameters:
     # Listeners
     orocrm_zendesk.listener.doctrine.sync_update_case.class:  OroCRM\Bundle\ZendeskBundle\EventListener\Doctrine\SyncUpdateCaseListener
 
+    # Entity providers
+    orocrm_zendesk.entity_provider.oro.class:                 OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider
+    orocrm_zendesk.entity_provider.zendesk.class:             OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider
+
+    # Sync helpers
+    orocrm_zendesk.sync_helper.ticket.class:                  OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper
+    orocrm_zendesk.sync_helper.ticket_comment.class:          OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper
+    orocrm_zendesk.sync_helper.user.class:                    OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper
+
 services:
     orocrm_zendesk.entity_mapper:
         class: %orocrm_zendesk.entity_mapper.class%
@@ -68,3 +77,36 @@ services:
         class: %orocrm_zendesk.listener.doctrine.sync_update_case.class%
         tags:
             - { name: doctrine.event_subscriber }
+
+    # Entity providers
+    orocrm_zendesk.entity_provider.oro:
+        class: %orocrm_zendesk.entity_provider.oro.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+
+    orocrm_zendesk.entity_provider.zendesk:
+        class: %orocrm_zendesk.entity_provider.zendesk.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+
+    # Sync helpers
+    orocrm_zendesk.sync_helper.abstract:
+        abstract: true
+        arguments:
+            - @orocrm_zendesk.entity_provider.zendesk
+            - @orocrm_zendesk.entity_provider.oro
+            - @orocrm_case.manager
+
+    orocrm_zendesk.sync_helper.ticket:
+        parent: orocrm_zendesk.sync_helper.abstract
+        class: %orocrm_zendesk.sync_helper.ticket.class%
+        arguments:
+            - @orocrm_zendesk.entity_mapper
+
+    orocrm_zendesk.sync_helper.ticket_comment:
+        parent: orocrm_zendesk.sync_helper.abstract
+        class: %orocrm_zendesk.sync_helper.ticket_comment.class%
+
+    orocrm_zendesk.sync_helper.user:
+        parent: orocrm_zendesk.sync_helper.abstract
+        class: %orocrm_zendesk.sync_helper.user.class%

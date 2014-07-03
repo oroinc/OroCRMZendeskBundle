@@ -2,45 +2,33 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 
+use Psr\Log\LoggerAwareInterface;
+
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
-use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
 
 class TicketSyncStrategy extends AbstractSyncStrategy
 {
-    const COMMENT_TICKETS = 'comment_tickets';
-
-    /**
-     * @var CaseEntityManager
-     */
-    protected $caseEntityManager;
-
-    /**
-     * @var EntityMapper
-     */
-    protected $entityMapper;
-
     /**
      * @var SyncState
      */
     protected $syncState;
 
     /**
-     * @param CaseEntityManager $caseEntityManager
-     * @param EntityMapper      $entityMapper
+     * @var TicketSyncHelper
+     */
+    protected $helper;
+
+    /**
+     * @param TicketSyncHelper $helper
      * @param SyncState $syncState
      */
-    public function __construct(
-        CaseEntityManager $caseEntityManager,
-        EntityMapper $entityMapper,
-        SyncState $syncState
-    ) {
-        $this->caseEntityManager = $caseEntityManager;
-        $this->entityMapper = $entityMapper;
+    public function __construct(TicketSyncHelper $helper, SyncState $syncState)
+    {
+        $this->helper = $helper;
         $this->syncState = $syncState;
     }
 
@@ -60,23 +48,20 @@ class TicketSyncStrategy extends AbstractSyncStrategy
         if (!$this->validateOriginId($entity)) {
             return null;
         }
+
         $this->getLogger()->setMessagePrefix("Zendesk Ticket [id={$entity->getOriginId()}]: ");
 
-        $this->refreshDictionaryField($entity, 'status', 'ticketStatus', true);
-        $this->refreshDictionaryField($entity, 'priority', 'ticketPriority');
-        $this->refreshDictionaryField($entity, 'type', 'ticketType');
+        $this->helper->setLogger($this->getLogger());
+        $this->helper->refreshEntity($entity, $this->getChannel());
 
-        $existingTicket = $this->zendeskProvider->getTicket($entity, $this->getChannel());
+        $existingTicket = $this->helper->findEntity($entity, $this->getChannel());
         if ($existingTicket) {
             if ($existingTicket->getOriginUpdatedAt() == $entity->getOriginUpdatedAt()) {
                 return null;
             }
 
-            $this->syncProperties(
-                $existingTicket,
-                $entity,
-                array('relatedCase', 'id', 'updatedAtLocked', 'createdAt', 'updatedAt')
-            );
+            $this->helper->syncEntities($existingTicket, $entity);
+
             $entity = $existingTicket;
 
             $this->getLogger()->debug("Update found Zendesk ticket.");
@@ -86,195 +71,10 @@ class TicketSyncStrategy extends AbstractSyncStrategy
             $this->getContext()->incrementAddCount();
         }
 
-        $this->syncRelatedEntities($entity);
+        $this->helper->syncRelatedEntities($entity, $this->getChannel());
 
         $this->syncState->addTicketId($entity->getOriginId());
 
         return $entity;
-    }
-
-    /**
-     * @param Ticket $entity
-     */
-    protected function syncRelatedEntities(Ticket $entity)
-    {
-        $this->syncProblem($entity);
-        $this->syncCollaborators($entity);
-        $this->syncRequester($entity);
-        $this->syncSubmitter($entity);
-        $this->syncAssignee($entity);
-        $this->syncRelatedCase($entity);
-    }
-
-    /**
-     * @param Ticket $entity
-     */
-    protected function syncProblem(Ticket $entity)
-    {
-        if ($entity->getProblem()) {
-            $entity->setProblem($this->zendeskProvider->getTicket($entity->getProblem(), $this->getChannel()));
-        }
-    }
-
-    /**
-     * @param Ticket $entity
-     */
-    protected function syncCollaborators(Ticket $entity)
-    {
-        $collaborators = $entity->getCollaborators()->getValues();
-        $entity->getCollaborators()->clear();
-        foreach ($collaborators as $value) {
-            $user = $this->zendeskProvider->getUser($value, $this->getChannel());
-            if ($user) {
-                $entity->addCollaborator($user);
-            }
-        }
-    }
-
-    /**
-     * @param Ticket $entity
-     */
-    protected function syncRequester(Ticket $entity)
-    {
-        if ($entity->getRequester()) {
-            $entity->setRequester($this->zendeskProvider->getUser($entity->getRequester(), $this->getChannel(), true));
-        }
-    }
-
-    /**
-     * @param Ticket $entity
-     */
-    protected function syncSubmitter(Ticket $entity)
-    {
-        if ($entity->getSubmitter()) {
-            $entity->setSubmitter($this->zendeskProvider->getUser($entity->getSubmitter(), $this->getChannel(), true));
-        }
-    }
-
-    /**
-     * @param Ticket $entity
-     */
-    protected function syncAssignee(Ticket $entity)
-    {
-        if ($entity->getAssignee()) {
-            $entity->setAssignee($this->zendeskProvider->getUser($entity->getAssignee(), $this->getChannel(), true));
-        }
-    }
-
-    /**
-     * @param Ticket $entity
-     */
-    protected function syncRelatedCase(Ticket $entity)
-    {
-        $relatedCase = $entity->getRelatedCase();
-        if (!$relatedCase) {
-            $relatedCase = $this->caseEntityManager->createCase();
-            $entity->setRelatedCase($relatedCase);
-        }
-        $this->syncCaseFields($relatedCase, $entity);
-    }
-
-    /**
-     * @param CaseEntity $case
-     * @param Ticket $entity
-     */
-    protected function syncCaseFields(CaseEntity $case, Ticket $entity)
-    {
-        $case->setSubject($entity->getSubject());
-        $case->setDescription($entity->getDescription());
-        $this->syncCaseOwner($case, $entity);
-        $this->syncCaseAssignedTo($case, $entity);
-        $this->syncCaseRelatedContact($case, $entity);
-        $this->syncCaseStatus($case, $entity);
-        $this->syncCasePriority($case, $entity);
-    }
-
-    /**
-     * @param CaseEntity $case
-     * @param Ticket $ticket
-     */
-    protected function syncCaseOwner(CaseEntity $case, Ticket $ticket)
-    {
-        if ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedUser()) {
-            $owner = $ticket->getSubmitter()->getRelatedUser();
-        } elseif ($ticket->getRequester() && $ticket->getRequester()->getRelatedUser()) {
-            $owner = $ticket->getRequester()->getRelatedUser();
-        } elseif ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedUser()) {
-            $owner = $ticket->getAssignee()->getRelatedUser();
-        } else {
-            $owner = $this->oroEntityProvider->getDefaultUser($this->getChannel());
-        }
-        $case->setOwner($owner);
-    }
-
-    /**
-     * @param CaseEntity $case
-     * @param Ticket $ticket
-     */
-    protected function syncCaseAssignedTo(CaseEntity $case, Ticket $ticket)
-    {
-        if ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedUser()) {
-            $assignedTo = $ticket->getAssignee()->getRelatedUser();
-        } elseif ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedUser()) {
-            $assignedTo = $ticket->getSubmitter()->getRelatedUser();
-        } elseif ($ticket->getRequester() && $ticket->getRequester()->getRelatedUser()) {
-            $assignedTo = $ticket->getRequester()->getRelatedUser();
-        } else {
-            $assignedTo = $this->oroEntityProvider->getDefaultUser($this->getChannel());
-        }
-        $case->setAssignedTo($assignedTo);
-    }
-
-    /**
-     * @param CaseEntity $case
-     * @param Ticket $ticket
-     */
-    protected function syncCaseRelatedContact(CaseEntity $case, Ticket $ticket)
-    {
-        if ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedContact()) {
-            $case->setRelatedContact($ticket->getSubmitter()->getRelatedContact());
-        } elseif ($ticket->getRequester() && $ticket->getRequester()->getRelatedContact()) {
-            $case->setRelatedContact($ticket->getRequester()->getRelatedContact());
-        } elseif ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedContact()) {
-            $case->setRelatedContact($ticket->getAssignee()->getRelatedContact());
-        }
-    }
-
-    /**
-     * @param CaseEntity $case
-     * @param Ticket $ticket
-     */
-    protected function syncCaseStatus(CaseEntity $case, Ticket $ticket)
-    {
-        if ($ticket->getStatus()) {
-            $name = $ticket->getStatus()->getName();
-            $value = $this->entityMapper->getCaseStatus($name, $this->getChannel());
-            if (!$value) {
-                $message = "Can't convert Zendesk status [name=$name]";
-                $this->getLogger()->error($message);
-                $this->getContext()->addError($message);
-            } else {
-                $case->setStatus($value);
-            }
-        }
-    }
-
-    /**
-     * @param CaseEntity $case
-     * @param Ticket $ticket
-     */
-    protected function syncCasePriority(CaseEntity $case, Ticket $ticket)
-    {
-        if ($ticket->getPriority()) {
-            $name = $ticket->getPriority()->getName();
-            $value = $this->entityMapper->getCasePriority($name, $this->getChannel());
-            if (!$value) {
-                $message = "Can't convert Zendesk priority [name=$name]";
-                $this->getLogger()->error($message);
-                $this->getContext()->addError($message);
-            } else {
-                $case->setPriority($value);
-            }
-        }
     }
 }

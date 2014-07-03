@@ -8,8 +8,8 @@ class TicketConnector extends AbstractZendeskConnector implements TwoWaySyncConn
 {
     const IMPORT_ENTITY = 'OroCRM\Bundle\ZendeskBundle\Entity\Ticket';
     const IMPORT_JOB = 'zendesk_ticket_import';
-    const TYPE = 'ticket';
     const EXPORT_JOB = 'zendesk_ticket_export';
+    const TYPE = 'ticket';
 
     /**
      * {@inheritdoc}
