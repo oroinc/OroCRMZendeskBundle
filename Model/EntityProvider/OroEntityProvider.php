@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider;
+namespace OroCRM\Bundle\ZendeskBundle\Model\EntityProvider;
 
 use Doctrine\ORM\EntityManager;
 

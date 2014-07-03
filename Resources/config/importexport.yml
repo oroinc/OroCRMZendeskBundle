@@ -7,13 +7,9 @@ parameters:
     orocrm_zendesk.importexport.normalizer.ticket_type.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketTypeNormalizer
     orocrm_zendesk.importexport.normalizer.ticket_comment.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketCommentNormalizer
 
-    orocrm_zendesk.importexport.strategy.abstract_sync.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\AbstractSyncStrategy
     orocrm_zendesk.importexport.strategy.user_sync.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\UserSyncStrategy
     orocrm_zendesk.importexport.strategy.ticket_sync.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketSyncStrategy
     orocrm_zendesk.importexport.strategy.ticket_comment_sync.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketCommentSyncStrategy
-
-    orocrm_zendesk.importexport.provider.oro_entity.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroEntityProvider
-    orocrm_zendesk.importexport.provider.zendesk_entity.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskEntityProvider
 
     orocrm_zendesk.provider.channel_type.class: OroCRM\Bundle\ZendeskBundle\Provider\ChannelType
 
@@ -69,7 +65,7 @@ services:
         calls:
              - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
              - [setLogger, [@oro_integration.logger.strategy]]
-             - [setZendeskProvider, [@orocrm_zendesk.importexport.provider.zendesk_entity]]
+             - [setZendeskProvider, [@orocrm_zendesk.entity_provider.zendesk]]
 
     orocrm_zendesk.importexport.processor.ticket_export:
         parent: orocrm_zendesk.importexport.processor.abstract_export
@@ -145,49 +141,37 @@ services:
 
     # Strategies
     orocrm_zendesk.importexport.strategy.abstract_sync:
-        class: %orocrm_zendesk.importexport.strategy.abstract_sync.class%
         abstract: true
         calls:
              - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
-             - [setOroEntityProvider, [@orocrm_zendesk.importexport.provider.oro_entity]]
-             - [setZendeskProvider, [@orocrm_zendesk.importexport.provider.zendesk_entity]]
              - [setLogger, [@oro_integration.logger.strategy]]
 
     orocrm_zendesk.importexport.strategy.user_sync:
         class: %orocrm_zendesk.importexport.strategy.user_sync.class%
         parent: orocrm_zendesk.importexport.strategy.abstract_sync
+        arguments:
+            - @orocrm_zendesk.sync_helper.user
 
     orocrm_zendesk.importexport.strategy.ticket_sync:
         class: %orocrm_zendesk.importexport.strategy.ticket_sync.class%
         parent: orocrm_zendesk.importexport.strategy.abstract_sync
         arguments:
-            - @orocrm_case.manager
-            - @orocrm_zendesk.entity_mapper
+            - @orocrm_zendesk.sync_helper.ticket
             - @orocrm_zendesk.sync_state
 
     orocrm_zendesk.importexport.strategy.ticket_comment_sync:
         class: %orocrm_zendesk.importexport.strategy.ticket_comment_sync.class%
         parent: orocrm_zendesk.importexport.strategy.abstract_sync
         arguments:
-            - @orocrm_case.manager
+            - @orocrm_zendesk.sync_helper.ticket_comment
 
-    # Providers
-    orocrm_zendesk.importexport.provider.oro_entity:
-        class: %orocrm_zendesk.importexport.provider.oro_entity.class%
-        arguments:
-            - @doctrine.orm.entity_manager
-
-    orocrm_zendesk.importexport.provider.zendesk_entity:
-        class: %orocrm_zendesk.importexport.provider.zendesk_entity.class%
-        arguments:
-            - @doctrine.orm.entity_manager
-
+    # Integration type
     orocrm_zendesk.provider.channel_type:
         class: %orocrm_zendesk.provider.channel_type.class%
         tags:
             - { name: oro_integration.channel, type: zendesk }
 
-    #connectors
+    # Connectors
     orocrm_zendesk.zendesk.user_connector:
         class: %orocrm_zendesk.zendesk.user_connector.class%
         arguments:
@@ -218,9 +202,23 @@ services:
         tags:
           - { name: oro_integration.connector, type: ticket_comment, channel_type: zendesk }
 
-    #writers
+    # Writers
+    orocrm_zendesk.importexport.writer.abstract_export:
+        abstract: true
+        arguments:
+          - @doctrine.orm.entity_manager
+          - @oro_importexport.serializer
+          - @orocrm_zendesk.transport.rest_transport
+
     orocrm_zendesk.importexport.writer.ticket_export:
         class: %orocrm_zendesk.importexport.writer.ticket_export.class%
+        parent: orocrm_zendesk.importexport.writer.abstract_export
+        arguments:
+            - @orocrm_zendesk.sync_helper.ticket
+            - @orocrm_zendesk.sync_helper.ticket_comment
 
     orocrm_zendesk.importexport.writer.ticket_comment_export:
-            class: %orocrm_zendesk.importexport.writer.ticket_comment_export.class%
+        class: %orocrm_zendesk.importexport.writer.ticket_comment_export.class%
+        parent: orocrm_zendesk.importexport.writer.abstract_export
+        arguments:
+            - @orocrm_zendesk.sync_helper.ticket_comment

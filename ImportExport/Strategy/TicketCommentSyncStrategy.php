@@ -4,25 +4,22 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
-use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
-
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
 
 class TicketCommentSyncStrategy extends AbstractSyncStrategy
 {
     /**
-     * @var CaseEntityManager
+     * @var TicketCommentSyncHelper
      */
-    protected $caseEntityManager;
+    protected $helper;
 
     /**
-     * @param CaseEntityManager $caseEntityManager
+     * @param TicketCommentSyncHelper $helper
      */
-    public function __construct(
-        CaseEntityManager $caseEntityManager
-    ) {
-        $this->caseEntityManager = $caseEntityManager;
+    public function __construct(TicketCommentSyncHelper $helper)
+    {
+        $this->helper = $helper;
     }
 
     /**
@@ -45,117 +42,37 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
 
         $this->getLogger()->setMessagePrefix("Zendesk Ticket Comment [id={$entity->getOriginId()}]: ");
 
-        if ($entity->getTicket()) {
-            $ticket = $this->zendeskProvider->getTicket($entity->getTicket(), $this->getChannel());
-            if (!$ticket) {
-                $this->addError("Ticket not found [id={$entity->getTicket()->getOriginId()}].");
-                return null;
-            }
-            $entity->setTicket($ticket);
-        } else {
-            $this->addError("Comment Ticket required.");
+        if (!$entity->getTicket()) {
+            $this->getLogger()->error("Comment Ticket required.");
+            $this->getContext()->incrementErrorEntriesCount();
+            return null;
+        }
+        $ticketId = $entity->getTicket()->getOriginId();
+
+        $this->helper->setLogger($this->getLogger());
+        $this->helper->refreshEntity($entity, $this->getChannel());
+
+        if (!$entity->getTicket()) {
+            $this->getLogger()->error("Ticket not found [id=$ticketId].");
+            $this->getContext()->incrementErrorEntriesCount();
             return null;
         }
 
-        $existingComment = $this->zendeskProvider->getTicketComment($entity, $this->getChannel());
+        $existingComment = $this->helper->findEntity($entity, $this->getChannel());
 
         if ($existingComment) {
-            $this->syncProperties(
-                $existingComment,
-                $entity,
-                array('id', 'originId', 'ticket', 'relatedComment', 'updatedAtLocked', 'createdAt', 'updatedAt')
-            );
+            $this->helper->copyEntityProperties($existingComment, $entity);
             $entity = $existingComment;
 
-            $this->getLogger()->debug("Update found Zendesk ticket comment.");
+            $this->getLogger()->info("Update found Zendesk ticket comment.");
             $this->getContext()->incrementUpdateCount();
         } else {
-            $this->getLogger()->debug("Add new Zendesk ticket comment.");
+            $this->getLogger()->info("Add new Zendesk ticket comment.");
             $this->getContext()->incrementAddCount();
         }
 
-        $this->syncRelatedEntities($entity);
+        $this->helper->syncRelatedEntities($entity, $this->getChannel());
 
         return $entity;
-    }
-
-    /**
-     * @param TicketComment $entity
-     */
-    protected function syncRelatedEntities(TicketComment $entity)
-    {
-        $this->syncAuthor($entity);
-        $this->syncRelatedComment($entity);
-    }
-
-    /**
-     * @param TicketComment $entity
-     */
-    protected function syncAuthor(TicketComment $entity)
-    {
-        if ($entity->getAuthor()) {
-            $entity->setAuthor($this->zendeskProvider->getUser($entity->getAuthor(), $this->getChannel(), true));
-        } else {
-            $entity->setAuthor(null);
-        }
-    }
-
-    /**
-     * @param TicketComment $entity
-     */
-    protected function syncRelatedComment(TicketComment $entity)
-    {
-        $relatedComment = $entity->getRelatedComment();
-        if (!$relatedComment) {
-            $relatedComment = $this->caseEntityManager->createComment($entity->getTicket()->getRelatedCase());
-            $entity->setRelatedComment($relatedComment);
-        }
-        $this->syncCaseCommentFields($relatedComment, $entity);
-    }
-
-    /**
-     * @param CaseComment $caseComment
-     * @param TicketComment $ticketComment
-     */
-    protected function syncCaseCommentFields(CaseComment $caseComment, TicketComment $ticketComment)
-    {
-        $caseComment->setPublic($ticketComment->getPublic());
-        $caseComment->setCreatedAt($ticketComment->getOriginCreatedAt());
-        $caseComment->setMessage($ticketComment->getBody());
-        $this->syncCaseCommentOwnerAndUser($caseComment, $ticketComment);
-    }
-
-    /**
-     * @param CaseComment $caseComment
-     * @param TicketComment $ticketComment
-     */
-    protected function syncCaseCommentOwnerAndUser(CaseComment $caseComment, TicketComment $ticketComment)
-    {
-        if ($ticketComment->getAuthor()) {
-            if ($ticketComment->getAuthor()->getRelatedContact()) {
-                $caseComment->setContact($ticketComment->getAuthor()->getRelatedContact());
-            }
-            if ($ticketComment->getAuthor()->getRelatedUser()) {
-                $caseComment->setOwner($ticketComment->getAuthor()->getRelatedUser());
-            }
-        }
-
-        if (!$caseComment->getOwner()) {
-            $defaultUser = $this->oroEntityProvider->getDefaultUser($this->getChannel());
-            $caseComment->setOwner($defaultUser);
-        }
-    }
-
-    /**
-     * @param $message
-     */
-    protected function addError($message)
-    {
-        $this->getContext()
-            ->addError($message);
-        $this->getLogger()
-            ->error($message);
-        $this->getContext()
-            ->incrementErrorEntriesCount();
     }
 }

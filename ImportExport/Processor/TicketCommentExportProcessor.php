@@ -40,9 +40,8 @@ class TicketCommentExportProcessor extends AbstractExportProcessor
         }
 
         if ($ticketComment->getOriginId()) {
-            $message = 'Only new comments can be synced';
-            $this->getLogger()->error($message);
-            $this->getContext()->addError($message);
+            $this->getLogger()->error('Only new comments can be synced.');
+            $this->getContext()->incrementErrorEntriesCount();
             return null;
         }
 

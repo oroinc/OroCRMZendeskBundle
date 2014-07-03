@@ -2,13 +2,15 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
 
-class TicketCommentExportWriter implements ItemWriterInterface
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+
+class TicketCommentExportWriter extends AbstractExportWriter
 {
     /**
-     * {@inheritdoc}
+     * @param TicketComment $ticketComment
      */
-    public function write(array $items)
+    protected function writeItem($ticketComment)
     {
-        // TODO: Implement write() method.
+
     }
 }
