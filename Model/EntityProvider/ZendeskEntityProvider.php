@@ -106,7 +106,7 @@ class ZendeskEntityProvider
         }
 
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
-            ->findOneBy(array('relatedContact' =>$contact, 'channel' => $channel));
+            ->findOneBy(array('relatedContact' => $contact, 'channel' => $channel));
 
         if ($result) {
             return $result;

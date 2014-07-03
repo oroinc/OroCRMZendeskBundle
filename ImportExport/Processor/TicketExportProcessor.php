@@ -94,7 +94,7 @@ class TicketExportProcessor extends AbstractExportProcessor
         $ticketStatus = $this->entityMapper->getTicketStatus($statusName, $this->getChannel());
 
         if (!$ticketStatus) {
-            $this->getLogger()->error("Can't convert status [name=$statusName]");
+            $this->getLogger()->error("Can't convert Zendesk status [name=$statusName]");
         } else {
             $ticket->setStatus($ticketStatus);
         }
@@ -111,7 +111,7 @@ class TicketExportProcessor extends AbstractExportProcessor
             $name = $priority->getName();
             $value = $this->entityMapper->getTicketPriority($name, $this->getChannel());
             if (!$value) {
-                $this->getLogger()->error("Can't convert priority [name=$name]");
+                $this->getLogger()->error("Can't convert Zendesk priority [name=$name]");
             } else {
                 $ticket->setPriority($value);
             }

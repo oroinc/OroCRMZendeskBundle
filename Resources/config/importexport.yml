@@ -205,17 +205,19 @@ services:
     # Writers
     orocrm_zendesk.importexport.writer.abstract_export:
         abstract: true
-        arguments:
-          - @doctrine.orm.entity_manager
-          - @oro_importexport.serializer
-          - @orocrm_zendesk.transport.rest_transport
+        calls:
+            - [setEntityManager, [@doctrine.orm.entity_manager]]
+            - [setSerializer, [@oro_importexport.serializer]]
+            - [setTransport, [@orocrm_zendesk.transport.rest_transport]]
 
     orocrm_zendesk.importexport.writer.ticket_export:
         class: %orocrm_zendesk.importexport.writer.ticket_export.class%
         parent: orocrm_zendesk.importexport.writer.abstract_export
         arguments:
+            - @oro_integration.sync_scheduler
             - @orocrm_zendesk.sync_helper.ticket
             - @orocrm_zendesk.sync_helper.ticket_comment
+            - @orocrm_zendesk.sync_helper.user
 
     orocrm_zendesk.importexport.writer.ticket_comment_export:
         class: %orocrm_zendesk.importexport.writer.ticket_comment_export.class%

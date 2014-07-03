@@ -86,6 +86,22 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             ),
             'channel' => 'zendesk_channel:first_test_channel'
          ),
+        array(
+            'reference' => 'orocrm_zendesk:not_synced_ticket',
+            'subject' => 'Not Synced Zendesk Ticket',
+            'description' => 'Not Synced Zendesk Ticket Description',
+            'type' => TicketType::TYPE_TASK,
+            'status' => TicketStatus::STATUS_OPEN,
+            'priority' => TicketPriority::PRIORITY_NORMAL,
+            'requester' => 'zendesk_user:alex.taylor@example.com',
+            'submitter' => 'zendesk_user:fred.taylor@example.com',
+            'assignee' => 'zendesk_user:fred.taylor@example.com',
+            'createdAt' => '2014-06-05T12:24:23Z',
+            'updatedAt' => '2014-06-05T13:43:21Z',
+            'relatedCase' => 'orocrm_zendesk:case_4',
+            'originUpdatedAt' => '2014-06-09T17:45:22Z',
+            'channel' => 'zendesk_channel:first_test_channel'
+        ),
     );
 
     /**
