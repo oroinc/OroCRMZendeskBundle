@@ -2,11 +2,14 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Provider;
 
-class TicketCommentConnector extends AbstractZendeskConnector
+use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
+
+class TicketCommentConnector extends AbstractZendeskConnector implements TwoWaySyncConnectorInterface
 {
     const IMPORT_ENTITY = 'OroCRM\Bundle\ZendeskBundle\Entity\TicketComment';
     const TYPE = 'ticket_comment';
     const IMPORT_JOB = 'zendesk_ticket_comment_import';
+    const EXPORT_JOB = 'zendesk_ticket_comment_export';
 
     /**
      * {@inheritdoc}
@@ -51,5 +54,13 @@ class TicketCommentConnector extends AbstractZendeskConnector
     public function getType()
     {
         return self::TYPE;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportJobName()
+    {
+        return self::EXPORT_JOB;
     }
 }
