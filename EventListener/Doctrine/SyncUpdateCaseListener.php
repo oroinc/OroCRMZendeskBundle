@@ -29,8 +29,6 @@ class SyncUpdateCaseListener extends AbstractSyncSchedulerListener
      */
     protected function getEntitiesToSync()
     {
-        // handle only updates of cases related to tickets
-        // for new tickets/comments is you should schedule sync manually
         $entities = $this->entityManager->getUnitOfWork()->getScheduledEntityUpdates();
 
         $result = [];
@@ -78,13 +76,13 @@ class SyncUpdateCaseListener extends AbstractSyncSchedulerListener
     /**
      * {@inheritdoc}
      */
-    protected function scheduleSync($ticketComment)
+    protected function scheduleSync($entity)
     {
-        /** @var Ticket $ticketComment */
+        /** @var Ticket $entity */
         $this->getSyncScheduler()->schedule(
-            $ticketComment->getChannel(),
+            $entity->getChannel(),
             TicketConnector::TYPE,
-            ['id' => $ticketComment->getId()],
+            ['id' => $entity->getId()],
             false
         );
     }
