@@ -179,7 +179,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      * @return array
      * @throws RestException
      */
-    protected function createEntity($resource, $name, $entityData, &$responseData = null)
+    protected function createEntity($resource, $name, array $entityData, array &$responseData = null)
     {
         $response = $this->getClient()->post(
             $resource,
@@ -218,7 +218,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      * @return array
      * @throws RestException
      */
-    protected function updateEntity($resource, $name, $entityData, &$responseData = null)
+    protected function updateEntity($resource, $name, array $entityData, array &$responseData = null)
     {
         unset($entityData['id']);
 

@@ -72,8 +72,11 @@ class InvalidRecordException extends RestException
      * @param array $resultValidationErrors
      * @param string $validationErrorsAsString
      */
-    protected static function parseValidationErrors($data, &$resultValidationErrors, &$validationErrorsAsString)
-    {
+    protected static function parseValidationErrors(
+        array $data,
+        array &$resultValidationErrors,
+        &$validationErrorsAsString
+    ) {
         if (isset($data['details']) && is_array($data['details'])) {
             foreach ($data['details'] as $property => $validationErrors) {
                 $propertyErrors = [];

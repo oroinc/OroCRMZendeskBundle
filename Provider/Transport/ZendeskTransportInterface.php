@@ -33,6 +33,7 @@ interface ZendeskTransportInterface extends TransportInterface
      * @throws RestException
      */
     public function getTicketComments($ticketId);
+
     /**
      * Create Zendesk user.
      *
