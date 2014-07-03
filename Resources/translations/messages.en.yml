@@ -81,18 +81,8 @@ orocrm:
             zendesk_settings.title:     'Settings'
 
         form:
-            api_email:
-                label: API email
-            api_token:
-                label: API Token
-            zendesk_url:
-                label: Url
-            cron_schedule:
-                label: Cron schedule
-            zendesk_default_user_email:
-                label: Default Zendesk user email
-            oro_default_username:
-                label: Default OroCRM username
+            sync_to_zendesk:
+                label: Sync with Zendesk
 
         channel_type.label: 'Zendesk'
         connector:

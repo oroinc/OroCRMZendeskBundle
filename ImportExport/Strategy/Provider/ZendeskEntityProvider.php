@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
@@ -162,6 +163,16 @@ class ZendeskEntityProvider
     public function getTicket(Ticket $ticket, Channel $channel)
     {
         return $this->getTicketByOriginId($ticket->getOriginId(), $channel);
+    }
+
+    /**
+     * @param CaseEntity $caseEntity
+     * @return null|Ticket
+     */
+    public function getTicketByCase(CaseEntity $caseEntity)
+    {
+        return $this->entityManager->getRepository('OroCRMZendeskBundle:Ticket')
+            ->findOneBy(array('relatedCase' => $caseEntity));
     }
 
     /**

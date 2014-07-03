@@ -11,6 +11,7 @@ use OroCRM\Bundle\ContactBundle\Entity\ContactEmail;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ContactBundle\Entity\ContactPhone;
+use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
 
 class OroEntityProvider
 {
@@ -112,5 +113,23 @@ class OroEntityProvider
         $contact->setLastName($nameParts[1]);
 
         return $contact;
+    }
+
+    /**
+     * @param $channelId
+     * @return null|Channel
+     */
+    public function getChannelById($channelId)
+    {
+        return $this->entityManager->getRepository('OroIntegrationBundle:Channel')->find($channelId);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAvailableChannels()
+    {
+        return $this->entityManager->getRepository('OroIntegrationBundle:Channel')
+            ->findBy(array('type' => ChannelType::TYPE, 'enabled' => true));
     }
 }
