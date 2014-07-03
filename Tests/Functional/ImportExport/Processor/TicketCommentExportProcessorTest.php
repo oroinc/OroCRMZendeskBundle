@@ -31,6 +31,9 @@ class TicketCommentExportProcessorTest extends WebTestCase
      */
     protected $channel;
 
+    /**
+     * @var string
+     */
     protected $previousEmail;
 
     protected function setUp()
@@ -45,7 +48,7 @@ class TicketCommentExportProcessorTest extends WebTestCase
             ->get('orocrm_zendesk.importexport.processor.ticket_comment_export');
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
-        $this->previousEmail = $this->channel->getTransport()->getZendeskUserEmail($this->previousEmail);
+        $this->previousEmail = $this->channel->getTransport()->getZendeskUserEmail();
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));

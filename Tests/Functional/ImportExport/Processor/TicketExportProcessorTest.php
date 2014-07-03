@@ -8,9 +8,10 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
 use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\TicketExportProcessor;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
 
 /**
  * @outputBuffering enabled
@@ -29,14 +30,14 @@ class TicketExportProcessorTest extends WebTestCase
     protected $context;
 
     /**
-     * @var EntityMapper
-     */
-    protected $entityMapper;
-
-    /**
      * @var Channel
      */
     protected $channel;
+
+    /**
+     * @var string
+     */
+    protected $previousEmail;
 
     public function setUp()
     {
@@ -47,14 +48,19 @@ class TicketExportProcessorTest extends WebTestCase
 
         $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.ticket_export');
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
+        $this->previousEmail = $this->channel->getTransport()->getZendeskUserEmail();
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
         $this->channel->getTransport()->setZendeskUserEmail('fred.taylor@example.com');
         $this->processor->setImportExportContext($this->context);
-        $this->entityMapper = $this->getContainer()->get('orocrm_zendesk.entity_mapper');
     }
 
+    public function tearDown()
+    {
+        //see testProcessorReturnNullIfRequesterDoesNotFoundAndDefaultUserNotExist
+        $this->channel->getTransport()->setZendeskUserEmail($this->previousEmail);
+    }
     /**
      * @dataProvider processDataProvider
      */
@@ -68,8 +74,6 @@ class TicketExportProcessorTest extends WebTestCase
         $assignee = isset($expected['assignee']) ? $this->getReference($expected['assignee']) : null;
         $submitter = isset($expected['submitter']) ? $this->getReference($expected['submitter']) : null;
         $requester = $this->getReference($expected['requester']);
-        $status = $this->entityMapper->getTicketStatus($data['status'], $this->channel);
-        $priority = $this->entityMapper->getTicketPriority($data['priority'], $this->channel);
 
         /**
          * @var Ticket $actual
@@ -79,10 +83,107 @@ class TicketExportProcessorTest extends WebTestCase
         $this->assertEquals($requester, $actual->getRequester());
         $this->assertEquals($submitter, $actual->getSubmitter());
         $this->assertEquals($assignee, $actual->getAssignee());
-        $this->assertEquals($status, $actual->getStatus());
-        $this->assertEquals($priority, $actual->getPriority());
+        $this->assertEquals($expected['status'], $actual->getStatus()->getName());
+        $this->assertEquals($expected['priority'], $actual->getPriority()->getName());
         $this->assertEquals($expected['subject'], $actual->getSubject());
         $this->assertEquals($expected['description'], $actual->getDescription());
+    }
+
+    public function processDataProvider()
+    {
+        return array(
+            'new ticket with exist assignee' => array(
+                'data'     => array(
+                    'status'      => CaseStatus::STATUS_OPEN,
+                    'priority'    => CasePriority::PRIORITY_HIGH,
+                    'contact'     => 'contact:jim.smith@example.com',
+                    'assignedTo'  => 'user:james.cook@example.com',
+                    'subject'     => 'test subject',
+                    'description' => 'test description',
+                    'originId'    => null
+                ),
+                'expected' => array(
+                    'subject'     => 'test subject',
+                    'description' => 'test description',
+                    'status'      => TicketStatus::STATUS_NEW,
+                    'priority'    => TicketPriority::PRIORITY_HIGH,
+                    'assignee'    => 'zendesk_user:james.cook@example.com',
+                    'requester'   => 'zendesk_user:jim.smith@example.com',
+                    'submitter'   => 'zendesk_user:jim.smith@example.com'
+                )
+            ),
+            'new ticket without assignee' => array(
+                'data'     => array(
+                    'status'      => CaseStatus::STATUS_OPEN,
+                    'priority'    => CasePriority::PRIORITY_HIGH,
+                    'owner'       => 'user:james.cook@example.com',
+                    'subject'     => 'test subject',
+                    'description' => 'test description',
+                    'originId'    => null
+                ),
+                'expected' => array(
+                    'subject'     => 'test subject',
+                    'description' => 'test description',
+                    'status'      => TicketStatus::STATUS_NEW,
+                    'priority'    => TicketPriority::PRIORITY_HIGH,
+                    'requester'   => 'zendesk_user:james.cook@example.com'
+                )
+            ),
+            'new ticket with not exist assignee' => array(
+                'data'     => array(
+                    'status'      => CaseStatus::STATUS_OPEN,
+                    'priority'    => CasePriority::PRIORITY_HIGH,
+                    'contact'     => 'contact:jim.smith@example.com',
+                    'assignedTo'  => 'user:john.smith@example.com',
+                    'subject'     => 'test subject',
+                    'description' => 'test description',
+                    'originId'    => null
+                ),
+                'expected' => array(
+                    'subject'     => 'test subject',
+                    'description' => 'test description',
+                    'status'      => TicketStatus::STATUS_NEW,
+                    'priority'    => TicketPriority::PRIORITY_HIGH,
+                    'assignee'    => 'zendesk_user:fred.taylor@example.com',
+                    'requester'   => 'zendesk_user:jim.smith@example.com',
+                    'submitter'   => 'zendesk_user:jim.smith@example.com'
+                )
+            ),
+            'new ticket with not exist requester' => array(
+                'data'     => array(
+                    'status'      => CaseStatus::STATUS_IN_PROGRESS,
+                    'priority'    => CasePriority::PRIORITY_NORMAL,
+                    'owner'       => 'user:john.smith@example.com',
+                    'subject'     => 'test subject',
+                    'description' => 'test description',
+                    'originId'    => null
+                ),
+                'expected' => array(
+                    'subject'     => 'test subject',
+                    'description' => 'test description',
+                    'status'      => TicketStatus::STATUS_PENDING,
+                    'priority'    => TicketPriority::PRIORITY_NORMAL,
+                    'requester'   => 'zendesk_user:fred.taylor@example.com'
+                )
+            ),
+            'Existing ticket with new related contact' => array(
+                'data'     => array(
+                    'status'      => CaseStatus::STATUS_RESOLVED,
+                    'priority'    => CasePriority::PRIORITY_LOW,
+                    'contact'     => 'contact:jim.smith@example.com',
+                    'subject'     => 'test subject',
+                    'description' => 'test description',
+                    'originId'    => 1
+                ),
+                'expected' => array(
+                    'subject'     => 'test subject',
+                    'description' => 'test description',
+                    'status'      => TicketStatus::STATUS_SOLVED,
+                    'priority'    => TicketPriority::PRIORITY_LOW,
+                    'requester'   => 'zendesk_user:jim.smith@example.com'
+                )
+            )
+        );
     }
 
     public function testProcessorReturnNullIfRequesterDoesNotFoundAndDefaultUserNotExist()
@@ -93,6 +194,9 @@ class TicketExportProcessorTest extends WebTestCase
         $ticket = $this->getReference('orocrm_zendesk:ticket_43');
         $ticket->setRequester(null);
         $this->channel->getTransport()->setZendeskUserEmail('not_exist@mail.com');
+        $this->context->expects($this->once())
+            ->method('addError')
+            ->with('Requester not found.');
         $this->assertNull($this->processor->process($ticket));
     }
 
@@ -124,101 +228,13 @@ class TicketExportProcessorTest extends WebTestCase
         $this->assertEquals($requester->getRole()->getName(), UserRole::ROLE_END_USER);
     }
 
-    /**
-     * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Ticket must have related Case
-     */
-    public function testProcessReturnExceptionIfCaseIsNull()
+    public function testProcessReturnNullIfCaseIsNull()
     {
         $ticket = new Ticket();
-        $this->processor->process($ticket);
-    }
-
-    public function processDataProvider()
-    {
-        return array(
-            'new ticket with exist assignee' => array(
-                'data'     => array(
-                    'status'      => CaseStatus::STATUS_OPEN,
-                    'priority'    => CasePriority::PRIORITY_HIGH,
-                    'contact'     => 'contact:jim.smith@example.com',
-                    'assignedTo'  => 'user:james.cook@example.com',
-                    'subject'     => 'test subject',
-                    'description' => 'test description',
-                    'originId'    => null
-                ),
-                'expected' => array(
-                    'subject'     => 'test subject',
-                    'description' => 'test description',
-                    'assignee'    => 'zendesk_user:james.cook@example.com',
-                    'requester'   => 'zendesk_user:jim.smith@example.com',
-                    'submitter'   => 'zendesk_user:jim.smith@example.com'
-                )
-            ),
-            'new ticket without assignee' => array(
-                'data'     => array(
-                    'status'      => CaseStatus::STATUS_OPEN,
-                    'priority'    => CasePriority::PRIORITY_HIGH,
-                    'owner'       => 'user:james.cook@example.com',
-                    'subject'     => 'test subject',
-                    'description' => 'test description',
-                    'originId'    => null
-                ),
-                'expected' => array(
-                    'subject'     => 'test subject',
-                    'description' => 'test description',
-                    'requester'   => 'zendesk_user:james.cook@example.com'
-                )
-            ),
-            'new ticket with not exist assignee' => array(
-                'data'     => array(
-                    'status'      => CaseStatus::STATUS_OPEN,
-                    'priority'    => CasePriority::PRIORITY_HIGH,
-                    'contact'     => 'contact:jim.smith@example.com',
-                    'assignedTo'  => 'user:john.smith@example.com',
-                    'subject'     => 'test subject',
-                    'description' => 'test description',
-                    'originId'    => null
-                ),
-                'expected' => array(
-                    'subject'     => 'test subject',
-                    'description' => 'test description',
-                    'assignee'    => 'zendesk_user:fred.taylor@example.com',
-                    'requester'   => 'zendesk_user:jim.smith@example.com',
-                    'submitter'   => 'zendesk_user:jim.smith@example.com'
-                )
-            ),
-            'new ticket with not exist requester' => array(
-                'data'     => array(
-                    'status'      => CaseStatus::STATUS_IN_PROGRESS,
-                    'priority'    => CasePriority::PRIORITY_NORMAL,
-                    'owner'       => 'user:john.smith@example.com',
-                    'subject'     => 'test subject',
-                    'description' => 'test description',
-                    'originId'    => null
-                ),
-                'expected' => array(
-                    'subject'     => 'test subject',
-                    'description' => 'test description',
-                    'requester'   => 'zendesk_user:fred.taylor@example.com'
-                )
-            ),
-            'Existing ticket with new related contact' => array(
-                'data'     => array(
-                    'status'      => CaseStatus::STATUS_RESOLVED,
-                    'priority'    => CasePriority::PRIORITY_LOW,
-                    'contact'     => 'contact:jim.smith@example.com',
-                    'subject'     => 'test subject',
-                    'description' => 'test description',
-                    'originId'    => 1
-                ),
-                'expected' => array(
-                    'subject'     => 'test subject',
-                    'description' => 'test description',
-                    'requester'   => 'zendesk_user:jim.smith@example.com'
-                )
-            )
-        );
+        $this->context->expects($this->once())
+            ->method('addError')
+            ->with('Ticket must have related Case.');
+        $this->assertNull($this->processor->process($ticket));
     }
 
     /**

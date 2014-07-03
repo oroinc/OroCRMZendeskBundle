@@ -51,7 +51,9 @@ class TicketExportProcessor extends AbstractExportProcessor
         $case = $ticket->getRelatedCase();
 
         if (!$case) {
-            throw new InvalidArgumentException("Ticket must have related Case");
+            $this->getLogger()->error('Ticket must have related Case.');
+            $this->getContext()->incrementErrorEntriesCount();
+            return null;
         }
 
         $this->syncFields($ticket, $case);
@@ -59,22 +61,26 @@ class TicketExportProcessor extends AbstractExportProcessor
         $this->syncStatus($ticket, $case);
         $this->syncPriority($ticket, $case);
         $this->syncRelatedContact($ticket, $case);
-        $this->syncAssignedTo($ticket, $case);
+        $this->syncAssignee($ticket, $case);
+        $this->syncRequester($ticket, $case);
 
         if (!$ticket->getRequester()) {
-            $owner = $case->getOwner();
-
-            $user = $this->zendeskProvider->getUserByOroUser($owner, $this->getChannel(), true);
-
-            if (!$user) {
-                $this->getLogger()->error('Default Zendesk user and ticket owner not found.');
-                $this->getContext()->incrementErrorEntriesCount();
-                return null;
-            }
-
-            $ticket->setRequester($user);
+            $this->getLogger()->error('Requester not found.');
+            $this->getContext()->incrementErrorEntriesCount();
+            return null;
         }
+
         return $ticket;
+    }
+
+    /**
+     * @param Ticket     $ticket
+     * @param CaseEntity $case
+     */
+    protected function syncFields(Ticket $ticket, CaseEntity $case)
+    {
+        $ticket->setSubject($case->getSubject());
+        $ticket->setDescription($case->getDescription());
     }
 
     /**
@@ -116,16 +122,6 @@ class TicketExportProcessor extends AbstractExportProcessor
      * @param Ticket     $ticket
      * @param CaseEntity $case
      */
-    protected function syncFields(Ticket $ticket, CaseEntity $case)
-    {
-        $ticket->setSubject($case->getSubject());
-        $ticket->setDescription($case->getDescription());
-    }
-
-    /**
-     * @param Ticket     $ticket
-     * @param CaseEntity $case
-     */
     protected function syncRelatedContact(Ticket $ticket, CaseEntity $case)
     {
         $relatedContact = $case->getRelatedContact();
@@ -150,7 +146,7 @@ class TicketExportProcessor extends AbstractExportProcessor
      * @param Ticket     $ticket
      * @param CaseEntity $case
      */
-    protected function syncAssignedTo(Ticket $ticket, CaseEntity $case)
+    protected function syncAssignee(Ticket $ticket, CaseEntity $case)
     {
         $assignedTo = $case->getAssignedTo();
 
@@ -160,5 +156,19 @@ class TicketExportProcessor extends AbstractExportProcessor
         }
 
         $ticket->setAssignee($assignee);
+    }
+
+    /**
+     * @param Ticket     $ticket
+     * @param CaseEntity $case
+     */
+    protected function syncRequester(Ticket $ticket, CaseEntity $case)
+    {
+        if (!$ticket->getRequester()) {
+            $owner = $case->getOwner();
+
+            $user = $this->zendeskProvider->getUserByOroUser($owner, $this->getChannel(), true);
+            $ticket->setRequester($user);
+        }
     }
 }

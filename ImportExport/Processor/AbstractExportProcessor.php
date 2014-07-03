@@ -19,12 +19,12 @@ abstract class AbstractExportProcessor implements ContextAwareProcessor, LoggerA
     /**
      * @var ImportExportLogger
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @var ContextInterface
      */
-    protected $context;
+    private $context;
 
     /**
      * @var ZendeskEntityProvider
