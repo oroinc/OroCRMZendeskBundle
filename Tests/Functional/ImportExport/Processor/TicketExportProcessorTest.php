@@ -124,7 +124,6 @@ class TicketExportProcessorTest extends WebTestCase
         $this->assertEquals($requester->getRole()->getName(), UserRole::ROLE_END_USER);
     }
 
-
     /**
      * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
      * @expectedExceptionMessage Ticket must have related Case
