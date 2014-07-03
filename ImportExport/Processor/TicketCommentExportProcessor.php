@@ -2,10 +2,10 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
+use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 
 class TicketCommentExportProcessor extends AbstractExportProcessor
 {
@@ -38,7 +38,7 @@ class TicketCommentExportProcessor extends AbstractExportProcessor
         $comment = $ticketComment->getRelatedComment();
 
         if (!$comment) {
-            $this->getLogger()->error('Comment not found');
+            $this->getLogger()->error('Comment not found.');
             $this->getContext()->incrementErrorEntriesCount();
             return null;
         }
@@ -52,10 +52,11 @@ class TicketCommentExportProcessor extends AbstractExportProcessor
         $author = $this->getAuthor($comment);
 
         if (!$author) {
-            $this->getLogger()->error('Author and default user not found');
+            $this->getLogger()->error('Author and default user not found.');
             $this->getContext()->incrementErrorEntriesCount();
             return null;
         }
+
         $ticketComment->setAuthor($author);
 
         $ticketComment->setBody($comment->getMessage());

@@ -31,6 +31,9 @@ class TicketCommentExportProcessorTest extends WebTestCase
      */
     protected $channel;
 
+    /**
+     * @var string
+     */
     protected $previousEmail;
 
     protected function setUp()
@@ -55,7 +58,7 @@ class TicketCommentExportProcessorTest extends WebTestCase
 
     public function tearDown()
     {
-        //see testNewCommentWithoutAuthor
+        // @see testNewCommentWithoutAuthor
         $this->channel->getTransport()->setZendeskUserEmail($this->previousEmail);
     }
 

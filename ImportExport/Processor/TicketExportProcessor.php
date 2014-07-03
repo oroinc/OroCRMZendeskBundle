@@ -105,7 +105,7 @@ class TicketExportProcessor extends AbstractExportProcessor
             $name = $priority->getName();
             $value = $this->entityMapper->getTicketPriority($name, $this->getChannel());
             if (!$value) {
-                $this->getLogger()->error("Can't convert priority [name=$name]");
+                $this->getLogger()->error("Can't convert Zendesk priority [name=$name]");
             } else {
                 $ticket->setPriority($value);
             }
