@@ -122,6 +122,32 @@ class CaseControllerTest extends WebTestCase
         $this->assertContains($expectedTicket->getType()->getLabel(), $type->html());
     }
 
+    public function testEditContainSyncControlIfNotSyncedYet()
+    {
+        $crawler = $this->client->request(
+            'GET',
+            $this->getUrl('orocrm_case_update', array('id' => static::$caseWithoutTicketId))
+        );
+
+        $result = $this->client->getResponse();
+        $this->assertHtmlResponseStatusCodeEquals($result, 200);
+
+        $this->assertContains("Sync with Zendesk", $crawler->html());
+    }
+
+    public function testEditDoesNotContainSyncControlIfAlreadySynced()
+    {
+        $crawler = $this->client->request(
+            'GET',
+            $this->getUrl('orocrm_case_update', array('id' => static::$caseWithTicketId))
+        );
+
+        $result = $this->client->getResponse();
+        $this->assertHtmlResponseStatusCodeEquals($result, 200);
+
+        $this->assertNotContains("Sync with Zendesk", $crawler->html());
+    }
+
     protected function getFieldValue($label, Crawler $crawler)
     {
         $labelNode = $crawler->filterXPath("//label[text()=\"{$label}\"]");

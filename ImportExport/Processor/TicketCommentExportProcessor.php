@@ -2,8 +2,10 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
+use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
 
 class TicketCommentExportProcessor extends AbstractExportProcessor
 {
@@ -36,7 +38,9 @@ class TicketCommentExportProcessor extends AbstractExportProcessor
         $comment = $ticketComment->getRelatedComment();
 
         if (!$comment) {
-            throw new InvalidArgumentException("Ticket Comment must have related Comment");
+            $this->getLogger()->error('Comment not found');
+            $this->getContext()->incrementErrorEntriesCount();
+            return null;
         }
 
         if ($ticketComment->getOriginId()) {
@@ -45,14 +49,36 @@ class TicketCommentExportProcessor extends AbstractExportProcessor
             return null;
         }
 
-        $body = $comment->getMessage();
-        $comment->getCreatedAt();
-        $owner = $comment->getOwner();
-        $author = $this->zendeskProvider->getUserByOroUser($owner, $this->getChannel(), true);
-        $ticketComment->setBody($body);
-        $ticketComment->setPublic($comment->isPublic());
+        $author = $this->getAuthor($comment);
+
+        if (!$author) {
+            $this->getLogger()->error('Author and default user not found');
+            $this->getContext()->incrementErrorEntriesCount();
+            return null;
+        }
         $ticketComment->setAuthor($author);
 
+        $ticketComment->setBody($comment->getMessage());
+        $ticketComment->setPublic($comment->isPublic());
+
         return $ticketComment;
+    }
+
+    /**
+     * @param CaseComment $comment
+     * @return null|User
+     */
+    protected function getAuthor(CaseComment $comment)
+    {
+        $owner = $comment->getOwner();
+        $author = null;
+        if ($comment->getContact()) {
+            $author = $this->zendeskProvider->getUserByContact($comment->getContact(), $this->getChannel());
+        }
+        if (!$author) {
+            $author = $this->zendeskProvider->getUserByOroUser($owner, $this->getChannel(), true);
+        }
+
+        return $author;
     }
 }

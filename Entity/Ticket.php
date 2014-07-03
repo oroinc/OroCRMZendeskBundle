@@ -201,7 +201,8 @@ class Ticket
      * @ORM\OneToMany(
      *     targetEntity="TicketComment",
      *     mappedBy="ticket",
-     *     orphanRemoval=true
+     *     orphanRemoval=true,
+     *     cascade={"persist"}
      * )
      */
     protected $comments;

@@ -10,7 +10,10 @@ parameters:
 
     # Integration related parameters
     orocrm_zendesk.form.type.rest_transport_setting.class:    OroCRM\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType
+    orocrm_zendesk.form.sync_with_zendesk_extension.class:    OroCRM\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension
     orocrm_zendesk.transport.rest_transport.class:            OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport
+    orocrm_zendesk.event_listener.case_form_handled.class:    OroCRM\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseFormHandledListener
+    orocrm_zendesk.model.sync_manager.class:                  OroCRM\Bundle\ZendeskBundle\Model\SyncManager
 
     # Listeners
     orocrm_zendesk.listener.doctrine.sync_update_case.class:  OroCRM\Bundle\ZendeskBundle\EventListener\Doctrine\SyncUpdateCaseListener
@@ -59,11 +62,34 @@ services:
         tags:
             - { name: form.type, alias: orocrm_zendesk_rest_transport_setting_form_type }
 
+    orocrm_zendesk.form.sync_with_zendesk_extension:
+        class: %orocrm_zendesk.form.sync_with_zendesk_extension.class%
+        arguments:
+            - @orocrm_zendesk.entity_provider.zendesk
+            - @orocrm_zendesk.entity_provider.oro
+        tags:
+            - { name: form.type_extension, alias: orocrm_case_entity }
+
+    orocrm_zendesk.event_listener.case_form_handled:
+        class: %orocrm_zendesk.event_listener.case_form_handled.class%
+        arguments:
+            - @orocrm_zendesk.model.sync_manager
+            - @orocrm_zendesk.entity_provider.oro
+        tags:
+            - { name: kernel.event_listener, event: orcrm_case.form_handler_on_success, method: onSuccess }
+
     orocrm_zendesk.transport.rest_transport:
         class: %orocrm_zendesk.transport.rest_transport.class%
         parent: oro_integration.transport.rest.abstract_transport
         tags:
             - { name: oro_integration.transport, type: zendesk_rest, channel_type: zendesk }
+
+    orocrm_zendesk.model.sync_manager:
+        class: %orocrm_zendesk.model.sync_manager.class%
+        arguments:
+            - @oro_integration.sync_scheduler
+            - @doctrine.orm.entity_manager
+            - @orocrm_zendesk.entity_provider.zendesk
 
     # Listeners
     orocrm_zendesk.listener.doctrine.sync_abstract:

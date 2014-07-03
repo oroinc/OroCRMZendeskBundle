@@ -31,6 +31,8 @@ class TicketCommentExportProcessorTest extends WebTestCase
      */
     protected $channel;
 
+    protected $previousEmail;
+
     protected function setUp()
     {
         $this->initClient();
@@ -43,11 +45,18 @@ class TicketCommentExportProcessorTest extends WebTestCase
             ->get('orocrm_zendesk.importexport.processor.ticket_comment_export');
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
+        $this->previousEmail = $this->channel->getTransport()->getZendeskUserEmail($this->previousEmail);
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
-        $this->channel->getTransport()->setZendeskUserEmail('fred.taylor@example.com');
+
         $this->processor->setImportExportContext($this->context);
+    }
+
+    public function tearDown()
+    {
+        //see testNewCommentWithoutAuthor
+        $this->channel->getTransport()->setZendeskUserEmail($this->previousEmail);
     }
 
     public function testNewCommentWithoutAuthor()
@@ -65,10 +74,7 @@ class TicketCommentExportProcessorTest extends WebTestCase
         $ticketComment = $this->createTicketComment($expectedMessage, $userWithoutZendeskUser, false);
         $actual = $this->processor->process($ticketComment);
 
-        $this->assertInstanceOf('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
-        $this->assertEquals($expectedMessage, $actual->getBody());
-        $this->assertFalse($actual->getPublic());
-        $this->assertNull($actual->getAuthor());
+        $this->assertNull($actual);
     }
 
     public function testNewCommentWithDefaultAuthor()
@@ -101,10 +107,34 @@ class TicketCommentExportProcessorTest extends WebTestCase
         $this->assertEquals($expectedAuthor, $actual->getAuthor());
     }
 
+    public function testNewCommentWithoutContactAuthor()
+    {
+        $expectedMessage = 'Test body';
+
+        $userWithoutZendeskUser = $this->getReference('user:john.smith@example.com');
+        $expectedAuthor = $this->getReference('zendesk_user:jim.smith@example.com');
+        /**
+         * @var ZendeskRestTransport $transport
+         */
+        $transport = $this->channel->getTransport();
+        $transport->setZendeskUserEmail('john.smith@example.com');
+
+        $ticketComment = $this->createTicketComment($expectedMessage, $userWithoutZendeskUser);
+        $ticketComment->getRelatedComment()
+            ->setContact($this->getReference('contact:jim.smith@example.com'));
+        $actual = $this->processor->process($ticketComment);
+
+        $this->assertInstanceOf('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
+        $this->assertEquals($expectedMessage, $actual->getBody());
+        $this->assertTrue($actual->getPublic());
+        $this->assertEquals($expectedAuthor, $actual->getAuthor());
+    }
+
     /**
+     * @codingStandardsIgnoreStart
      * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Imported entity must be instance of
-     * OroCRM\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.
+     * @expectedExceptionMessage Imported entity must be instance of OroCRM\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.
+     * @codingStandardsIgnoreEnd
      */
     public function testProcessReturnExceptionIfInvalidEntityType()
     {
@@ -112,14 +142,10 @@ class TicketCommentExportProcessorTest extends WebTestCase
         $this->processor->process($ticketComment);
     }
 
-    /**
-     * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Ticket Comment must have related Comment
-     */
-    public function testProcessReturnExceptionIfCaseIsNull()
+    public function testProcessReturnNullIfCaseIsNull()
     {
         $ticketComment = new TicketComment();
-        $this->processor->process($ticketComment);
+        $this->assertNull($this->processor->process($ticketComment));
     }
 
     /**

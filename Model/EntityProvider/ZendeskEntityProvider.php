@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
@@ -23,6 +24,11 @@ class ZendeskEntityProvider
      * @var EntityManager
      */
     protected $entityManager;
+
+    /**
+     * @var User[]
+     */
+    private $userList = array();
 
     /**
      * @param EntityManager $entityManager
@@ -54,7 +60,7 @@ class ZendeskEntityProvider
      * @param OroUser $oroUser
      * @param Channel $channel
      * @param bool    $defaultIfNotExist
-     * @return null|object
+     * @return null|User
      */
     public function getUserByOroUser(OroUser $oroUser, Channel $channel, $defaultIfNotExist = false)
     {
@@ -93,6 +99,12 @@ class ZendeskEntityProvider
      */
     public function getUserByContact(Contact $contact, Channel $channel)
     {
+        $userUid = "{$contact->getId()}_{$channel->getId()}";
+
+        if (isset($this->userList[$userUid])) {
+            return $this->userList[$userUid];
+        }
+
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
             ->findOneBy(array('relatedContact' => $contact, 'channel' => $channel));
 
@@ -128,6 +140,8 @@ class ZendeskEntityProvider
             ->setRelatedContact($contact)
             ->setRole($role);
 
+        $this->userList[$userUid] = $user;
+
         return $user;
     }
 
@@ -162,6 +176,16 @@ class ZendeskEntityProvider
     public function getTicket(Ticket $ticket, Channel $channel)
     {
         return $this->getTicketByOriginId($ticket->getOriginId(), $channel);
+    }
+
+    /**
+     * @param CaseEntity $caseEntity
+     * @return null|Ticket
+     */
+    public function getTicketByCase(CaseEntity $caseEntity)
+    {
+        return $this->entityManager->getRepository('OroCRMZendeskBundle:Ticket')
+            ->findOneBy(array('relatedCase' => $caseEntity));
     }
 
     /**
