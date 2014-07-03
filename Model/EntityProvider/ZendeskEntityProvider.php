@@ -55,7 +55,7 @@ class ZendeskEntityProvider
      * @param OroUser $oroUser
      * @param Channel $channel
      * @param bool    $defaultIfNotExist
-     * @return null|object
+     * @return null|User
      */
     public function getUserByOroUser(OroUser $oroUser, Channel $channel, $defaultIfNotExist = false)
     {
