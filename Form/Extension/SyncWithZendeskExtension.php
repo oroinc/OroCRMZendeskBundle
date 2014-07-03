@@ -2,14 +2,14 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Form\Extension;
 
+use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
+use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroEntityProvider;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\ZendeskEntityProvider;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 
 class SyncWithZendeskExtension extends AbstractTypeExtension

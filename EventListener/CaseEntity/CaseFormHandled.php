@@ -6,7 +6,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\CaseBundle\Event\FormHandlerEvent;
 use OroCRM\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\Provider\OroEntityProvider;
+use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncManager;
 
 class CaseFormHandled
