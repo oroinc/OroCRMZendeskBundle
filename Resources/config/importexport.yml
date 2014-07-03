@@ -19,8 +19,10 @@ parameters:
 
     orocrm_zendesk.importexport.processor.abstract_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\AbstractExportProcessor
     orocrm_zendesk.importexport.processor.ticket_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\TicketExportProcessor
+    orocrm_zendesk.importexport.processor.ticket_comment_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\TicketCommentExportProcessor
 
     orocrm_zendesk.importexport.writer.ticket_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter
+    orocrm_zendesk.importexport.writer.ticket_comment_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketCommentExportWriter
 
 services:
     # Processors
@@ -76,6 +78,16 @@ services:
               type: export
               entity: %orocrm_zendesk.entity.ticket.class%
               alias: orocrm_zendesk.sync_to_zendesk_ticket
+
+    orocrm_zendesk.importexport.processor.ticket_comment_export:
+        parent: orocrm_zendesk.importexport.processor.abstract_export
+        class: %orocrm_zendesk.importexport.processor.ticket_comment_export.class%
+        tags:
+            -
+              name: oro_importexport.processor
+              type: export
+              entity: %orocrm_zendesk.entity.ticket_comment.class%
+              alias: orocrm_zendesk.sync_to_zendesk_ticket_comment
 
     # Normalizers
     orocrm_zendesk.importexport.normalizer.user:
@@ -193,3 +205,6 @@ services:
     # Writers
     orocrm_zendesk.importexport.writer.ticket_export:
         class: %orocrm_zendesk.importexport.writer.ticket_export.class%
+
+    orocrm_zendesk.importexport.writer.ticket_comment_export:
+            class: %orocrm_zendesk.importexport.writer.ticket_comment_export.class%
