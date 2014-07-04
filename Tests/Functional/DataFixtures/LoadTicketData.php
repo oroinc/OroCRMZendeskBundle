@@ -62,30 +62,30 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'relatedCase' => 'orocrm_zendesk:case_1',
             'comments' => array(
                 array(
-                    'reference' => 'zendesk_ticket_comment_1000',
+                    'reference' => 'zendesk_ticket_42_comment_1000',
                     'originId' => 1000,
                     'body' => 'Comment 1',
                     'htmlBody' => '<p>Comment 1</p>',
                     'public' => true,
                     'author' => 'zendesk_user:james.cook@example.com',
                     'createdAt' => '2014-06-05T12:24:23Z',
-                    'relatedComment' => 'case_comment_1',
+                    'relatedComment' => 'case_1_comment_1',
                     'channel' => 'zendesk_channel:first_test_channel'
                 ),
                 array(
-                    'reference' => 'zendesk_ticket_comment_1002',
+                    'reference' => 'zendesk_ticket_42_comment_1001',
                     'originId' => 1001,
                     'body' => 'Comment 2',
                     'htmlBody' => '<p>Comment 2</p>',
                     'public' => false,
                     'author' => 'zendesk_user:jim.smith@example.com',
                     'createdAt' => '2014-06-05T12:24:23Z',
-                    'relatedComment' => 'case_comment_2',
+                    'relatedComment' => 'case_1_comment_2',
                     'channel' => 'zendesk_channel:first_test_channel'
                 ),
             ),
             'channel' => 'zendesk_channel:first_test_channel'
-         ),
+        ),
         array(
             'reference' => 'orocrm_zendesk:not_synced_ticket',
             'subject' => 'Not Synced Zendesk Ticket',
@@ -101,6 +101,22 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'relatedCase' => 'orocrm_zendesk:case_4',
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
             'channel' => 'zendesk_channel:first_test_channel'
+        ),
+        array(
+            'reference' => 'orocrm_zendesk:not_synced_ticket_with_case_comments',
+            'subject' => 'Not Synced Zendesk Ticket with Case Comments',
+            'description' => 'Not Synced Zendesk Ticket with Case Comments Description',
+            'type' => TicketType::TYPE_TASK,
+            'status' => TicketStatus::STATUS_OPEN,
+            'priority' => TicketPriority::PRIORITY_NORMAL,
+            'requester' => 'zendesk_user:alex.taylor@example.com',
+            'submitter' => 'zendesk_user:fred.taylor@example.com',
+            'assignee' => 'zendesk_user:fred.taylor@example.com',
+            'createdAt' => '2014-06-05T12:24:23Z',
+            'updatedAt' => '2014-06-05T13:43:21Z',
+            'relatedCase' => 'orocrm_zendesk:case_5',
+            'originUpdatedAt' => '2014-06-09T17:45:22Z',
+            'channel' => 'zendesk_channel:first_test_channel',
         ),
     );
 

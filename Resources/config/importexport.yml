@@ -209,6 +209,7 @@ services:
             - [setEntityManager, [@doctrine.orm.entity_manager]]
             - [setSerializer, [@oro_importexport.serializer]]
             - [setTransport, [@orocrm_zendesk.transport.rest_transport]]
+            - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
 
     orocrm_zendesk.importexport.writer.ticket_export:
         class: %orocrm_zendesk.importexport.writer.ticket_export.class%

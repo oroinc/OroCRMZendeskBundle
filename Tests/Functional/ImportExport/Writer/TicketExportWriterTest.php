@@ -4,21 +4,19 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
 use Symfony\Component\Serializer\SerializerInterface;
 
+use Doctrine\ORM\EntityManager;
+
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
 use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
-
-use Doctrine\ORM\EntityManager;
-
+use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
+use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
-/**
- * @dbIsolation
- */
 class TicketExportWriterTest extends WebTestCase
 {
     /**
@@ -64,7 +62,8 @@ class TicketExportWriterTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->client->startTransaction();
+        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
@@ -103,6 +102,7 @@ class TicketExportWriterTest extends WebTestCase
         $this->getContainer()->set('orocrm_zendesk.transport.rest_transport', null);
         $this->getContainer()->set('orocrm_zendesk.importexport.writer.ticket_export', null);
         $this->logOutput = null;
+        $this->client->rollbackTransaction();
     }
 
     public function testWriteCreatesTicket()
@@ -113,14 +113,15 @@ class TicketExportWriterTest extends WebTestCase
         $requestData = $this->serializer->serialize($ticket, null);
         $expectedResponseData = [
             'ticket' => [
-                'id' => 10001,
+                'id' => $ticketId = 10001,
                 'url' => 'https://foo.zendesk.com/api/v2/tickets/10001.json',
                 'subject' => 'Updated Subject',
-                'description' => 'Updated Description',
+                'description' => $description = 'Updated Description',
                 'type' => TicketType::TYPE_TASK,
                 'status' => TicketStatus::STATUS_OPEN,
                 'priority' => TicketPriority::PRIORITY_NORMAL,
-                'requester_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
+                'requester_id' => $requesterId =
+                        $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
                 'submitter_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
                 'assignee_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
                 'created_at' => '2014-06-06T12:24:23+0000',
@@ -158,20 +159,19 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertEquals($expected['description'], $relatedCase->getDescription());
         $this->assertEquals(CaseStatus::STATUS_OPEN, $relatedCase->getStatus()->getName());
         $this->assertEquals(CasePriority::PRIORITY_NORMAL, $relatedCase->getPriority()->getName());
+        $this->assertEquals('james.cook@example.com', $relatedCase->getAssignedTo()->getEmail());
+        $this->assertEquals('james.cook@example.com', $relatedCase->getOwner()->getEmail());
 
         $this->assertContains('[info] Zendesk Ticket [id=' . $ticket->getId() . ']:', $this->logOutput);
         $this->assertContains('Create ticket in Zendesk API.', $this->logOutput);
         $this->assertContains('Created ticket [origin_id=' . $expected['id'] . '].', $this->logOutput);
         $this->assertContains('Update ticket by response data.', $this->logOutput);
         $this->assertContains('Update related case.', $this->logOutput);
-
-        // @todo Check case contact and user
     }
 
     public function testWriteCreatesComment()
     {
         $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket');
-        $ticket->setOriginId(null);
 
         $requestData = $this->serializer->serialize($ticket, null);
         $expectedResponseData = [
@@ -227,11 +227,131 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertNotNull($relatedComment);
         $this->assertEquals($expected['body'], $relatedComment->getMessage());
         $this->assertEquals($expected['public'], $relatedComment->isPublic());
-
-        // @todo Check comment owner and contact
+        $this->assertNotEmpty($relatedComment->getOwner());
+        $this->assertEquals(
+            'james.cook@example.com',
+            $relatedComment->getOwner()->getEmail()
+        );
 
         $this->assertContains('Created ticket comment [origin_id=' . $expected['id'] . '].', $this->logOutput);
         $this->assertContains('Update related case comment.', $this->logOutput);
         $this->assertNotContains('Schedule job to sync existing ticket comments.', $this->logOutput);
+    }
+
+    public function testWriteCreatesCommentWithExistingContact()
+    {
+        $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket');
+
+        $requestData = $this->serializer->serialize($ticket, null);
+        $expectedResponseData = [
+            'ticket' => [
+                'id' => $ticketId = 10001,
+                'url' => 'https://foo.zendesk.com/api/v2/tickets/10001.json',
+                'subject' => 'Updated Subject',
+                'description' => $description = 'Updated Description',
+                'type' => TicketType::TYPE_TASK,
+                'status' => TicketStatus::STATUS_OPEN,
+                'priority' => TicketPriority::PRIORITY_NORMAL,
+                'requester_id' => $requesterId =
+                    $this->getReference('zendesk_user:jim.smith@example.com')->getOriginId(),
+                'submitter_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
+                'assignee_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
+                'created_at' => '2014-06-06T12:24:23+0000',
+                'updated_at' => '2014-06-09T13:43:21+0000',
+            ],
+            'comment' => [
+                'id' => 20001,
+                'author_id' => $requesterId,
+                'body' => $description,
+                'html_body' => '<p>' . $description . '</p>',
+                'public' => true,
+                'ticket_id' => $ticketId,
+                'created_at' => '2014-06-06T12:24:24+0000',
+            ],
+        ];
+
+        $this->transport->expects($this->once())
+            ->method('createTicket')
+            ->with($requestData)
+            ->will($this->returnValue($expectedResponseData));
+
+        $this->writer->write([$ticket]);
+
+        $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
+        $comment = $ticket->getComments()->first();
+
+        $relatedComment = $comment->getRelatedComment();
+        $this->assertNotEmpty($relatedComment->getContact());
+        $this->assertEquals(
+            'jim.smith@example.com',
+            $relatedComment->getContact()->getPrimaryEmail()
+        );
+    }
+
+    public function testWriteSchedulesTicketCommentSync()
+    {
+        $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket_with_case_comments');
+
+        $requestData = $this->serializer->serialize($ticket, null);
+        $expectedResponseData = [
+            'ticket' => [
+                'id' => $ticketId = 10001,
+                'url' => 'https://foo.zendesk.com/api/v2/tickets/10001.json',
+                'subject' => 'Updated Subject',
+                'description' => $description = 'Updated Description',
+                'type' => TicketType::TYPE_TASK,
+                'status' => TicketStatus::STATUS_OPEN,
+                'priority' => TicketPriority::PRIORITY_NORMAL,
+                'requester_id' => $requesterId =
+                    $this->getReference('zendesk_user:jim.smith@example.com')->getOriginId(),
+                'submitter_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
+                'assignee_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
+                'created_at' => '2014-06-06T12:24:23+0000',
+                'updated_at' => '2014-06-09T13:43:21+0000',
+            ],
+            'comment' => [
+                'id' => 20001,
+                'author_id' => $requesterId,
+                'body' => $description,
+                'html_body' => '<p>' . $description . '</p>',
+                'public' => true,
+                'ticket_id' => $ticketId,
+                'created_at' => '2014-06-06T12:24:24+0000',
+            ],
+        ];
+
+        $this->transport->expects($this->once())
+            ->method('createTicket')
+            ->with($requestData)
+            ->will($this->returnValue($expectedResponseData));
+
+        $this->writer->write([$ticket]);
+
+        $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
+        $this->assertEquals(3, $ticket->getComments()->count());
+
+        $commentIds = [];
+        foreach ($ticket->getComments() as $comment) {
+            $commentIds[] = $comment->getId();
+            $this->assertNotNull($comment->getRelatedComment(), 'Ticket comment has related case comment.');
+        }
+
+        $this->assertContains(
+            sprintf('Schedule job to sync existing ticket comments [ids=%s].', implode(', ', $commentIds)),
+            $this->logOutput
+        );
+
+        $job = $this->entityManager->getRepository('JMSJobQueueBundle:Job')
+            ->findOneBy(['command' => SyncScheduler::JOB_NAME], ['createdAt' => 'DESC']);
+
+        $this->assertNotEmpty($job, 'Has scheduled JMS job.');
+        $this->assertEquals(
+            [
+                '--integration=' . $this->channel->getId(),
+                '--connector=' . TicketCommentConnector::TYPE,
+                '--params=' . serialize(['id' => $commentIds]),
+            ],
+            $job->getArgs()
+        );
     }
 }

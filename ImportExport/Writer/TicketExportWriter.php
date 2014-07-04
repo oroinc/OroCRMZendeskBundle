@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
@@ -142,15 +143,15 @@ class TicketExportWriter extends AbstractExportWriter
                 null,
                 ['channel' => $ticket->getChannel()->getId()]
             );
-            $ticket->addComment($createdComment);
             $createdComment->setChannel($ticket->getChannel());
 
             $this->getLogger()->info("Created ticket comment [origin_id={$createdComment->getOriginId()}].");
 
+            $this->ticketCommentHelper->refreshEntity($createdComment, $ticket->getChannel());
+            $ticket->addComment($createdComment);
+
             $this->entityManager->persist($createdComment);
             $this->getContext()->incrementAddCount();
-
-            $this->ticketCommentHelper->refreshEntity($createdComment, $ticket->getChannel());
 
             $this->getLogger()->info('Update related case comment.');
             $this->ticketCommentHelper->syncRelatedEntities($createdComment, $ticket->getChannel());
@@ -223,32 +224,65 @@ class TicketExportWriter extends AbstractExportWriter
      */
     protected function postFlush()
     {
-        $this->scheduleExportComments($this->newTickets);
+        $this->createNewTicketComments($this->newTickets);
         $this->newTickets = [];
     }
 
     /**
+     * When existing case is synced with Zendesk at first time, we need to create corresponding ticket comments for
+     * each of it comment and schedule a job for syncing them with Zendesk API.
+     *
      * @param Ticket[] $tickets
      */
-    protected function scheduleExportComments(array $tickets)
+    protected function createNewTicketComments(array $tickets)
     {
-        $ids = [];
-        foreach ($this->newTickets as $ticket) {
+        /** @var TicketComment[] $ticketComments */
+        $ticketComments = [];
+        foreach ($tickets as $ticket) {
+            $case = $ticket->getRelatedCase();
+            if (!$case) {
+                continue;
+            }
+
+            $this->entityManager->refresh($case);
+
             /** @var TicketComment $comment */
             foreach ($ticket->getComments() as $comment) {
                 if (!$comment->getOriginId()) {
-                    $ids = $comment->getId();
+                    continue;
                 }
+                $ticketComments[] = $comment;
+            }
+
+            /** @var CaseComment $comment */
+            foreach ($case->getComments() as $comment) {
+                if ($this->ticketCommentHelper->findByCaseComment($comment)) {
+                    continue;
+                }
+                $this->getLogger()->info("Create ticket comment for case comment [id={$comment->getId()}].");
+                $ticketComment = new TicketComment();
+                $ticket->addComment($ticketComment);
+                $ticketComment->setRelatedComment($comment);
+                $ticketComments[] = $ticketComment;
+
+                $this->entityManager->persist($ticketComment);
             }
         }
 
-        if (!$ids) {
+        if (!$ticketComments) {
             return;
+        }
+
+        $this->entityManager->flush($ticketComments);
+
+        foreach ($ticketComments as $ticketComment) {
+            $ids[] = $ticketComment->getId();
         }
 
         $this->getLogger()->info(
             sprintf('Schedule job to sync existing ticket comments [ids=%s].', implode(', ', $ids))
         );
+
         $this->syncScheduler->schedule(
             $this->getChannel(),
             TicketCommentConnector::TYPE,

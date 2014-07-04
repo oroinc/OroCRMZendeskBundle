@@ -19,6 +19,14 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
     /**
      * {@inheritdoc}
      */
+    public function findByCaseComment(CaseComment $caseComment)
+    {
+        return $this->zendeskProvider->getTicketCommentByCaseComment($caseComment);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function copyEntityProperties($targetTicketComment, $sourceTicketComment)
     {
         $this->syncProperties(

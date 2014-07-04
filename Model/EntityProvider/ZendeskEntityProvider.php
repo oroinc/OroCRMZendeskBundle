@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
@@ -212,6 +213,16 @@ class ZendeskEntityProvider
             ->findOneBy(array('originId' => $ticketComment->getOriginId(), 'channel' => $channel));
 
         return $result;
+    }
+
+    /**
+     * @param CaseComment $caseComment
+     * @return null|TicketComment
+     */
+    public function getTicketCommentByCaseComment(CaseComment $caseComment)
+    {
+        return $this->entityManager->getRepository('OroCRMZendeskBundle:TicketComment')
+            ->findOneBy(array('relatedComment' => $caseComment));
     }
 
     /**
