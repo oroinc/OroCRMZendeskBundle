@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\UserBundle\Entity\Email;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
+use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ContactBundle\Entity\ContactEmail;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use OroCRM\Bundle\ContactBundle\Entity\Contact;
@@ -131,5 +132,16 @@ class OroEntityProvider
     {
         return $this->entityManager->getRepository('OroIntegrationBundle:Channel')
             ->findBy(array('type' => ChannelType::TYPE, 'enabled' => true));
+    }
+
+    /**
+     * @param $id
+     *
+     * @return null|CaseEntity
+     */
+    public function getCaseById($id)
+    {
+        return $this->entityManager->getRepository('OroCRMCaseBundle:CaseEntity')
+            ->find($id);
     }
 }

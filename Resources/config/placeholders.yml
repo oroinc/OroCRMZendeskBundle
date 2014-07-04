@@ -3,7 +3,14 @@ placeholders:
         items:
             orocrm_case_ticket_info: ~
 
+    orocrm_case_integrations_nav_buttons:
+        items:
+            case_integration_button: ~
+
 items:
     orocrm_case_ticket_info:
         template: OroCRMZendeskBundle:Ticket:caseTicketInfo.html.twig
         applicable: @orocrm_zendesk.placeholder.filter->filter($entity$)
+
+    case_integration_button:
+        template: OroCRMZendeskBundle:Ticket:syncBytton.html.twig

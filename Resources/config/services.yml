@@ -5,6 +5,7 @@ parameters:
     orocrm_zendesk.entity_mapper.class:                       OroCRM\Bundle\ZendeskBundle\Model\EntityMapper
     orocrm_zendesk.twig.extension.case_ticket.class:          OroCRM\Bundle\ZendeskBundle\Twig\CaseTicketExtension
     orocrm_zendesk.twig.extension.ticket_path.class:          OroCRM\Bundle\ZendeskBundle\Twig\TicketPathExtension
+    orocrm_zendesk.twig.extension.available_channels.class:   OroCRM\Bundle\ZendeskBundle\Twig\AvailableChannelsExtension
     orocrm_zendesk.placeholder.filter.class:                  OroCRM\Bundle\ZendeskBundle\Placeholder\Filter\Filter
     orocrm_zendesk.sync_state.class:                          OroCRM\Bundle\ZendeskBundle\Model\SyncState
 
@@ -45,6 +46,14 @@ services:
         class: %orocrm_zendesk.twig.extension.ticket_path.class%
         tags:
             - { name: twig.extension }
+
+    orocrm_zendesk.twig.extension.available_channels:
+        class: %orocrm_zendesk.twig.extension.available_channels.class%
+        arguments:
+            - @orocrm_zendesk.entity_provider.oro
+        tags:
+            - { name: twig.extension }
+
 
     orocrm_zendesk.placeholder.filter:
         class: %orocrm_zendesk.placeholder.filter.class%
