@@ -67,6 +67,7 @@ class TicketExportWriter extends AbstractExportWriter
     {
         $this->getLogger()->setMessagePrefix("Zendesk Ticket [id={$ticket->getId()}]: ");
 
+        $this->syncTicketRelations($ticket);
         if ($ticket->getOriginId()) {
             $this->updateTicket($ticket);
         } else {
@@ -83,7 +84,7 @@ class TicketExportWriter extends AbstractExportWriter
      */
     protected function updateTicket(Ticket $ticket)
     {
-        $this->getLogger()->info("Update ticket in Zendesk API [id={$ticket->getOriginId()}].");
+        $this->getLogger()->info("Update ticket in Zendesk API [origin_id={$ticket->getOriginId()}].");
 
         $data = $this->transport->updateTicket(
             $this->serializer->serialize($ticket, null)
@@ -93,14 +94,14 @@ class TicketExportWriter extends AbstractExportWriter
             $data,
             'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
             null,
-            ['channel' => $ticket->getChannel()]
+            ['channel' => $ticket->getChannel()->getId()]
         );
 
-        $this->getLogger()->info('Update entity by response data.');
+        $this->getLogger()->info('Update ticket by response data.');
         $this->ticketHelper->refreshEntity($updatedTicket, $ticket->getChannel());
         $this->ticketHelper->copyEntityProperties($ticket, $updatedTicket);
 
-        $this->getLogger()->info('Update related entities.');
+        $this->getLogger()->info('Update related case.');
         $this->ticketHelper->syncRelatedEntities($ticket, $ticket->getChannel());
 
         $this->getContext()->incrementUpdateCount();
@@ -112,8 +113,6 @@ class TicketExportWriter extends AbstractExportWriter
      */
     protected function createTicket(Ticket $ticket)
     {
-        $this->syncTicketRelations($ticket);
-
         $this->getLogger()->info("Create ticket in Zendesk API.");
 
         $data = $this->transport->createTicket($this->serializer->serialize($ticket, null));
@@ -188,16 +187,16 @@ class TicketExportWriter extends AbstractExportWriter
     {
         $this->getLogger()->info(sprintf('Create user in Zendesk API [id=%d].', $user->getId()));
 
-        if ($user->getRole() != UserRole::ROLE_AGENT) {
+        if (!$user->isRoleEqual(UserRole::ROLE_END_USER)) {
             $this->getLogger()->error("Not allowed to create user [role={$user->getRole()}] in Zendesk.");
             return;
         }
 
         try {
-            $data = $this->transport->createTicket($this->serializer->serialize($user, null));
+            $data = $this->transport->createUser($this->serializer->serialize($user, null));
 
             $createdUser = $this->serializer->deserialize(
-                $data['ticket'],
+                $data,
                 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
                 null,
                 ['channel' => $channel->getId()]
@@ -216,7 +215,7 @@ class TicketExportWriter extends AbstractExportWriter
         $this->entityManager->persist($user);
 
         $this->userSyncHelper->refreshEntity($createdUser, $channel);
-        $this->userSyncHelper->syncProperties($user, $createdUser);
+        $this->userSyncHelper->copyEntityProperties($user, $createdUser);
     }
 
     /**

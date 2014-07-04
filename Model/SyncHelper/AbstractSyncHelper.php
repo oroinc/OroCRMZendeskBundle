@@ -72,7 +72,7 @@ abstract class AbstractSyncHelper implements SyncHelperInterface, LoggerAwareInt
      * @param array $excludeProperties
      * @throws InvalidArgumentException
      */
-    public static function syncProperties($target, $source, array $excludeProperties = array())
+    protected function syncProperties($target, $source, array $excludeProperties = array())
     {
         if (!is_object($target)) {
             throw new InvalidArgumentException(
