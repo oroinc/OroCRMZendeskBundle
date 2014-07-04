@@ -36,7 +36,7 @@ class TicketExportProcessor extends AbstractExportProcessor
             );
         }
 
-        $this->getLogger()->setMessagePrefix("Zendesk Ticket [id={$entity->getOriginId()}]: ");
+        $this->getLogger()->setMessagePrefix("Zendesk Ticket [origin_id={$entity->getOriginId()}]: ");
 
         return $this->syncTicket($entity);
     }

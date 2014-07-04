@@ -84,7 +84,7 @@ class TicketExportWriterTest extends WebTestCase
             ->method('log')
             ->will(
                 $this->returnCallback(
-                    function ($level, $message, array $context) {
+                    function ($level, $message) {
                         $this->logOutput .= '[' . $level . '] ' . $message . PHP_EOL;
                     }
                 )
@@ -461,20 +461,18 @@ class TicketExportWriterTest extends WebTestCase
         $ticketRequestData['submitter_id'] = $submitterId;
         $ticketRequestData['assignee_id'] = $submitterId;
         $expectedTicketResponseData = [
-            'ticket' => [
-                'id' => $ticket->getOriginId(),
-                'url' => 'https://foo.zendesk.com/api/v2/tickets/43.json',
-                'subject' => 'Updated Subject',
-                'description' => $description = 'Updated Description',
-                'type' => TicketType::TYPE_TASK,
-                'status' => TicketStatus::STATUS_CLOSED,
-                'priority' => TicketPriority::PRIORITY_LOW,
-                'requester_id' => $requesterId,
-                'submitter_id' => $submitterId,
-                'assignee_id' => $submitterId,
-                'created_at' => '2014-06-06T12:24:23+0000',
-                'updated_at' => '2014-06-09T13:43:21+0000',
-            ],
+            'id' => $ticket->getOriginId(),
+            'url' => 'https://foo.zendesk.com/api/v2/tickets/43.json',
+            'subject' => 'Updated Subject',
+            'description' => $description = 'Updated Description',
+            'type' => TicketType::TYPE_TASK,
+            'status' => TicketStatus::STATUS_CLOSED,
+            'priority' => TicketPriority::PRIORITY_LOW,
+            'requester_id' => $requesterId,
+            'submitter_id' => $submitterId,
+            'assignee_id' => $submitterId,
+            'created_at' => '2014-06-06T12:24:23+0000',
+            'updated_at' => '2014-06-09T13:43:21+0000',
         ];
 
         $this->transport->expects($this->at(2))
@@ -483,6 +481,16 @@ class TicketExportWriterTest extends WebTestCase
             ->will($this->returnValue($expectedTicketResponseData));
 
         $this->writer->write([$ticket]);
+
+        $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
+        $this->assertNotEmpty($ticket->getRequester());
+        $this->assertEquals($requesterId, $ticket->getRequester()->getOriginId());
+
+        $this->assertNotEmpty($ticket->getSubmitter());
+        $this->assertEquals($submitterId, $ticket->getSubmitter()->getOriginId());
+
+        $this->assertNotEmpty($ticket->getAssignee());
+        $this->assertEquals($submitterId, $ticket->getAssignee()->getOriginId());
 
         $this->assertContains('Create user in Zendesk API [id=' . $requesterUser->getId() . '].', $this->logOutput);
         $this->assertContains('Created user [origin_id=' . $requesterId . '].', $this->logOutput);

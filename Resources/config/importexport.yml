@@ -210,6 +210,7 @@ services:
             - [setSerializer, [@oro_importexport.serializer]]
             - [setTransport, [@orocrm_zendesk.transport.rest_transport]]
             - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
+            - [setUserSyncHelper, [@orocrm_zendesk.sync_helper.user]]
 
     orocrm_zendesk.importexport.writer.ticket_export:
         class: %orocrm_zendesk.importexport.writer.ticket_export.class%
@@ -218,7 +219,6 @@ services:
             - @oro_integration.sync_scheduler
             - @orocrm_zendesk.sync_helper.ticket
             - @orocrm_zendesk.sync_helper.ticket_comment
-            - @orocrm_zendesk.sync_helper.user
 
     orocrm_zendesk.importexport.writer.ticket_comment_export:
         class: %orocrm_zendesk.importexport.writer.ticket_comment_export.class%

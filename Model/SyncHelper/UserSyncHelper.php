@@ -9,6 +9,15 @@ use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 class UserSyncHelper extends AbstractSyncHelper
 {
     /**
+     * @param ZendeskUser $user
+     * @param Channel $channel
+     */
+    public function rememberUser(ZendeskUser $user, Channel $channel)
+    {
+        $this->zendeskProvider->rememberUser($user, $channel);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function findEntity($user, Channel $channel)

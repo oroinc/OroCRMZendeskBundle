@@ -33,6 +33,21 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
                     'owner' => 'user:admin@example.com',
                     'createdAt' => '2014-06-10T15:54:22Z',
                 ),
+                array(
+                    'reference' => 'case_1_comment_3',
+                    'message' => 'Comment 3',
+                    'public' => true,
+                    'owner' => 'user:admin@example.com',
+                    'createdAt' => '2014-06-10T16:54:22Z',
+                ),
+                array(
+                    'reference' => 'case_1_comment_4',
+                    'message' => 'Comment 4',
+                    'public' => true,
+                    'contact' => 'contact:alex.miller@example.com',
+                    'owner' => 'user:admin@example.com',
+                    'createdAt' => '2014-06-10T16:54:22Z',
+                ),
             )
         ),
         array(

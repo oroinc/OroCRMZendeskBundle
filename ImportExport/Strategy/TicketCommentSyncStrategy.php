@@ -40,7 +40,7 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
             return null;
         }
 
-        $this->getLogger()->setMessagePrefix("Zendesk Ticket Comment [id={$entity->getOriginId()}]: ");
+        $this->getLogger()->setMessagePrefix("Zendesk Ticket Comment [origin_id={$entity->getOriginId()}]: ");
 
         if (!$entity->getTicket()) {
             $this->getLogger()->error("Comment Ticket required.");
@@ -53,7 +53,7 @@ class TicketCommentSyncStrategy extends AbstractSyncStrategy
         $this->helper->refreshEntity($entity, $this->getChannel());
 
         if (!$entity->getTicket()) {
-            $this->getLogger()->error("Ticket not found [id=$ticketId].");
+            $this->getLogger()->error("Ticket not found [origin_id=$ticketId].");
             $this->getContext()->incrementErrorEntriesCount();
             return null;
         }

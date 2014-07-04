@@ -62,7 +62,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'relatedCase' => 'orocrm_zendesk:case_1',
             'comments' => array(
                 array(
-                    'reference' => 'zendesk_ticket_42_comment_1000',
+                    'reference' => 'zendesk_ticket_42_comment_1',
                     'originId' => 1000,
                     'body' => 'Comment 1',
                     'htmlBody' => '<p>Comment 1</p>',
@@ -73,7 +73,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
                     'channel' => 'zendesk_channel:first_test_channel'
                 ),
                 array(
-                    'reference' => 'zendesk_ticket_42_comment_1001',
+                    'reference' => 'zendesk_ticket_42_comment_2',
                     'originId' => 1001,
                     'body' => 'Comment 2',
                     'htmlBody' => '<p>Comment 2</p>',
@@ -81,6 +81,26 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
                     'author' => 'zendesk_user:jim.smith@example.com',
                     'createdAt' => '2014-06-05T12:24:23Z',
                     'relatedComment' => 'case_1_comment_2',
+                    'channel' => 'zendesk_channel:first_test_channel'
+                ),
+                array(
+                    'reference' => 'zendesk_ticket_42_comment_3',
+                    'body' => 'Comment 3',
+                    'htmlBody' => '<p>Comment 3</p>',
+                    'public' => false,
+                    'author' => 'zendesk_user:jim.smith@example.com',
+                    'createdAt' => '2014-06-05T12:24:23Z',
+                    'relatedComment' => 'case_1_comment_3',
+                    'channel' => 'zendesk_channel:first_test_channel'
+                ),
+                array(
+                    'reference' => 'zendesk_ticket_42_comment_4',
+                    'body' => 'Comment 4',
+                    'htmlBody' => '<p>Comment 4</p>',
+                    'public' => false,
+                    'author' => 'zendesk_user:alex.miller@example.com',
+                    'createdAt' => '2014-06-05T12:24:23Z',
+                    'relatedComment' => 'case_1_comment_4',
                     'channel' => 'zendesk_channel:first_test_channel'
                 ),
             ),

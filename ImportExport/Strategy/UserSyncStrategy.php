@@ -40,7 +40,7 @@ class UserSyncStrategy extends AbstractSyncStrategy
             return null;
         }
 
-        $this->getLogger()->setMessagePrefix("Zendesk User [id={$entity->getOriginId()}]: ");
+        $this->getLogger()->setMessagePrefix("Zendesk User [origin_id={$entity->getOriginId()}]: ");
 
         $this->helper->setLogger($this->getLogger());
         $this->helper->refreshEntity($entity, $this->getChannel());

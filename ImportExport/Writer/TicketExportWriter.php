@@ -4,15 +4,11 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
 
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper;
 use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
 class TicketExportWriter extends AbstractExportWriter
@@ -33,11 +29,6 @@ class TicketExportWriter extends AbstractExportWriter
     protected $ticketCommentHelper;
 
     /**
-     * @var UserSyncHelper
-     */
-    protected $userSyncHelper;
-
-    /**
      * @var Ticket[]
      */
     protected $newTickets = [];
@@ -46,18 +37,15 @@ class TicketExportWriter extends AbstractExportWriter
      * @param SyncScheduler $syncScheduler
      * @param TicketSyncHelper $ticketHelper
      * @param TicketCommentSyncHelper $ticketCommentHelper
-     * @param UserSyncHelper $userSyncHelper
      */
     public function __construct(
         SyncScheduler $syncScheduler,
         TicketSyncHelper $ticketHelper,
-        TicketCommentSyncHelper $ticketCommentHelper,
-        UserSyncHelper $userSyncHelper
+        TicketCommentSyncHelper $ticketCommentHelper
     ) {
         $this->syncScheduler = $syncScheduler;
         $this->ticketHelper = $ticketHelper;
         $this->ticketCommentHelper = $ticketCommentHelper;
-        $this->userSyncHelper = $userSyncHelper;
     }
 
     /**
@@ -94,15 +82,15 @@ class TicketExportWriter extends AbstractExportWriter
             $data,
             'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
             null,
-            ['channel' => $ticket->getChannel()->getId()]
+            ['channel' => $this->getChannel()->getId()]
         );
 
         $this->getLogger()->info('Update ticket by response data.');
-        $this->ticketHelper->refreshEntity($updatedTicket, $ticket->getChannel());
+        $this->ticketHelper->refreshEntity($updatedTicket, $this->getChannel());
         $this->ticketHelper->copyEntityProperties($ticket, $updatedTicket);
 
         $this->getLogger()->info('Update related case.');
-        $this->ticketHelper->syncRelatedEntities($ticket, $ticket->getChannel());
+        $this->ticketHelper->syncRelatedEntities($ticket, $this->getChannel());
 
         $this->getContext()->incrementUpdateCount();
     }
@@ -121,17 +109,17 @@ class TicketExportWriter extends AbstractExportWriter
             $data['ticket'],
             'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
             null,
-            ['channel' => $ticket->getChannel()->getId()]
+            ['channel' => $this->getChannel()->getId()]
         );
 
         $this->getLogger()->info("Created ticket [origin_id={$createdTicket->getOriginId()}].");
 
         $this->getLogger()->info('Update ticket by response data.');
-        $this->ticketHelper->refreshEntity($createdTicket, $ticket->getChannel());
+        $this->ticketHelper->refreshEntity($createdTicket, $this->getChannel());
         $this->ticketHelper->copyEntityProperties($ticket, $createdTicket);
 
         $this->getLogger()->info('Update related case.');
-        $this->ticketHelper->syncRelatedEntities($ticket, $ticket->getChannel());
+        $this->ticketHelper->syncRelatedEntities($ticket, $this->getChannel());
 
         $this->getContext()->incrementUpdateCount();
 
@@ -140,20 +128,20 @@ class TicketExportWriter extends AbstractExportWriter
                 $data['comment'],
                 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
                 null,
-                ['channel' => $ticket->getChannel()->getId()]
+                ['channel' => $this->getChannel()->getId()]
             );
-            $createdComment->setChannel($ticket->getChannel());
+            $createdComment->setChannel($this->getChannel());
 
             $this->getLogger()->info("Created ticket comment [origin_id={$createdComment->getOriginId()}].");
 
-            $this->ticketCommentHelper->refreshEntity($createdComment, $ticket->getChannel());
+            $this->ticketCommentHelper->refreshEntity($createdComment, $this->getChannel());
             $ticket->addComment($createdComment);
 
             $this->entityManager->persist($createdComment);
             $this->getContext()->incrementAddCount();
 
             $this->getLogger()->info('Update related case comment.');
-            $this->ticketCommentHelper->syncRelatedEntities($createdComment, $ticket->getChannel());
+            $this->ticketCommentHelper->syncRelatedEntities($createdComment, $this->getChannel());
             $this->getContext()->incrementAddCount();
         }
     }
@@ -165,57 +153,18 @@ class TicketExportWriter extends AbstractExportWriter
     {
         if ($ticket->getRequester() && !$ticket->getRequester()->getOriginId()) {
             $this->getLogger()->info('Try to sync ticket requester.');
-            $this->createUser($ticket->getRequester(), $ticket->getChannel());
+            $this->createUser($ticket->getRequester());
         }
 
         if ($ticket->getAssignee() && !$ticket->getAssignee()->getOriginId()) {
             $this->getLogger()->info('Try to sync ticket assignee.');
-            $this->createUser($ticket->getAssignee(), $ticket->getChannel());
+            $this->createUser($ticket->getAssignee());
         }
 
         if ($ticket->getSubmitter() && !$ticket->getSubmitter()->getOriginId()) {
             $this->getLogger()->info('Try to sync ticket sumitter.');
-            $this->createUser($ticket->getSubmitter(), $ticket->getChannel());
+            $this->createUser($ticket->getSubmitter());
         }
-    }
-
-    /**
-     * @param User $user
-     * @param Channel $channel
-     */
-    protected function createUser(User $user, Channel $channel)
-    {
-        $this->getLogger()->info(sprintf('Create user in Zendesk API [id=%d].', $user->getId()));
-
-        if (!$user->isRoleEqual(UserRole::ROLE_END_USER)) {
-            $this->getLogger()->error("Not allowed to create user [role={$user->getRole()}] in Zendesk.");
-            return;
-        }
-
-        try {
-            $data = $this->transport->createUser($this->serializer->serialize($user, null));
-
-            $createdUser = $this->serializer->deserialize(
-                $data,
-                'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
-                null,
-                ['channel' => $channel->getId()]
-            );
-
-            $this->getLogger()->info("Created user [origin_id={$createdUser->getOriginId()}].");
-        } catch (\Exception $exception) {
-            $this->getLogger()->error(
-                "Can't create user [id={$user->getId()}] in Zendesk API.",
-                ['exception' => $exception]
-            );
-            return;
-        }
-
-        $user->setChannel($channel);
-        $this->entityManager->persist($user);
-
-        $this->userSyncHelper->refreshEntity($createdUser, $channel);
-        $this->userSyncHelper->copyEntityProperties($user, $createdUser);
     }
 
     /**

@@ -29,7 +29,7 @@ class ZendeskEntityProvider
     /**
      * @var User[]
      */
-    private $userList = array();
+    private $rememberedUsers = array();
 
     /**
      * @param EntityManager $entityManager
@@ -37,6 +37,45 @@ class ZendeskEntityProvider
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @param User $user
+     * @param Channel $channel
+     * @throws \InvalidArgumentException
+     */
+    public function rememberUser(User $user, Channel $channel)
+    {
+        if (!$user->getOriginId()) {
+            throw new \InvalidArgumentException('Expect user with originId.');
+        }
+
+        $key = $user->getOriginId() . '_' . $channel->getId();
+
+        $this->rememberedUsers[$key] = $user;
+    }
+
+    /**
+     * @param User|int $userOrOriginId
+     * @param Channel $channel
+     * @return User $user|null
+     */
+    protected function getRememberedUser($userOrOriginId, Channel $channel)
+    {
+        $originId = null;
+        if ($userOrOriginId instanceof User) {
+            $originId = $userOrOriginId->getOriginId();
+        } elseif (is_numeric($userOrOriginId)) {
+            $originId = $userOrOriginId;
+        }
+
+        if (!$originId) {
+            return null;
+        }
+
+        $key = $originId . '_' . $channel->getId();
+
+        return isset($this->rememberedUsers[$key]) ? $this->rememberedUsers[$key] : null;
     }
 
     /**
@@ -49,6 +88,10 @@ class ZendeskEntityProvider
     {
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
             ->findOneBy(array('originId' => $user->getOriginId(), 'channel' => $channel));
+
+        if (!$result) {
+            $result = $this->getRememberedUser($user, $channel);
+        }
 
         if (!$result && $defaultIfNotExist) {
             return $this->getDefaultZendeskUser($channel);
@@ -100,10 +143,12 @@ class ZendeskEntityProvider
      */
     public function getUserByContact(Contact $contact, Channel $channel)
     {
-        $userUid = "{$contact->getId()}_{$channel->getId()}";
+        $rememberUserId = 'contact_' . $contact->getId();
 
-        if (isset($this->userList[$userUid])) {
-            return $this->userList[$userUid];
+        $result = $this->getRememberedUser($rememberUserId, $channel);
+
+        if ($result) {
+            return $result;
         }
 
         $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
@@ -114,6 +159,7 @@ class ZendeskEntityProvider
         }
 
         $user = new User();
+
         $user->setChannel($channel);
         $email = $contact->getPrimaryEmail();
         if (!$email) {
@@ -141,7 +187,10 @@ class ZendeskEntityProvider
             ->setRelatedContact($contact)
             ->setRole($role);
 
-        $this->userList[$userUid] = $user;
+
+        $user->setOriginId($rememberUserId);
+        $this->rememberUser($user, $channel);
+        $user->setOriginId(null);
 
         return $user;
     }

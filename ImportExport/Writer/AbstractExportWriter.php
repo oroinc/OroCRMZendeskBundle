@@ -4,8 +4,6 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
 
 use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
 use Doctrine\ORM\EntityManager;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -14,8 +12,12 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
-
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
+use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper;
 use OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
 abstract class AbstractExportWriter implements ItemWriterInterface, ContextAwareInterface, LoggerAwareInterface
@@ -44,6 +46,11 @@ abstract class AbstractExportWriter implements ItemWriterInterface, ContextAware
      * @var ConnectorContextMediator
      */
     protected $connectorContextMediator;
+
+    /**
+     * @var UserSyncHelper
+     */
+    protected $userSyncHelper;
 
     /**
      * @var Channel
@@ -77,6 +84,14 @@ abstract class AbstractExportWriter implements ItemWriterInterface, ContextAware
     public function setTransport(ZendeskTransportInterface $transport)
     {
         $this->transport = $transport;
+    }
+
+    /**
+     * @param UserSyncHelper $userSyncHelper
+     */
+    public function setUserSyncHelper(UserSyncHelper $userSyncHelper)
+    {
+        $this->userSyncHelper = $userSyncHelper;
     }
 
     /**
@@ -168,5 +183,45 @@ abstract class AbstractExportWriter implements ItemWriterInterface, ContextAware
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = new ImportExportLogger($logger);
+    }
+
+    /**
+     * @param User $user
+     */
+    protected function createUser(User $user)
+    {
+        $this->getLogger()->info(sprintf('Create user in Zendesk API [id=%d].', $user->getId()));
+
+        if (!$user->isRoleEqual(UserRole::ROLE_END_USER)) {
+            $this->getLogger()->error("Not allowed to create user [role={$user->getRole()->getName()}] in Zendesk.");
+            return;
+        }
+
+        try {
+            $data = $this->transport->createUser($this->serializer->serialize($user, null));
+
+            $createdUser = $this->serializer->deserialize(
+                $data,
+                'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                null,
+                ['channel' => $this->getChannel()->getId()]
+            );
+
+            $this->getLogger()->info("Created user [origin_id={$createdUser->getOriginId()}].");
+        } catch (\Exception $exception) {
+            $this->getLogger()->error(
+                "Can't create user [id={$user->getId()}] in Zendesk API.",
+                ['exception' => $exception]
+            );
+            return;
+        }
+
+        $user->setChannel($this->getChannel());
+        $this->entityManager->persist($user);
+
+        $this->userSyncHelper->refreshEntity($createdUser, $this->getChannel());
+        $this->userSyncHelper->copyEntityProperties($user, $createdUser);
+
+        $this->userSyncHelper->rememberUser($user, $this->getChannel());
     }
 }
