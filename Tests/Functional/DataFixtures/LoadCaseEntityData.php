@@ -19,14 +19,14 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             'reference'     => 'orocrm_zendesk:case_1',
             'comments' => array(
                 array(
-                    'reference' => 'case_comment_1',
+                    'reference' => 'case_1_comment_1',
                     'message' => 'Comment 1',
                     'public' => true,
                     'owner' => 'user:james.cook@example.com',
                     'createdAt' => '2014-06-10T15:54:22Z',
                 ),
                 array(
-                    'reference' => 'case_comment_2',
+                    'reference' => 'case_1_comment_2',
                     'message' => 'Comment 2',
                     'public' => true,
                     'contact' => 'contact:jim.smith@example.com',
@@ -50,6 +50,28 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             'subject'       => 'Case #4',
             'description'   => 'Case #4: Description',
             'reference'     => 'orocrm_zendesk:case_4'
+        ),
+        array(
+            'subject'       => 'Case #5',
+            'description'   => 'Case #5: Description',
+            'reference'     => 'orocrm_zendesk:case_5',
+            'comments' => array(
+                array(
+                    'reference' => 'case_5_comment_1',
+                    'message' => 'Comment 1',
+                    'public' => true,
+                    'owner' => 'user:james.cook@example.com',
+                    'createdAt' => '2014-06-10T15:54:22Z',
+                ),
+                array(
+                    'reference' => 'case_5_comment_2',
+                    'message' => 'Comment 2',
+                    'public' => true,
+                    'contact' => 'contact:jim.smith@example.com',
+                    'owner' => 'user:admin@example.com',
+                    'createdAt' => '2014-06-10T15:54:22Z',
+                ),
+            )
         ),
     );
 
