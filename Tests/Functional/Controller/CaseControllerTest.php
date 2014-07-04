@@ -2,10 +2,9 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\Controller;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use Symfony\Component\DomCrawler\Crawler;
 
-use Doctrine\ORM\EntityManager;
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 /**
@@ -58,7 +57,7 @@ class CaseControllerTest extends WebTestCase
         static::$caseWithoutTicketId = $case->getId();
     }
 
-    public function testViewContainTicketInfoOnlyIfTicketLinked()
+    public function testViewWithoutLinkedTicket()
     {
         $crawler = $this->client->request(
             'GET',
@@ -69,9 +68,11 @@ class CaseControllerTest extends WebTestCase
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
         $this->assertContains(static::$caseWithoutTicketSubject." - Cases - Activities", $crawler->html());
         $this->assertNotContains("Zendesk ticket info", $crawler->html());
+        $this->assertCount(1, $crawler->filter('.zendesk-integration-btn-group'));
+        $this->assertContains("Sync with Zendesk", $crawler->html());
     }
 
-    public function testViewHaveCorrectFields()
+    public function testViewWithLinkedTicket()
     {
         /** @var Ticket $expectedTicket */
         $expectedTicket = $this->getContainer()->get('doctrine.orm.entity_manager')
@@ -87,6 +88,8 @@ class CaseControllerTest extends WebTestCase
 
         $this->assertContains(static::$caseWithTicketSubject." - Cases - Activities", $crawler->html());
         $this->assertContains("Zendesk ticket info", $crawler->html());
+        $this->assertCount(0, $crawler->filter('.zendesk-integration-btn-group'));
+        $this->assertNotContains("Sync with Zendesk", $crawler->html());
 
         $crawler = $crawler->filterXPath('//span[text()="Zendesk ticket info"]')->parents();
 

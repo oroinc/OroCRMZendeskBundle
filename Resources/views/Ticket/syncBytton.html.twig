@@ -2,9 +2,9 @@
 {% set ticket = orocrm_zendesk_get_case_ticket(entity) %}
 {% set channels = orocrm_zendesk_get_available_channels() %}
     {% if ticket is empty and channels is not empty%}
-        <div class="btn-group">
+        <div class="btn-group zendesk-integration-btn-group">
             <a type="button"
-               class="btn import-btn icons-holder-text no-hash"
+               class="btn icons-holder-text no-hash"
                href="#">
                 <i class="icon-upload-alt  hide-text"></i>{{ "orocrm.zendesk.form.sync_to_zendesk.label"|trans }}
             </a>
