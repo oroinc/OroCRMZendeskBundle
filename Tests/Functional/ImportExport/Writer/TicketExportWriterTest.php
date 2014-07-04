@@ -382,7 +382,7 @@ class TicketExportWriterTest extends WebTestCase
             ->with($requestData)
             ->will($this->returnValue($expectedResponseData));
 
-        $expected = $expectedResponseData['ticket'];
+        $expected = $expectedResponseData;
 
         $this->writer->write([$ticket]);
 
