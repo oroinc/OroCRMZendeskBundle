@@ -57,7 +57,7 @@ class TicketController extends FOSRestController implements ClassResourceInterfa
             return $this->handleView($this->view('Case Entity not found', Codes::HTTP_NOT_FOUND));
         }
 
-        $syncManager->syncCase($caseEntity, $channel);
+        $syncManager->syncCase($caseEntity, $channel, true);
         return $this->handleView($this->view('', Codes::HTTP_OK));
     }
 }

@@ -49,8 +49,9 @@ class SyncManager
     /**
      * @param CaseEntity $caseEntity
      * @param Channel    $channel
+     * @param bool       $flush
      */
-    public function syncCase(CaseEntity $caseEntity, Channel $channel)
+    public function syncCase(CaseEntity $caseEntity, Channel $channel, $flush = false)
     {
         if ($this->zendeskEntityProvider->getTicketByCase($caseEntity)) {
             return;
@@ -73,7 +74,7 @@ class SyncManager
         $this->entityManager->persist($ticket);
         $this->entityManager->flush();
 
-        $this->syncScheduler->schedule($channel, TicketConnector::TYPE, array('id' => $ticket->getId()), false);
+        $this->syncScheduler->schedule($channel, TicketConnector::TYPE, array('id' => $ticket->getId()), $flush);
     }
 
     /**
