@@ -2,27 +2,38 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Twig;
 
-use OroCRM\Bundle\ZendeskBundle\Exception\ConfigurationException;
-use OroCRM\Bundle\ZendeskBundle\Twig\TicketPathExtension;
+use OroCRM\Bundle\ZendeskBundle\Twig\ZendeskExtension;
 
-class TicketPathExtensionTest extends \PHPUnit_Framework_TestCase
+class ZendeskExtensionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var TicketPathExtension
+     * @var ZendeskExtension
      */
     protected $extension;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $provider;
+    protected $oroProvider;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $zendeskProvider;
 
     protected function setUp()
     {
-        $this->extension = new TicketPathExtension();
+        $this->oroProvider = $this->getMockBuilder(
+            'OroCRM\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\OroEntityProvider'
+        )->disableOriginalConstructor()->getMock();
+        $this->zendeskProvider = $this->getMockBuilder(
+            'OroCRM\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\ZendeskEntityProvider'
+        )->disableOriginalConstructor()->getMock();
+
+        $this->extension = new ZendeskExtension($this->oroProvider, $this->zendeskProvider);
     }
 
-    public function testGetTicketViewPath()
+    public function testGetTicketUrl()
     {
         $id = 42;
         $zendeskUrl = 'https://test.zendesk.com';
@@ -43,7 +54,7 @@ class TicketPathExtensionTest extends \PHPUnit_Framework_TestCase
         $channel->expects($this->once())
             ->method('getTransport')
             ->will($this->returnValue($transport));
-        $url = $this->extension->getTicketViewPath($ticket);
+        $url = $this->extension->getTicketUrl($ticket);
         $this->assertEquals($expectedUrl, $url);
     }
 }

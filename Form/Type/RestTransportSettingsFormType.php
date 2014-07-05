@@ -18,22 +18,38 @@ class RestTransportSettingsFormType extends AbstractType
         $builder->add(
             'url',
             'text',
-            ['label' => 'orocrm.zendesk.zendeskresttransport.url.label', 'required' => true]
+            [
+                'label' => 'orocrm.zendesk.zendeskresttransport.url.label',
+                'required' => true,
+                'tooltip' => 'orocrm.zendesk.form.zendesk_url.tooltip',
+            ]
         );
         $builder->add(
             'email',
             'email',
-            ['label' => 'orocrm.zendesk.zendeskresttransport.email.label', 'required' => true]
+            [
+                'label' => 'orocrm.zendesk.zendeskresttransport.email.label',
+                'tooltip' => 'orocrm.zendesk.form.email.tooltip',
+                'required' => true,
+            ]
         );
         $builder->add(
             'token',
             'text',
-            ['label' => 'orocrm.zendesk.zendeskresttransport.token.label', 'required' => true]
+            [
+                'label' => 'orocrm.zendesk.zendeskresttransport.token.label',
+                'tooltip' => 'orocrm.zendesk.form.token.tooltip',
+                'required' => true
+            ]
         );
         $builder->add(
             'zendeskUserEmail',
             'text',
-            ['label' => 'orocrm.zendesk.zendeskresttransport.zendesk_user_email.label', 'required' => true]
+            [
+                'label' => 'orocrm.zendesk.zendeskresttransport.zendesk_user_email.label',
+                'tooltip' => 'orocrm.zendesk.form.zendesk_user_email.tooltip',
+                'required' => true
+            ]
         );
     }
 

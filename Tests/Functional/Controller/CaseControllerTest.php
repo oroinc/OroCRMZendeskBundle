@@ -56,7 +56,7 @@ class CaseControllerTest extends WebTestCase
         $this->assertContains($this->caseWithoutTicket->getSubject() . " - Cases - Activities", $crawler->html());
         $this->assertNotContains("Zendesk ticket info", $crawler->html());
         $this->assertCount(1, $crawler->filter('.zendesk-integration-btn-group'));
-        $this->assertContains("Sync with Zendesk", $crawler->html());
+        $this->assertContains("Publish to Zendesk", $crawler->html());
     }
 
     public function testViewWithLinkedTicket()
@@ -76,7 +76,7 @@ class CaseControllerTest extends WebTestCase
         $this->assertContains($this->caseWithTicket->getSubject() . " - Cases - Activities", $crawler->html());
         $this->assertContains("Zendesk ticket info", $crawler->html());
         $this->assertCount(0, $crawler->filter('.zendesk-integration-btn-group'));
-        $this->assertNotContains("Sync with Zendesk", $crawler->html());
+        $this->assertNotContains("Publish to Zendesk", $crawler->html());
 
         $crawler = $crawler->filterXPath('//span[text()="Zendesk ticket info"]')->parents();
 
@@ -122,7 +122,7 @@ class CaseControllerTest extends WebTestCase
         $result = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
 
-        $this->assertContains("Sync with Zendesk", $crawler->html());
+        $this->assertContains("Publish to Zendesk", $crawler->html());
     }
 
     public function testEditDoesNotContainSyncControlIfAlreadySynced()
@@ -135,7 +135,7 @@ class CaseControllerTest extends WebTestCase
         $result = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
 
-        $this->assertNotContains("Sync with Zendesk", $crawler->html());
+        $this->assertNotContains("Publish to Zendesk", $crawler->html());
     }
 
     protected function getFieldValue($label, Crawler $crawler)

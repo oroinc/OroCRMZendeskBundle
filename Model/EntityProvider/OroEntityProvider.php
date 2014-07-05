@@ -126,12 +126,29 @@ class OroEntityProvider
     }
 
     /**
-     * @return array
+     * Get all enabled Zendesk channels
+     *
+     * @return Channel[]
      */
-    public function getAvailableChannels()
+    public function getEnabledChannels()
     {
         return $this->entityManager->getRepository('OroIntegrationBundle:Channel')
             ->findBy(array('type' => ChannelType::TYPE, 'enabled' => true));
+    }
+
+    /**
+     * Get all enabled Zendesk channels with enabled two way sync
+     *
+     * @return Channel[]
+     */
+    public function getEnabledTwoWaySyncChannels()
+    {
+        return array_filter(
+            $this->getEnabledChannels(),
+            function (Channel $channel) {
+                return $channel->getSynchronizationSettings()->offsetGetOr('isTwoWaySyncEnabled', false);
+            }
+        );
     }
 
     /**

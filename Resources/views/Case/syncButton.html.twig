@@ -1,0 +1,58 @@
+{% if resource_granted('EDIT', entity) %}
+    {% set channels = orocrm_zendesk_enabled_two_way_sync_channels() %}
+    {% set firstChannel = channels|first %}
+    <div class="btn-group zendesk-integration-btn-group">
+        <a type="button"
+           class="zendesk-integration-btn btn icons-holder-text no-hash"
+           href="#"
+           data-channel-id="{{ firstChannel.id }}"
+        >
+           <i class="icon-upload-alt  hide-text"></i>{{ "orocrm.zendesk.form.sync_to_zendesk.label"|trans }}
+        </a>
+        <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            {% for channel in channels %}
+                <li>
+                    <a type="button"
+                       class="zendesk-integration-btn icons-holder-text no-hash"
+                       href="#" data-channel-id="{{ channel.id }}">
+                        {{ channel.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script type="text/javascript">
+        require(['jquery', 'routing', 'oronavigation/js/navigation'],
+            function ($, routing, Navigation) {
+
+                var navigation = Navigation.getInstance();
+
+                $('.zendesk-integration-btn').bind('click', function(event) {
+                    event.preventDefault();
+
+                    var id = $(this).data('channel-id');
+                    var url = routing.generate('oro_api_post_ticket_sync_case', {id: '{{ entity.id }}', channelId: id});
+
+                    if (navigation) {
+                        navigation.loadingMask.show();
+                    }
+
+                    $.post(url, function(res, status, jqXHR) {
+                        if (navigation) {
+                            navigation.updateDebugToolbar(jqXHR);
+                            navigation.refreshPage();
+                        }
+                    }).always(function () {
+                        if (navigation) {
+                            navigation.loadingMask.hide();
+                        }
+                    });
+
+                    return false;
+                });
+            });
+    </script>
+{% endif %}

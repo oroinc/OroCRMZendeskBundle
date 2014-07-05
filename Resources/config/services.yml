@@ -3,21 +3,21 @@ parameters:
     orocrm_zendesk.entity.ticket.class:                       OroCRM\Bundle\ZendeskBundle\Entity\Ticket
     orocrm_zendesk.entity.ticket_comment.class:               OroCRM\Bundle\ZendeskBundle\Entity\TicketComment
     orocrm_zendesk.entity_mapper.class:                       OroCRM\Bundle\ZendeskBundle\Model\EntityMapper
-    orocrm_zendesk.twig.extension.case_ticket.class:          OroCRM\Bundle\ZendeskBundle\Twig\CaseTicketExtension
-    orocrm_zendesk.twig.extension.ticket_path.class:          OroCRM\Bundle\ZendeskBundle\Twig\TicketPathExtension
-    orocrm_zendesk.twig.extension.available_channels.class:   OroCRM\Bundle\ZendeskBundle\Twig\AvailableChannelsExtension
-    orocrm_zendesk.placeholder.filter.class:                  OroCRM\Bundle\ZendeskBundle\Placeholder\Filter\Filter
     orocrm_zendesk.sync_state.class:                          OroCRM\Bundle\ZendeskBundle\Model\SyncState
 
-    # Integration related parameters
+    # Forms and extensions
     orocrm_zendesk.form.type.rest_transport_setting.class:    OroCRM\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType
-    orocrm_zendesk.form.sync_with_zendesk_extension.class:    OroCRM\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension
+    orocrm_zendesk.form.extension.sync_with_zendesk.class:    OroCRM\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension
+    orocrm_zendesk.form.extension.channel_connectors.class:   OroCRM\Bundle\ZendeskBundle\Form\Extension\ChannelConnectorsExtension
+    orocrm_zendesk.form.extension.case_comment_public.class:  OroCRM\Bundle\ZendeskBundle\Form\Extension\CaseCommentPublicExtension
+
+    # Integration related parameters
     orocrm_zendesk.transport.rest_transport.class:            OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport
-    orocrm_zendesk.event_listener.case_form_handled.class:    OroCRM\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseFormHandledListener
     orocrm_zendesk.model.sync_manager.class:                  OroCRM\Bundle\ZendeskBundle\Model\SyncManager
 
     # Listeners
     orocrm_zendesk.listener.doctrine.sync_update_case.class:  OroCRM\Bundle\ZendeskBundle\EventListener\Doctrine\SyncUpdateCaseListener
+    orocrm_zendesk.listener.case_entity.class:                OroCRM\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener
 
     # Entity providers
     orocrm_zendesk.entity_provider.oro.class:                 OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider
@@ -28,6 +28,12 @@ parameters:
     orocrm_zendesk.sync_helper.ticket_comment.class:          OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper
     orocrm_zendesk.sync_helper.user.class:                    OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper
 
+    # Twig Extensions
+    orocrm_zendesk.twig.extension.class:                      OroCRM\Bundle\ZendeskBundle\Twig\ZendeskExtension
+
+    # Placeholder filter
+    orocrm_zendesk.placeholder.filter.class:                  OroCRM\Bundle\ZendeskBundle\Placeholder\PlaceholderFilter
+
 services:
     orocrm_zendesk.entity_mapper:
         class: %orocrm_zendesk.entity_mapper.class%
@@ -35,58 +41,38 @@ services:
             - @doctrine.orm.entity_manager
             - %orocrm_zendesk.map%
 
-    orocrm_zendesk.twig.extension.case_ticket:
-        class: %orocrm_zendesk.twig.extension.case_ticket.class%
-        arguments:
-            - @doctrine.orm.entity_manager
-        tags:
-            - { name: twig.extension }
-
-    orocrm_zendesk.twig.extension.ticket_path:
-        class: %orocrm_zendesk.twig.extension.ticket_path.class%
-        tags:
-            - { name: twig.extension }
-
-    orocrm_zendesk.twig.extension.available_channels:
-        class: %orocrm_zendesk.twig.extension.available_channels.class%
-        arguments:
-            - @orocrm_zendesk.entity_provider.oro
-        tags:
-            - { name: twig.extension }
-
-
-    orocrm_zendesk.placeholder.filter:
-        class: %orocrm_zendesk.placeholder.filter.class%
-        arguments:
-            - @doctrine.orm.entity_manager
-
     orocrm_zendesk.sync_state:
         class: %orocrm_zendesk.sync_state.class%
         arguments:
             - @doctrine.orm.entity_manager
 
-    # Integration related services
+    # Forms and extensions
     orocrm_zendesk.form.type.rest_transport_setting:
         class: %orocrm_zendesk.form.type.rest_transport_setting.class%
         tags:
             - { name: form.type, alias: orocrm_zendesk_rest_transport_setting_form_type }
 
-    orocrm_zendesk.form.sync_with_zendesk_extension:
-        class: %orocrm_zendesk.form.sync_with_zendesk_extension.class%
+    orocrm_zendesk.form.extension.sync_with_zendesk:
+        class: %orocrm_zendesk.form.extension.sync_with_zendesk.class%
         arguments:
             - @orocrm_zendesk.entity_provider.zendesk
             - @orocrm_zendesk.entity_provider.oro
         tags:
             - { name: form.type_extension, alias: orocrm_case_entity }
 
-    orocrm_zendesk.event_listener.case_form_handled:
-        class: %orocrm_zendesk.event_listener.case_form_handled.class%
-        arguments:
-            - @orocrm_zendesk.model.sync_manager
-            - @orocrm_zendesk.entity_provider.oro
+    orocrm_zendesk.form.extension.channel_connectors:
+        class: %orocrm_zendesk.form.extension.channel_connectors.class%
         tags:
-            - { name: kernel.event_listener, event: orcrm_case.form_handler_on_success, method: onSuccess }
+            - { name: form.type_extension, alias: oro_integration_channel_form }
 
+    orocrm_zendesk.form.extension.case_comment_public:
+        class: %orocrm_zendesk.form.extension.case_comment_public.class%
+        arguments:
+            - @orocrm_zendesk.entity_provider.zendesk
+        tags:
+            - { name: form.type_extension, alias: orocrm_case_comment }
+
+    # Integration related services
     orocrm_zendesk.transport.rest_transport:
         class: %orocrm_zendesk.transport.rest_transport.class%
         parent: oro_integration.transport.rest.abstract_transport
@@ -112,6 +98,14 @@ services:
         class: %orocrm_zendesk.listener.doctrine.sync_update_case.class%
         tags:
             - { name: doctrine.event_subscriber }
+
+    orocrm_zendesk.listener.case_entity:
+        class: %orocrm_zendesk.listener.case_entity.class%
+        arguments:
+            - @orocrm_zendesk.model.sync_manager
+            - @orocrm_zendesk.entity_provider.oro
+        tags:
+            - { name: kernel.event_subscriber }
 
     # Entity providers
     orocrm_zendesk.entity_provider.oro:
@@ -145,3 +139,19 @@ services:
     orocrm_zendesk.sync_helper.user:
         parent: orocrm_zendesk.sync_helper.abstract
         class: %orocrm_zendesk.sync_helper.user.class%
+
+    # Twig extensions
+    orocrm_zendesk.twig.extension:
+        class: %orocrm_zendesk.twig.extension.class%
+        arguments:
+            - @orocrm_zendesk.entity_provider.oro
+            - @orocrm_zendesk.entity_provider.zendesk
+        tags:
+            - { name: twig.extension }
+
+    # Placeholder filter
+    orocrm_zendesk.placeholder.filter:
+        class: %orocrm_zendesk.placeholder.filter.class%
+        arguments:
+            - @orocrm_zendesk.entity_provider.oro
+            - @orocrm_zendesk.entity_provider.zendesk

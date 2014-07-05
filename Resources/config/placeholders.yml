@@ -1,16 +1,17 @@
 placeholders:
     view_content_data_additional_information:
         items:
-            orocrm_case_ticket_info: ~
+            orocrm_zendesk_case_ticket_info: ~
 
-    orocrm_case_integrations_nav_buttons:
+    view_navButtons_before:
         items:
-            case_integration_button: ~
+            orocrm_zendesk_case_sync_button: ~
 
 items:
-    orocrm_case_ticket_info:
-        template: OroCRMZendeskBundle:Ticket:caseTicketInfo.html.twig
-        applicable: @orocrm_zendesk.placeholder.filter->filter($entity$)
+    orocrm_zendesk_case_ticket_info:
+        template: OroCRMZendeskBundle:Case:caseTicketInfo.html.twig
+        applicable: @orocrm_zendesk.placeholder.filter->isTicketAvailable($entity$)
 
-    case_integration_button:
-        template: OroCRMZendeskBundle:Ticket:syncBytton.html.twig
+    orocrm_zendesk_case_sync_button:
+        template: OroCRMZendeskBundle:Case:syncButton.html.twig
+        applicable: @orocrm_zendesk.placeholder.filter->isSyncApplicableForCaseEntity($entity$)

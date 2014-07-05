@@ -2,62 +2,60 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Controller\Api\Rest;
 
+use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
 use Symfony\Component\HttpFoundation\Response;
 
 use FOS\Rest\Util\Codes;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Controller\Annotations\NamePrefix;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-use Oro\Bundle\SecurityBundle\Annotation\Acl;
 use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 
 /**
- * @NamePrefix("oro_api_")
+ * @Rest\RouteResource("ticket")
+ * @Rest\NamePrefix("oro_api_")
  */
-class TicketController extends FOSRestController implements ClassResourceInterface
+class TicketController extends FOSRestController
 {
     /**
-     * @QueryParam(
+     * @Rest\Post(
+     *      "/ticket/sync/case/{id}/channel/{channelId}",
+     *      requirements={"id"="\d+", "channelId"="\d+"}
+     * )
+     * @ParamConverter("caseEntity", options={"id"="id"})
+     * @ParamConverter("channel", options={"id"="channelId"})
+     * @Rest\QueryParam(
      *      name="id",
      *      requirements="\d+",
      *      nullable=false,
      *      description="Case Id"
      * )
-     * @QueryParam(
+     * @Rest\QueryParam(
      *      name="channelId",
      *      requirements="\d+",
      *      nullable=false,
      *      description="Channel Id"
      * )
      * @ApiDoc(
-     *      description="Sync case with zendesk",
+     *      description="Sync case with Zendesk",
      *      resource=true
      * )
      * @AclAncestor("orocrm_case_update")
-     *
-     * @return Response
      */
-    public function postSyncCaseAction()
+    public function postSyncCaseAction(CaseEntity $caseEntity, Channel $channel)
     {
-        $syncManager = $this->get('orocrm_zendesk.model.sync_manager');
-        $oroEntityProvider = $this->get('orocrm_zendesk.entity_provider.oro');
-        $id = (int)$this->getRequest()->get('id');
-        $channelId = (int)$this->getRequest()->get('channelId');
-        $channel = $oroEntityProvider->getChannelById($channelId);
-        $caseEntity = $oroEntityProvider->getCaseById($id);
-
-        if (!$channel) {
-            return $this->handleView($this->view('Channel not found', Codes::HTTP_NOT_FOUND));
-        }
-        if (!$caseEntity) {
-            return $this->handleView($this->view('Case Entity not found', Codes::HTTP_NOT_FOUND));
+        if ($channel->getType() != ChannelType::TYPE) {
+            return $this->handleView($this->view(['message' => 'Invalid channel type.'], Codes::HTTP_BAD_REQUEST));
         }
 
-        $syncManager->syncCase($caseEntity, $channel, true);
+        $this->get('orocrm_zendesk.model.sync_manager')->syncCase($caseEntity, $channel, true);
+
         return $this->handleView($this->view('', Codes::HTTP_OK));
     }
 }

@@ -2,14 +2,17 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\EventListener\CaseEntity;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\CaseBundle\Event\FormHandlerEvent;
+use OroCRM\Bundle\CaseBundle\Event\Events;
 use OroCRM\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncManager;
 
-class CaseFormHandledListener
+class CaseEntityListener implements EventSubscriberInterface
 {
     /**
      * @var SyncManager
@@ -31,12 +34,25 @@ class CaseFormHandledListener
         $this->oroEntityProvider = $oroEntityProvider;
     }
 
-    public function onSuccess(FormHandlerEvent $formHandlerEvent)
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            Events::BEFORE_SAVE => 'beforeSave'
+        ];
+    }
+
+    /**
+     * @param FormHandlerEvent $formHandlerEvent
+     */
+    public function beforeSave(FormHandlerEvent $formHandlerEvent)
     {
         $entity = $formHandlerEvent->getEntity();
         if ($entity instanceof CaseEntity) {
             $form = $formHandlerEvent->getForm();
-            $channelField = $form->get(SyncWithZendeskExtension::SYNC_WITH_ZENDESK_FIELD);
+            $channelField = $form->get(SyncWithZendeskExtension::ZENDESK_CHANNEL_FIELD);
             if (!$channelField) {
                 return;
             }

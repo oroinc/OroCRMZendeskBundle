@@ -6,14 +6,15 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
 use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
-use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
 use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
@@ -438,7 +439,7 @@ class TicketExportWriterTest extends WebTestCase
             'email' => $requesterUser->getEmail(),
             'role' => $requesterUser->getRole()->getName(),
         ];
-        $this->transport->expects($this->at(0))
+        $this->transport->expects($this->at(1))
             ->method('createUser')
             ->with($requesterUserRequestData)
             ->will($this->returnValue($expectedRequesterUserResponseData));
@@ -451,7 +452,7 @@ class TicketExportWriterTest extends WebTestCase
             'email' => $submitterUser->getEmail(),
             'role' => $submitterUser->getRole()->getName(),
         ];
-        $this->transport->expects($this->at(1))
+        $this->transport->expects($this->at(2))
             ->method('createUser')
             ->with($submitterUserRequestData)
             ->will($this->returnValue($expectedSubmitterUserResponseData));
@@ -475,7 +476,7 @@ class TicketExportWriterTest extends WebTestCase
             'updated_at' => '2014-06-09T13:43:21+0000',
         ];
 
-        $this->transport->expects($this->at(2))
+        $this->transport->expects($this->at(3))
             ->method('updateTicket')
             ->with($ticketRequestData)
             ->will($this->returnValue($expectedTicketResponseData));

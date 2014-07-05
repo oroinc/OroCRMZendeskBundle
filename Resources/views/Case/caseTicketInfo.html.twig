@@ -23,7 +23,7 @@
         {% endif %}
     {% endmacro %}
 
-    {% set ticket = orocrm_zendesk_get_case_ticket(entity) %}
+    {% set ticket = orocrm_zendesk_ticket_by_related_case(entity) %}
     {% if ticket %}
         <div class="responsive-cell">
             <div class="box-type1">
@@ -33,17 +33,17 @@
                 <div class="row-fluid form-horizontal">
                     <div class="responsive-block">
 
-                        {% set href = orocrm_zendesk_ticket_path(ticket) %}
-                        {% set url %}
-                            {% if href %}
-                                <a href="{{ href }}" target="_blank" class="no-hash">
+                        {% set link %}
+                            {% set url = orocrm_zendesk_ticket_url(ticket) %}
+                            {% if url %}
+                                <a href="{{ url }}" target="_blank" class="no-hash">
                                     {{ ticket.originId }}
                                 </a>
                             {% else %}
                                 {{ ticket.originId }}
                             {% endif %}
                         {% endset %}
-                        {{ UI.renderHtmlProperty('orocrm.zendesk.ticket.origin_id.label'|trans, url) }}
+                        {{ UI.renderHtmlProperty('orocrm.zendesk.ticket.origin_id.label'|trans, link) }}
 
                         {% set recipient %}
                             {{ email.email_address_simple(ticket.recipient) }}

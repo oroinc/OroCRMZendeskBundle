@@ -2,7 +2,9 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
 
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
+use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -10,6 +12,7 @@ use Psr\Log\NullLogger;
 
 use Symfony\Component\Serializer\SerializerInterface;
 
+use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -20,7 +23,11 @@ use OroCRM\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper;
 use OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
-abstract class AbstractExportWriter implements ItemWriterInterface, ContextAwareInterface, LoggerAwareInterface
+abstract class AbstractExportWriter implements
+    ItemWriterInterface,
+    StepExecutionAwareInterface,
+    ContextAwareInterface,
+    LoggerAwareInterface
 {
     /**
      * @var EntityManager
@@ -46,6 +53,11 @@ abstract class AbstractExportWriter implements ItemWriterInterface, ContextAware
      * @var ConnectorContextMediator
      */
     protected $connectorContextMediator;
+
+    /**
+     * @var ContextRegistry
+     */
+    protected $contextRegistry;
 
     /**
      * @var UserSyncHelper
@@ -95,11 +107,21 @@ abstract class AbstractExportWriter implements ItemWriterInterface, ContextAware
     }
 
     /**
+     * @param ContextRegistry $contextRegistry
+     */
+    public function setContextRegistry(ContextRegistry $contextRegistry)
+    {
+        $this->contextRegistry = $contextRegistry;
+    }
+
+    /**
      * @param array $entities
      * @throws \Exception
      */
     public function write(array $entities)
     {
+        $this->transport->init($this->getChannel()->getTransport());
+
         try {
             $this->entityManager->beginTransaction();
             foreach ($entities as $entity) {
@@ -154,6 +176,14 @@ abstract class AbstractExportWriter implements ItemWriterInterface, ContextAware
         }
 
         return $this->channel;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStepExecution(StepExecution $stepExecution)
+    {
+        $this->setImportExportContext($this->contextRegistry->getByStepExecution($stepExecution));
     }
 
     /**

@@ -7,31 +7,34 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 
 class SyncWithZendeskExtension extends AbstractTypeExtension
 {
-    const SYNC_WITH_ZENDESK_FIELD = 'syncWithZendesk';
+    const ZENDESK_CHANNEL_FIELD = 'syncWithZendesk';
+
     /**
      * @var ZendeskEntityProvider
      */
-    protected $zendeskEntityProvider;
+    protected $zendeskProvider;
+
     /**
      * @var OroEntityProvider
      */
-    private $oroEntityProvider;
+    private $oroProvider;
 
     /**
-     * @param ZendeskEntityProvider $zendeskEntityProvider
-     * @param OroEntityProvider $oroEntityProvider
+     * @param ZendeskEntityProvider $zendeskProvider
+     * @param OroEntityProvider $oroProvider
      */
-    public function __construct(ZendeskEntityProvider $zendeskEntityProvider, OroEntityProvider $oroEntityProvider)
+    public function __construct(ZendeskEntityProvider $zendeskProvider, OroEntityProvider $oroProvider)
     {
-        $this->zendeskEntityProvider = $zendeskEntityProvider;
-        $this->oroEntityProvider = $oroEntityProvider;
+        $this->zendeskProvider = $zendeskProvider;
+        $this->oroProvider = $oroProvider;
     }
 
     /**
@@ -39,38 +42,40 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $availableChannels = $this->oroEntityProvider->getAvailableChannels();
+        $channels = $this->oroProvider->getEnabledTwoWaySyncChannels();
 
-        $choicesList = array();
+        if (!$channels) {
+            return;
+        }
 
-        /**
-         * @var Channel $channel
-         */
-        foreach ($availableChannels as $channel) {
-            $choicesList[$channel->getId()] = $channel->getName();
+        $choices = array();
+
+        foreach ($channels as $channel) {
+            $choices[$channel->getId()] = $channel->getName();
         }
 
         $builder->add(
-            self::SYNC_WITH_ZENDESK_FIELD,
+            self::ZENDESK_CHANNEL_FIELD,
             'choice',
             array(
                 'label'       => 'orocrm.zendesk.form.sync_to_zendesk.label',
                 'mapped'      => false,
                 'required'    => false,
                 'empty_value' => 'orocrm.zendesk.form.sync_to_zendesk.empty',
-                'choices'     => $choicesList
+                'choices'     => $choices
             )
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        /**
-         * @var CaseEntity $data
-         */
+        /** @var CaseEntity $data */
         $data = $form->getData();
-        if ($data->getId() && $this->zendeskEntityProvider->getTicketByCase($data)) {
-            $form->remove(self::SYNC_WITH_ZENDESK_FIELD);
+        if ($data->getId() && $this->zendeskProvider->getTicketByCase($data)) {
+            $form->remove(self::ZENDESK_CHANNEL_FIELD);
         }
     }
 

@@ -13,8 +13,8 @@ class TicketControllerTest extends WebTestCase
 {
     protected function setUp()
     {
-        $this->initClient(array('debug' => false), $this->generateWsseAuthHeader());
-        $this->loadFixtures(array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'));
+        $this->initClient(['debug' => false], $this->generateWsseAuthHeader());
+        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
     }
 
     public function testPostSyncCaseActionSuccess()
@@ -23,11 +23,11 @@ class TicketControllerTest extends WebTestCase
         $channelId = $this->getReference('zendesk_channel:first_test_channel')->getId();
         $this->client->request(
             'POST',
-            $this->getUrl('oro_api_post_ticket_sync_case'),
-            array('id' => $caseId, 'channelId' => $channelId)
+            $this->getUrl('oro_api_post_ticket_sync_case', ['id' => $caseId, 'channelId' => $channelId])
         );
-        $result = $this->client->getResponse();
-        $this->assertEquals($result->getStatusCode(), 200);
+        $response = $this->client->getResponse();
+
+        $this->assertResponseStatusCodeEquals($response, 200);
     }
 
     public function testPostSyncCaseActionFail()
@@ -36,18 +36,16 @@ class TicketControllerTest extends WebTestCase
         $channelId = $this->getReference('zendesk_channel:first_test_channel')->getId();
         $this->client->request(
             'POST',
-            $this->getUrl('oro_api_post_ticket_sync_case'),
-            array('id' => $caseId, 'channelId' => 127)
+            $this->getUrl('oro_api_post_ticket_sync_case', ['id' => $caseId, 'channelId' => 127])
         );
-        $result = $this->client->getResponse();
-        $this->assertTrue($result->isNotFound());
+        $response = $this->client->getResponse();
+        $this->assertResponseStatusCodeEquals($response, 404);
 
         $this->client->request(
             'POST',
-            $this->getUrl('oro_api_post_ticket_sync_case'),
-            array('id' => 127, 'channelId' => $channelId)
+            $this->getUrl('oro_api_post_ticket_sync_case', ['id' => 127, 'channelId' => $channelId])
         );
-        $result = $this->client->getResponse();
-        $this->assertTrue($result->isNotFound());
+        $response = $this->client->getResponse();
+        $this->assertResponseStatusCodeEquals($response, 404);
     }
 }
