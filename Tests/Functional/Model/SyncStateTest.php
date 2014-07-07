@@ -6,6 +6,9 @@ use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
 use OroCRM\Bundle\ZendeskBundle\Provider\UserConnector;
 
+/**
+ * @dbIsolation
+ */
 class SyncStateTest extends WebTestCase
 {
     /**
