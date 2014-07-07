@@ -7,7 +7,7 @@ orocrm:
             channel.label:            Integration
             assignee.label:           Assignee
             related_case.label:       Case
-            comments.label:    Comments
+            comments.label:           Comments
             collaborators.label:      Collaborators
             created_at.label:         Created At
             origin_created_at.label:  Original Created At
