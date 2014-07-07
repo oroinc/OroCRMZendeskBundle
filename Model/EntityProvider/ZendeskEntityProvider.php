@@ -108,8 +108,23 @@ class ZendeskEntityProvider
      */
     public function getUserByOroUser(OroUser $oroUser, Channel $channel, $defaultIfNotExist = false)
     {
-        $result = $this->entityManager->getRepository('OroCRMZendeskBundle:User')
-            ->findOneBy(array('relatedUser' => $oroUser, 'channel' => $channel));
+        $emails = array();
+        foreach ($oroUser->getEmails() as $email) {
+            $emails[] = $email->getEmail();
+        }
+
+        if ($oroUser->getEmail()) {
+            $emails[] = $oroUser->getEmail();
+        }
+
+        $qb = $this->entityManager
+            ->getRepository('OroCRMZendeskBundle:User')
+            ->createQueryBuilder('u');
+        $qb->where($qb->expr()->in('u.email', $emails))
+            ->andWhere('u.channel = :channel');
+        $result = $qb->getQuery()
+            ->setParameters(array('channel' => $channel))
+            ->getOneOrNullResult();
 
         if (!$result && $defaultIfNotExist) {
             return $this->getDefaultZendeskUser($channel);

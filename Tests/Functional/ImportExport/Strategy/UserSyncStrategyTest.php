@@ -153,6 +153,7 @@ class UserSyncStrategyTest extends WebTestCase
 
         $zendeskUser = $this->createZendeskUser()
             ->setOriginId(1)
+            ->setChannel($this->getReference('zendesk_channel:first_test_channel'))
             ->setRole(new ZendeskUserRole($roleName));
 
         $this->assertEquals($zendeskUser, $this->strategy->process($zendeskUser));

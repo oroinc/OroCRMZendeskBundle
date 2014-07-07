@@ -69,7 +69,7 @@ class UserSyncHelper extends AbstractSyncHelper
         }
 
         if ($this->isRelativeWithUser($entity)) {
-            $relatedUser = $this->oroProvider->getUser($entity);
+            $relatedUser = $this->oroProvider->getUser($entity, true);
             if ($relatedUser) {
                 if ($relatedUser->getId()) {
                     $this->getLogger()->debug("Related user found [email={$relatedUser->getEmail()}].");
