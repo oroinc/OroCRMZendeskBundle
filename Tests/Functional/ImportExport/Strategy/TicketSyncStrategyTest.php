@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
 use Doctrine\ORM\EntityManager;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
 use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
@@ -17,11 +18,6 @@ use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
-/**
- * @outputBuffering enabled
- * @dbIsolation
- * @dbReindex
- */
 class TicketSyncStrategyTest extends WebTestCase
 {
     /**
@@ -46,8 +42,9 @@ class TicketSyncStrategyTest extends WebTestCase
 
     protected function setUp()
     {
-        $this->initClient();
-        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->initClient([], [], true);
+        $this->client->startTransaction();
+        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->strategy = $this->getContainer()->get('orocrm_zendesk.importexport.strategy.ticket_sync');
@@ -62,6 +59,7 @@ class TicketSyncStrategyTest extends WebTestCase
     public function tearDown()
     {
         $this->getSyncStateService()->setTicketIds(array());
+        $this->client->rollbackTransaction();
     }
 
     /**
@@ -104,8 +102,8 @@ class TicketSyncStrategyTest extends WebTestCase
 
         $result = $this->strategy->process($zendeskTicket);
 
-        $this->assertNotSame($zendeskTicket, $result);
         $this->assertNotNull($result->getId());
+        $this->assertNotEquals($zendeskTicket->getId(), $result->getId());
         $this->assertEquals($zendeskTicket->getOriginId(), $result->getOriginId());
         $this->assertEquals($zendeskTicket->getUrl(), $result->getUrl());
         $this->assertEquals($zendeskTicket->getSubject(), $result->getSubject());
@@ -141,7 +139,7 @@ class TicketSyncStrategyTest extends WebTestCase
 
         $result = $this->strategy->process($zendeskTicket);
 
-        $this->assertNull($result);
+        $this->assertEmpty($result);
     }
 
     public function testProcessLinksProblem()
@@ -443,6 +441,59 @@ class TicketSyncStrategyTest extends WebTestCase
             $zendeskTicket->$getter()->getRelatedContact(),
             $case->getRelatedContact()
         );
+    }
+
+    public function testProcessIgnoresCaseChangesWithConflictAndLocalWins()
+    {
+        $zendeskTicket = $this->getReference('orocrm_zendesk:ticket_42');
+        $relatedCase = $this->getReference('orocrm_zendesk:case_1');
+        $relatedCase->setSubject($expectedSubject = 'Local subject');
+        $relatedCase->setDescription($expectedDescription = 'Local description');
+        $relatedCase->setAssignedTo($expectedAssignedTo = $this->getReference('user:bob.miller@example.com'));
+
+        $this->channel->getSynchronizationSettingsReference()
+            ->offsetSet('isTwoWaySyncEnabled', true)
+            ->offsetSet('syncPriority', TwoWaySyncConnectorInterface::LOCAL_WINS);
+
+        $processZendeskTicket = $this->createZendeskTicket()
+            ->setOriginId($zendeskTicket->getOriginId())
+            ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
+            ->setSubject('Updated subject')
+            ->setDescription('Updated description')
+            ->setAssignee(
+                $this->createZendeskUser()->setOriginId(
+                    $this->getReference('zendesk_user:james.cook@example.com')->getOriginId()
+                )
+            )
+            ->setExternalId('123456')
+            ->setRecipient('user@example.com')
+            ->setHasIncidents(false)
+            ->setOriginCreatedAt(new \DateTime('2014-06-10T12:12:21Z'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-10T17:45:23Z'))
+            ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'))
+            ->setChannel($this->channel);
+
+        $result = $this->strategy->process($processZendeskTicket);
+
+        $this->assertNotEmpty($result);
+        $this->assertEquals($result->getId(), $zendeskTicket->getId());
+
+        $this->assertEquals($zendeskTicket->getOriginId(), $processZendeskTicket->getOriginId());
+        $this->assertEquals($zendeskTicket->getUrl(), $processZendeskTicket->getUrl());
+        $this->assertEquals($zendeskTicket->getSubject(), $processZendeskTicket->getSubject());
+        $this->assertEquals($zendeskTicket->getDescription(), $processZendeskTicket->getDescription());
+        $this->assertEquals($zendeskTicket->getExternalId(), $processZendeskTicket->getExternalId());
+        $this->assertEquals($zendeskTicket->getRecipient(), $processZendeskTicket->getRecipient());
+        $this->assertEquals($zendeskTicket->getHasIncidents(), $processZendeskTicket->getHasIncidents());
+        $this->assertEquals($zendeskTicket->getOriginCreatedAt(), $processZendeskTicket->getOriginCreatedAt());
+        $this->assertEquals($zendeskTicket->getOriginUpdatedAt(), $processZendeskTicket->getOriginUpdatedAt());
+        $this->assertEquals($zendeskTicket->getDueAt(), $processZendeskTicket->getDueAt());
+
+        $this->assertTrue($this->entityManager->contains($result));
+
+        $this->assertEquals($expectedSubject, $relatedCase->getSubject());
+        $this->assertEquals($expectedDescription, $relatedCase->getDescription());
+        $this->assertEquals($expectedAssignedTo->getId(), $relatedCase->getAssignedTo()->getId());
     }
 
     public function caseRelatedContactTicketFieldsDataProvider()

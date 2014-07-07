@@ -2,8 +2,6 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 
-use Psr\Log\LoggerAwareInterface;
-
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
@@ -49,32 +47,52 @@ class TicketSyncStrategy extends AbstractSyncStrategy
             return null;
         }
 
-        $this->getLogger()->setMessagePrefix("Zendesk Ticket [id={$entity->getOriginId()}]: ");
+        $this->getLogger()->setMessagePrefix("Zendesk Ticket [origin_id={$entity->getOriginId()}]: ");
 
         $this->helper->setLogger($this->getLogger());
         $this->helper->refreshEntity($entity, $this->getChannel());
 
         $existingTicket = $this->helper->findEntity($entity, $this->getChannel());
         if ($existingTicket) {
+            $this->getLogger()->info("Update found Zendesk ticket.");
+
             if ($existingTicket->getOriginUpdatedAt() == $entity->getOriginUpdatedAt()) {
+                $this->getLogger()->info("Updating is skipped due to updated date is not changed.");
                 return null;
             }
 
-            $this->helper->copyEntityProperties($existingTicket, $entity);
+            $this->getContext()->incrementUpdateCount();
+
+            $syncPriority = $this->isTwoWaySyncEnabled() ? $this->getSyncPriority() : null;
+            $this->helper->mergeTickets($existingTicket, $entity, $this->getChannel(), $syncPriority);
 
             $entity = $existingTicket;
-
-            $this->getLogger()->info("Update found Zendesk ticket.");
-            $this->getContext()->incrementUpdateCount();
         } else {
             $this->getLogger()->info("Add new Zendesk ticket.");
             $this->getContext()->incrementAddCount();
-        }
 
-        $this->helper->syncRelatedEntities($entity, $this->getChannel());
+            $this->helper->syncRelatedEntities($entity, $this->getChannel());
+        }
 
         $this->syncState->addTicketId($entity->getOriginId());
 
         return $entity;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isTwoWaySyncEnabled()
+    {
+        $channel = $this->getChannel();
+        return $channel && $channel->getSynchronizationSettings()->offsetGetOr('isTwoWaySyncEnabled', false);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSyncPriority()
+    {
+        return $this->getChannel()->getSynchronizationSettings()->offsetGetOr('syncPriority');
     }
 }

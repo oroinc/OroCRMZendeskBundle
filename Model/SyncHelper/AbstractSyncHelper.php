@@ -71,6 +71,7 @@ abstract class AbstractSyncHelper implements SyncHelperInterface, LoggerAwareInt
      * @param mixed $source
      * @param array $excludeProperties
      * @throws InvalidArgumentException
+     * @return array Change set in format ['propertyName1' => ['new' => mixed, 'old' => mixed], ...]
      */
     protected function syncProperties($target, $source, array $excludeProperties = array())
     {
@@ -102,17 +103,32 @@ abstract class AbstractSyncHelper implements SyncHelperInterface, LoggerAwareInt
 
         $reflectionClass = new \ReflectionClass($targetClass);
 
+        $changeSet = [];
+
         foreach ($reflectionClass->getProperties() as $property) {
             $propertyName = $property->getName();
             if (in_array($propertyName, $excludeProperties)) {
                 continue;
             }
-            self::getPropertyAccessor()->setValue(
-                $target,
-                $propertyName,
-                self::getPropertyAccessor()->getValue($source, $propertyName)
-            );
+
+            $oldValue = self::getPropertyAccessor()->getValue($target, $propertyName);
+            $newValue = self::getPropertyAccessor()->getValue($source, $propertyName);
+
+            if ($oldValue != $newValue) {
+                $changeSet[$propertyName] = [
+                    'old' => $oldValue,
+                    'new' => $newValue,
+                ];
+
+                self::getPropertyAccessor()->setValue(
+                    $target,
+                    $propertyName,
+                    $newValue
+                );
+            }
         }
+
+        return $changeSet;
     }
 
     /**
