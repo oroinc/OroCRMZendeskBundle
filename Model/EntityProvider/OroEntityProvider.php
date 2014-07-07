@@ -45,9 +45,10 @@ class OroEntityProvider
 
     /**
      * @param ZendeskUser $user
+     * @param bool        $defaultIfNotExist
      * @return OroUser|null
      */
-    public function getUser(ZendeskUser $user)
+    public function getUser(ZendeskUser $user, $defaultIfNotExist = false)
     {
         $oroUser = $this->entityManager->getRepository('OroUserBundle:User')
             ->findOneBy(array('email' => $user->getEmail()));
@@ -66,6 +67,10 @@ class OroEntityProvider
             if ($email) {
                 $oroUser = $email->getUser();
             }
+        }
+
+        if ($defaultIfNotExist && !$oroUser) {
+            $oroUser = $this->getDefaultUser($user->getChannel());
         }
 
         return $oroUser;
@@ -100,7 +105,7 @@ class OroEntityProvider
         if ($user->getPhone()) {
             $phone = new ContactPhone();
             $phone->setPrimary(true);
-            $phone->setPhone($phone);
+            $phone->setPhone($user->getPhone());
             $contact->addPhone($phone);
         }
 
