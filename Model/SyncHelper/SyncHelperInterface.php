@@ -28,6 +28,7 @@ interface SyncHelperInterface
      *
      * @param mixed $target
      * @param mixed $source
+     * @return null|array Change set in format ['propertyName1' => ['new' => mixed, 'old' => mixed], ...]
      */
     public function copyEntityProperties($target, $source);
 

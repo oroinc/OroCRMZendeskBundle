@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model\SyncHelper;
 
+use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
+
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
@@ -12,6 +14,16 @@ use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 
 class TicketSyncHelper extends AbstractSyncHelper
 {
+    /**
+     * @var array
+     */
+    protected $changeSet = [];
+
+    /**
+     * @var null
+     */
+    protected $syncStrategy = null;
+
     /**
      * @param ZendeskEntityProvider $zendeskProvider
      * @param OroEntityProvider $oroEntityProvider
@@ -37,11 +49,56 @@ class TicketSyncHelper extends AbstractSyncHelper
     }
 
     /**
+     * @param Ticket $targetTicket
+     * @param Ticket $sourceTicket
+     * @param Channel $channel
+     * @param string $syncPriority
+     */
+    public function mergeTickets(Ticket $targetTicket, Ticket $sourceTicket, Channel $channel, $syncPriority)
+    {
+        switch ($syncPriority) {
+            case TwoWaySyncConnectorInterface::LOCAL_WINS:
+                $this->changeSet = $this->copyEntityProperties($targetTicket, $sourceTicket);
+                $this->syncStrategy = TwoWaySyncConnectorInterface::LOCAL_WINS;
+                $this->syncRelatedEntities($targetTicket, $channel);
+                $this->syncStrategy = null;
+                $this->changeSet = [];
+                break;
+            default:
+            case TwoWaySyncConnectorInterface::REMOTE_WINS:
+                // Don't care about change set, override all data from remote
+                $this->copyEntityProperties($targetTicket, $sourceTicket);
+                $this->syncRelatedEntities($targetTicket, $channel);
+                break;
+        }
+    }
+
+    /**
+     * @param CaseEntity $targetCase
+     * @param string $targetField
+     * @param mixed $sourceValue
+     * @param string $sourceField
+     */
+    protected function syncField(CaseEntity $targetCase, $targetField, $sourceValue, $sourceField)
+    {
+       if (!$this->hasConflictingChanges($targetCase, $targetField, $sourceValue, $sourceField)
+           || $this->syncStrategy !== TwoWaySyncConnectorInterface::LOCAL_WINS) {
+           self::getPropertyAccessor()->setValue($targetCase, $targetField, $sourceValue);
+       }
+    }
+
+    protected function hasConflictingChanges(CaseEntity $targetCase, $targetField, $sourceValue, $sourceField)
+    {
+        $oldValue = self::getPropertyAccessor()->getValue($targetCase, $targetField);
+        return $oldValue != $sourceValue && isset($this->changeSet[$sourceField]);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function copyEntityProperties($targetTicket, $sourceTicket)
     {
-        $this->syncProperties(
+        return $this->syncProperties(
             $targetTicket,
             $sourceTicket,
             ['id', 'channel', 'relatedCase', 'updatedAtLocked', 'createdAt', 'updatedAt']
@@ -150,17 +207,17 @@ class TicketSyncHelper extends AbstractSyncHelper
 
     /**
      * @param CaseEntity $case
-     * @param Ticket $entity
+     * @param Ticket $ticket
      */
-    protected function syncCaseFields(CaseEntity $case, Ticket $entity)
+    protected function syncCaseFields(CaseEntity $case, Ticket $ticket)
     {
-        $case->setSubject($entity->getSubject());
-        $case->setDescription($entity->getDescription());
-        $this->syncCaseOwner($case, $entity);
-        $this->syncCaseAssignedTo($case, $entity);
-        $this->syncCaseRelatedContact($case, $entity);
-        $this->syncCaseStatus($case, $entity);
-        $this->syncCasePriority($case, $entity);
+        $this->syncField($case, 'subject', $ticket->getSubject(), 'subject');
+        $this->syncField($case, 'description', $ticket->getDescription(), 'description');
+        $this->syncCaseOwner($case, $ticket);
+        $this->syncCaseAssignedTo($case, $ticket);
+        $this->syncCaseRelatedContact($case, $ticket);
+        $this->syncCaseStatus($case, $ticket);
+        $this->syncCasePriority($case, $ticket);
     }
 
     /**
@@ -171,14 +228,17 @@ class TicketSyncHelper extends AbstractSyncHelper
     {
         if ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedUser()) {
             $owner = $ticket->getSubmitter()->getRelatedUser();
+            $this->syncField($case, 'owner', $owner, 'submitter');
         } elseif ($ticket->getRequester() && $ticket->getRequester()->getRelatedUser()) {
             $owner = $ticket->getRequester()->getRelatedUser();
+            $this->syncField($case, 'owner', $owner, 'requester');
         } elseif ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedUser()) {
             $owner = $ticket->getAssignee()->getRelatedUser();
+            $this->syncField($case, 'owner', $owner, 'assignee');
         } else {
             $owner = $this->oroProvider->getDefaultUser($this->channel);
+            $case->setOwner($owner);
         }
-        $case->setOwner($owner);
     }
 
     /**
@@ -189,14 +249,17 @@ class TicketSyncHelper extends AbstractSyncHelper
     {
         if ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedUser()) {
             $assignedTo = $ticket->getAssignee()->getRelatedUser();
+            $this->syncField($case, 'assignedTo', $assignedTo, 'assignee');
         } elseif ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedUser()) {
             $assignedTo = $ticket->getSubmitter()->getRelatedUser();
+            $this->syncField($case, 'assignedTo', $assignedTo, 'submitter');
         } elseif ($ticket->getRequester() && $ticket->getRequester()->getRelatedUser()) {
             $assignedTo = $ticket->getRequester()->getRelatedUser();
+            $this->syncField($case, 'assignedTo', $assignedTo, 'requester');
         } else {
             $assignedTo = $this->oroProvider->getDefaultUser($this->channel);
+            $case->setAssignedTo($assignedTo);
         }
-        $case->setAssignedTo($assignedTo);
     }
 
     /**
@@ -206,11 +269,14 @@ class TicketSyncHelper extends AbstractSyncHelper
     protected function syncCaseRelatedContact(CaseEntity $case, Ticket $ticket)
     {
         if ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedContact()) {
-            $case->setRelatedContact($ticket->getSubmitter()->getRelatedContact());
+            $relatedContact = $ticket->getSubmitter()->getRelatedContact();
+            $this->syncField($case, 'relatedContact', $relatedContact, 'submitter');
         } elseif ($ticket->getRequester() && $ticket->getRequester()->getRelatedContact()) {
-            $case->setRelatedContact($ticket->getRequester()->getRelatedContact());
+            $relatedContact = $ticket->getRequester()->getRelatedContact();
+            $this->syncField($case, 'relatedContact', $relatedContact, 'requester');
         } elseif ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedContact()) {
-            $case->setRelatedContact($ticket->getAssignee()->getRelatedContact());
+            $relatedContact = $ticket->getAssignee()->getRelatedContact();
+            $this->syncField($case, 'relatedContact', $relatedContact, 'assignee');
         }
     }
 
@@ -226,7 +292,7 @@ class TicketSyncHelper extends AbstractSyncHelper
             if (!$value) {
                 $this->getLogger()->error("Can't convert Zendesk status [name=$name]");
             } else {
-                $case->setStatus($value);
+                $this->syncField($case, 'status', $value, 'status');
             }
         }
     }
@@ -243,7 +309,7 @@ class TicketSyncHelper extends AbstractSyncHelper
             if (!$value) {
                 $this->getLogger()->error("Can't convert Zendesk priority [name=$name]");
             } else {
-                $case->setPriority($value);
+                $this->syncField($case, 'priority', $value, 'priority');
             }
         }
     }
