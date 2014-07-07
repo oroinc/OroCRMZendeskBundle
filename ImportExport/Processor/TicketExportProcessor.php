@@ -80,7 +80,11 @@ class TicketExportProcessor extends AbstractExportProcessor
     protected function syncFields(Ticket $ticket, CaseEntity $case)
     {
         $ticket->setSubject($case->getSubject());
-        $ticket->setDescription($case->getDescription());
+        $description = $case->getDescription();
+        if (empty($description)) {
+            $description = $case->getSubject();
+        }
+        $ticket->setDescription($description);
     }
 
     /**
