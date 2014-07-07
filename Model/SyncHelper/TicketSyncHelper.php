@@ -268,12 +268,12 @@ class TicketSyncHelper extends AbstractSyncHelper
      */
     protected function syncCaseRelatedContact(CaseEntity $case, Ticket $ticket)
     {
-        if ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedContact()) {
-            $relatedContact = $ticket->getSubmitter()->getRelatedContact();
-            $this->syncField($case, 'relatedContact', $relatedContact, 'submitter');
-        } elseif ($ticket->getRequester() && $ticket->getRequester()->getRelatedContact()) {
+        if ($ticket->getRequester() && $ticket->getRequester()->getRelatedContact()) {
             $relatedContact = $ticket->getRequester()->getRelatedContact();
             $this->syncField($case, 'relatedContact', $relatedContact, 'requester');
+        } elseif ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedContact()) {
+            $relatedContact = $ticket->getSubmitter()->getRelatedContact();
+            $this->syncField($case, 'relatedContact', $relatedContact, 'submitter');
         } elseif ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedContact()) {
             $relatedContact = $ticket->getAssignee()->getRelatedContact();
             $this->syncField($case, 'relatedContact', $relatedContact, 'assignee');
