@@ -100,7 +100,7 @@ class OroEntityProvider
         if ($user->getPhone()) {
             $phone = new ContactPhone();
             $phone->setPrimary(true);
-            $phone->setPhone($phone);
+            $phone->setPhone($user->getPhone());
             $contact->addPhone($phone);
         }
 
