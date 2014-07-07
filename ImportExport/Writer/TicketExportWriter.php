@@ -196,7 +196,7 @@ class TicketExportWriter extends AbstractExportWriter
 
             /** @var TicketComment $comment */
             foreach ($ticket->getComments() as $comment) {
-                if (!$comment->getOriginId()) {
+                if ($comment->getOriginId()) {
                     continue;
                 }
                 $ticketComments[] = $comment;
