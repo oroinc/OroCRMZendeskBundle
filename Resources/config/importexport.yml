@@ -71,6 +71,8 @@ services:
         parent: orocrm_zendesk.importexport.processor.abstract_export
         class: %orocrm_zendesk.importexport.processor.ticket_export.class%
         arguments:
+            - @orocrm_zendesk.transport.rest_transport
+            - @orocrm_zendesk.sync_helper.ticket
             - @orocrm_zendesk.entity_mapper
         tags:
             -

@@ -30,6 +30,12 @@ class LoadOroUserData extends AbstractZendeskFixture
             'email' => 'john.smith@example.com',
             'plainPassword' => 'password',
         ),
+        array(
+            'reference' => 'user:anna.lee@example.com',
+            'username' => 'anna.lee',
+            'email' => 'anna.lee@example.com',
+            'plainPassword' => 'password',
+        ),
     );
 
     /**

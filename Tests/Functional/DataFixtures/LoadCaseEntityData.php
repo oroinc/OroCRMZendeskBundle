@@ -7,6 +7,9 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
+use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
+
 class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     /**
@@ -89,10 +92,21 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
                 ),
             )
         ),
+        array(
+            'subject'        => 'Case 6, Zendesk Ticket 44',
+            'description'    => 'Case 6, Zendesk Ticket 44 Description',
+            'owner'          => 'user:james.cook@example.com',
+            'assignedTo'     => 'user:james.cook@example.com',
+            'status'         => CaseStatus::STATUS_OPEN,
+            'relatedContact' => 'contact:jim.smith@example.com',
+            'priority'       => CasePriority::PRIORITY_LOW,
+            'reference'      => 'orocrm_zendesk:case_6'
+        ),
     );
 
     /**
      * {@inheritdoc}
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function load(ObjectManager $manager)
     {
@@ -109,6 +123,15 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             }
             if (isset($data['assignedTo'])) {
                 $data['assignedTo'] = $this->getReference($data['assignedTo']);
+            }
+            if (isset($data['relatedContact'])) {
+                $data['relatedContact'] = $this->getReference($data['relatedContact']);
+            }
+            if (isset($data['status'])) {
+                $data['status'] = $manager->find('OroCRMCaseBundle:CaseStatus', $data['status']);
+            }
+            if (isset($data['priority'])) {
+                $data['priority'] = $manager->find('OroCRMCaseBundle:CasePriority', $data['priority']);
             }
             $this->setEntityPropertyValues($entity, $data, array('reference', 'comments'));
 

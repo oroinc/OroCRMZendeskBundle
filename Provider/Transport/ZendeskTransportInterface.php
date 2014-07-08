@@ -53,6 +53,15 @@ interface ZendeskTransportInterface extends TransportInterface
     public function createTicket(array $ticketData);
 
     /**
+     * Get Zendesk ticket.
+     *
+     * @param int $id Ticket id
+     * @return array Ticket data
+     * @throws RestException
+     */
+    public function getTicket($id);
+
+    /**
      * Update Zendesk ticket.
      *
      * @param array $ticketData Must contain value of "id"

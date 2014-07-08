@@ -86,11 +86,13 @@ class TicketExportWriter extends AbstractExportWriter
         );
 
         $this->getLogger()->info('Update ticket by response data.');
-        $this->ticketHelper->refreshEntity($updatedTicket, $this->getChannel());
-        $this->ticketHelper->copyEntityProperties($ticket, $updatedTicket);
+        $this->ticketHelper->refreshTicket($updatedTicket, $this->getChannel());
+        $changes = $this->ticketHelper->calculateTicketsChanges($ticket, $updatedTicket);
+        $changes->apply();
 
         $this->getLogger()->info('Update related case.');
-        $this->ticketHelper->syncRelatedEntities($ticket, $this->getChannel());
+        $changes = $this->ticketHelper->calculateRelatedCaseChanges($ticket, $this->getChannel());
+        $changes->apply();
 
         $this->getContext()->incrementUpdateCount();
     }
@@ -115,11 +117,13 @@ class TicketExportWriter extends AbstractExportWriter
         $this->getLogger()->info("Created ticket [origin_id={$createdTicket->getOriginId()}].");
 
         $this->getLogger()->info('Update ticket by response data.');
-        $this->ticketHelper->refreshEntity($createdTicket, $this->getChannel());
-        $this->ticketHelper->copyEntityProperties($ticket, $createdTicket);
+        $this->ticketHelper->refreshTicket($createdTicket, $this->getChannel());
+        $changes = $this->ticketHelper->calculateTicketsChanges($ticket, $createdTicket);
+        $changes->apply();
 
         $this->getLogger()->info('Update related case.');
-        $this->ticketHelper->syncRelatedEntities($ticket, $this->getChannel());
+        $changes = $this->ticketHelper->calculateRelatedCaseChanges($ticket, $this->getChannel());
+        $changes->apply();
 
         $this->getContext()->incrementUpdateCount();
 
@@ -196,7 +200,7 @@ class TicketExportWriter extends AbstractExportWriter
 
             /** @var TicketComment $comment */
             foreach ($ticket->getComments() as $comment) {
-                if (!$comment->getOriginId()) {
+                if ($comment->getOriginId()) {
                     continue;
                 }
                 $ticketComments[] = $comment;
@@ -236,5 +240,13 @@ class TicketExportWriter extends AbstractExportWriter
             TicketCommentConnector::TYPE,
             ['id' => $ids]
         );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSyncPriority()
+    {
+        return $this->getChannel()->getSynchronizationSettings()->offsetGetOr('syncPriority');
     }
 }

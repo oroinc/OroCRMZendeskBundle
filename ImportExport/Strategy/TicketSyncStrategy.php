@@ -2,9 +2,12 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
 
+use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeValue;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
 
@@ -50,28 +53,39 @@ class TicketSyncStrategy extends AbstractSyncStrategy
         $this->getLogger()->setMessagePrefix("Zendesk Ticket [origin_id={$entity->getOriginId()}]: ");
 
         $this->helper->setLogger($this->getLogger());
-        $this->helper->refreshEntity($entity, $this->getChannel());
+        $this->helper->refreshTicket($entity, $this->getChannel());
 
-        $existingTicket = $this->helper->findEntity($entity, $this->getChannel());
+        $existingTicket = $this->helper->findTicket($entity, $this->getChannel());
+
         if ($existingTicket) {
+            // Updating existing
             $this->getLogger()->info("Update found Zendesk ticket.");
 
-            if ($existingTicket->getOriginUpdatedAt() == $entity->getOriginUpdatedAt()) {
+            $ticketRemoteChanges = $this->helper->calculateTicketsChanges($existingTicket, $entity);
+
+            if (!isset($ticketRemoteChanges['originUpdatedAt'])) {
                 $this->getLogger()->info("Updating is skipped due to updated date is not changed.");
                 return null;
             }
 
-            $this->getContext()->incrementUpdateCount();
-
-            $syncPriority = $this->isTwoWaySyncEnabled() ? $this->getSyncPriority() : null;
-            $this->helper->mergeTickets($existingTicket, $entity, $this->getChannel(), $syncPriority);
-
+            $relatedCaseLocalChanges = $this->helper->calculateRelatedCaseChanges($existingTicket, $this->getChannel());
             $entity = $existingTicket;
+
+            $ticketRemoteChanges->apply();
+
+            $relatedCaseRemoteChanges = $this->helper->calculateRelatedCaseChanges($entity, $this->getChannel());
+
+
+            $this->applyRemoteChanges($relatedCaseLocalChanges, $relatedCaseRemoteChanges);
+
+            $this->getContext()->incrementUpdateCount();
         } else {
+            // Creating new
             $this->getLogger()->info("Add new Zendesk ticket.");
             $this->getContext()->incrementAddCount();
 
-            $this->helper->syncRelatedEntities($entity, $this->getChannel());
+            $relatedCaseChanges = $this->helper->calculateRelatedCaseChanges($entity, $this->getChannel());
+            $relatedCaseChanges->apply();
         }
 
         $this->syncState->addTicketId($entity->getOriginId());
@@ -80,12 +94,28 @@ class TicketSyncStrategy extends AbstractSyncStrategy
     }
 
     /**
-     * @return bool
+     * Apply changes depending on sync strategy.
+     *
+     * @param ChangeSet $localChanges
+     * @param ChangeSet $remoteChanges
      */
-    protected function isTwoWaySyncEnabled()
+    protected function applyRemoteChanges(ChangeSet $localChanges, ChangeSet $remoteChanges)
     {
-        $channel = $this->getChannel();
-        return $channel && $channel->getSynchronizationSettings()->offsetGetOr('isTwoWaySyncEnabled', false);
+        switch ($this->getSyncPriority()) {
+            case TwoWaySyncConnectorInterface::LOCAL_WINS:
+                // Skip conflicting changes that are present both in local and remote changes.
+                /** @var ChangeValue $changeValue */
+                foreach ($localChanges as $targetProperty => $changeValue) {
+                    unset($remoteChanges[$targetProperty]);
+                }
+                $remoteChanges->apply();
+                break;
+            default:
+            case TwoWaySyncConnectorInterface::REMOTE_WINS:
+                // Don't care about local changes, override all with remote changes.
+                $remoteChanges->apply();
+                break;
+        }
     }
 
     /**

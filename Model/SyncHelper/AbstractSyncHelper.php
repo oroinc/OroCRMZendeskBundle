@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model\SyncHelper;
 
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -17,7 +18,7 @@ use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 
-abstract class AbstractSyncHelper implements SyncHelperInterface, LoggerAwareInterface
+abstract class AbstractSyncHelper implements LoggerAwareInterface
 {
     /**
      * @var PropertyAccessor
@@ -71,9 +72,25 @@ abstract class AbstractSyncHelper implements SyncHelperInterface, LoggerAwareInt
      * @param mixed $source
      * @param array $excludeProperties
      * @throws InvalidArgumentException
-     * @return array Change set in format ['propertyName1' => ['new' => mixed, 'old' => mixed], ...]
+     * @return ChangeSet
      */
     protected function syncProperties($target, $source, array $excludeProperties = array())
+    {
+        $changeSet = $this->getChangeSet($target, $source, $excludeProperties);
+        $changeSet->apply();
+        return $changeSet;
+    }
+
+    /**
+     * Sync properties of $target object with $source object
+     *
+     * @param mixed $target
+     * @param mixed $source
+     * @param array $excludeProperties
+     * @throws InvalidArgumentException
+     * @return ChangeSet
+     */
+    protected function getChangeSet($target, $source, array $excludeProperties = array())
     {
         if (!is_object($target)) {
             throw new InvalidArgumentException(
@@ -103,7 +120,7 @@ abstract class AbstractSyncHelper implements SyncHelperInterface, LoggerAwareInt
 
         $reflectionClass = new \ReflectionClass($targetClass);
 
-        $changeSet = [];
+        $changeSet = new ChangeSet($target, $source);
 
         foreach ($reflectionClass->getProperties() as $property) {
             $propertyName = $property->getName();
@@ -111,21 +128,7 @@ abstract class AbstractSyncHelper implements SyncHelperInterface, LoggerAwareInt
                 continue;
             }
 
-            $oldValue = self::getPropertyAccessor()->getValue($target, $propertyName);
-            $newValue = self::getPropertyAccessor()->getValue($source, $propertyName);
-
-            if ($oldValue != $newValue) {
-                $changeSet[$propertyName] = [
-                    'old' => $oldValue,
-                    'new' => $newValue,
-                ];
-
-                self::getPropertyAccessor()->setValue(
-                    $target,
-                    $propertyName,
-                    $newValue
-                );
-            }
+            $changeSet->add($propertyName, $propertyName);
         }
 
         return $changeSet;

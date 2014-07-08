@@ -80,9 +80,23 @@ class TicketExportProcessorTest extends WebTestCase
          */
         $actual = $this->processor->process($entity);
 
-        $this->assertEquals($requester, $actual->getRequester());
-        $this->assertEquals($submitter, $actual->getSubmitter());
-        $this->assertEquals($assignee, $actual->getAssignee());
+        $this->assertNotEmpty($actual->getRequester());
+        $this->assertEquals($requester->getId(), $actual->getRequester()->getId());
+
+        if ($submitter) {
+            $this->assertNotEmpty($actual->getSubmitter());
+            $this->assertEquals($submitter->getId(), $actual->getSubmitter()->getId());
+        } else {
+            $this->assertEmpty($actual->getSubmitter());
+        }
+
+        if ($assignee) {
+            $this->assertNotEmpty($actual->getAssignee());
+            $this->assertEquals($assignee->getId(), $actual->getAssignee()->getId());
+        } else {
+            $this->assertEmpty($actual->getAssignee());
+        }
+
         $this->assertEquals($expected['status'], $actual->getStatus()->getName());
         $this->assertEquals($expected['priority'], $actual->getPriority()->getName());
         $this->assertEquals($expected['subject'], $actual->getSubject());
@@ -186,20 +200,6 @@ class TicketExportProcessorTest extends WebTestCase
         );
     }
 
-    public function testProcessorReturnNullIfRequesterDoesNotFoundAndDefaultUserNotExist()
-    {
-        /**
-         * @var Ticket $ticket
-         */
-        $ticket = $this->getReference('orocrm_zendesk:ticket_43');
-        $ticket->setRequester(null);
-        $this->channel->getTransport()->setZendeskUserEmail('not_exist@mail.com');
-        $this->context->expects($this->once())
-            ->method('addError')
-            ->with('Requester not found.');
-        $this->assertNull($this->processor->process($ticket));
-    }
-
     public function testProcessorSetDefaultUserAsRequester()
     {
         /**
@@ -208,6 +208,7 @@ class TicketExportProcessorTest extends WebTestCase
         $ticket = $this->getReference('orocrm_zendesk:ticket_43');
         $ticket->setRequester(null);
         $actual = $this->processor->process($ticket);
+        $this->assertNotEmpty($actual);
         $this->assertEquals($actual->getRequester(), $this->getReference('zendesk_user:fred.taylor@example.com'));
     }
 

@@ -35,6 +35,16 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
             'channel' => 'zendesk_channel:first_test_channel'
         ),
         array(
+            'reference' => 'zendesk_user:anna.lee@example.com',
+            'originId' => 1017,
+            'url' => 'https://foo.zendesk.com/api/v2/users/1017.json',
+            'name' => 'Anna Lee',
+            'email' => 'anna.lee@example.com',
+            'role' => UserRole::ROLE_AGENT,
+            'relatedUser' => 'user:anna.lee@example.com',
+            'channel' => 'zendesk_channel:first_test_channel'
+        ),
+        array(
             'reference' => 'zendesk_user:jim.smith@example.com',
             'originId' => 1010,
             'url' => 'https://foo.zendesk.com/api/v2/users/1010.json',

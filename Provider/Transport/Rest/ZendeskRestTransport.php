@@ -114,6 +114,32 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
 
     /**
      * {@inheritdoc}
+     * @link http://developer.zendesk.com/documentation/rest_api/tickets.html#getting-tickets
+     */
+    public function getTicket($id)
+    {
+        $response = $this->client->get(
+            sprintf('tickets/%d.json', $id)
+        );
+
+        if ($response->isSuccessful()) {
+            throw RestException::createFromResponse(
+                $response,
+                sprintf('Can\'t get ticket [origin_id=%s].', $id)
+            );
+        }
+
+        try {
+            $responseData = $response->json();
+        } catch (\Exception $exception) {
+            throw RestException::createFromResponse($response, 'Can\'t parse get ticket response.', $exception);
+        }
+
+        return isset($responseData['ticket']) ? $responseData['ticket'] : null;
+    }
+
+    /**
+     * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/tickets.html#updating-tickets
      */
     public function updateTicket(array $ticketData)

@@ -2,92 +2,139 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
+use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
+
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeValue;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
+use OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
 class TicketExportProcessor extends AbstractExportProcessor
 {
+    /**
+     * @var ZendeskTransportInterface
+     */
+    protected $transport;
+
+    /**
+     * @var TicketSyncHelper
+     */
+    protected $ticketHelper;
+
     /**
      * @var EntityMapper
      */
     protected $entityMapper;
 
     /**
+     * @param ZendeskTransportInterface $transport
+     * @param TicketSyncHelper $ticketHelper
      * @param EntityMapper $entityMapper
      */
-    public function __construct(EntityMapper $entityMapper)
-    {
+    public function __construct(
+        ZendeskTransportInterface $transport,
+        TicketSyncHelper $ticketHelper,
+        EntityMapper $entityMapper
+    ) {
+        $this->transport = $transport;
+        $this->ticketHelper = $ticketHelper;
         $this->entityMapper = $entityMapper;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function process($entity)
+    public function process($ticket)
     {
-        if (!$entity instanceof Ticket) {
+        if (!$ticket instanceof Ticket) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Imported entity must be instance of OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket, %s given.',
-                    is_object($entity) ? get_class($entity) : gettype($entity)
+                    is_object($ticket) ? get_class($ticket) : gettype($ticket)
                 )
             );
         }
 
-        $this->getLogger()->setMessagePrefix("Zendesk Ticket [origin_id={$entity->getOriginId()}]: ");
+        $this->getLogger()->setMessagePrefix("Zendesk Ticket [origin_id={$ticket->getOriginId()}]: ");
 
-        return $this->syncTicket($entity);
+        $ticketLocalChanges = $this->calculateTicketLocalChanges($ticket);
+
+        if (!$ticketLocalChanges) {
+            return null;
+        }
+
+        if ($this->getSyncPriority() == TwoWaySyncConnectorInterface::REMOTE_WINS && $ticket->getOriginId()) {
+            $ticketRemoteChanges = $this->calculateTicketRemoteChanges($ticket);
+
+            /** @var ChangeValue $changeValue */
+            foreach ($ticketRemoteChanges as $targetProperty => $changeValue) {
+                if (isset($ticketLocalChanges[$targetProperty])) {
+                    unset($ticketLocalChanges[$targetProperty]);
+                } else {
+                    $ticketLocalChanges->add(
+                        $changeValue->getTargetProperty(),
+                        ['value' => $changeValue->getSourceValue()],
+                        null,
+                        true
+                    );
+                }
+            }
+
+            $ticketLocalChanges->apply();
+        } else {
+            $ticketLocalChanges->apply();
+        }
+
+        return $ticketLocalChanges->getTarget();
     }
 
     /**
      * @param Ticket $ticket
-     * @return Ticket|null
-     * @throws \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
+     * @return ChangeSet
      */
-    protected function syncTicket(Ticket $ticket)
+    protected function calculateTicketRemoteChanges(Ticket $ticket)
     {
-        $case = $ticket->getRelatedCase();
+        $remoteTicket = $this->transport->getTicket($ticket->getOriginId());
+        return $this->ticketHelper->calculateTicketsChanges($ticket, $remoteTicket);
+    }
 
-        if (!$case) {
+    /**
+     * @param Ticket $ticket
+     * @return ChangeSet
+     */
+    protected function calculateTicketLocalChanges(Ticket $ticket)
+    {
+        $relatedCase = $ticket->getRelatedCase();
+
+        if (!$relatedCase) {
             $this->getLogger()->error('Ticket must have related Case.');
             $this->getContext()->incrementErrorEntriesCount();
             return null;
         }
 
-        $this->syncFields($ticket, $case);
+        $changeSet = new ChangeSet($ticket, $relatedCase);
 
-        $this->syncStatus($ticket, $case);
-        $this->syncPriority($ticket, $case);
-        $this->syncRelatedContact($ticket, $case);
-        $this->syncAssignee($ticket, $case);
-        $this->syncRequester($ticket, $case);
+        $changeSet->add('subject');
+        $changeSet->add('description');
 
-        if (!$ticket->getRequester()) {
-            $this->getLogger()->error('Requester not found.');
-            $this->getContext()->incrementErrorEntriesCount();
-            return null;
-        }
+        $this->addStatusChanges($changeSet, $relatedCase);
+        $this->addPriorityChanges($changeSet, $relatedCase);
+        $this->addRelatedContactChanges($changeSet, $relatedCase, !$ticket->getOriginId());
+        $this->addAssignedToChanges($changeSet, $relatedCase);
+        $this->addRequesterChanges($changeSet, $relatedCase, $ticket);
 
-        return $ticket;
+        return $changeSet;
     }
 
     /**
-     * @param Ticket     $ticket
+     * @param ChangeSet $changeSet
      * @param CaseEntity $case
      */
-    protected function syncFields(Ticket $ticket, CaseEntity $case)
-    {
-        $ticket->setSubject($case->getSubject());
-        $ticket->setDescription($case->getDescription());
-    }
-
-    /**
-     * @param Ticket     $ticket
-     * @param CaseEntity $case
-     */
-    protected function syncStatus(Ticket $ticket, CaseEntity $case)
+    protected function addStatusChanges(ChangeSet $changeSet, CaseEntity $case)
     {
         $statusName = $case->getStatus()->getName();
 
@@ -96,15 +143,15 @@ class TicketExportProcessor extends AbstractExportProcessor
         if (!$ticketStatus) {
             $this->getLogger()->error("Can't convert Zendesk status [name=$statusName]");
         } else {
-            $ticket->setStatus($ticketStatus);
+            $changeSet->add('status', ['property' => 'status', 'value' => $ticketStatus]);
         }
     }
 
     /**
-     * @param Ticket     $ticket
+     * @param ChangeSet $changeSet
      * @param CaseEntity $case
      */
-    protected function syncPriority(Ticket $ticket, CaseEntity $case)
+    protected function addPriorityChanges(ChangeSet $changeSet, CaseEntity $case)
     {
         $priority = $case->getPriority();
         if ($priority) {
@@ -113,16 +160,17 @@ class TicketExportProcessor extends AbstractExportProcessor
             if (!$value) {
                 $this->getLogger()->error("Can't convert Zendesk priority [name=$name]");
             } else {
-                $ticket->setPriority($value);
+                $changeSet->add('priority', ['property' => 'priority', 'value' => $value]);
             }
         }
     }
 
     /**
-     * @param Ticket     $ticket
+     * @param ChangeSet $changeSet
      * @param CaseEntity $case
+     * @param bool $isNew
      */
-    protected function syncRelatedContact(Ticket $ticket, CaseEntity $case)
+    protected function addRelatedContactChanges(ChangeSet $changeSet, CaseEntity $case, $isNew)
     {
         $relatedContact = $case->getRelatedContact();
         if (!$relatedContact) {
@@ -134,41 +182,48 @@ class TicketExportProcessor extends AbstractExportProcessor
             $this->getLogger()->error("Can't sync contact [id={$relatedContact->getId()}]");
             return;
         }
-        if (!$ticket->getOriginId()) {
-            $ticket->setSubmitter($relatedUser);
-            $ticket->setRequester($relatedUser);
+        if ($isNew) {
+            $changeSet->add('submitter', ['value' => $relatedUser]);
+            $changeSet->add('requester', ['value' => $relatedUser]);
         } else {
-            $ticket->setRequester($relatedUser);
+            $changeSet->add('requester', ['value' => $relatedUser]);
         }
     }
 
     /**
-     * @param Ticket     $ticket
+     * @param ChangeSet $changeSet
      * @param CaseEntity $case
      */
-    protected function syncAssignee(Ticket $ticket, CaseEntity $case)
+    protected function addAssignedToChanges(ChangeSet $changeSet, CaseEntity $case)
     {
         $assignedTo = $case->getAssignedTo();
 
-        $assignee  = null;
+        $assignee = null;
         if ($assignedTo) {
             $assignee = $this->zendeskProvider->getUserByOroUser($assignedTo, $this->getChannel(), true);
         }
 
-        $ticket->setAssignee($assignee);
+        $changeSet->add('assignee', ['value' => $assignee]);
     }
 
     /**
-     * @param Ticket     $ticket
+     * @param ChangeSet $changeSet
      * @param CaseEntity $case
+     * @param Ticket $ticket
      */
-    protected function syncRequester(Ticket $ticket, CaseEntity $case)
+    protected function addRequesterChanges(ChangeSet $changeSet, CaseEntity $case, Ticket $ticket)
     {
-        if (!$ticket->getRequester()) {
-            $owner = $case->getOwner();
-
-            $user = $this->zendeskProvider->getUserByOroUser($owner, $this->getChannel(), true);
-            $ticket->setRequester($user);
+        if (!$ticket->getRequester() && $case->getOwner()) {
+            $requester = $this->zendeskProvider->getUserByOroUser($case->getOwner(), $this->getChannel(), true);
+            $changeSet->add('requester', ['value' => $requester]);
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSyncPriority()
+    {
+        return $this->getChannel()->getSynchronizationSettings()->offsetGetOr('syncPriority');
     }
 }
