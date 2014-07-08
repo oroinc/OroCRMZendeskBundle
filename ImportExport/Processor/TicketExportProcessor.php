@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
+use Symfony\Component\Serializer\SerializerInterface;
+
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
@@ -15,6 +17,11 @@ use OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
 class TicketExportProcessor extends AbstractExportProcessor
 {
+    /**
+     * @var SerializerInterface
+     */
+    protected $serializer;
+
     /**
      * @var ZendeskTransportInterface
      */
@@ -50,6 +57,8 @@ class TicketExportProcessor extends AbstractExportProcessor
      */
     public function process($ticket)
     {
+        $this->transport->init($this->getChannel()->getTransport());
+
         if (!$ticket instanceof Ticket) {
             throw new InvalidArgumentException(
                 sprintf(
@@ -72,16 +81,13 @@ class TicketExportProcessor extends AbstractExportProcessor
 
             /** @var ChangeValue $changeValue */
             foreach ($ticketRemoteChanges as $targetProperty => $changeValue) {
-                if (isset($ticketLocalChanges[$targetProperty])) {
-                    unset($ticketLocalChanges[$targetProperty]);
-                } else {
-                    $ticketLocalChanges->add(
-                        $changeValue->getTargetProperty(),
-                        ['value' => $changeValue->getSourceValue()],
-                        null,
-                        true
-                    );
-                }
+                unset($ticketLocalChanges[$targetProperty]);
+                $ticketLocalChanges->add(
+                    $changeValue->getTargetProperty(),
+                    ['value' => $changeValue->getSourceValue()],
+                    null,
+                    true
+                );
             }
 
             $ticketLocalChanges->apply();
@@ -98,7 +104,17 @@ class TicketExportProcessor extends AbstractExportProcessor
      */
     protected function calculateTicketRemoteChanges(Ticket $ticket)
     {
-        $remoteTicket = $this->transport->getTicket($ticket->getOriginId());
+        $remoteTicketData = $this->transport->getTicket($ticket->getOriginId());
+
+        $remoteTicket = $this->serializer->deserialize(
+            $remoteTicketData,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+            null,
+            ['channel' => $this->getChannel()->getId()]
+        );
+
+        $this->ticketHelper->refreshTicket($remoteTicket, $this->getChannel());
+
         return $this->ticketHelper->calculateTicketsChanges($ticket, $remoteTicket);
     }
 
@@ -229,5 +245,13 @@ class TicketExportProcessor extends AbstractExportProcessor
     protected function getSyncPriority()
     {
         return $this->getChannel()->getSynchronizationSettings()->offsetGetOr('syncPriority');
+    }
+
+    /**
+     * @param SerializerInterface $serializer
+     */
+    public function setSerializer(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
     }
 }

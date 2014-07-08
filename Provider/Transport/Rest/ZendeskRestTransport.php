@@ -122,7 +122,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             sprintf('tickets/%d.json', $id)
         );
 
-        if ($response->isSuccessful()) {
+        if (!$response->isSuccessful()) {
             throw RestException::createFromResponse(
                 $response,
                 sprintf('Can\'t get ticket [origin_id=%s].', $id)

@@ -70,6 +70,10 @@ class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getData')
             ->will($this->returnValue($expectedId));
         $form->expects($this->once())
+            ->method('has')
+            ->with(SyncWithZendeskExtension::ZENDESK_CHANNEL_FIELD)
+            ->will($this->returnValue(true));
+        $form->expects($this->once())
             ->method('get')
             ->with(SyncWithZendeskExtension::ZENDESK_CHANNEL_FIELD)
             ->will($this->returnValue($channelField));

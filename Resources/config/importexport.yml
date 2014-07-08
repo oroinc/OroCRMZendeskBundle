@@ -74,6 +74,8 @@ services:
             - @orocrm_zendesk.transport.rest_transport
             - @orocrm_zendesk.sync_helper.ticket
             - @orocrm_zendesk.entity_mapper
+        calls:
+            - [setSerializer, [@oro_importexport.serializer]]
         tags:
             -
               name: oro_importexport.processor

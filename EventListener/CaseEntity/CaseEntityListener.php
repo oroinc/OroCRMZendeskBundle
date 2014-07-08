@@ -50,18 +50,23 @@ class CaseEntityListener implements EventSubscriberInterface
     public function beforeSave(FormHandlerEvent $formHandlerEvent)
     {
         $entity = $formHandlerEvent->getEntity();
+        $form = $formHandlerEvent->getForm();
+
         if ($entity instanceof CaseEntity) {
-            $form = $formHandlerEvent->getForm();
-            $channelField = $form->get(SyncWithZendeskExtension::ZENDESK_CHANNEL_FIELD);
-            if (!$channelField) {
+            $channelFieldName = SyncWithZendeskExtension::ZENDESK_CHANNEL_FIELD;
+            if (!$form->has($channelFieldName)) {
                 return;
             }
+
+            $channelField = $form->get($channelFieldName);
+
             $channelId = $channelField->getData();
             if ($channelId) {
                 $channel = $this->oroEntityProvider->getChannelById($channelId);
                 $this->syncManager->syncCase($entity, $channel);
             }
         }
+
         if ($entity instanceof CaseComment) {
             $this->syncManager->syncComment($entity);
         }

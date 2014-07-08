@@ -17,7 +17,7 @@ class RestTransportSettingsFormType extends AbstractType
     {
         $builder->add(
             'url',
-            'text',
+            'url',
             [
                 'label' => 'orocrm.zendesk.zendeskresttransport.url.label',
                 'required' => true,
