@@ -119,7 +119,11 @@ class TicketExportProcessor extends AbstractExportProcessor
         $changeSet = new ChangeSet($ticket, $relatedCase);
 
         $changeSet->add('subject');
-        $changeSet->add('description');
+        if ($relatedCase->getDescription()) {
+            $changeSet->add('description');
+        } else {
+            $changeSet->add('description', 'subject');
+        }
 
         $this->addStatusChanges($changeSet, $relatedCase);
         $this->addPriorityChanges($changeSet, $relatedCase);

@@ -2,52 +2,63 @@ orocrm:
     zendesk:
         ticket_info_title: Zendesk ticket info
         ticket:
-            entity_label:         Ticket
-            entity_plural_label:  Tickets
-            assignee.label:       Assignee
-            case.label:           Case
-            collaborators.label:  Collaborators
-            created_at.label:     Created At
-            updated_at.label:     Updated At
-            due_at.label:         Due At
-            description.label:    Description
-            subject.label:        Subject
-            external_id.label:    External id
-            has_incidents.label:  Has incidents
-            id.label:             Id
-            origin_id.label:      Ticket Number
-            priority.label:       Priority
-            problem.label:        Problem
-            recipient.label:      Recipient email
-            requester.label:      Requester
-            status.label:         Status
-            submitter.label:      Submitter
-            type.label:           Type
-            url.label:            Url
+            entity_label:             Ticket
+            entity_plural_label:      Tickets
+            channel.label:            Integration
+            assignee.label:           Assignee
+            related_case.label:       Case
+            comments.label:           Comments
+            collaborators.label:      Collaborators
+            created_at.label:         Created At
+            origin_created_at.label:  Original Created At
+            origin_updated_at.label:  Original Updated At
+            updated_at.label:         Updated At
+            due_at.label:             Due At
+            description.label:        Description
+            subject.label:            Subject
+            external_id.label:        External id
+            has_incidents.label:      Has incidents
+            id.label:                 Id
+            origin_id.label:          Ticket Number
+            priority.label:           Priority
+            problem.label:            Problem
+            recipient.label:          Recipient email
+            requester.label:          Requester
+            status.label:             Status
+            submitter.label:          Submitter
+            type.label:               Type
+            url.label:                Url
 
         ticketcomment:
-            entity_label:         Ticket comment
-            entity_plural_label:  Ticket comments
-            author.label:         Author
-            body.label:           Body
-            case_comment.label:   Case comment
-            created_at.label:     Created At
-            html_body.label:      Html body
-            id.label:             Id
-            public.label:         Public
-            ticket.label:         Ticket
+            entity_label:             Ticket comment
+            entity_plural_label:      Ticket comments
+            channel.label:            Integration
+            author.label:             Author
+            body.label:               Body
+            related_comment.label:    Case comment
+            created_at.label:         Created At
+            origin_created_at.label:  Original Created At
+            updated_at.label:         Updated At
+            html_body.label:          Html body
+            id.label:                 Id
+            origin_id.label:          Ticket Comment Number
+            public.label:             Public
+            ticket.label:             Ticket
 
         user:
             entity_label:                 Zendesk User
             entity_plural_label:          Zendesk Users
+            channel.label:                Integration
             active.label:                 Active
             alias.label:                  Alias
-            contact.label:                Contact
+            related_contact.label:        Contact
             created_at.label:             Created At
+            origin_created_at.label:      Original Created At
             details.label:                Details
             email.label:                  Email
             external_id.label:            External id
             id.label:                     Id
+            origin_id.label:              User Number
             last_login_at.label:          Last login at
             locale.label:                 Locale
             name.label:                   Name
@@ -55,9 +66,10 @@ orocrm:
             ticket_restriction.label:     Ticket restriction
             only_private_comments.label:  Only private comments
             time_zone.label:              Time-zone
+            origin_updated_at.label:      Original Updated At
             updated_at.label:             Updated At
             url.label:                    Url
-            user.label:                   User
+            related_user.label:           User
             verified.label:               Verified
             phone.label:                  Phone
             role.label:                   Role

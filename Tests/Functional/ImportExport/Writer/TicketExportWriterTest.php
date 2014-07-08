@@ -332,6 +332,10 @@ class TicketExportWriterTest extends WebTestCase
 
         $commentIds = [];
         foreach ($ticket->getComments() as $comment) {
+            if ($comment->getOriginId()) {
+                continue;
+            }
+
             $commentIds[] = $comment->getId();
             $this->assertNotNull($comment->getRelatedComment(), 'Ticket comment has related case comment.');
         }
