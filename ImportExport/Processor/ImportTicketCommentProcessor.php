@@ -50,7 +50,7 @@ class ImportTicketCommentProcessor extends AbstractImportProcessor
         $ticketId = $entity->getTicket()->getOriginId();
 
         $this->helper->setLogger($this->getLogger());
-        $this->helper->refreshEntity($entity, $this->getChannel());
+        $this->helper->refreshTicketComment($entity, $this->getChannel());
 
         if (!$entity->getTicket()) {
             $this->getLogger()->error("Ticket not found [origin_id=$ticketId].");
@@ -58,7 +58,7 @@ class ImportTicketCommentProcessor extends AbstractImportProcessor
             return null;
         }
 
-        $existingComment = $this->helper->findEntity($entity, $this->getChannel());
+        $existingComment = $this->helper->findTicketComment($entity, $this->getChannel());
 
         if ($existingComment) {
             $this->helper->copyEntityProperties($existingComment, $entity);

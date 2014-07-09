@@ -276,10 +276,14 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      */
     protected function createEntity($resource, $name, array $entityData, array &$responseData = null)
     {
-        $response = $this->getClient()->post(
-            $resource,
-            [$name => $entityData]
-        );
+        try {
+            $response = $this->getClient()->post(
+                $resource,
+                [$name => $entityData]
+            );
+        } catch (\Exception $exception) {
+            throw RestException::checkInvalidRecordException($exception);
+        }
 
         if (201 !== $response->getStatusCode()) {
             throw RestException::createFromResponse(
@@ -317,10 +321,14 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     {
         unset($entityData['id']);
 
-        $response = $this->getClient()->put(
-            $resource,
-            [$name => $entityData]
-        );
+        try {
+            $response = $this->getClient()->put(
+                $resource,
+                [$name => $entityData]
+            );
+        } catch (\Exception $exception) {
+            throw RestException::checkInvalidRecordException($exception);
+        }
 
         if (200 !== $response->getStatusCode()) {
             throw RestException::createFromResponse(

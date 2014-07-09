@@ -3,26 +3,42 @@
 namespace OroCRM\Bundle\ZendeskBundle\Model\SyncHelper;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
-use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 
 class UserSyncHelper extends AbstractSyncHelper
 {
     /**
-     * @param ZendeskUser $user
+     * @param User $user
      * @param Channel $channel
      */
-    public function rememberUser(ZendeskUser $user, Channel $channel)
+    public function rememberUser(User $user, Channel $channel)
     {
         $this->zendeskProvider->rememberUser($user, $channel);
     }
 
     /**
-     * {@inheritdoc}
+     * Find User
+     *
+     * @param User $user
+     * @param Channel $channel
+     * @return null|User
      */
-    public function findEntity($user, Channel $channel)
+    public function findUser(User $user, Channel $channel)
     {
         return $this->zendeskProvider->getUser($user, $channel);
+    }
+
+
+    /**
+     * Finds default user
+     *
+     * @param Channel $channel
+     * @return null|User
+     */
+    public function findDefaultUser(Channel $channel)
+    {
+        return $this->zendeskProvider->getDefaultZendeskUser($channel);
     }
 
     /**
@@ -37,19 +53,22 @@ class UserSyncHelper extends AbstractSyncHelper
         );
     }
 
+
     /**
-     * {@inheritdoc}
+     * @param User $user
+     * @param Channel $channel
      */
-    public function refreshEntity($user, Channel $channel)
+    public function refreshTicket(User $user, Channel $channel)
     {
         $this->refreshChannel($user, $channel);
         $this->refreshDictionaryField($user, 'role', 'userRole');
     }
 
     /**
-     * {@inheritdoc}
+     * @param User $entity
+     * @param Channel $channel
      */
-    public function syncRelatedEntities($entity, Channel $channel)
+    public function syncRelatedEntities(User $entity, Channel $channel)
     {
         if ($this->isRelativeWithUser($entity) && $entity->getRelatedContact()) {
             $this->getLogger()->info(
@@ -93,19 +112,19 @@ class UserSyncHelper extends AbstractSyncHelper
     }
 
     /**
-     * @param ZendeskUser $entity
+     * @param User $entity
      * @return bool
      */
-    protected function isRelativeWithUser(ZendeskUser $entity)
+    protected function isRelativeWithUser(User  $entity)
     {
         return $entity->isRoleIn([ZendeskUserRole::ROLE_ADMIN, ZendeskUserRole::ROLE_AGENT]);
     }
 
     /**
-     * @param ZendeskUser $entity
+     * @param User $entity
      * @return bool
      */
-    protected function isRelativeWithContact(ZendeskUser $entity)
+    protected function isRelativeWithContact(User $entity)
     {
         return $entity->isRoleEqual(ZendeskUserRole::ROLE_END_USER);
     }

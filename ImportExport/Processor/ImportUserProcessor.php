@@ -43,9 +43,9 @@ class ImportUserProcessor extends AbstractImportProcessor
         $this->getLogger()->setMessagePrefix("Zendesk User [origin_id={$entity->getOriginId()}]: ");
 
         $this->helper->setLogger($this->getLogger());
-        $this->helper->refreshEntity($entity, $this->getChannel());
+        $this->helper->refreshTicket($entity, $this->getChannel());
 
-        $existingUser = $this->helper->findEntity($entity, $this->getChannel());
+        $existingUser = $this->helper->findUser($entity, $this->getChannel());
         if ($existingUser) {
             if ($existingUser->getOriginUpdatedAt() == $entity->getOriginUpdatedAt()) {
                 return null;

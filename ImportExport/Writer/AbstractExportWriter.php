@@ -55,7 +55,7 @@ abstract class AbstractExportWriter implements
     /**
      * @var UserSyncHelper
      */
-    protected $userSyncHelper;
+    protected $userHelper;
 
     /**
      * @var Channel
@@ -86,9 +86,9 @@ abstract class AbstractExportWriter implements
     /**
      * @param UserSyncHelper $userSyncHelper
      */
-    public function setUserSyncHelper(UserSyncHelper $userSyncHelper)
+    public function setUserHelper(UserSyncHelper $userSyncHelper)
     {
-        $this->userSyncHelper = $userSyncHelper;
+        $this->userHelper = $userSyncHelper;
     }
 
     /**
@@ -227,9 +227,9 @@ abstract class AbstractExportWriter implements
         $user->setChannel($this->getChannel());
         $this->entityManager->persist($user);
 
-        $this->userSyncHelper->refreshEntity($createdUser, $this->getChannel());
-        $this->userSyncHelper->copyEntityProperties($user, $createdUser);
+        $this->userHelper->refreshTicket($createdUser, $this->getChannel());
+        $this->userHelper->copyEntityProperties($user, $createdUser);
 
-        $this->userSyncHelper->rememberUser($user, $this->getChannel());
+        $this->userHelper->rememberUser($user, $this->getChannel());
     }
 }

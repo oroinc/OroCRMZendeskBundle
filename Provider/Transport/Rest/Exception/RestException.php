@@ -10,6 +10,21 @@ use OroCRM\Bundle\ZendeskBundle\Exception\ZendeskException;
 class RestException extends BaseException implements ZendeskException
 {
     /**
+     * @param \Exception $exception
+     * @return mixed
+     */
+    public static function checkInvalidRecordException(\Exception $exception)
+    {
+        if ($exception instanceof BaseException &&
+            $exception->getResponse() &&
+            $exception->getResponse()->isClientError()
+        ) {
+            return InvalidRecordException::createFromResponse($exception->getResponse(), null, $exception);
+        }
+        return $exception;
+    }
+
+    /**
      * @param RestResponseInterface $response
      * @param string|null $message
      * @param \Exception|null $previous

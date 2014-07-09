@@ -157,7 +157,8 @@ services:
             - [setTransport, [@orocrm_zendesk.transport.rest_transport]]
             - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
             - [setContextRegistry, [@oro_importexport.context_registry]]
-            - [setUserSyncHelper, [@orocrm_zendesk.sync_helper.user]]
+            - [setUserHelper, [@orocrm_zendesk.sync_helper.user]]
+            - [setLogger, [@oro_integration.logger.strategy]]
 
     orocrm_zendesk.importexport.writer.export_ticket:
         class: %orocrm_zendesk.importexport.writer.export_ticket.class%

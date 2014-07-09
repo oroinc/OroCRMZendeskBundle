@@ -122,7 +122,7 @@ class TicketExportWriter extends AbstractExportWriter
 
             $this->getLogger()->info("Created ticket comment [origin_id={$createdComment->getOriginId()}].");
 
-            $this->ticketCommentHelper->refreshEntity($createdComment, $this->getChannel());
+            $this->ticketCommentHelper->refreshTicketComment($createdComment, $this->getChannel());
             $ticket->addComment($createdComment);
 
             $this->entityManager->persist($createdComment);
@@ -142,16 +142,28 @@ class TicketExportWriter extends AbstractExportWriter
         if ($ticket->getRequester() && !$ticket->getRequester()->getOriginId()) {
             $this->getLogger()->info('Try to sync ticket requester.');
             $this->createUser($ticket->getRequester());
+            if (!$ticket->getRequester()->getOriginId()) {
+                $this->getLogger()->warning('Set default user as requester.');
+                $ticket->setRequester($this->userHelper->findDefaultUser($this->getChannel()));
+            }
         }
 
         if ($ticket->getAssignee() && !$ticket->getAssignee()->getOriginId()) {
             $this->getLogger()->info('Try to sync ticket assignee.');
             $this->createUser($ticket->getAssignee());
+            if (!$ticket->getAssignee()->getOriginId()) {
+                $this->getLogger()->warning('Set default user as assignee.');
+                $ticket->setAssignee($this->userHelper->findDefaultUser($this->getChannel()));
+            }
         }
 
         if ($ticket->getSubmitter() && !$ticket->getSubmitter()->getOriginId()) {
-            $this->getLogger()->info('Try to sync ticket sumitter.');
+            $this->getLogger()->info('Try to sync ticket submitter.');
             $this->createUser($ticket->getSubmitter());
+            if (!$ticket->getSubmitter()->getOriginId()) {
+                $this->getLogger()->warning('Set default user as submitter.');
+                $ticket->setSubmitter($this->userHelper->findDefaultUser($this->getChannel()));
+            }
         }
     }
 

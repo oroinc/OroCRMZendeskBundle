@@ -9,15 +9,18 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 class TicketCommentSyncHelper extends AbstractSyncHelper
 {
     /**
-     * {@inheritdoc}
+     * @param TicketComment $ticketComment
+     * @param Channel $channel
+     * @return null|TicketComment
      */
-    public function findEntity($ticketComment, Channel $channel)
+    public function findTicketComment($ticketComment, Channel $channel)
     {
         return $this->zendeskProvider->getTicketComment($ticketComment, $channel);
     }
 
     /**
-     * {@inheritdoc}
+     * @param CaseComment $caseComment
+     * @return null|TicketComment
      */
     public function findByCaseComment(CaseComment $caseComment)
     {
@@ -25,7 +28,8 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
     }
 
     /**
-     * {@inheritdoc}
+     * @param TicketComment $targetTicketComment
+     * @param TicketComment $sourceTicketComment
      */
     public function copyEntityProperties($targetTicketComment, $sourceTicketComment)
     {
@@ -37,9 +41,10 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
     }
 
     /**
-     * {@inheritdoc}
+     * @param TicketComment $ticketComment
+     * @param Channel $channel
      */
-    public function refreshEntity($ticketComment, Channel $channel)
+    public function refreshTicketComment($ticketComment, Channel $channel)
     {
         $this->refreshChannel($ticketComment, $channel);
         $this->refreshTicket($ticketComment, $channel);

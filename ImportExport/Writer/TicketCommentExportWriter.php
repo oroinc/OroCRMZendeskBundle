@@ -53,6 +53,10 @@ class TicketCommentExportWriter extends AbstractExportWriter
         if ($ticketComment->getAuthor() && !$ticketComment->getAuthor()->getOriginId()) {
             $this->getLogger()->info('Try to sync ticket comment author.');
             $this->createUser($ticketComment->getAuthor());
+            if (!$ticketComment->getAuthor()->getOriginId()) {
+                $this->getLogger()->warning('Set default user as author.');
+                $ticketComment->setAuthor($this->userHelper->findDefaultUser($this->getChannel()));
+            }
         }
     }
 
@@ -68,7 +72,7 @@ class TicketCommentExportWriter extends AbstractExportWriter
         $this->getLogger()->info("Created ticket comment [origin_id={$createdTicketComment->getOriginId()}].");
 
         $this->getLogger()->info('Update ticket comment by response data.');
-        $this->ticketCommentHelper->refreshEntity($createdTicketComment, $this->getChannel());
+        $this->ticketCommentHelper->refreshTicketComment($createdTicketComment, $this->getChannel());
         $this->ticketCommentHelper->copyEntityProperties($ticketComment, $createdTicketComment);
 
         $this->getLogger()->info('Update related comment.');
