@@ -21,55 +21,25 @@ class TicketCommentNormalizerTest extends WebTestCase
      */
     protected $serializer;
 
-    /**
-     * @var Channel
-     */
-    protected $channel;
-
     protected function setUp()
     {
         $this->initClient();
-        $fixtures = array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData');
-        $this->loadFixtures($fixtures);
-        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->serializer = $this->getContainer()->get('oro_importexport.serializer');
     }
 
     /**
      * @dataProvider denormalizeProvider
      */
-    public function testDenormalize($data, TicketComment $expected)
+    public function testDenormalize($data, TicketComment $expected, $context = [])
     {
-        $expected->setChannel($this->channel);
-        if ($expected->getAuthor()) {
-            $expected->getAuthor()->setChannel($this->channel);
-        }
-        if ($expected->getTicket()) {
-            $expected->getTicket()->setChannel($this->channel);
-        }
         $actual = $this->serializer->deserialize(
             $data,
             'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
             null,
-            array('channel' => $this->channel->getId())
+            $context
         );
 
         $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @dataProvider denormalizeProvider
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Context should contain reference to channel
-     */
-    public function testLogicException($data)
-    {
-        $this->serializer->deserialize(
-            $data,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
-            null,
-            array()
-        );
     }
 
     public function denormalizeProvider()
@@ -93,6 +63,25 @@ class TicketCommentNormalizerTest extends WebTestCase
                     ->setPublic($public)
                     ->setTicket($this->createTicket($ticketId))
                     ->setOriginCreatedAt(new \DateTime($createdAt))
+            ),
+            'with ticket_id' => array(
+                'data' => array(
+                    'id' => $originId = 100,
+                    'author_id' => $authorId = 105,
+                    'body' => $body = 'Body',
+                    'html_body' => $htmlBody = '<p>Body</p>',
+                    'public' => $public = true,
+                    'created_at' => $createdAt = '2014-06-12T11:45:21Z',
+                ),
+                'expected' => $this->createTicketComment()
+                    ->setOriginId($originId)
+                    ->setAuthor($this->createUser($authorId))
+                    ->setBody($body)
+                    ->setHtmlBody($htmlBody)
+                    ->setPublic($public)
+                    ->setTicket($this->createTicket($ticketId = 202))
+                    ->setOriginCreatedAt(new \DateTime($createdAt)),
+                'context' => array('ticket_id' => $ticketId),
             ),
             'short' => array(
                 'data' => 100,

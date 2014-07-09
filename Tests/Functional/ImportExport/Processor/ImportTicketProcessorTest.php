@@ -11,19 +11,19 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketSyncStrategy;
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketProcessor;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
-class TicketSyncStrategyTest extends WebTestCase
+class ImportTicketProcessorTest extends WebTestCase
 {
     /**
-     * @var TicketSyncStrategy
+     * @var ImportTicketProcessor
      */
-    protected $strategy;
+    protected $processor;
 
     /**
      * @var EntityManager
@@ -47,13 +47,13 @@ class TicketSyncStrategyTest extends WebTestCase
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $this->strategy = $this->getContainer()->get('orocrm_zendesk.importexport.strategy.ticket_sync');
+        $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.import_ticket');
         $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
-        $this->strategy->setImportExportContext($this->context);
+        $this->processor->setImportExportContext($this->context);
     }
 
     public function tearDown()
@@ -69,7 +69,7 @@ class TicketSyncStrategyTest extends WebTestCase
      */
     public function testProcessInvalidArgumentFails()
     {
-        $this->strategy->process(new \stdClass());
+        $this->processor->process(new \stdClass());
     }
 
     public function testProcessNewZendeskTicket()
@@ -77,7 +77,7 @@ class TicketSyncStrategyTest extends WebTestCase
         $originId = 1;
         $zendeskTicket = $this->createZendeskTicket()->setOriginId($originId);
         $expected = array($originId);
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
         $actual = $this->getSyncStateService()->getTicketIds();
         $this->assertEquals($expected, $actual);
         $this->assertFalse($this->entityManager->contains($zendeskTicket));
@@ -100,8 +100,9 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'))
             ->setChannel($this->channel);
 
-        $result = $this->strategy->process($zendeskTicket);
+        $result = $this->processor->process($zendeskTicket);
 
+        $this->assertNotEmpty($result);
         $this->assertNotNull($result->getId());
         $this->assertNotEquals($zendeskTicket->getId(), $result->getId());
         $this->assertEquals($zendeskTicket->getOriginId(), $result->getOriginId());
@@ -137,7 +138,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginUpdatedAt($existingTicket->getOriginUpdatedAt())
             ->setDueAt(new \DateTime('2014-06-11T15:26:11Z'));
 
-        $result = $this->strategy->process($zendeskTicket);
+        $result = $this->processor->process($zendeskTicket);
 
         $this->assertEmpty($result);
     }
@@ -149,7 +150,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->setProblem($this->createZendeskTicket()->setOriginId($originId));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket', $zendeskTicket->getProblem());
         $this->assertEquals($originId, $zendeskTicket->getProblem()->getOriginId());
@@ -163,7 +164,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->setType(new TicketType($name));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketType', $zendeskTicket->getType());
         $this->assertEquals($name, $zendeskTicket->getType()->getName());
@@ -177,7 +178,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->setStatus(new TicketStatus($name));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketStatus', $zendeskTicket->getStatus());
         $this->assertEquals($name, $zendeskTicket->getStatus()->getName());
@@ -191,7 +192,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->setPriority(new TicketPriority($name));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketPriority', $zendeskTicket->getPriority());
         $this->assertEquals($name, $zendeskTicket->getPriority()->getName());
@@ -205,7 +206,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->addCollaborator($this->createZendeskUser()->setOriginId(1016));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $this->assertInstanceOf(
             'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
@@ -222,7 +223,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->setRequester($this->createZendeskUser()->setOriginId($originId));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\User', $zendeskTicket->getRequester());
         $this->assertEquals($originId, $zendeskTicket->getRequester()->getOriginId());
@@ -236,7 +237,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->setSubmitter($this->createZendeskUser()->setOriginId($originId));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\User', $zendeskTicket->getSubmitter());
         $this->assertEquals($originId, $zendeskTicket->getSubmitter()->getOriginId());
@@ -250,7 +251,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->setAssignee($this->createZendeskUser()->setOriginId($originId));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\User', $zendeskTicket->getAssignee());
         $this->assertEquals($originId, $zendeskTicket->getAssignee()->getOriginId());
@@ -264,7 +265,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setSubject('Updated subject')
             ->setDescription('Updated description');
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $case = $zendeskTicket->getRelatedCase();
         $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseEntity', $case);
@@ -283,7 +284,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->setStatus(new TicketStatus($ticketStatus));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $case = $zendeskTicket->getRelatedCase();
         $this->assertEquals($caseStatus, $case->getStatus()->getName());
@@ -328,7 +329,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->setPriority(new TicketPriority($ticketPriority));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $case = $zendeskTicket->getRelatedCase();
         $this->assertEquals($casePriority, $case->getPriority()->getName());
@@ -367,7 +368,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->$setter($this->createZendeskUser()->setOriginId(1016));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $case = $zendeskTicket->getRelatedCase();
         $this->assertNotEmpty($zendeskTicket->$getter()->getRelatedUser());
@@ -399,7 +400,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->$setter($this->createZendeskUser()->setOriginId(1016));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $case = $zendeskTicket->getRelatedCase();
         $this->assertNotEmpty($zendeskTicket->$getter()->getRelatedUser());
@@ -431,7 +432,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->$setter($this->createZendeskUser()->setOriginId(1010));
 
-        $this->assertEquals($zendeskTicket, $this->strategy->process($zendeskTicket));
+        $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $case = $zendeskTicket->getRelatedCase();
         $this->assertNotEmpty($zendeskTicket->$getter()->getRelatedContact());
@@ -490,7 +491,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setPriority(new TicketPriority($expectedPriority = TicketPriority::PRIORITY_NORMAL))
             ->setChannel($this->channel);
 
-        $result = $this->strategy->process($processZendeskTicket);
+        $result = $this->processor->process($processZendeskTicket);
 
         $this->assertNotEmpty($result);
         $this->assertEquals($result->getId(), $zendeskTicket->getId());
@@ -560,7 +561,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setPriority(new TicketPriority(TicketPriority::PRIORITY_NORMAL))
             ->setChannel($this->channel);
 
-        $result = $this->strategy->process($processZendeskTicket);
+        $result = $this->processor->process($processZendeskTicket);
 
         $this->assertNotEmpty($result);
         $this->assertEquals($result->getId(), $zendeskTicket->getId());
@@ -631,7 +632,7 @@ class TicketSyncStrategyTest extends WebTestCase
             ->setPriority(new TicketPriority(TicketPriority::PRIORITY_NORMAL))
             ->setChannel($this->channel);
 
-        $result = $this->strategy->process($processZendeskTicket);
+        $result = $this->processor->process($processZendeskTicket);
 
         $this->assertNotEmpty($result);
         $this->assertEquals($result->getId(), $zendeskTicket->getId());

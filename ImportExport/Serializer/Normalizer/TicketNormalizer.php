@@ -110,19 +110,6 @@ class TicketNormalizer extends AbstractNormalizer
     /**
      * {@inheritdoc}
      */
-    public function denormalize($data, $class, $format = null, array $context = array())
-    {
-        /**
-         * @var Ticket $ticket
-         */
-        $ticket = parent::denormalize($data, $class, $format, $context);
-        $ticket->setChannel($this->getChannel($context));
-        return $ticket;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getTargetClassName()
     {
         return 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket';

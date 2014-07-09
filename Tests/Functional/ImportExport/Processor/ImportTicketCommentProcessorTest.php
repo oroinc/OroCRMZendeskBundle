@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketCommentSyncStrategy;
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketCommentProcessor;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
@@ -16,7 +16,7 @@ use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
  * @dbIsolation
  * @dbReindex
  */
-class TicketCommentSyncStrategyTest extends WebTestCase
+class ImportTicketCommentProcessorTest extends WebTestCase
 {
     /**
      * @var int
@@ -29,9 +29,9 @@ class TicketCommentSyncStrategyTest extends WebTestCase
     protected $context;
 
     /**
-     * @var TicketCommentSyncStrategy
+     * @var ImportTicketCommentProcessor
      */
-    protected $strategy;
+    protected $processor;
 
     /**
      * @var EntityManager
@@ -49,10 +49,10 @@ class TicketCommentSyncStrategyTest extends WebTestCase
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
 
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $this->strategy = $this->getContainer()->get('orocrm_zendesk.importexport.strategy.ticket_comment_sync');
+        $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.import_ticket_comment');
         $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
-        $this->strategy->setImportExportContext($this->context);
+        $this->processor->setImportExportContext($this->context);
     }
 
     protected function postFixtureLoad()
@@ -67,7 +67,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
      */
     public function testProcessFailsWithInvalidArgument()
     {
-        $this->strategy->process(new \stdClass());
+        $this->processor->process(new \stdClass());
     }
 
     public function testProcessNewZendeskTicketComment()
@@ -79,7 +79,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
             ->setTicket($this->createTicket($ticketId))
             ->setOriginCreatedAt(new \DateTime());
 
-        $this->assertEquals($ticketComment, $this->strategy->process($ticketComment));
+        $this->assertEquals($ticketComment, $this->processor->process($ticketComment));
         $this->assertFalse($this->entityManager->contains($ticketComment));
     }
 
@@ -97,7 +97,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
             ->setChannel($this->channel)
             ->setOriginCreatedAt(new \DateTime('2014-04-10T12:12:21Z'));
 
-        $result = $this->strategy->process($ticketComment);
+        $result = $this->processor->process($ticketComment);
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment', $result);
 
@@ -125,7 +125,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
             ->setAuthor($this->createZendeskUser()->setOriginId($originId))
             ->setOriginCreatedAt(new \DateTime());
 
-        $this->assertSame($ticketComment, $this->strategy->process($ticketComment));
+        $this->assertSame($ticketComment, $this->processor->process($ticketComment));
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\User', $ticketComment->getAuthor());
         $this->assertEquals($originId, $ticketComment->getAuthor()->getOriginId());
@@ -143,7 +143,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
             ->setOriginCreatedAt(new \DateTime('2014-04-10T12:12:21Z'))
             ->setPublic(true);
 
-        $this->assertEquals($ticketComment, $this->strategy->process($ticketComment));
+        $this->assertEquals($ticketComment, $this->processor->process($ticketComment));
 
         $comment = $ticketComment->getRelatedComment();
         $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
@@ -169,7 +169,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
             ->setTicket($this->createTicket($ticketId))
             ->setOriginCreatedAt(new \DateTime());
 
-        $this->assertSame($ticketComment, $this->strategy->process($ticketComment));
+        $this->assertSame($ticketComment, $this->processor->process($ticketComment));
 
         $comment = $ticketComment->getRelatedComment();
         $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
@@ -193,7 +193,7 @@ class TicketCommentSyncStrategyTest extends WebTestCase
             ->setTicket($this->createTicket($ticketId))
             ->setOriginCreatedAt(new \DateTime());
 
-        $this->assertSame($ticketComment, $this->strategy->process($ticketComment));
+        $this->assertSame($ticketComment, $this->processor->process($ticketComment));
 
         $comment = $ticketComment->getRelatedComment();
         $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);

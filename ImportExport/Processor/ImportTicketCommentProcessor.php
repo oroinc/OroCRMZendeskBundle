@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
+namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
 
-class TicketCommentSyncStrategy extends AbstractSyncStrategy
+class ImportTicketCommentProcessor extends AbstractImportProcessor
 {
     /**
      * @var TicketCommentSyncHelper

@@ -7,7 +7,7 @@ use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 
-class TicketCommentExportProcessor extends AbstractExportProcessor
+class ExportTicketCommentProcessor extends AbstractExportProcessor
 {
     /**
      * {@inheritdoc}

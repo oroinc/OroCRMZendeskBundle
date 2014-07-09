@@ -10,7 +10,7 @@ connector:
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    orocrm_zendesk.zendesk.user_connector
-                        processor: oro_importexport.processor.import_delegate
+                        processor: orocrm_zendesk.importexport.processor.import_user
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
@@ -24,7 +24,21 @@ connector:
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    orocrm_zendesk.zendesk.ticket_connector
-                        processor: oro_importexport.processor.import_delegate
+                        processor: orocrm_zendesk.importexport.processor.import_ticket
+                        writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 25
+
+        zendesk_ticket_comment_import:
+            title: "Sync ticket comments from Zendesk"
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_zendesk.zendesk.ticket_comment_connector
+                        processor: orocrm_zendesk.importexport.processor.import_ticket_comment
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
@@ -38,22 +52,8 @@ connector:
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    oro_integration.reader.entity.by_id
-                        processor: oro_importexport.processor.export_delegate
-                        writer:    orocrm_zendesk.importexport.writer.ticket_export
-                    parameters:
-                        batch_size: 25
-
-        zendesk_ticket_comment_import:
-            title: "Sync ticket comments from Zendesk"
-            type: import
-            steps:
-                import:
-                    title: import
-                    class: Oro\Bundle\BatchBundle\Step\ItemStep
-                    services:
-                        reader:    orocrm_zendesk.zendesk.ticket_comment_connector
-                        processor: oro_importexport.processor.import_delegate
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        processor: orocrm_zendesk.importexport.processor.export_ticket
+                        writer:    orocrm_zendesk.importexport.writer.export_ticket
                     parameters:
                         batch_size: 25
 
@@ -66,7 +66,7 @@ connector:
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    oro_integration.reader.entity.by_id
-                        processor: oro_importexport.processor.export_delegate
-                        writer:    orocrm_zendesk.importexport.writer.ticket_comment_export
+                        processor: orocrm_zendesk.importexport.processor.export_ticket_comment
+                        writer:    orocrm_zendesk.importexport.writer.export_ticket_comment
                     parameters:
                         batch_size: 25

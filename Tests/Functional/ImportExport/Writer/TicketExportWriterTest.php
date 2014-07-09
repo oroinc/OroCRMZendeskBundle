@@ -12,6 +12,10 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
 use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
+use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
@@ -29,11 +33,6 @@ class TicketExportWriterTest extends WebTestCase
      * @var EntityManager
      */
     protected $entityManager;
-
-    /**
-     * @var SerializerInterface
-     */
-    protected $serializer;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -69,7 +68,6 @@ class TicketExportWriterTest extends WebTestCase
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $this->serializer = $this->getContainer()->get('oro_importexport.serializer');
         $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
 
         $this->context->expects($this->any())
@@ -93,7 +91,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->getContainer()->set('orocrm_zendesk.transport.rest_transport', $this->transport);
 
-        $this->writer = $this->getContainer()->get('orocrm_zendesk.importexport.writer.ticket_export');
+        $this->writer = $this->getContainer()->get('orocrm_zendesk.importexport.writer.export_ticket');
         $this->writer->setImportExportContext($this->context);
         $this->writer->setLogger($this->logger);
     }
@@ -101,7 +99,7 @@ class TicketExportWriterTest extends WebTestCase
     protected function tearDown()
     {
         $this->getContainer()->set('orocrm_zendesk.transport.rest_transport', null);
-        $this->getContainer()->set('orocrm_zendesk.importexport.writer.ticket_export', null);
+        $this->getContainer()->set('orocrm_zendesk.importexport.writer.export_ticket', null);
         $this->logOutput = null;
         $this->client->rollbackTransaction();
     }
@@ -110,53 +108,45 @@ class TicketExportWriterTest extends WebTestCase
     {
         $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket');
 
-        $requestData = $this->serializer->serialize($ticket, null);
-        $expectedResponseData = [
-            'ticket' => [
-                'id' => $ticketId = 10001,
-                'url' => 'https://foo.zendesk.com/api/v2/tickets/10001.json',
-                'subject' => 'Updated Subject',
-                'description' => $description = 'Updated Description',
-                'type' => TicketType::TYPE_TASK,
-                'status' => TicketStatus::STATUS_OPEN,
-                'priority' => TicketPriority::PRIORITY_NORMAL,
-                'requester_id' => $requesterId =
-                        $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-                'submitter_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-                'assignee_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-                'created_at' => '2014-06-06T12:24:23+0000',
-                'updated_at' => '2014-06-09T13:43:21+0000',
-            ],
-            'comment' => null,
-        ];
+        $expected = $this->createTicket()
+            ->setOriginId(10001)
+            ->setUrl('https://foo.zendesk.com/api/v2/tickets/10001.json')
+            ->setSubject('Updated Subject')
+            ->setDescription('Updated Description')
+            ->setType($this->createTicketType(TicketType::TYPE_TASK))
+            ->setStatus($this->createTicketStatus(TicketStatus::STATUS_OPEN))
+            ->setPriority($this->createTicketPriority(TicketPriority::PRIORITY_NORMAL))
+            ->setRequester($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setSubmitter($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setAssignee($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setOriginCreatedAt(new \DateTime('2014-06-06T12:24:23+0000'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T13:43:21+0000'));
 
         $this->transport->expects($this->once())
             ->method('createTicket')
-            ->with($requestData)
-            ->will($this->returnValue($expectedResponseData));
+            ->with($ticket)
+            ->will($this->returnValue(['ticket' => $expected, 'comment' => null]));
 
-        $expected = $expectedResponseData['ticket'];
-
-        $this->writer->write([$ticket]);
+          $this->writer->write([$ticket]);
 
         $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
 
-        $this->assertEquals($expected['id'], $ticket->getOriginId());
-        $this->assertEquals($expected['url'], $ticket->getUrl());
-        $this->assertEquals($expected['subject'], $ticket->getSubject());
-        $this->assertEquals($expected['description'], $ticket->getDescription());
-        $this->assertEquals($expected['type'], $ticket->getType()->getName());
-        $this->assertEquals($expected['status'], $ticket->getStatus()->getName());
-        $this->assertEquals($expected['priority'], $ticket->getPriority()->getName());
-        $this->assertEquals($expected['requester_id'], $ticket->getRequester()->getOriginId());
-        $this->assertEquals($expected['submitter_id'], $ticket->getSubmitter()->getOriginId());
-        $this->assertEquals($expected['assignee_id'], $ticket->getAssignee()->getOriginId());
-        $this->assertEquals($expected['created_at'], $ticket->getOriginCreatedAt()->format(\DateTime::ISO8601));
-        $this->assertEquals($expected['updated_at'], $ticket->getOriginUpdatedAt()->format(\DateTime::ISO8601));
+        $this->assertEquals($expected->getOriginId(), $ticket->getOriginId());
+        $this->assertEquals($expected->getUrl(), $ticket->getUrl());
+        $this->assertEquals($expected->getSubject(), $ticket->getSubject());
+        $this->assertEquals($expected->getDescription(), $ticket->getDescription());
+        $this->assertEquals($expected->getType()->getName(), $ticket->getType()->getName());
+        $this->assertEquals($expected->getStatus()->getName(), $ticket->getStatus()->getName());
+        $this->assertEquals($expected->getPriority()->getName(), $ticket->getPriority()->getName());
+        $this->assertEquals($expected->getRequester()->getOriginId(), $ticket->getRequester()->getOriginId());
+        $this->assertEquals($expected->getSubmitter()->getOriginId(), $ticket->getSubmitter()->getOriginId());
+        $this->assertEquals($expected->getAssignee()->getOriginId(), $ticket->getAssignee()->getOriginId());
+        $this->assertEquals($expected->getOriginCreatedAt(), $ticket->getOriginCreatedAt());
+        $this->assertEquals($expected->getOriginUpdatedAt(), $ticket->getOriginUpdatedAt());
 
         $relatedCase = $ticket->getRelatedCase();
-        $this->assertEquals($expected['subject'], $relatedCase->getSubject());
-        $this->assertEquals($expected['description'], $relatedCase->getDescription());
+        $this->assertEquals($expected->getSubject(), $relatedCase->getSubject());
+        $this->assertEquals($expected->getDescription(), $relatedCase->getDescription());
         $this->assertEquals(CaseStatus::STATUS_OPEN, $relatedCase->getStatus()->getName());
         $this->assertEquals(CasePriority::PRIORITY_NORMAL, $relatedCase->getPriority()->getName());
         $this->assertEquals('james.cook@example.com', $relatedCase->getAssignedTo()->getEmail());
@@ -164,7 +154,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->assertContains('[info] Zendesk Ticket [id=' . $ticket->getId() . ']:', $this->logOutput);
         $this->assertContains('Create ticket in Zendesk API.', $this->logOutput);
-        $this->assertContains('Created ticket [origin_id=' . $expected['id'] . '].', $this->logOutput);
+        $this->assertContains('Created ticket [origin_id=' . $expected->getOriginId() . '].', $this->logOutput);
         $this->assertContains('Update ticket by response data.', $this->logOutput);
         $this->assertContains('Update related case.', $this->logOutput);
     }
@@ -173,40 +163,33 @@ class TicketExportWriterTest extends WebTestCase
     {
         $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket');
 
-        $requestData = $this->serializer->serialize($ticket, null);
-        $expectedResponseData = [
-            'ticket' => [
-                'id' => $ticketId = 10001,
-                'url' => 'https://foo.zendesk.com/api/v2/tickets/10001.json',
-                'subject' => 'Updated Subject',
-                'description' => $description = 'Updated Description',
-                'type' => TicketType::TYPE_TASK,
-                'status' => TicketStatus::STATUS_OPEN,
-                'priority' => TicketPriority::PRIORITY_NORMAL,
-                'requester_id' => $requesterId =
-                    $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-                'submitter_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-                'assignee_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-                'created_at' => '2014-06-06T12:24:23+0000',
-                'updated_at' => '2014-06-09T13:43:21+0000',
-            ],
-            'comment' => [
-                'id' => 20001,
-                'author_id' => $requesterId,
-                'body' => $description,
-                'html_body' => '<p>' . $description . '</p>',
-                'public' => true,
-                'ticket_id' => $ticketId,
-                'created_at' => '2014-06-06T12:24:24+0000',
-            ],
-        ];
+        $expectedTicket = $this->createTicket()
+            ->setOriginId(10001)
+            ->setUrl('https://foo.zendesk.com/api/v2/tickets/10001.json')
+            ->setSubject('Updated Subject')
+            ->setDescription('Updated Description')
+            ->setType($this->createTicketType(TicketType::TYPE_TASK))
+            ->setStatus($this->createTicketStatus(TicketStatus::STATUS_OPEN))
+            ->setPriority($this->createTicketPriority(TicketPriority::PRIORITY_NORMAL))
+            ->setRequester($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setSubmitter($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setAssignee($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setOriginCreatedAt(new \DateTime('2014-06-06T12:24:23+0000'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T13:43:21+0000'));
+
+        $expectedComment = $this->createTicketComment()
+            ->setOriginId(20001)
+            ->setAuthor($expectedTicket->getRequester())
+            ->setBody($expectedTicket->getDescription())
+            ->setHtmlBody('<p>' . $expectedTicket->getDescription() . '</p>')
+            ->setPublic(true)
+            ->setTicket($this->createTicket()->setOriginId($expectedTicket->getOriginId()))
+            ->setOriginCreatedAt(new \DateTime('2014-06-06T12:24:24+0000'));
 
         $this->transport->expects($this->once())
             ->method('createTicket')
-            ->with($requestData)
-            ->will($this->returnValue($expectedResponseData));
-
-        $expected = $expectedResponseData['comment'];
+            ->with($ticket)
+            ->will($this->returnValue(['ticket' => $expectedTicket, 'comment' => $expectedComment]));
 
         $this->writer->write([$ticket]);
 
@@ -215,25 +198,28 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertEquals(1, $ticket->getComments()->count());
         $comment = $ticket->getComments()->first();
 
-        $this->assertEquals($expected['id'], $comment->getOriginId());
-        $this->assertEquals($expected['body'], $comment->getBody());
-        $this->assertEquals($expected['html_body'], $comment->getHtmlBody());
-        $this->assertEquals($expected['public'], $comment->getPublic());
-        $this->assertEquals($expected['author_id'], $comment->getAuthor()->getOriginId());
-        $this->assertEquals($expected['ticket_id'], $comment->getTicket()->getOriginId());
-        $this->assertEquals($expected['created_at'], $comment->getOriginCreatedAt()->format(\DateTime::ISO8601));
+        $this->assertEquals($expectedComment->getOriginId(), $comment->getOriginId());
+        $this->assertEquals($expectedComment->getBody(), $comment->getBody());
+        $this->assertEquals($expectedComment->getHtmlBody(), $comment->getHtmlBody());
+        $this->assertEquals($expectedComment->getPublic(), $comment->getPublic());
+        $this->assertEquals($expectedComment->getAuthor()->getOriginId(), $comment->getAuthor()->getOriginId());
+        $this->assertEquals($expectedComment->getTicket()->getOriginId(), $comment->getTicket()->getOriginId());
+        $this->assertEquals($expectedComment->getOriginCreatedAt(), $comment->getOriginCreatedAt());
 
         $relatedComment = $comment->getRelatedComment();
         $this->assertNotNull($relatedComment);
-        $this->assertEquals($expected['body'], $relatedComment->getMessage());
-        $this->assertEquals($expected['public'], $relatedComment->isPublic());
+        $this->assertEquals($expectedComment->getBody(), $relatedComment->getMessage());
+        $this->assertEquals($expectedComment->getPublic(), $relatedComment->isPublic());
         $this->assertNotEmpty($relatedComment->getOwner());
         $this->assertEquals(
             'james.cook@example.com',
             $relatedComment->getOwner()->getEmail()
         );
 
-        $this->assertContains('Created ticket comment [origin_id=' . $expected['id'] . '].', $this->logOutput);
+        $this->assertContains(
+            'Created ticket comment [origin_id=' . $expectedComment->getOriginId() . '].',
+            $this->logOutput
+        );
         $this->assertContains('Update related case comment.', $this->logOutput);
         $this->assertNotContains('Schedule job to sync existing ticket comments.', $this->logOutput);
     }
@@ -242,38 +228,33 @@ class TicketExportWriterTest extends WebTestCase
     {
         $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket');
 
-        $requestData = $this->serializer->serialize($ticket, null);
-        $expectedResponseData = [
-            'ticket' => [
-                'id' => $ticketId = 10001,
-                'url' => 'https://foo.zendesk.com/api/v2/tickets/10001.json',
-                'subject' => 'Updated Subject',
-                'description' => $description = 'Updated Description',
-                'type' => TicketType::TYPE_TASK,
-                'status' => TicketStatus::STATUS_OPEN,
-                'priority' => TicketPriority::PRIORITY_NORMAL,
-                'requester_id' => $requesterId =
-                    $this->getReference('zendesk_user:jim.smith@example.com')->getOriginId(),
-                'submitter_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-                'assignee_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-                'created_at' => '2014-06-06T12:24:23+0000',
-                'updated_at' => '2014-06-09T13:43:21+0000',
-            ],
-            'comment' => [
-                'id' => 20001,
-                'author_id' => $requesterId,
-                'body' => $description,
-                'html_body' => '<p>' . $description . '</p>',
-                'public' => true,
-                'ticket_id' => $ticketId,
-                'created_at' => '2014-06-06T12:24:24+0000',
-            ],
-        ];
+        $expectedTicket = $this->createTicket()
+            ->setOriginId(10001)
+            ->setUrl('https://foo.zendesk.com/api/v2/tickets/10001.json')
+            ->setSubject('Updated Subject')
+            ->setDescription('Updated Description')
+            ->setType($this->createTicketType(TicketType::TYPE_TASK))
+            ->setStatus($this->createTicketStatus(TicketStatus::STATUS_OPEN))
+            ->setPriority($this->createTicketPriority(TicketPriority::PRIORITY_NORMAL))
+            ->setRequester($this->createUser($this->getReference('zendesk_user:jim.smith@example.com')->getOriginId()))
+            ->setSubmitter($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setAssignee($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setOriginCreatedAt(new \DateTime('2014-06-06T12:24:23+0000'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T13:43:21+0000'));
+
+        $expectedComment = $this->createTicketComment()
+            ->setOriginId(20001)
+            ->setAuthor($expectedTicket->getRequester())
+            ->setBody($expectedTicket->getDescription())
+            ->setHtmlBody('<p>' . $expectedTicket->getDescription() . '</p>')
+            ->setPublic(true)
+            ->setTicket($this->createTicket()->setOriginId($expectedTicket->getOriginId()))
+            ->setOriginCreatedAt(new \DateTime('2014-06-06T12:24:24+0000'));
 
         $this->transport->expects($this->once())
             ->method('createTicket')
-            ->with($requestData)
-            ->will($this->returnValue($expectedResponseData));
+            ->with($ticket)
+            ->will($this->returnValue(['ticket' => $expectedTicket, 'comment' => $expectedComment]));
 
         $this->writer->write([$ticket]);
 
@@ -292,38 +273,33 @@ class TicketExportWriterTest extends WebTestCase
     {
         $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket_with_case_comments');
 
-        $requestData = $this->serializer->serialize($ticket, null);
-        $expectedResponseData = [
-            'ticket' => [
-                'id' => $ticketId = 10001,
-                'url' => 'https://foo.zendesk.com/api/v2/tickets/10001.json',
-                'subject' => 'Updated Subject',
-                'description' => $description = 'Updated Description',
-                'type' => TicketType::TYPE_TASK,
-                'status' => TicketStatus::STATUS_OPEN,
-                'priority' => TicketPriority::PRIORITY_NORMAL,
-                'requester_id' => $requesterId =
-                    $this->getReference('zendesk_user:jim.smith@example.com')->getOriginId(),
-                'submitter_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-                'assignee_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-                'created_at' => '2014-06-06T12:24:23+0000',
-                'updated_at' => '2014-06-09T13:43:21+0000',
-            ],
-            'comment' => [
-                'id' => 20001,
-                'author_id' => $requesterId,
-                'body' => $description,
-                'html_body' => '<p>' . $description . '</p>',
-                'public' => true,
-                'ticket_id' => $ticketId,
-                'created_at' => '2014-06-06T12:24:24+0000',
-            ],
-        ];
+        $expectedTicket = $this->createTicket()
+            ->setOriginId(10001)
+            ->setUrl('https://foo.zendesk.com/api/v2/tickets/10001.json')
+            ->setSubject('Updated Subject')
+            ->setDescription('Updated Description')
+            ->setType($this->createTicketType(TicketType::TYPE_TASK))
+            ->setStatus($this->createTicketStatus(TicketStatus::STATUS_OPEN))
+            ->setPriority($this->createTicketPriority(TicketPriority::PRIORITY_NORMAL))
+            ->setRequester($this->createUser($this->getReference('zendesk_user:jim.smith@example.com')->getOriginId()))
+            ->setSubmitter($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setAssignee($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setOriginCreatedAt(new \DateTime('2014-06-06T12:24:23+0000'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T13:43:21+0000'));
+
+        $expectedComment = $this->createTicketComment()
+            ->setOriginId(20001)
+            ->setAuthor($expectedTicket->getRequester())
+            ->setBody($expectedTicket->getDescription())
+            ->setHtmlBody('<p>' . $expectedTicket->getDescription() . '</p>')
+            ->setPublic(true)
+            ->setTicket($this->createTicket()->setOriginId($expectedTicket->getOriginId()))
+            ->setOriginCreatedAt(new \DateTime('2014-06-06T12:24:24+0000'));
 
         $this->transport->expects($this->once())
             ->method('createTicket')
-            ->with($requestData)
-            ->will($this->returnValue($expectedResponseData));
+            ->with($ticket)
+            ->will($this->returnValue(['ticket' => $expectedTicket, 'comment' => $expectedComment]));
 
         $this->writer->write([$ticket]);
 
@@ -365,50 +341,45 @@ class TicketExportWriterTest extends WebTestCase
     {
         $ticket = $this->getReference('orocrm_zendesk:ticket_43');
 
-        $requestData = $this->serializer->serialize($ticket, null);
-        $expectedResponseData = [
-            'id' => $ticket->getOriginId(),
-            'url' => 'https://foo.zendesk.com/api/v2/tickets/43.json',
-            'subject' => 'Updated Subject',
-            'description' => $description = 'Updated Description',
-            'type' => TicketType::TYPE_TASK,
-            'status' => TicketStatus::STATUS_CLOSED,
-            'priority' => TicketPriority::PRIORITY_LOW,
-            'requester_id' => $requesterId =
-                $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-            'submitter_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-            'assignee_id' => $this->getReference('zendesk_user:james.cook@example.com')->getOriginId(),
-            'created_at' => '2014-06-06T12:24:23+0000',
-            'updated_at' => '2014-06-09T13:43:21+0000',
-        ];
+        $expected = $this->createTicket()
+            ->setOriginId($ticket->getOriginId())
+            ->setUrl('https://foo.zendesk.com/api/v2/tickets/43.json')
+            ->setSubject('Updated Subject')
+            ->setDescription('Updated Description')
+            ->setType($this->createTicketType(TicketType::TYPE_TASK))
+            ->setStatus($this->createTicketStatus(TicketStatus::STATUS_CLOSED))
+            ->setPriority($this->createTicketPriority(TicketPriority::PRIORITY_LOW))
+            ->setRequester($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setSubmitter($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setAssignee($this->createUser($this->getReference('zendesk_user:james.cook@example.com')->getOriginId()))
+            ->setOriginCreatedAt(new \DateTime('2014-06-06T12:24:23+0000'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T13:43:21+0000'));
 
         $this->transport->expects($this->once())
             ->method('updateTicket')
-            ->with($requestData)
-            ->will($this->returnValue($expectedResponseData));
-
-        $expected = $expectedResponseData;
+            ->with($ticket)
+            ->will($this->returnValue($expected));
 
         $this->writer->write([$ticket]);
 
         $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
 
-        $this->assertEquals($expected['id'], $ticket->getOriginId());
-        $this->assertEquals($expected['url'], $ticket->getUrl());
-        $this->assertEquals($expected['subject'], $ticket->getSubject());
-        $this->assertEquals($expected['description'], $ticket->getDescription());
-        $this->assertEquals($expected['type'], $ticket->getType()->getName());
-        $this->assertEquals($expected['status'], $ticket->getStatus()->getName());
-        $this->assertEquals($expected['priority'], $ticket->getPriority()->getName());
-        $this->assertEquals($expected['requester_id'], $ticket->getRequester()->getOriginId());
-        $this->assertEquals($expected['submitter_id'], $ticket->getSubmitter()->getOriginId());
-        $this->assertEquals($expected['assignee_id'], $ticket->getAssignee()->getOriginId());
-        $this->assertEquals($expected['created_at'], $ticket->getOriginCreatedAt()->format(\DateTime::ISO8601));
-        $this->assertEquals($expected['updated_at'], $ticket->getOriginUpdatedAt()->format(\DateTime::ISO8601));
+        $this->assertEquals($expected->getOriginId(), $ticket->getOriginId());
+        $this->assertEquals($expected->getUrl(), $ticket->getUrl());
+        $this->assertEquals($expected->getSubject(), $ticket->getSubject());
+        $this->assertEquals($expected->getDescription(), $ticket->getDescription());
+        $this->assertEquals($expected->getType()->getName(), $ticket->getType()->getName());
+        $this->assertEquals($expected->getStatus()->getName(), $ticket->getStatus()->getName());
+        $this->assertEquals($expected->getPriority()->getName(), $ticket->getPriority()->getName());
+        $this->assertEquals($expected->getRequester()->getOriginId(), $ticket->getRequester()->getOriginId());
+        $this->assertEquals($expected->getSubmitter()->getOriginId(), $ticket->getSubmitter()->getOriginId());
+        $this->assertEquals($expected->getAssignee()->getOriginId(), $ticket->getAssignee()->getOriginId());
+        $this->assertEquals($expected->getOriginCreatedAt(), $ticket->getOriginCreatedAt());
+        $this->assertEquals($expected->getOriginUpdatedAt(), $ticket->getOriginUpdatedAt());
 
         $relatedCase = $ticket->getRelatedCase();
-        $this->assertEquals($expected['subject'], $relatedCase->getSubject());
-        $this->assertEquals($expected['description'], $relatedCase->getDescription());
+        $this->assertEquals($expected->getSubject(), $relatedCase->getSubject());
+        $this->assertEquals($expected->getDescription(), $relatedCase->getDescription());
         $this->assertEquals(CaseStatus::STATUS_CLOSED, $relatedCase->getStatus()->getName());
         $this->assertEquals(CasePriority::PRIORITY_LOW, $relatedCase->getPriority()->getName());
         $this->assertEquals('james.cook@example.com', $relatedCase->getAssignedTo()->getEmail());
@@ -425,81 +396,120 @@ class TicketExportWriterTest extends WebTestCase
 
     public function testWriteCreatesUsers()
     {
-        $requesterUser = $this->getReference('zendesk_user:sam.rogers@example.com');
-        $submitterUser = $this->getReference('zendesk_user:garry.smith@example.com');
-        $assigneeUser = $submitterUser;
+        $requester = $this->getReference('zendesk_user:sam.rogers@example.com');
+        $submitter = $this->getReference('zendesk_user:garry.smith@example.com');
+        $assignee = $submitter;
 
         $ticket = $this->getReference('orocrm_zendesk:ticket_43');
-        $ticket->setRequester($requesterUser);
-        $ticket->setSubmitter($submitterUser);
-        $ticket->setAssignee($assigneeUser);
+        $ticket->setRequester($requester);
+        $ticket->setSubmitter($submitter);
+        $ticket->setAssignee($assignee);
         $this->entityManager->flush($ticket);
 
-        $requesterUserRequestData = $this->serializer->serialize($requesterUser, null);
-        $expectedRequesterUserResponseData = [
-            'id' => $requesterId = 10001,
-            'url' => $url = 'https://foo.zendesk.com/api/v2/users/10001.json',
-            'name' => $requesterUser->getName(),
-            'email' => $requesterUser->getEmail(),
-            'role' => $requesterUser->getRole()->getName(),
-        ];
+        $expectedRequester = $this->createUser(10001)
+            ->setUrl('https://foo.zendesk.com/api/v2/users/10001.json')
+            ->setName($requester->getName())
+            ->setEmail($requester->getEmail())
+            ->setRole($this->createUserRole($requester->getRole()->getName()));
+
         $this->transport->expects($this->at(1))
             ->method('createUser')
-            ->with($requesterUserRequestData)
-            ->will($this->returnValue($expectedRequesterUserResponseData));
+            ->with($requester)
+            ->will($this->returnValue($expectedRequester));
 
-        $submitterUserRequestData = $this->serializer->serialize($submitterUser, null);
-        $expectedSubmitterUserResponseData = [
-            'id' => $submitterId = 10002,
-            'url' => $url = 'https://foo.zendesk.com/api/v2/users/10002.json',
-            'name' => $submitterUser->getName(),
-            'email' => $submitterUser->getEmail(),
-            'role' => $submitterUser->getRole()->getName(),
-        ];
+        $expectedSubmitter = $this->createUser(10002)
+            ->setUrl('https://foo.zendesk.com/api/v2/users/10002.json')
+            ->setName($submitter->getName())
+            ->setEmail($submitter->getEmail())
+            ->setRole($this->createUserRole($submitter->getRole()->getName()));
+
         $this->transport->expects($this->at(2))
             ->method('createUser')
-            ->with($submitterUserRequestData)
-            ->will($this->returnValue($expectedSubmitterUserResponseData));
+            ->with($submitter)
+            ->will($this->returnValue($expectedSubmitter));
 
-        $ticketRequestData = $this->serializer->serialize($ticket, null);
-        $ticketRequestData['requester_id'] = $requesterId;
-        $ticketRequestData['submitter_id'] = $submitterId;
-        $ticketRequestData['assignee_id'] = $submitterId;
-        $expectedTicketResponseData = [
-            'id' => $ticket->getOriginId(),
-            'url' => 'https://foo.zendesk.com/api/v2/tickets/43.json',
-            'subject' => 'Updated Subject',
-            'description' => $description = 'Updated Description',
-            'type' => TicketType::TYPE_TASK,
-            'status' => TicketStatus::STATUS_CLOSED,
-            'priority' => TicketPriority::PRIORITY_LOW,
-            'requester_id' => $requesterId,
-            'submitter_id' => $submitterId,
-            'assignee_id' => $submitterId,
-            'created_at' => '2014-06-06T12:24:23+0000',
-            'updated_at' => '2014-06-09T13:43:21+0000',
-        ];
+        $expectedTicket = $this->createTicket()
+            ->setOriginId($ticket->getOriginId())
+            ->setUrl('https://foo.zendesk.com/api/v2/tickets/43.json')
+            ->setSubject('Updated Subject')
+            ->setDescription('Updated Description')
+            ->setType($this->createTicketType(TicketType::TYPE_TASK))
+            ->setStatus($this->createTicketStatus(TicketStatus::STATUS_CLOSED))
+            ->setPriority($this->createTicketPriority(TicketPriority::PRIORITY_LOW))
+            ->setRequester($this->createUser($expectedRequester->getOriginId()))
+            ->setSubmitter($this->createUser($expectedSubmitter->getOriginId()))
+            ->setAssignee($this->createUser($expectedSubmitter->getOriginId()))
+            ->setOriginCreatedAt(new \DateTime('2014-06-06T12:24:23+0000'))
+            ->setOriginUpdatedAt(new \DateTime('2014-06-09T13:43:21+0000'));
 
         $this->transport->expects($this->at(3))
             ->method('updateTicket')
-            ->with($ticketRequestData)
-            ->will($this->returnValue($expectedTicketResponseData));
+            ->with(
+                $this->callback(
+                    function ($ticket) use ($ticket, $expectedRequester, $expectedSubmitter) {
+                        $this->assertEquals($expectedRequester->getOriginId(), $ticket->getRequester()->getOriginId());
+                        $this->assertEquals($expectedSubmitter->getOriginId(), $ticket->getSubmitter()->getOriginId());
+                        $this->assertEquals($expectedSubmitter->getOriginId(), $ticket->getAssignee()->getOriginId());
+                        return true;
+                    }
+                )
+            )
+            ->will($this->returnValue($expectedTicket));
 
         $this->writer->write([$ticket]);
 
         $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
         $this->assertNotEmpty($ticket->getRequester());
-        $this->assertEquals($requesterId, $ticket->getRequester()->getOriginId());
+        $this->assertEquals($expectedRequester->getOriginId(), $ticket->getRequester()->getOriginId());
 
         $this->assertNotEmpty($ticket->getSubmitter());
-        $this->assertEquals($submitterId, $ticket->getSubmitter()->getOriginId());
+        $this->assertEquals($expectedSubmitter->getOriginId(), $ticket->getSubmitter()->getOriginId());
 
         $this->assertNotEmpty($ticket->getAssignee());
-        $this->assertEquals($submitterId, $ticket->getAssignee()->getOriginId());
+        $this->assertEquals($expectedSubmitter->getOriginId(), $ticket->getAssignee()->getOriginId());
 
-        $this->assertContains('Create user in Zendesk API [id=' . $requesterUser->getId() . '].', $this->logOutput);
-        $this->assertContains('Created user [origin_id=' . $requesterId . '].', $this->logOutput);
-        $this->assertContains('Create user in Zendesk API [id=' . $submitterUser->getId() . '].', $this->logOutput);
-        $this->assertContains('Created user [origin_id=' . $submitterId . '].', $this->logOutput);
+        $this->assertContains('Create user in Zendesk API [id=' . $requester->getId() . '].', $this->logOutput);
+        $this->assertContains('Created user [origin_id=' . $expectedRequester->getOriginId() . '].', $this->logOutput);
+        $this->assertContains('Create user in Zendesk API [id=' . $submitter->getId() . '].', $this->logOutput);
+        $this->assertContains('Created user [origin_id=' . $expectedSubmitter->getOriginId() . '].', $this->logOutput);
+    }
+
+    protected function createTicket()
+    {
+        return new Ticket();
+    }
+
+    protected function createTicketComment()
+    {
+        return new TicketComment();
+    }
+
+    protected function createTicketType($name)
+    {
+        return new TicketType($name);
+    }
+
+    protected function createTicketStatus($name)
+    {
+        return new TicketStatus($name);
+    }
+
+    protected function createTicketPriority($name)
+    {
+        return new TicketPriority($name);
+    }
+
+    protected function createUser($originId)
+    {
+        $result = new User();
+
+        $result->setOriginId($originId);
+
+        return $result;
+    }
+
+    protected function createUserRole($name)
+    {
+        return new UserRole($name);
     }
 }

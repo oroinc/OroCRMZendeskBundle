@@ -46,12 +46,10 @@ class TicketCommentNormalizer extends AbstractNormalizer
      */
     public function denormalize($data, $class, $format = null, array $context = array())
     {
-        /**
-         * @var TicketComment $ticketComment
-         */
-        $ticketComment = parent::denormalize($data, $class, $format, $context);
-        $ticketComment->setChannel($this->getChannel($context));
-        return $ticketComment;
+        if (is_array($data) && isset($context['ticket_id'])) {
+            $data['ticket_id'] = $context['ticket_id'];
+        }
+        return parent::denormalize($data, $class, $format, $context);
     }
 
     /**

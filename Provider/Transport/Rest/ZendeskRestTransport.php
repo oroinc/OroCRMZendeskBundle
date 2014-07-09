@@ -2,6 +2,10 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Transport\AbstractRestTransport;
@@ -21,6 +25,19 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     const COMMENT_EVENT_TYPE = 'Comment';
 
     /**
+     * @var SerializerInterface
+     */
+    protected $serializer;
+
+    /**
+     * @param SerializerInterface $serializer
+     */
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    /**
      * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/search.html
      */
@@ -31,7 +48,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             $query .= sprintf(' updated>%s', $lastUpdatedAt->format(\DateTime::ISO8601));
         }
 
-        return new ZendeskRestIterator(
+        $result = new ZendeskRestIterator(
             $this->getClient(),
             'search.json',
             'results',
@@ -39,6 +56,10 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
                 'query' => $query,
             ]
         );
+
+        $result->setupDeserialization($this->serializer, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User');
+
+        return $result;
     }
 
     /**
@@ -52,7 +73,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             $query .= sprintf(' updated>%s', $lastUpdatedAt->format(\DateTime::ISO8601));
         }
 
-        return new ZendeskRestIterator(
+        $result = new ZendeskRestIterator(
             $this->getClient(),
             'search.json',
             'results',
@@ -60,6 +81,10 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
                 'query' => $query,
             ]
         );
+
+        $result->setupDeserialization($this->serializer, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket');
+
+        return $result;
     }
 
     /**
@@ -72,43 +97,67 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             return new \EmptyIterator();
         }
 
-        $sourceIterator = new ZendeskRestIterator(
+        $result = new ZendeskRestIterator(
             $this->getClient(),
             sprintf('tickets/%s/comments.json', $ticketId),
             'comments'
         );
 
-        $callback = function (&$current) use ($ticketId) {
-            if (is_array($current)) {
-                $current['ticket_id'] = $ticketId;
-            }
-            return true;
-        };
+        $result->setupDeserialization(
+            $this->serializer,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
+            ['ticket_id' => $ticketId]
+        );
 
-        return new \CallbackFilterIterator($sourceIterator, $callback);
+        return $result;
     }
 
     /**
      * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/users.html#create-user
      */
-    public function createUser(array $userData)
+    public function createUser(User $user)
     {
-        return $this->createEntity('users.json', 'user', $userData);
+        $userData = $this->serializer->serialize($user, null);
+
+        return $this->serializer->deserialize(
+            $this->createEntity('users.json', 'user', $userData),
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+            null
+        );
     }
 
     /**
      * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/tickets.html#creating-tickets
      */
-    public function createTicket(array $ticketData)
+    public function createTicket(Ticket $ticket)
     {
+        $ticketData = $this->serializer->serialize($ticket, null);
+
         $responseData = [];
         $ticketData = $this->createEntity('tickets.json', 'ticket', $ticketData, $responseData);
+        $commentData = $this->getCommentFromTicketResponse($responseData);
+
+        $resultTicket = $this->serializer->deserialize(
+            $ticketData,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+            null
+        );
+
+        $resultComment  = null;
+        if ($commentData) {
+            $resultComment = $this->serializer->deserialize(
+                $commentData,
+                'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
+                null
+            );
+        }
+
 
         return [
-            'ticket' => $ticketData,
-            'comment' => $this->getCommentFromTicketResponse($responseData),
+            'ticket' => $resultTicket,
+            'comment' => $resultComment,
         ];
     }
 
@@ -135,45 +184,65 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             throw RestException::createFromResponse($response, 'Can\'t parse get ticket response.', $exception);
         }
 
-        return isset($responseData['ticket']) ? $responseData['ticket'] : null;
+        $ticketData = isset($responseData['ticket']) ? $responseData['ticket'] : null;
+
+        return $this->serializer->deserialize(
+            $ticketData,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+            null
+        );
     }
 
     /**
      * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/tickets.html#updating-tickets
      */
-    public function updateTicket(array $ticketData)
+    public function updateTicket(Ticket $ticket)
     {
-        if (!isset($ticketData['id'])) {
-            throw new \InvalidArgumentException('Ticket data must have "id" value.');
+        if (!$ticket->getOriginId()) {
+            throw new \InvalidArgumentException('Ticket must have "originId" value.');
         }
-        $id = $ticketData['id'];
-        return $this->updateEntity(sprintf('tickets/%d.json', $id), 'ticket', $ticketData);
+        $id = $ticket->getOriginId();
+
+        $ticketData = $this->serializer->serialize($ticket, null);
+        $updatedTicketData = $this->updateEntity(sprintf('tickets/%d.json', $id), 'ticket', $ticketData);
+
+        return $this->serializer->deserialize(
+            $updatedTicketData,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+            null
+        );
     }
 
     /**
      * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/tickets.html#creating-tickets
      */
-    public function addTicketComment(array $commentData)
+    public function addTicketComment(TicketComment $comment)
     {
-        if (!isset($commentData['ticket_id'])) {
-            throw new \InvalidArgumentException('Ticket comment data must have "ticket_id" value.');
+        if (!$comment->getTicket() || !$comment->getTicket()->getOriginId()) {
+            throw new \InvalidArgumentException('Ticket comment data must have "ticket" with "originId" value.');
         }
-        $ticketId = $commentData['ticket_id'];
-        unset($commentData['ticket_id']);
+        $ticketId = $comment->getTicket()->getOriginId();
+
+        $commentData = $this->serializer->serialize($comment, null);
+
         $ticketData = ['comment' => $commentData];
         $this->updateEntity(sprintf('tickets/%d.json', $ticketId), 'ticket', $ticketData, $responseData);
-        $result = $this->getCommentFromTicketResponse($responseData);
+        $createdTicketData = $this->getCommentFromTicketResponse($responseData);
 
-        if (!$result) {
+        if (!$createdTicketData) {
             throw RestException::createFromResponse(
                 $this->getClient()->getLastResponse(),
                 'Can\'t get comment data from response.'
             );
         }
 
-        return $result;
+        return $this->serializer->deserialize(
+            $createdTicketData,
+            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
+            null
+        );
     }
 
     /**

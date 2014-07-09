@@ -22,8 +22,6 @@ class UserNormalizerTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $fixtures = array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData');
-        $this->loadFixtures($fixtures);
         $this->serializer = $this->getContainer()->get('oro_importexport.serializer');
     }
 
@@ -32,32 +30,13 @@ class UserNormalizerTest extends WebTestCase
      */
     public function testDenormalize($data, User $expected)
     {
-        $channel = $this->getReference('zendesk_channel:first_test_channel');
         $actual = $this->serializer->deserialize(
             $data,
             'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
-            null,
-            array('channel' => $channel->getId())
+            null
         );
-
-        $expected->setChannel($channel);
 
         $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @dataProvider denormalizeProvider
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Context should contain reference to channel
-     */
-    public function testLogicException($data)
-    {
-        $this->serializer->deserialize(
-            $data,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
-            null,
-            array()
-        );
     }
 
     public function denormalizeProvider()

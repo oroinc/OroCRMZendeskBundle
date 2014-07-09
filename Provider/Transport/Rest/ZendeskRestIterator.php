@@ -2,9 +2,10 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
+use Symfony\Component\Serializer\SerializerInterface;
+
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\AbstractRestIterator;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface;
-use Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException;
 
 class ZendeskRestIterator extends AbstractRestIterator
 {
@@ -27,6 +28,21 @@ class ZendeskRestIterator extends AbstractRestIterator
      * @var string|null
      */
     protected $nextPageUrl;
+
+    /**
+     * @var SerializerInterface
+     */
+    protected $serializer;
+
+    /**
+     * @var string
+     */
+    protected $itemType;
+
+    /**
+     * @var array
+     */
+    protected $deserializeContext;
 
     /**
      * @param RestClientInterface $client
@@ -86,5 +102,31 @@ class ZendeskRestIterator extends AbstractRestIterator
         } else {
             return $previousValue;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function current()
+    {
+        $result = parent::current();
+
+        if ($result !== null && $this->serializer) {
+            $result = $this->serializer->deserialize($result, $this->itemType, null, $this->deserializeContext);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param SerializerInterface $serializer
+     * @param string $type
+     * @param array $context
+     */
+    public function setupDeserialization(SerializerInterface $serializer, $type, array $context = [])
+    {
+        $this->serializer = $serializer;
+        $this->itemType = $type;
+        $this->deserializeContext = $context;
     }
 }

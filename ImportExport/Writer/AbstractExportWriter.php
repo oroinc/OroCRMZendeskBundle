@@ -10,8 +10,6 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-use Symfony\Component\Serializer\SerializerInterface;
-
 use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
@@ -33,11 +31,6 @@ abstract class AbstractExportWriter implements
      * @var EntityManager
      */
     protected $entityManager;
-
-    /**
-     * @var SerializerInterface
-     */
-    protected $serializer;
 
     /**
      * @var ZendeskTransportInterface
@@ -80,14 +73,6 @@ abstract class AbstractExportWriter implements
     public function setEntityManager(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-    }
-
-    /**
-     * @param SerializerInterface $serializer
-     */
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
     }
 
     /**
@@ -228,14 +213,7 @@ abstract class AbstractExportWriter implements
         }
 
         try {
-            $data = $this->transport->createUser($this->serializer->serialize($user, null));
-
-            $createdUser = $this->serializer->deserialize(
-                $data,
-                'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
-                null,
-                ['channel' => $this->getChannel()->getId()]
-            );
+            $createdUser = $this->transport->createUser($user);
 
             $this->getLogger()->info("Created user [origin_id={$createdUser->getOriginId()}].");
         } catch (\Exception $exception) {

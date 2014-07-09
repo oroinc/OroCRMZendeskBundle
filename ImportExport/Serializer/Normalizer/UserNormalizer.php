@@ -57,19 +57,6 @@ class UserNormalizer extends AbstractNormalizer
     /**
      * {@inheritdoc}
      */
-    public function denormalize($data, $class, $format = null, array $context = array())
-    {
-        /**
-         * @var User $user
-         */
-        $user = parent::denormalize($data, $class, $format, $context);
-        $user->setChannel($this->getChannel($context));
-        return $user;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getTargetClassName()
     {
         return 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User';

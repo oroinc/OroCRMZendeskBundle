@@ -11,16 +11,16 @@ use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\TicketExportProcessor;
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketProcessor;
 
 /**
  * @outputBuffering enabled
  * @dbIsolation
  */
-class TicketExportProcessorTest extends WebTestCase
+class ExportTicketProcessorTest extends WebTestCase
 {
     /**
-     * @var TicketExportProcessor
+     * @var ExportTicketProcessor
      */
     protected $processor;
 
@@ -46,7 +46,7 @@ class TicketExportProcessorTest extends WebTestCase
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
         $this->context = $this->getMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
 
-        $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.ticket_export');
+        $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.export_ticket');
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->previousEmail = $this->channel->getTransport()->getZendeskUserEmail();
         $this->context->expects($this->any())

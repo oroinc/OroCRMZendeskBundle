@@ -8,16 +8,16 @@ use Oro\Bundle\UserBundle\Entity\User;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\TicketCommentExportProcessor;
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketCommentProcessor;
 
 /**
  * @outputBuffering enabled
  * @dbIsolation
  */
-class TicketCommentExportProcessorTest extends WebTestCase
+class ExportTicketCommentProcessorTest extends WebTestCase
 {
     /**
-     * @var TicketCommentExportProcessor
+     * @var ExportTicketCommentProcessor
      */
     protected $processor;
 
@@ -45,7 +45,7 @@ class TicketCommentExportProcessorTest extends WebTestCase
 
 
         $this->processor = $this->getContainer()
-            ->get('orocrm_zendesk.importexport.processor.ticket_comment_export');
+            ->get('orocrm_zendesk.importexport.processor.export_ticket_comment');
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->previousEmail = $this->channel->getTransport()->getZendeskUserEmail();

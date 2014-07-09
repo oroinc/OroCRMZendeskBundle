@@ -74,16 +74,7 @@ class TicketExportWriter extends AbstractExportWriter
     {
         $this->getLogger()->info("Update ticket in Zendesk API [origin_id={$ticket->getOriginId()}].");
 
-        $data = $this->transport->updateTicket(
-            $this->serializer->serialize($ticket, null)
-        );
-
-        $updatedTicket = $this->serializer->deserialize(
-            $data,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-            null,
-            ['channel' => $this->getChannel()->getId()]
-        );
+        $updatedTicket = $this->transport->updateTicket($ticket);
 
         $this->getLogger()->info('Update ticket by response data.');
         $this->ticketHelper->refreshTicket($updatedTicket, $this->getChannel());
@@ -105,14 +96,10 @@ class TicketExportWriter extends AbstractExportWriter
     {
         $this->getLogger()->info("Create ticket in Zendesk API.");
 
-        $data = $this->transport->createTicket($this->serializer->serialize($ticket, null));
+        $data = $this->transport->createTicket($ticket);
 
-        $createdTicket = $this->serializer->deserialize(
-            $data['ticket'],
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-            null,
-            ['channel' => $this->getChannel()->getId()]
-        );
+        /** @var Ticket $createdTicket */
+        $createdTicket = $data['ticket'];
 
         $this->getLogger()->info("Created ticket [origin_id={$createdTicket->getOriginId()}].");
 
@@ -128,12 +115,8 @@ class TicketExportWriter extends AbstractExportWriter
         $this->getContext()->incrementUpdateCount();
 
         if ($data['comment']) {
-            $createdComment = $this->serializer->deserialize(
-                $data['comment'],
-                'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
-                null,
-                ['channel' => $this->getChannel()->getId()]
-            );
+            /** @var TicketComment $createdComment */
+            $createdComment = $data['comment'];
             $createdComment->setChannel($this->getChannel());
 
             $this->getLogger()->info("Created ticket comment [origin_id={$createdComment->getOriginId()}].");

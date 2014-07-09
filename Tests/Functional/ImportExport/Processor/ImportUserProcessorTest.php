@@ -5,7 +5,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
 use Doctrine\ORM\EntityManager;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\UserSyncStrategy;
+use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ImportUserProcessor;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
@@ -15,12 +15,12 @@ use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
  * @dbIsolation
  * @dbReindex
  */
-class UserSyncStrategyTest extends WebTestCase
+class ImportUserProcessorTest extends WebTestCase
 {
     /**
-     * @var UserSyncStrategy
+     * @var ImportUserProcessor
      */
-    protected $strategy;
+    protected $processor;
 
     /**
      * @var EntityManager
@@ -43,13 +43,13 @@ class UserSyncStrategyTest extends WebTestCase
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData']);
 
         $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $this->strategy = $this->getContainer()->get('orocrm_zendesk.importexport.strategy.user_sync');
+        $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.import_user');
         $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
-        $this->strategy->setImportExportContext($this->context);
+        $this->processor->setImportExportContext($this->context);
     }
 
     /**
@@ -59,14 +59,14 @@ class UserSyncStrategyTest extends WebTestCase
      */
     public function testProcessInvalidArgumentFails()
     {
-        $this->strategy->process(new \stdClass());
+        $this->processor->process(new \stdClass());
     }
 
     public function testProcessNewZendeskUser()
     {
         $zendeskUser = $this->createZendeskUser()->setOriginId(1);
 
-        $this->assertEquals($zendeskUser, $this->strategy->process($zendeskUser));
+        $this->assertEquals($zendeskUser, $this->processor->process($zendeskUser));
         $this->assertFalse($this->entityManager->contains($zendeskUser));
     }
 
@@ -93,7 +93,7 @@ class UserSyncStrategyTest extends WebTestCase
             ->setLocale('en-US')
             ->setChannel($this->channel);
 
-        $result = $this->strategy->process($zendeskUser);
+        $result = $this->processor->process($zendeskUser);
 
         $this->assertNotSame($zendeskUser, $result);
         $this->assertNotNull($result->getId());
@@ -142,7 +142,7 @@ class UserSyncStrategyTest extends WebTestCase
             ->setTimeZone('Arizona')
             ->setLocale('en-US');
 
-        $result = $this->strategy->process($zendeskUser);
+        $result = $this->processor->process($zendeskUser);
 
         $this->assertNull($result);
     }
@@ -156,7 +156,7 @@ class UserSyncStrategyTest extends WebTestCase
             ->setChannel($this->getReference('zendesk_channel:first_test_channel'))
             ->setRole(new ZendeskUserRole($roleName));
 
-        $this->assertEquals($zendeskUser, $this->strategy->process($zendeskUser));
+        $this->assertEquals($zendeskUser, $this->processor->process($zendeskUser));
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\UserRole', $zendeskUser->getRole());
         $this->assertEquals($roleName, $zendeskUser->getRole()->getName());
@@ -175,7 +175,7 @@ class UserSyncStrategyTest extends WebTestCase
             ->setEmail($email)
             ->setRole(new ZendeskUserRole($roleName));
 
-        $this->assertEquals($zendeskUser, $this->strategy->process($zendeskUser));
+        $this->assertEquals($zendeskUser, $this->processor->process($zendeskUser));
 
         $this->assertInstanceOf('Oro\\Bundle\\UserBundle\\Entity\\User', $zendeskUser->getRelatedUser());
         $this->assertEquals($email, $zendeskUser->getRelatedUser()->getEmail());
@@ -198,7 +198,7 @@ class UserSyncStrategyTest extends WebTestCase
             ->setOriginId(1)
             ->setEmail($email);
 
-        $this->assertEquals($zendeskUser, $this->strategy->process($zendeskUser));
+        $this->assertEquals($zendeskUser, $this->processor->process($zendeskUser));
         $this->assertNull($zendeskUser->getRelatedUser());
     }
 
@@ -212,7 +212,7 @@ class UserSyncStrategyTest extends WebTestCase
             ->setEmail($email)
             ->setRole(new ZendeskUserRole($roleName));
 
-        $this->assertEquals($zendeskUser, $this->strategy->process($zendeskUser));
+        $this->assertEquals($zendeskUser, $this->processor->process($zendeskUser));
 
         $relatedContact = $zendeskUser->getRelatedContact();
         $this->assertInstanceOf('OroCRM\\Bundle\\ContactBundle\\Entity\\Contact', $relatedContact);
@@ -231,7 +231,7 @@ class UserSyncStrategyTest extends WebTestCase
             ->setName('Bob Miller Jr.')
             ->setRole(new ZendeskUserRole($roleName));
 
-        $this->assertEquals($zendeskUser, $this->strategy->process($zendeskUser));
+        $this->assertEquals($zendeskUser, $this->processor->process($zendeskUser));
 
         $relatedContact = $zendeskUser->getRelatedContact();
         $this->assertInstanceOf('OroCRM\\Bundle\\ContactBundle\\Entity\\Contact', $relatedContact);

@@ -32,10 +32,6 @@ class TicketNormalizerTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $fixtures = array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData');
-        $this->loadFixtures($fixtures);
-        //if move to postFixtureLoad we need make channel property static
-        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->serializer = $this->getContainer()->get('oro_importexport.serializer');
     }
 
@@ -44,33 +40,13 @@ class TicketNormalizerTest extends WebTestCase
      */
     public function testDenormalize($normalized, Ticket $denormalized)
     {
-        // we can't move this logic to data provider or function called by data provider
-        // because channel property not initialized yet
-        $this->setChannel($denormalized);
-
         $actual = $this->serializer->deserialize(
             $normalized,
             'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-            null,
-            array('channel' => $this->channel->getId())
+            null
         );
 
         $this->assertEquals($denormalized, $actual);
-    }
-
-    /**
-     * @dataProvider denormalizeDataProvider
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Context should contain reference to channel
-     */
-    public function testLogicException($data)
-    {
-        $this->serializer->deserialize(
-            $data,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
-            null,
-            array()
-        );
     }
 
     protected function setChannel(Ticket $entity)

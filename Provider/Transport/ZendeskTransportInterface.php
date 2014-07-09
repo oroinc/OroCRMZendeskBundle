@@ -4,6 +4,9 @@ namespace OroCRM\Bundle\ZendeskBundle\Provider\Transport;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
 
 interface ZendeskTransportInterface extends TransportInterface
 {
@@ -11,7 +14,7 @@ interface ZendeskTransportInterface extends TransportInterface
      * Get Zendesk users data.
      *
      * @param \DateTime $lastUpdatedAt
-     * @return \Iterator
+     * @return \Iterator Iterator of User
      * @throws RestException
      */
     public function getUsers(\DateTime $lastUpdatedAt = null);
@@ -20,7 +23,7 @@ interface ZendeskTransportInterface extends TransportInterface
      * Get Zendesk tickets data.
      *
      * @param \DateTime $lastUpdatedAt
-     * @return \Iterator
+     * @return \Iterator Iterator of Ticket
      * @throws RestException
      */
     public function getTickets(\DateTime $lastUpdatedAt = null);
@@ -29,7 +32,7 @@ interface ZendeskTransportInterface extends TransportInterface
      * Get Zendesk ticket comments data.
      *
      * @param integer $ticketId
-     * @return \Iterator
+     * @return \Iterator Iterator of TicketComment
      * @throws RestException
      */
     public function getTicketComments($ticketId);
@@ -37,26 +40,26 @@ interface ZendeskTransportInterface extends TransportInterface
     /**
      * Create Zendesk user.
      *
-     * @param array $userData
-     * @return array User data
+     * @param User $user
+     * @return User Created user
      * @throws RestException
      */
-    public function createUser(array $userData);
+    public function createUser(User $user);
 
     /**
      * Create Zendesk ticket.
      *
-     * @param array $ticketData
-     * @return array Array in format: array("ticket" => Array, "comment" => Array|null)
+     * @param Ticket $ticket
+     * @return array Array in format: array("ticket" => Ticket, "comment" => TicketComment|null)
      * @throws RestException
      */
-    public function createTicket(array $ticketData);
+    public function createTicket(Ticket $ticket);
 
     /**
      * Get Zendesk ticket.
      *
      * @param int $id Ticket id
-     * @return array Ticket data
+     * @return Ticket
      * @throws RestException
      */
     public function getTicket($id);
@@ -64,18 +67,18 @@ interface ZendeskTransportInterface extends TransportInterface
     /**
      * Update Zendesk ticket.
      *
-     * @param array $ticketData Must contain value of "id"
-     * @return array Ticket data
+     * @param Ticket $ticket Must contain value of "originId"
+     * @return Ticket Updated ticket
      * @throws RestException
      */
-    public function updateTicket(array $ticketData);
+    public function updateTicket(Ticket $ticket);
 
     /**
      * Add Zendesk ticket comment.
      *
-     * @param array $commentData Must contain value of "ticket_id"
-     * @return array Comment data
+     * @param TicketComment $comment Must contain value of "ticket"
+     * @return TicketComment Created comment
      * @throws RestException
      */
-    public function addTicketComment(array $commentData);
+    public function addTicketComment(TicketComment $comment);
 }

@@ -76,6 +76,8 @@ services:
     orocrm_zendesk.transport.rest_transport:
         class: %orocrm_zendesk.transport.rest_transport.class%
         parent: oro_integration.transport.rest.abstract_transport
+        arguments:
+            - @oro_importexport.serializer
         tags:
             - { name: oro_integration.transport, type: zendesk_rest, channel_type: zendesk }
 

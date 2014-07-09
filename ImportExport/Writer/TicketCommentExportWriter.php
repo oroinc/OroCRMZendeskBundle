@@ -63,14 +63,7 @@ class TicketCommentExportWriter extends AbstractExportWriter
     {
         $this->getLogger()->info("Create ticket comment in Zendesk API.");
 
-        $data = $this->transport->addTicketComment($this->serializer->serialize($ticketComment, null));
-
-        $createdTicketComment = $this->serializer->deserialize(
-            $data,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
-            null,
-            ['channel' => $this->getChannel()->getId()]
-        );
+        $createdTicketComment = $this->transport->addTicketComment($ticketComment);
 
         $this->getLogger()->info("Created ticket comment [origin_id={$createdTicketComment->getOriginId()}].");
 

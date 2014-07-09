@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
+namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
@@ -11,7 +11,7 @@ use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeValue;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
 
-class TicketSyncStrategy extends AbstractSyncStrategy
+class ImportTicketProcessor extends AbstractImportProcessor
 {
     /**
      * @var SyncState

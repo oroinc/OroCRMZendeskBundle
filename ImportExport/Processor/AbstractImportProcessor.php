@@ -1,20 +1,26 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
+namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
+
 use OroCRM\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
 
+use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
+use Oro\Bundle\ImportExportBundle\Processor\ContextAwareProcessor;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
-use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
-use Oro\Bundle\ImportExportBundle\Strategy\StrategyInterface;
 
-abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareInterface, LoggerAwareInterface
+abstract class AbstractImportProcessor implements
+    StepExecutionAwareInterface,
+    ContextAwareProcessor,
+    LoggerAwareInterface
 {
     /**
      * @var ConnectorContextMediator
@@ -25,6 +31,11 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
      * @var ContextInterface
      */
     private $context;
+
+    /**
+     * @var ContextRegistry
+     */
+    private $contextRegistry;
 
     /**
      * @var ImportExportLogger
@@ -72,6 +83,14 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     }
 
     /**
+     * @param ContextRegistry $contextRegistry
+     */
+    public function setContextRegistry(ContextRegistry $contextRegistry)
+    {
+        $this->contextRegistry = $contextRegistry;
+    }
+
+    /**
      * @param ConnectorContextMediator $connectorContextMediator
      */
     public function setConnectorContextMediator(ConnectorContextMediator $connectorContextMediator)
@@ -80,28 +99,11 @@ abstract class AbstractSyncStrategy implements StrategyInterface, ContextAwareIn
     }
 
     /**
-     * @param mixed $entity
-     * @param string $fieldName
-     * @param string $dictionaryEntityAlias
-     * @param boolean $required
+     * {@inheritdoc}
      */
-    protected function refreshDictionaryField($entity, $fieldName, $dictionaryEntityAlias = null, $required = false)
+    public function setStepExecution(StepExecution $stepExecution)
     {
-        $dictionaryEntityAlias = $dictionaryEntityAlias ? : $fieldName;
-        $value = null;
-        $entityGetter = 'get' . ucfirst($fieldName);
-        $entitySetter = 'set' . ucfirst($fieldName);
-        $providerGetter = 'get' . ucfirst($dictionaryEntityAlias);
-        if ($entity->$entityGetter()) {
-            $value = $this->zendeskProvider->$providerGetter($entity->$entityGetter());
-            if (!$value) {
-                $valueName = $entity->$entityGetter()->getName();
-                $this->getLogger()->warning("Can't find Zendesk $fieldName [name=$valueName].");
-            }
-        } elseif ($required) {
-            $this->getLogger()->warning("Zendesk $fieldName is empty.");
-        }
-        $entity->$entitySetter($value);
+        $this->setImportExportContext($this->contextRegistry->getByStepExecution($stepExecution));
     }
 
     /**

@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy;
+namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper;
 
-class UserSyncStrategy extends AbstractSyncStrategy
+class ImportUserProcessor extends AbstractImportProcessor
 {
     /**
      * @var UserSyncHelper

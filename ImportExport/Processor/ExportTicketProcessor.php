@@ -2,8 +2,6 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
-use Symfony\Component\Serializer\SerializerInterface;
-
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
@@ -15,13 +13,8 @@ use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeValue;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
-class TicketExportProcessor extends AbstractExportProcessor
+class ExportTicketProcessor extends AbstractExportProcessor
 {
-    /**
-     * @var SerializerInterface
-     */
-    protected $serializer;
-
     /**
      * @var ZendeskTransportInterface
      */
@@ -104,14 +97,7 @@ class TicketExportProcessor extends AbstractExportProcessor
      */
     protected function calculateTicketRemoteChanges(Ticket $ticket)
     {
-        $remoteTicketData = $this->transport->getTicket($ticket->getOriginId());
-
-        $remoteTicket = $this->serializer->deserialize(
-            $remoteTicketData,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-            null,
-            ['channel' => $this->getChannel()->getId()]
-        );
+        $remoteTicket = $this->transport->getTicket($ticket->getOriginId());
 
         $this->ticketHelper->refreshTicket($remoteTicket, $this->getChannel());
 
@@ -245,13 +231,5 @@ class TicketExportProcessor extends AbstractExportProcessor
     protected function getSyncPriority()
     {
         return $this->getChannel()->getSynchronizationSettings()->offsetGetOr('syncPriority');
-    }
-
-    /**
-     * @param SerializerInterface $serializer
-     */
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
     }
 }

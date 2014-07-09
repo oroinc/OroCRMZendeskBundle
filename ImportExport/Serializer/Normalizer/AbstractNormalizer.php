@@ -20,11 +20,6 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
     const SHORT_MODE = 'short';
 
     /**
-     * @var ChannelRepository
-     */
-    protected $channelRepository;
-
-    /**
      * @var PropertyAccessor
      */
     static private $propertyAccessor;
@@ -43,14 +38,6 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
      * @var string
      */
     private $primaryField;
-
-    /**
-     * @param EntityManager $entityManager
-     */
-    public function __construct(EntityManager $entityManager)
-    {
-        $this->channelRepository = $entityManager->getRepository('OroIntegrationBundle:Channel');
-    }
 
     /**
      * List of rules that declare (de)normalization, for example
@@ -254,19 +241,5 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
             );
         }
         $this->serializer = $serializer;
-    }
-
-    /**
-     * @param array $context
-     * @throws \LogicException
-     * @return Channel
-     */
-    protected function getChannel(array $context)
-    {
-        if (!isset($context['channel'])) {
-            throw new \LogicException('Context should contain reference to channel');
-        }
-
-        return $this->channelRepository->getOrLoadById($context['channel']);
     }
 }

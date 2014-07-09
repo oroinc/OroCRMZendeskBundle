@@ -6,6 +6,10 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
 
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
+
+use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Processor\ContextAwareProcessor;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -13,7 +17,10 @@ use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 
-abstract class AbstractExportProcessor implements ContextAwareProcessor, LoggerAwareInterface
+abstract class AbstractExportProcessor implements
+    StepExecutionAwareInterface,
+    ContextAwareProcessor,
+    LoggerAwareInterface
 {
     /**
      * @var ImportExportLogger
@@ -24,6 +31,11 @@ abstract class AbstractExportProcessor implements ContextAwareProcessor, LoggerA
      * @var ContextInterface
      */
     private $context;
+
+    /**
+     * @var ContextRegistry
+     */
+    private $contextRegistry;
 
     /**
      * @var ZendeskEntityProvider
@@ -39,6 +51,14 @@ abstract class AbstractExportProcessor implements ContextAwareProcessor, LoggerA
      * @var Channel
      */
     private $channel = null;
+
+    /**
+     * @param ContextRegistry $contextRegistry
+     */
+    public function setContextRegistry(ContextRegistry $contextRegistry)
+    {
+        $this->contextRegistry = $contextRegistry;
+    }
 
 
     /**
@@ -88,6 +108,14 @@ abstract class AbstractExportProcessor implements ContextAwareProcessor, LoggerA
         }
 
         return $this->channel;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStepExecution(StepExecution $stepExecution)
+    {
+        $this->setImportExportContext($this->contextRegistry->getByStepExecution($stepExecution));
     }
 
     /**

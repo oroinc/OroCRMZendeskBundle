@@ -1,4 +1,13 @@
 parameters:
+    # Import processors
+    orocrm_zendesk.importexport.processor.import_user.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ImportUserProcessor
+    orocrm_zendesk.importexport.processor.import_ticket.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketProcessor
+    orocrm_zendesk.importexport.processor.import_ticket_comment.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketCommentProcessor
+
+    # Export processors
+    orocrm_zendesk.importexport.processor.export_ticket.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketProcessor
+    orocrm_zendesk.importexport.processor.export_ticket_comment.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketCommentProcessor
+
     orocrm_zendesk.importexport.normalizer.user.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserNormalizer
     orocrm_zendesk.importexport.normalizer.user_role.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserRoleNormalizer
     orocrm_zendesk.importexport.normalizer.ticket.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketNormalizer
@@ -7,167 +16,101 @@ parameters:
     orocrm_zendesk.importexport.normalizer.ticket_type.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketTypeNormalizer
     orocrm_zendesk.importexport.normalizer.ticket_comment.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketCommentNormalizer
 
-    orocrm_zendesk.importexport.strategy.user_sync.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\UserSyncStrategy
-    orocrm_zendesk.importexport.strategy.ticket_sync.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketSyncStrategy
-    orocrm_zendesk.importexport.strategy.ticket_comment_sync.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Strategy\TicketCommentSyncStrategy
-
     orocrm_zendesk.provider.channel_type.class: OroCRM\Bundle\ZendeskBundle\Provider\ChannelType
 
+    # Connectors
     orocrm_zendesk.zendesk.ticket_connector.class: OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector
     orocrm_zendesk.zendesk.user_connector.class: OroCRM\Bundle\ZendeskBundle\Provider\UserConnector
     orocrm_zendesk.zendesk.ticket_comment_connector.class: OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector
 
-    orocrm_zendesk.importexport.processor.abstract_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\AbstractExportProcessor
-    orocrm_zendesk.importexport.processor.ticket_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\TicketExportProcessor
-    orocrm_zendesk.importexport.processor.ticket_comment_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\TicketCommentExportProcessor
-
-    orocrm_zendesk.importexport.writer.ticket_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter
-    orocrm_zendesk.importexport.writer.ticket_comment_export.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketCommentExportWriter
+    # Export writers
+    orocrm_zendesk.importexport.writer.export_ticket.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter
+    orocrm_zendesk.importexport.writer.export_ticket_comment.class: OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketCommentExportWriter
 
 services:
-    # Processors
-    orocrm_zendesk.importexport.processor.user_sync:
-        parent: oro_importexport.processor.import_abstract
+    # Import processors
+    orocrm_zendesk.importexport.processor.import_abstract:
+        abstract: true
         calls:
-            - [setStrategy, [@orocrm_zendesk.importexport.strategy.user_sync]]
-        tags:
-            -
-              name: oro_importexport.processor
-              type: import
-              entity: %orocrm_zendesk.entity.user.class%
-              alias: orocrm_zendesk.sync_from_zendesk_user
+             - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
+             - [setLogger, [@oro_integration.logger.strategy]]
+             - [setContextRegistry, [@oro_importexport.context_registry]]
 
-    orocrm_zendesk.importexport.processor.ticket_sync:
-        parent: oro_importexport.processor.import_abstract
-        calls:
-            - [setStrategy, [@orocrm_zendesk.importexport.strategy.ticket_sync]]
-        tags:
-            -
-              name: oro_importexport.processor
-              type: import
-              entity: %orocrm_zendesk.entity.ticket.class%
-              alias: orocrm_zendesk.sync_from_zendesk_ticket
+    orocrm_zendesk.importexport.processor.import_user:
+        parent: orocrm_zendesk.importexport.processor.import_abstract
+        class: %orocrm_zendesk.importexport.processor.import_user.class%
+        arguments:
+            - @orocrm_zendesk.sync_helper.user
 
-    orocrm_zendesk.importexport.processor.ticket_comment_sync:
-        parent: oro_importexport.processor.import_abstract
-        calls:
-            - [setStrategy, [@orocrm_zendesk.importexport.strategy.ticket_comment_sync]]
-        tags:
-            -
-              name: oro_importexport.processor
-              type: import
-              entity: %orocrm_zendesk.entity.ticket_comment.class%
-              alias: orocrm_zendesk.sync_from_zendesk_ticket_comment
+    orocrm_zendesk.importexport.processor.import_ticket:
+        parent: orocrm_zendesk.importexport.processor.import_abstract
+        class: %orocrm_zendesk.importexport.processor.import_ticket.class%
+        arguments:
+            - @orocrm_zendesk.sync_helper.ticket
+            - @orocrm_zendesk.sync_state
 
-    orocrm_zendesk.importexport.processor.abstract_export:
-        class: %orocrm_zendesk.importexport.processor.abstract_export.class%
+    orocrm_zendesk.importexport.processor.import_ticket_comment:
+        parent: orocrm_zendesk.importexport.processor.import_abstract
+        class: %orocrm_zendesk.importexport.processor.import_ticket_comment.class%
+        arguments:
+            - @orocrm_zendesk.sync_helper.ticket_comment
+
+    # Export processors
+    orocrm_zendesk.importexport.processor.export_abstract:
         abstract: true
         calls:
              - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
              - [setLogger, [@oro_integration.logger.strategy]]
              - [setZendeskProvider, [@orocrm_zendesk.entity_provider.zendesk]]
+             - [setContextRegistry, [@oro_importexport.context_registry]]
 
-    orocrm_zendesk.importexport.processor.ticket_export:
-        parent: orocrm_zendesk.importexport.processor.abstract_export
-        class: %orocrm_zendesk.importexport.processor.ticket_export.class%
+    orocrm_zendesk.importexport.processor.export_ticket:
+        parent: orocrm_zendesk.importexport.processor.export_abstract
+        class: %orocrm_zendesk.importexport.processor.export_ticket.class%
         arguments:
             - @orocrm_zendesk.transport.rest_transport
             - @orocrm_zendesk.sync_helper.ticket
             - @orocrm_zendesk.entity_mapper
-        calls:
-            - [setSerializer, [@oro_importexport.serializer]]
-        tags:
-            -
-              name: oro_importexport.processor
-              type: export
-              entity: %orocrm_zendesk.entity.ticket.class%
-              alias: orocrm_zendesk.sync_to_zendesk_ticket
 
-    orocrm_zendesk.importexport.processor.ticket_comment_export:
-        parent: orocrm_zendesk.importexport.processor.abstract_export
-        class: %orocrm_zendesk.importexport.processor.ticket_comment_export.class%
-        tags:
-            -
-              name: oro_importexport.processor
-              type: export
-              entity: %orocrm_zendesk.entity.ticket_comment.class%
-              alias: orocrm_zendesk.sync_to_zendesk_ticket_comment
+    orocrm_zendesk.importexport.processor.export_ticket_comment:
+        parent: orocrm_zendesk.importexport.processor.export_abstract
+        class: %orocrm_zendesk.importexport.processor.export_ticket_comment.class%
 
     # Normalizers
     orocrm_zendesk.importexport.normalizer.user:
         class: %orocrm_zendesk.importexport.normalizer.user.class%
-        arguments:
-            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.user_role:
         class: %orocrm_zendesk.importexport.normalizer.user_role.class%
-        arguments:
-            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.ticket:
         class: %orocrm_zendesk.importexport.normalizer.ticket.class%
-        arguments:
-            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.ticket_status:
         class: %orocrm_zendesk.importexport.normalizer.ticket_status.class%
-        arguments:
-            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.ticket_priority:
         class: %orocrm_zendesk.importexport.normalizer.ticket_priority.class%
-        arguments:
-            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.ticket_type:
         class: %orocrm_zendesk.importexport.normalizer.ticket_type.class%
-        arguments:
-            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
 
     orocrm_zendesk.importexport.normalizer.ticket_comment:
         class: %orocrm_zendesk.importexport.normalizer.ticket_comment.class%
-        arguments:
-            - @doctrine.orm.entity_manager
         tags:
             - { name: oro_importexport.normalizer }
-
-    # Strategies
-    orocrm_zendesk.importexport.strategy.abstract_sync:
-        abstract: true
-        calls:
-             - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
-             - [setLogger, [@oro_integration.logger.strategy]]
-
-    orocrm_zendesk.importexport.strategy.user_sync:
-        class: %orocrm_zendesk.importexport.strategy.user_sync.class%
-        parent: orocrm_zendesk.importexport.strategy.abstract_sync
-        arguments:
-            - @orocrm_zendesk.sync_helper.user
-
-    orocrm_zendesk.importexport.strategy.ticket_sync:
-        class: %orocrm_zendesk.importexport.strategy.ticket_sync.class%
-        parent: orocrm_zendesk.importexport.strategy.abstract_sync
-        arguments:
-            - @orocrm_zendesk.sync_helper.ticket
-            - @orocrm_zendesk.sync_state
-
-    orocrm_zendesk.importexport.strategy.ticket_comment_sync:
-        class: %orocrm_zendesk.importexport.strategy.ticket_comment_sync.class%
-        parent: orocrm_zendesk.importexport.strategy.abstract_sync
-        arguments:
-            - @orocrm_zendesk.sync_helper.ticket_comment
 
     # Integration type
     orocrm_zendesk.provider.channel_type:
@@ -207,26 +150,25 @@ services:
           - { name: oro_integration.connector, type: ticket_comment, channel_type: zendesk }
 
     # Writers
-    orocrm_zendesk.importexport.writer.abstract_export:
+    orocrm_zendesk.importexport.writer.export_abstract:
         abstract: true
         calls:
             - [setEntityManager, [@doctrine.orm.entity_manager]]
-            - [setSerializer, [@oro_importexport.serializer]]
             - [setTransport, [@orocrm_zendesk.transport.rest_transport]]
             - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
             - [setContextRegistry, [@oro_importexport.context_registry]]
             - [setUserSyncHelper, [@orocrm_zendesk.sync_helper.user]]
 
-    orocrm_zendesk.importexport.writer.ticket_export:
-        class: %orocrm_zendesk.importexport.writer.ticket_export.class%
-        parent: orocrm_zendesk.importexport.writer.abstract_export
+    orocrm_zendesk.importexport.writer.export_ticket:
+        class: %orocrm_zendesk.importexport.writer.export_ticket.class%
+        parent: orocrm_zendesk.importexport.writer.export_abstract
         arguments:
             - @oro_integration.sync_scheduler
             - @orocrm_zendesk.sync_helper.ticket
             - @orocrm_zendesk.sync_helper.ticket_comment
 
-    orocrm_zendesk.importexport.writer.ticket_comment_export:
-        class: %orocrm_zendesk.importexport.writer.ticket_comment_export.class%
-        parent: orocrm_zendesk.importexport.writer.abstract_export
+    orocrm_zendesk.importexport.writer.export_ticket_comment:
+        class: %orocrm_zendesk.importexport.writer.export_ticket_comment.class%
+        parent: orocrm_zendesk.importexport.writer.export_abstract
         arguments:
             - @orocrm_zendesk.sync_helper.ticket_comment
