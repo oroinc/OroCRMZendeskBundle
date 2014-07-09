@@ -60,6 +60,9 @@ class ZendeskExtension extends \Twig_Extension
     public function getTicketUrl(Ticket $ticket)
     {
         try {
+            if (!$ticket->getChannel()) {
+                return null;
+            }
             /** @var ZendeskRestTransport $transport */
             $transport = $ticket->getChannel()->getTransport();
 

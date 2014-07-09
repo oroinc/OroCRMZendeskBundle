@@ -88,6 +88,8 @@ class TicketSyncHelper extends AbstractSyncHelper
      */
     public function refreshTicket(Ticket $ticket, Channel $channel)
     {
+        $this->refreshChannel($ticket, $channel);
+
         $this->refreshDictionaryField($ticket, 'status', 'ticketStatus', true);
         $this->refreshDictionaryField($ticket, 'priority', 'ticketPriority');
         $this->refreshDictionaryField($ticket, 'type', 'ticketType');

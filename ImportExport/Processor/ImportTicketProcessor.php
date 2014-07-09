@@ -46,6 +46,7 @@ class ImportTicketProcessor extends AbstractImportProcessor
                 )
             );
         }
+
         if (!$this->validateOriginId($entity)) {
             return null;
         }

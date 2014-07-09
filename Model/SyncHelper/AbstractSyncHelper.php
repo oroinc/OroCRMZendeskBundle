@@ -171,6 +171,18 @@ abstract class AbstractSyncHelper implements LoggerAwareInterface
     }
 
     /**
+     * @param Channel $channel
+     * @param mixed $entity
+     */
+    protected function refreshChannel($entity, Channel $channel)
+    {
+        if ($channel->getId()) {
+            $channel = $this->oroProvider->getChannelById($channel->getId());
+            $entity->setChannel($channel);
+        }
+    }
+
+    /**
      * @return LoggerInterface
      */
     protected function getLogger()

@@ -45,7 +45,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     {
         $query = 'type:user';
         if ($lastUpdatedAt) {
-            $query .= sprintf(' updated>%s', $lastUpdatedAt->format(\DateTime::ISO8601));
+            $query .= sprintf(' updated>%s', $lastUpdatedAt->sub(new \DateInterval('P1D'))->format('Y-m-d'));
         }
 
         $result = new ZendeskRestIterator(
@@ -70,7 +70,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     {
         $query = 'type:ticket';
         if ($lastUpdatedAt) {
-            $query .= sprintf(' updated>%s', $lastUpdatedAt->format(\DateTime::ISO8601));
+            $query .= sprintf(' updated>%s', $lastUpdatedAt->sub(new \DateInterval('P1D'))->format('Y-m-d'));
         }
 
         $result = new ZendeskRestIterator(

@@ -41,6 +41,7 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
      */
     public function refreshEntity($ticketComment, Channel $channel)
     {
+        $this->refreshChannel($ticketComment, $channel);
         $this->refreshTicket($ticketComment, $channel);
     }
 

@@ -42,6 +42,7 @@ class UserSyncHelper extends AbstractSyncHelper
      */
     public function refreshEntity($user, Channel $channel)
     {
+        $this->refreshChannel($user, $channel);
         $this->refreshDictionaryField($user, 'role', 'userRole');
     }
 
