@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model\SyncHelper;
 
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -14,6 +13,7 @@ use Symfony\Component\HttpKernel\Log\NullLogger;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
 use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;

@@ -2,8 +2,6 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-
 class TicketCommentNormalizer extends AbstractNormalizer
 {
     /**

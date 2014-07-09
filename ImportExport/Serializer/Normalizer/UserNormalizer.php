@@ -2,8 +2,6 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-
 class UserNormalizer extends AbstractNormalizer
 {
     /**
