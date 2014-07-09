@@ -190,6 +190,8 @@ class ZendeskEntityProvider
             return null;
         }
 
+        $email = (string)$email;
+
         $name = "{$contact->getFirstName()} {$contact->getLastName()}";
         $phone = $contact->getPrimaryPhone();
         if ($phone) {

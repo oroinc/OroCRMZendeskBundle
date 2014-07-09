@@ -56,6 +56,7 @@ class TicketExportWriter extends AbstractExportWriter
         $this->getLogger()->setMessagePrefix("Zendesk Ticket [id={$ticket->getId()}]: ");
 
         $this->syncTicketRelations($ticket);
+
         if ($ticket->getOriginId()) {
             $this->updateTicket($ticket);
         } else {
