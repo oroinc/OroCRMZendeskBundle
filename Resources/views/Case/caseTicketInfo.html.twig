@@ -40,11 +40,11 @@
                         {% set link %}
                             {% set url = orocrm_zendesk_ticket_url(ticket) %}
                             {% if url %}
-                                <a href="{{ url }}" target="_blank" class="no-hash">
-                                    {{ ticket.originId }}
-                                </a>
-                            {% else %}
+                                <a href="{{ url }}" target="_blank" class="no-hash">{{ ticket.originId }}</a>
+                            {% elseif ticket.originId %}
                                 {{ ticket.originId }}
+                            {% else %}
+                                {{ 'oro.ui.empty'|trans }}
                             {% endif %}
                         {% endset %}
                         {{ UI.renderHtmlProperty('orocrm.zendesk.ticket.origin_id.label'|trans, link) }}

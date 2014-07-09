@@ -40,7 +40,7 @@ class ZendeskExtensionTest extends \PHPUnit_Framework_TestCase
         $expectedUrl = "{$zendeskUrl}/tickets/{$id}";
 
         $ticket = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\Ticket');
-        $ticket->expects($this->once())
+        $ticket->expects($this->atLeastOnce())
             ->method('getOriginId')
             ->will($this->returnValue($id));
         $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
@@ -48,7 +48,7 @@ class ZendeskExtensionTest extends \PHPUnit_Framework_TestCase
         $transport->expects($this->once())
             ->method('getUrl')
             ->will($this->returnValue($zendeskUrl));
-        $ticket->expects($this->once())
+        $ticket->expects($this->atLeastOnce())
             ->method('getChannel')
             ->will($this->returnValue($channel));
         $channel->expects($this->once())

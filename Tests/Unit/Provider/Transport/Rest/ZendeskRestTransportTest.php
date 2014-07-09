@@ -67,8 +67,9 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
     {
         $this->initTransport();
         $datetime = '2014-06-27T01:08:00+0400';
+        $expectedUpdated = '2014-06-26';
         $result = $this->transport->getUsers(new \DateTime($datetime));
-        $this->assertAttributeEquals(['query' => 'type:user updated>' . $datetime], 'params', $result);
+        $this->assertAttributeEquals(['query' => 'type:user updated>' . $expectedUpdated], 'params', $result);
     }
 
     public function testGetTicketsWorks()
@@ -97,8 +98,9 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
     {
         $this->initTransport();
         $datetime = '2014-06-27T01:08:00+0400';
+        $expectedUpdated = '2014-06-26';
         $result = $this->transport->getTickets(new \DateTime($datetime));
-        $this->assertAttributeEquals(['query' => 'type:ticket updated>' . $datetime], 'params', $result);
+        $this->assertAttributeEquals(['query' => 'type:ticket updated>' . $expectedUpdated], 'params', $result);
     }
 
     public function testGetTicketCommentsWorks()
