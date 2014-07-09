@@ -2,14 +2,14 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Transport\AbstractRestTransport;
 
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\RestException;
 use OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
