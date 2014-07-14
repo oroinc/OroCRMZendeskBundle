@@ -115,9 +115,13 @@ class OroEntityProvider
         $contact->addEmail($email);
 
         $nameParts = preg_split('/[\s]+/', trim($user->getName()), 2);
-        $nameParts = array_pad($nameParts, 2, '');
+
+        if (empty($nameParts[0])) {
+            return null;
+        }
+
         $contact->setFirstName($nameParts[0]);
-        $contact->setLastName($nameParts[1]);
+        $contact->setLastName(isset($nameParts[1]) ? $nameParts[1] : $nameParts[0]);
 
         return $contact;
     }
