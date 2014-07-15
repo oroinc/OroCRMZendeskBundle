@@ -78,7 +78,7 @@ class OroEntityProviderTest extends WebTestCase
                 'expected' => array(
                     'email' => $email,
                     'first_name' => $firstName,
-                    'last_name' => $lastName = 'Smith prefix',
+                    'last_name' => $lastName = 'Smith second part',
                     'phone'=> $phone
                 ),
                 'user' => $this->getUser($email, "{$firstName}\t{$lastName}", $phone)
