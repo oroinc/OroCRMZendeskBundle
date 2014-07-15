@@ -3,7 +3,6 @@
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\Model\EntityProvider;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 
@@ -29,55 +28,26 @@ class OroEntityProviderTest extends WebTestCase
             ->get('orocrm_zendesk.entity_provider.oro');
     }
 
-    public function testGetContactCreateValidContact()
-    {
-        $firstName = 'Alex';
-        $lastName = 'Smith';
-        $phone = '123456789';
-        $email = 'not_exist_email@mail.com';
-        $name = "{$firstName} {$lastName}";
-
-        $user = $this->getUser($email, $name, $phone);
-        $contact = $this->target->getContact($user);
-        $this->checkContact($contact, $phone, $email, $firstName, $lastName);
-
-        $name = "     {$firstName}    {$lastName}    ";
-        $user = $this->getUser($email, $name, $phone);
-        $contact = $this->target->getContact($user);
-        $this->checkContact($contact, $phone, $email, $firstName, $lastName);
-
-        $name = "{$firstName}    ";
-        $user = $this->getUser($email, $name, $phone);
-        $contact = $this->target->getContact($user);
-        $this->checkContact($contact, $phone, $email, $firstName, $firstName);
-
-        $user = $this->getUser($email, $firstName, $phone);
-        $contact = $this->target->getContact($user);
-        $this->checkContact($contact, $phone, $email, $firstName, $firstName);
-    }
-
     /**
-     * @param Contact|null $contact
-     * @param string       $phone
-     * @param string       $email
-     * @param string       $firstName
-     * @param string       $lastName
+     * @dataProvider getContactDataProvider
      */
-    protected function checkContact($contact, $phone, $email, $firstName, $lastName)
+    public function testGetContact(array $expected, User $user)
     {
+
+        $contact = $this->target->getContact($user);
         $this->assertInstanceOf('OroCRM\Bundle\ContactBundle\Entity\Contact', $contact);
         $this->assertEquals(
             $contact->getPrimaryPhone()
                 ->getPhone(),
-            $phone
+            $expected['phone']
         );
         $this->assertEquals(
             $contact->getPrimaryEmail()
                 ->getEmail(),
-            $email
+            $expected['email']
         );
-        $this->assertEquals($contact->getFirstName(), $firstName);
-        $this->assertEquals($contact->getLastName(), $lastName);
+        $this->assertEquals($contact->getFirstName(), $expected['first_name']);
+        $this->assertEquals($contact->getLastName(), $expected['last_name']);
     }
 
     /**
@@ -93,5 +63,50 @@ class OroEntityProviderTest extends WebTestCase
         $user->setName($name);
         $user->setPhone($phone);
         return $user;
+    }
+
+    /**
+     * @return array
+     */
+    public function getContactDataProvider()
+    {
+        return array(
+            'Create valid contact' => array(
+                'expected' => array(
+                    'email' => $email = 'not_exist_email@mail.com',
+                    'first_name' => $firstName = 'Alex',
+                    'last_name' => $lastName = 'Smith',
+                    'phone'=> $phone = '123456789'
+                ),
+                'user' => $this->getUser($email, "{$firstName} {$lastName}", $phone)
+            ),
+            'Create valid contact is name divided by tabs' => array(
+                'expected' => array(
+                    'email' => $email,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'phone'=> $phone
+                ),
+                'user' => $this->getUser($email, "{$firstName}\t{$lastName}", $phone)
+            ),
+            'Create valid contact if user name have spaces' => array(
+                'expected' => array(
+                    'email' => $email,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'phone'=> $phone
+                ),
+                'user' => $this->getUser($email, "  {$firstName} {$lastName}   ", $phone)
+            ),
+            'Create valid contact if only first name specified' => array(
+                'expected' => array(
+                    'email' => $email,
+                    'first_name' => $firstName,
+                    'last_name' => $firstName,
+                    'phone'=> $phone
+                ),
+                'user' => $this->getUser($email, "  {$firstName}   ", $phone)
+            )
+        );
     }
 }
