@@ -37,17 +37,17 @@ class OroEntityProviderTest extends WebTestCase
         $contact = $this->target->getContact($user);
         $this->assertInstanceOf('OroCRM\Bundle\ContactBundle\Entity\Contact', $contact);
         $this->assertEquals(
+            $expected['phone'],
             $contact->getPrimaryPhone()
-                ->getPhone(),
-            $expected['phone']
+                ->getPhone()
         );
         $this->assertEquals(
+            $expected['email'],
             $contact->getPrimaryEmail()
-                ->getEmail(),
-            $expected['email']
+                ->getEmail()
         );
-        $this->assertEquals($contact->getFirstName(), $expected['first_name']);
-        $this->assertEquals($contact->getLastName(), $expected['last_name']);
+        $this->assertEquals($expected['first_name'], $contact->getFirstName());
+        $this->assertEquals($expected['last_name'], $contact->getLastName());
     }
 
     /**
@@ -74,6 +74,15 @@ class OroEntityProviderTest extends WebTestCase
                 ),
                 'user' => $this->getUser($email, "{$firstName}\t{$lastName}", $phone)
             ),
+            'Create valid contact is name have more than two parts' => array(
+                'expected' => array(
+                    'email' => $email,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName = 'Smith prefix',
+                    'phone'=> $phone
+                ),
+                'user' => $this->getUser($email, "{$firstName}\t{$lastName}", $phone)
+            ),
             'Create valid contact if user name have spaces' => array(
                 'expected' => array(
                     'email' => $email,
@@ -94,7 +103,6 @@ class OroEntityProviderTest extends WebTestCase
             )
         );
     }
-
 
     /**
      * @param bool   $email
