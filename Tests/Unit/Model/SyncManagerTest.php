@@ -54,7 +54,36 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(42));
         $this->zendeskEntityProvider->expects($this->never())
             ->method('getTicketByCase');
-        $this->target->syncComment($existComment);
+        $this->assertFalse($this->target->syncComment($existComment));
+    }
+
+    public function testSyncCommentSyncOnlyIfChannelHasTwoWaySyncEnabled()
+    {
+        $case = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseEntity');
+        $comment = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseComment');
+        $comment->expects($this->once())
+            ->method('getId')
+            ->will($this->returnValue(null));
+        $comment->expects($this->once())
+            ->method('getCase')
+            ->will($this->returnValue($case));
+        $ticket = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\Ticket');
+        $channel = $this->getChannel(false);
+        $ticket->expects($this->once())
+            ->method('getChannel')
+            ->will($this->returnValue($channel));
+        $this->zendeskEntityProvider->expects($this->once())
+            ->method('getTicketByCase')
+            ->will($this->returnValue($ticket));
+
+        $this->entityManager->expects($this->never())
+            ->method('persist');
+        $this->entityManager->expects($this->never())
+            ->method('flush');
+        $this->scheduler->expects($this->never())
+            ->method('schedule');
+
+        $this->assertFalse($this->target->syncComment($comment));
     }
 
     public function testSyncCommentSync()
@@ -68,7 +97,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
             ->method('getCase')
             ->will($this->returnValue($case));
         $ticket = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\Ticket');
-        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $channel = $this->getChannel(true);
         $ticket->expects($this->once())
             ->method('getChannel')
             ->will($this->returnValue($channel));
@@ -91,7 +120,22 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $this->scheduler->expects($this->once())
             ->method('schedule')
             ->with($channel, TicketCommentConnector::TYPE, $this->arrayHasKey('id'), false);
-        $this->target->syncComment($comment);
+        $this->assertTrue($this->target->syncComment($comment));
+    }
+
+    public function testSyncCaseSyncOnlyIfChannelHasTwoWaySyncEnabled()
+    {
+        $case = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseEntity');
+        $channel = $this->getChannel(false);
+
+        $this->entityManager->expects($this->never())
+            ->method('persist');
+        $this->entityManager->expects($this->never())
+            ->method('flush');
+        $this->scheduler->expects($this->never())
+            ->method('schedule');
+
+        $this->assertFalse($this->target->syncCase($case, $channel));
     }
 
     public function testSyncCase()
@@ -106,7 +150,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $case->expects($this->once())
             ->method('getComments')
             ->will($this->returnValue($comments));
-        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $channel = $this->getChannel(true);
         $this->entityManager->expects($this->once())
             ->method('persist')
             ->with(
@@ -125,5 +169,25 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
                 )
             );
         $this->target->syncCase($case, $channel);
+    }
+
+    /**
+     * @param bool $isTwoWaySyncEnabled
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function getChannel($isTwoWaySyncEnabled)
+    {
+        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $synchronizationSettings = $this->getMockBuilder('Oro\Bundle\DataGridBundle\Common\Object')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $synchronizationSettings->expects($this->once())
+            ->method('offsetGetOr')
+            ->with('isTwoWaySyncEnabled', false)
+            ->will($this->returnValue($isTwoWaySyncEnabled));
+        $channel->expects($this->once())
+            ->method('getSynchronizationSettings')
+            ->will($this->returnValue($synchronizationSettings));
+        return $channel;
     }
 }

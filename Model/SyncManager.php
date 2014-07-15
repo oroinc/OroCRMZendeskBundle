@@ -50,11 +50,12 @@ class SyncManager
      * @param CaseEntity $caseEntity
      * @param Channel    $channel
      * @param bool       $flush
+     * @return bool
      */
     public function syncCase(CaseEntity $caseEntity, Channel $channel, $flush = false)
     {
-        if ($this->zendeskEntityProvider->getTicketByCase($caseEntity)) {
-            return;
+        if ($this->zendeskEntityProvider->getTicketByCase($caseEntity) || !$this->isTwoWaySyncEnabled($channel)) {
+            return false;
         }
 
         $ticket = new Ticket();
@@ -72,33 +73,41 @@ class SyncManager
         }
 
         $this->entityManager->persist($ticket);
-        $this->entityManager->flush();
+        $this->entityManager->flush($ticket);
 
         $this->syncScheduler->schedule($channel, TicketConnector::TYPE, array('id' => $ticket->getId()), $flush);
+
+        return true;
     }
 
     /**
      * @param CaseComment $caseComment
+     * @return bool
      */
     public function syncComment(CaseComment $caseComment)
     {
         if ($caseComment->getId()) {
-            return;
+            return false;
         }
 
         $ticket = $this->zendeskEntityProvider->getTicketByCase($caseComment->getCase());
 
         if (!$ticket) {
-            return;
+            return false;
         }
         $channel = $ticket->getChannel();
+
+        if (!$this->isTwoWaySyncEnabled($channel)) {
+            return false;
+        }
+
         $ticketComment = new TicketComment();
         $ticketComment->setChannel($channel);
         $ticketComment->setRelatedComment($caseComment);
         $ticketComment->setTicket($ticket);
 
         $this->entityManager->persist($ticketComment);
-        $this->entityManager->flush();
+        $this->entityManager->flush($ticketComment);
 
         $this->syncScheduler->schedule(
             $channel,
@@ -106,5 +115,18 @@ class SyncManager
             array('id' => $ticketComment->getId()),
             false
         );
+
+        return true;
+    }
+
+    /**
+     * @param Channel $channel
+     * @return bool
+     */
+    protected function isTwoWaySyncEnabled(Channel $channel)
+    {
+        $isTwoWaySyncEnabled = $channel->getSynchronizationSettings()
+            ->offsetGetOr('isTwoWaySyncEnabled', false);
+        return $isTwoWaySyncEnabled;
     }
 }
