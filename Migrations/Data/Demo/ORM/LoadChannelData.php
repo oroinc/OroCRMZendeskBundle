@@ -23,7 +23,7 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
                 UserConnector::TYPE,
                 TicketCommentConnector::TYPE
             ),
-            'enabled' => 1,
+            'enabled' => 0,
             'transport' => 'orocrm_zendesk:zendesk_demo_transport',
             'reference' => 'orocrm_zendesk:zendesk_demo_channel'
         )
