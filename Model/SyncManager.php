@@ -73,7 +73,7 @@ class SyncManager
         }
 
         $this->entityManager->persist($ticket);
-        $this->entityManager->flush();
+        $this->entityManager->flush($ticket);
 
         $this->syncScheduler->schedule($channel, TicketConnector::TYPE, array('id' => $ticket->getId()), $flush);
 
@@ -107,7 +107,7 @@ class SyncManager
         $ticketComment->setTicket($ticket);
 
         $this->entityManager->persist($ticketComment);
-        $this->entityManager->flush();
+        $this->entityManager->flush($ticketComment);
 
         $this->syncScheduler->schedule(
             $channel,

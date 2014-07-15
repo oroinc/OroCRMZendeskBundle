@@ -172,10 +172,10 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param bool $result
+     * @param bool $isTwoWaySyncEnabled
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getChannel($result)
+    protected function getChannel($isTwoWaySyncEnabled)
     {
         $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
         $synchronizationSettings = $this->getMockBuilder('Oro\Bundle\DataGridBundle\Common\Object')
@@ -184,7 +184,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $synchronizationSettings->expects($this->once())
             ->method('offsetGetOr')
             ->with('isTwoWaySyncEnabled', false)
-            ->will($this->returnValue($result));
+            ->will($this->returnValue($isTwoWaySyncEnabled));
         $channel->expects($this->once())
             ->method('getSynchronizationSettings')
             ->will($this->returnValue($synchronizationSettings));
