@@ -51,21 +51,6 @@ class OroEntityProviderTest extends WebTestCase
     }
 
     /**
-     * @param bool   $email
-     * @param string $name
-     * @param string $phone
-     * @return User
-     */
-    protected function getUser($email, $name, $phone)
-    {
-        $user = new User();
-        $user->setEmail($email);
-        $user->setName($name);
-        $user->setPhone($phone);
-        return $user;
-    }
-
-    /**
      * @return array
      */
     public function getContactDataProvider()
@@ -108,5 +93,21 @@ class OroEntityProviderTest extends WebTestCase
                 'user' => $this->getUser($email, "  {$firstName}   ", $phone)
             )
         );
+    }
+
+
+    /**
+     * @param bool   $email
+     * @param string $name
+     * @param string $phone
+     * @return User
+     */
+    protected function getUser($email, $name, $phone)
+    {
+        $user = new User();
+        $user->setEmail($email);
+        $user->setName($name);
+        $user->setPhone($phone);
+        return $user;
     }
 }
