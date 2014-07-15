@@ -46,6 +46,11 @@ class ChannelConnectorsExtension extends AbstractTypeExtension
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
+        $data = $form->getData();
+        if (!$data || $data->getType() !== ChannelType::TYPE) {
+            return;
+        }
+
         foreach ($view['connectors']->children as $checkbox) {
             $checkbox->vars['checked'] = true;
             $checkbox->vars['disabled'] = true;

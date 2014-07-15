@@ -630,7 +630,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                     'message' => 'Unsuccessful response: Can\'t get ticket data from response.'
                 ]
             ],
-            'Can\'t parse create ticket response' => [
+            'Can\'t parse update ticket response' => [
                 'data' => $ticket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!'),
                 'expectedSerializeValueMap' => [
                     [
@@ -646,12 +646,12 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                     'data' => ['ticket' => $ticketData],
                 ],
                 'expectedResponse' => [
-                    'statusCode' => 201,
+                    'statusCode' => 200,
                     'jsonException' => new \Exception(),
                 ],
                 'expectedException' => [
                     'class' => 'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
-                    'message' => 'Unsuccessful response: Can\'t parse create ticket response.'
+                    'message' => 'Unsuccessful response: Can\'t parse update ticket response.'
                 ]
             ],
             'Validation errors' => [
@@ -727,6 +727,10 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
             $this->client->expects($this->once())
                 ->method('put')
                 ->with($expectedRequest['resource'], $expectedRequest['data'])
+                ->will($this->returnValue($response));
+
+            $this->client->expects($this->any())
+                ->method('getLastResponse')
                 ->will($this->returnValue($response));
         }
 
@@ -818,18 +822,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                         $commentData = ['body' => 'The smoke is very colorful!']
                     ]
                 ],
-                'expectedDeserializeValueMap' => [
-                    [
-                        $updatedCommentData = [
-                            'id' => 1,
-                            'body' => 'UPDATED',
-                        ],
-                        self::COMMENT_TYPE,
-                        null,
-                        [],
-                        $updatedComment = $this->createComment()->setOriginId(1)->setBody('UPDATED')
-                    ]
-                ],
+                'expectedDeserializeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'tickets/1.json',
                     'data' => ['ticket' => ['comment' => $commentData]],
