@@ -78,7 +78,7 @@ class TicketComment
     /**
      * @var Ticket
      *
-     * @ORM\ManyToOne(targetEntity="Ticket")
+     * @ORM\ManyToOne(targetEntity="Ticket", inversedBy="comments")
      * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $ticket;
