@@ -121,7 +121,7 @@ class SyncManager
 
     /**
      * @param Channel $channel
-     * @return mixed
+     * @return bool
      */
     protected function isTwoWaySyncEnabled(Channel $channel)
     {
