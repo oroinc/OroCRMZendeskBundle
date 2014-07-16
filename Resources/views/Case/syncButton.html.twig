@@ -25,30 +25,20 @@
         </ul>
     </div>
     <script type="text/javascript">
-        require(['jquery', 'routing', 'oronavigation/js/navigation'],
-            function ($, routing, Navigation) {
-
-                var navigation = Navigation.getInstance();
-
+        require(['jquery', 'routing', 'oroui/js/mediator'],
+            function ($, routing, mediator) {
                 $('.zendesk-integration-btn').bind('click', function(event) {
                     event.preventDefault();
 
                     var id = $(this).data('channel-id');
                     var url = routing.generate('oro_api_post_ticket_sync_case', {id: '{{ entity.id }}', channelId: id});
+                    var casesListUrl = routing.generate('orocrm_case_index');
 
-                    if (navigation) {
-                        navigation.loadingMask.show();
-                    }
-
+                    mediator.execute('showLoading');
                     $.post(url, function(res, status, jqXHR) {
-                        if (navigation) {
-                            navigation.updateDebugToolbar(jqXHR);
-                            navigation.refreshPage();
-                        }
+                        mediator.execute('redirectTo', {url: casesListUrl, redirect: true});
                     }).always(function () {
-                        if (navigation) {
-                            navigation.loadingMask.hide();
-                        }
+                        mediator.execute('hideLoading');
                     });
 
                     return false;
