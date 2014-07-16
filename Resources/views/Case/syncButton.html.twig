@@ -32,7 +32,6 @@
 
                     var id = $(this).data('channel-id');
                     var url = routing.generate('oro_api_post_ticket_sync_case', {id: '{{ entity.id }}', channelId: id});
-                    var casesListUrl = routing.generate('orocrm_case_index');
 
                     mediator.execute('showLoading');
                     $.post(url, function(res, status, jqXHR) {
