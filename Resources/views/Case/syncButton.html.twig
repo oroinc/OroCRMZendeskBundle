@@ -25,8 +25,8 @@
         </ul>
     </div>
     <script type="text/javascript">
-        require(['jquery', 'routing', 'oroui/js/mediator'],
-            function ($, routing, mediator) {
+        require(['jquery', 'routing', 'oroui/js/mediator', 'oroui/js/messenger', 'orotranslation/js/translator'],
+            function ($, routing, mediator, messenger, __) {
                 $('.zendesk-integration-btn').bind('click', function(event) {
                     event.preventDefault();
 
@@ -36,9 +36,14 @@
 
                     mediator.execute('showLoading');
                     $.post(url, function(res, status, jqXHR) {
-                        mediator.execute('redirectTo', {url: casesListUrl, redirect: true});
+                        mediator.once('page:afterChange', function(){
+                            messenger.notificationFlashMessage('success', __('orocrm.zendesk.reverse_sync.success_message'));
+                        });
+                        mediator.execute('refreshPage', {restore: true});
                     }).always(function () {
                         mediator.execute('hideLoading');
+                    }).fail(function(){
+                        messenger.notificationFlashMessage('error', __('orocrm.zendesk.reverse_sync.fail_message'));
                     });
 
                     return false;
