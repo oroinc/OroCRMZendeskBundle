@@ -46,8 +46,9 @@ class OroEntityProviderTest extends WebTestCase
             $contact->getPrimaryEmail()
                 ->getEmail()
         );
-        $this->assertEquals($expected['first_name'], $contact->getFirstName());
-        $this->assertEquals($expected['last_name'], $contact->getLastName());
+        $this->assertEquals($expected['first_name'], $contact->getFirstName(), 'incorrect first name');
+        $this->assertEquals($expected['middle_name'], $contact->getMiddleName(), 'incorrect middle name');
+        $this->assertEquals($expected['last_name'], $contact->getLastName(), 'incorrect last name');
     }
 
     /**
@@ -61,41 +62,46 @@ class OroEntityProviderTest extends WebTestCase
                     'email' => $email = 'not_exist_email@mail.com',
                     'first_name' => $firstName = 'Alex',
                     'last_name' => $lastName = 'Smith',
+                    'middle_name' => $middleName = 'M.',
                     'phone'=> $phone = '123456789'
                 ),
-                'user' => $this->getUser($email, "{$firstName} {$lastName}", $phone)
+                'user' => $this->getUser($email, "{$firstName} {$middleName} {$lastName}", $phone)
             ),
             'Create valid contact is name divided by tabs' => array(
                 'expected' => array(
                     'email' => $email,
                     'first_name' => $firstName,
+                    'middle_name' => $middleName,
                     'last_name' => $lastName,
                     'phone'=> $phone
                 ),
-                'user' => $this->getUser($email, "{$firstName}\t{$lastName}", $phone)
+                'user' => $this->getUser($email, "{$firstName}\t{$middleName}\t{$lastName}", $phone)
             ),
-            'Create valid contact is name have more than two parts' => array(
+            'Create valid contact is name have only two parts' => array(
                 'expected' => array(
                     'email' => $email,
                     'first_name' => $firstName,
-                    'last_name' => $lastName = 'Smith second part',
+                    'middle_name' => '',
+                    'last_name' => $lastName,
                     'phone'=> $phone
                 ),
-                'user' => $this->getUser($email, "{$firstName}\t{$lastName}", $phone)
+                'user' => $this->getUser($email, "{$firstName} {$lastName}", $phone)
             ),
             'Create valid contact if user name have spaces' => array(
                 'expected' => array(
                     'email' => $email,
                     'first_name' => $firstName,
+                    'middle_name' => $middleName,
                     'last_name' => $lastName,
                     'phone'=> $phone
                 ),
-                'user' => $this->getUser($email, "  {$firstName} {$lastName}   ", $phone)
+                'user' => $this->getUser($email, "  {$firstName} {$middleName} {$lastName}   ", $phone)
             ),
             'Create valid contact if only first name specified' => array(
                 'expected' => array(
                     'email' => $email,
                     'first_name' => $firstName,
+                    'middle_name' => '',
                     'last_name' => $firstName,
                     'phone'=> $phone
                 ),
