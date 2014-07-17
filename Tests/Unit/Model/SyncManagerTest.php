@@ -76,14 +76,10 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
             ->method('getTicketByCase')
             ->will($this->returnValue($ticket));
 
-        $this->entityManager->expects($this->never())
-            ->method('persist');
-        $this->entityManager->expects($this->never())
-            ->method('flush');
         $this->scheduler->expects($this->never())
             ->method('schedule');
 
-        $this->assertFalse($this->target->syncComment($comment));
+        $this->assertTrue($this->target->syncComment($comment));
     }
 
     public function testSyncCommentSync()

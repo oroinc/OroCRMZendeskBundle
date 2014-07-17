@@ -18,6 +18,7 @@ parameters:
     # Listeners
     orocrm_zendesk.listener.doctrine.sync_update_case.class:  OroCRM\Bundle\ZendeskBundle\EventListener\Doctrine\SyncUpdateCaseListener
     orocrm_zendesk.listener.case_entity.class:                OroCRM\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener
+    orocrm_zendesk.listener.two_way_sync.class:               OroCRM\Bundle\ZendeskBundle\EventListener\Channel\TwoWaySyncListener
 
     # Entity providers
     orocrm_zendesk.entity_provider.oro.class:                 OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider
@@ -106,6 +107,13 @@ services:
         arguments:
             - @orocrm_zendesk.model.sync_manager
             - @orocrm_zendesk.entity_provider.oro
+        tags:
+            - { name: kernel.event_subscriber }
+
+    orocrm_zendesk.listener.two_way_sync:
+        class: %orocrm_zendesk.listener.two_way_sync.class%
+        arguments:
+            - @orocrm_zendesk.model.sync_manager
         tags:
             - { name: kernel.event_subscriber }
 

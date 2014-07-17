@@ -269,6 +269,16 @@ class ZendeskEntityProvider
     }
 
     /**
+     * @param Channel $channel
+     * @return Ticket[]
+     */
+    public function getTicketsByChannel(Channel $channel)
+    {
+        return $this->entityManager->getRepository('OroCRMZendeskBundle:Ticket')
+            ->findBy(array('channel' => $channel));
+    }
+
+    /**
      * @param TicketComment $ticketComment
      * @param Channel       $channel
      * @return TicketComment|null
