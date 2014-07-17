@@ -129,6 +129,11 @@ class OroEntityProvider
         $contact->addEmail($email);
 
         $userName = trim($user->getName());
+
+        if (empty($userName)) {
+            return null;
+        }
+
         $nameParts = preg_split('/[\s]+/', $userName, 5);
 
         $nameParts = $this->setContactPrefixAndSuffix($nameParts, $contact);

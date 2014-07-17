@@ -135,6 +135,17 @@ class OroEntityProviderTest extends WebTestCase
                 ),
                 'user' => $this->getUser($email, "{$firstName} {$middleName} {$lastName}", $phone)
             ),
+            'Create valid contact if name have no middle name and suffix' => array(
+                'expected' => array(
+                    'email' => $email,
+                    'first_name' => $firstName,
+                    'middle_name' => '',
+                    'prefix' => $prefix,
+                    'last_name' => $suffix,
+                    'phone'=> $phone
+                ),
+                'user' => $this->getUser($email, "{$prefix} {$firstName} {$suffix}", $phone)
+            ),
             'Create valid contact if name have only two parts' => array(
                 'expected' => array(
                     'email' => $email,
