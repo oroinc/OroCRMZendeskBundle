@@ -1,0 +1,31 @@
+parameters:
+    orocrm_zendesk.name_suffixes:
+        - Jr
+        - Sr
+        - Jnr
+        - III
+        - II
+        - IV
+        - V
+        - C.S.V
+        - CSV
+        - PMP
+        - P.M.P
+        - RA
+        - R.A
+        - JD
+        - J.D
+        - MD
+        - M.D
+        - PhD
+        - Ph.D
+        - BA
+        - B.A
+        - BSc
+        - B.Sc
+        - MA
+        - M.A
+        - MSc
+        - M.Sc
+        - MBA
+        - M.B.A
