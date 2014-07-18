@@ -25,30 +25,24 @@
         </ul>
     </div>
     <script type="text/javascript">
-        require(['jquery', 'routing', 'oronavigation/js/navigation'],
-            function ($, routing, Navigation) {
-
-                var navigation = Navigation.getInstance();
-
+        require(['jquery', 'routing', 'oroui/js/mediator', 'oroui/js/messenger', 'orotranslation/js/translator'],
+            function ($, routing, mediator, messenger, __) {
                 $('.zendesk-integration-btn').bind('click', function(event) {
                     event.preventDefault();
 
                     var id = $(this).data('channel-id');
                     var url = routing.generate('oro_api_post_ticket_sync_case', {id: '{{ entity.id }}', channelId: id});
 
-                    if (navigation) {
-                        navigation.loadingMask.show();
-                    }
-
+                    mediator.execute('showLoading');
                     $.post(url, function(res, status, jqXHR) {
-                        if (navigation) {
-                            navigation.updateDebugToolbar(jqXHR);
-                            navigation.refreshPage();
-                        }
+                        mediator.once('page:afterChange', function(){
+                            messenger.notificationFlashMessage('success', __('orocrm.zendesk.reverse_sync.success_message'));
+                        });
+                        mediator.execute('refreshPage', {restore: true});
                     }).always(function () {
-                        if (navigation) {
-                            navigation.loadingMask.hide();
-                        }
+                        mediator.execute('hideLoading');
+                    }).fail(function(){
+                        messenger.notificationFlashMessage('error', __('orocrm.zendesk.reverse_sync.fail_message'));
                     });
 
                     return false;
