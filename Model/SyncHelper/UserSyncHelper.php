@@ -66,9 +66,8 @@ class UserSyncHelper extends AbstractSyncHelper
 
     /**
      * @param User $entity
-     * @param Channel $channel
      */
-    public function syncRelatedEntities(User $entity, Channel $channel)
+    public function syncRelatedEntities(User $entity)
     {
         if ($this->isRelativeWithUser($entity) && $entity->getRelatedContact()) {
             $this->getLogger()->info(
