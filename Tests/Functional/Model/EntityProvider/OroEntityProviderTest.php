@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\Model\EntityProvider;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
@@ -16,6 +17,11 @@ class OroEntityProviderTest extends WebTestCase
      */
     protected $target;
 
+    /**
+     * @var Channel
+     */
+    protected $channel;
+
     protected function setUp()
     {
         $this->initClient();
@@ -24,6 +30,7 @@ class OroEntityProviderTest extends WebTestCase
                 'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData'
             )
         );
+        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->target = $this->getContainer()
             ->get('orocrm_zendesk.entity_provider.oro');
     }
@@ -33,7 +40,8 @@ class OroEntityProviderTest extends WebTestCase
      */
     public function testGetContact(array $expected, User $user)
     {
-
+        $user->setChannel($this->channel);
+        $defaultOwner = $this->channel->getDefaultUserOwner();
         $contact = $this->target->getContact($user);
         $this->assertInstanceOf('OroCRM\Bundle\ContactBundle\Entity\Contact', $contact);
         $this->assertEquals(
@@ -55,6 +63,7 @@ class OroEntityProviderTest extends WebTestCase
         if (isset($expected['suffix'])) {
             $this->assertEquals($expected['suffix'], $contact->getNameSuffix(), 'incorrect suffix');
         }
+        $this->assertEquals($defaultOwner, $contact->getOwner());
     }
 
     /**

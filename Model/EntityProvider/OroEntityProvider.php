@@ -99,6 +99,7 @@ class OroEntityProvider
         if (!$user->getEmail()) {
             return null;
         }
+
         /**
          * @var ContactEmail $contactEmail
          */
@@ -115,6 +116,7 @@ class OroEntityProvider
         }
 
         $contact = new Contact();
+        $contact->setOwner($this->getDefaultUser($user->getChannel()));
 
         if ($user->getPhone()) {
             $phone = new ContactPhone();
