@@ -131,7 +131,7 @@ class SyncManager
         $ids = array();
 
         $ticketComments->rewind();
-        while ($ticketComments->current()) {
+        while ($ticketComments->valid()) {
             /**
              * @var TicketComment $ticketComment
              */
@@ -139,7 +139,7 @@ class SyncManager
             $ticketComments->next();
             $ids[] = $ticketComment->getId();
 
-            if (!$ticketComments->current() || count($ids) == 100) {
+            if (!$ticketComments->valid() || count($ids) == 100) {
                 $this->syncScheduler->schedule(
                     $channel,
                     TicketCommentConnector::TYPE,
