@@ -7,7 +7,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncManager;
-use Oro\Bundle\IntegrationBundle\Event\ChannelUpdateEvent;
+use Oro\Bundle\IntegrationBundle\Event\IntegrationUpdateEvent;
 
 class ChannelUpdateListener implements EventSubscriberInterface
 {
@@ -30,16 +30,16 @@ class ChannelUpdateListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ChannelUpdateEvent::NAME => 'onUpdate'
+            IntegrationUpdateEvent::NAME => 'onUpdate'
         ];
     }
 
     /**
-     * @param ChannelUpdateEvent $event
+     * @param IntegrationUpdateEvent $event
      */
-    public function onUpdate(ChannelUpdateEvent $event)
+    public function onUpdate(IntegrationUpdateEvent $event)
     {
-        $channel = $event->getChannel();
+        $channel = $event->getIntegration();
 
         if ($channel->getType() == ChannelType::TYPE && $this->isNotSynced($channel, $event->getOldState())) {
             $this->syncManager->reverseSyncChannel($channel);
