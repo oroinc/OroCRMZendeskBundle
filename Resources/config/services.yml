@@ -122,6 +122,8 @@ services:
         class: %orocrm_zendesk.entity_provider.oro.class%
         arguments:
             - @doctrine.orm.entity_manager
+            - %orocrm_zendesk.name_prefixes%
+            - %orocrm_zendesk.name_suffixes%
 
     orocrm_zendesk.entity_provider.zendesk:
         class: %orocrm_zendesk.entity_provider.zendesk.class%
