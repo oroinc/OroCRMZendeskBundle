@@ -158,6 +158,63 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
             'channel' => 'zendesk_channel:first_test_channel',
         ),
+        array(
+            'reference' => 'orocrm_zendesk:synced_ticket_with_not_synced_comments',
+            'subject' => 'Synced Zendesk Ticket with not synced Comments',
+            'description' => 'Synced Zendesk Ticket with not synced Comments Description',
+            'type' => TicketType::TYPE_TASK,
+            'status' => TicketStatus::STATUS_OPEN,
+            'priority' => TicketPriority::PRIORITY_LOW,
+            'originId'  => 2000,
+            'requester' => 'zendesk_user:alex.taylor@example.com',
+            'submitter' => 'zendesk_user:fred.taylor@example.com',
+            'assignee' => 'zendesk_user:fred.taylor@example.com',
+            'createdAt' => '2014-06-05T12:24:23Z',
+            'updatedAt' => '2014-06-05T13:43:21Z',
+            'relatedCase' => 'orocrm_zendesk:case_7',
+            'originUpdatedAt' => '2014-06-09T17:45:22Z',
+            'channel' => 'zendesk_channel:second_test_channel',
+            'comments' => array(
+                array(
+                    'reference' => 'zendesk_ticket_52_comment_1',
+                    'originId' => 2000,
+                    'body' => 'Comment 1',
+                    'htmlBody' => '<p>Comment 1</p>',
+                    'public' => true,
+                    'author' => 'zendesk_user:james.cook@example.com',
+                    'createdAt' => '2014-06-05T12:24:23Z',
+                    'channel' => 'zendesk_channel:second_test_channel'
+                ),
+                array(
+                    'reference' => 'zendesk_ticket_52_comment_2',
+                    'originId' => 2001,
+                    'body' => 'Comment 2',
+                    'htmlBody' => '<p>Comment 2</p>',
+                    'public' => false,
+                    'author' => 'zendesk_user:jim.smith@example.com',
+                    'createdAt' => '2014-06-05T12:24:23Z',
+                    'channel' => 'zendesk_channel:second_test_channel'
+                ),
+                array(
+                    'reference' => 'zendesk_ticket_52_comment_3',
+                    'body' => 'Comment 3',
+                    'htmlBody' => '<p>Comment 3</p>',
+                    'public' => false,
+                    'author' => 'zendesk_user:jim.smith@example.com',
+                    'createdAt' => '2014-06-05T12:24:23Z',
+                    'channel' => 'zendesk_channel:second_test_channel'
+                ),
+                array(
+                    'reference' => 'zendesk_ticket_52_comment_4',
+                    'body' => 'Comment 4',
+                    'htmlBody' => '<p>Comment 4</p>',
+                    'public' => false,
+                    'author' => 'zendesk_user:alex.miller@example.com',
+                    'createdAt' => '2014-06-05T12:24:23Z',
+                    'channel' => 'zendesk_channel:second_test_channel'
+                ),
+            ),
+        ),
     );
 
     /**

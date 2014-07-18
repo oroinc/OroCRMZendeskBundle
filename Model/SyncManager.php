@@ -97,10 +97,6 @@ class SyncManager
         }
         $channel = $ticket->getChannel();
 
-        if (!$this->isTwoWaySyncEnabled($channel)) {
-            return false;
-        }
-
         $ticketComment = new TicketComment();
         $ticketComment->setChannel($channel);
         $ticketComment->setRelatedComment($caseComment);
@@ -109,12 +105,50 @@ class SyncManager
         $this->entityManager->persist($ticketComment);
         $this->entityManager->flush($ticketComment);
 
-        $this->syncScheduler->schedule(
-            $channel,
-            TicketCommentConnector::TYPE,
-            array('id' => $ticketComment->getId()),
-            false
-        );
+        if ($this->isTwoWaySyncEnabled($channel)) {
+            $this->syncScheduler->schedule(
+                $channel,
+                TicketCommentConnector::TYPE,
+                array('id' => $ticketComment->getId()),
+                false
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Channel $channel
+     * @return bool
+     */
+    public function reverseSyncChannel(Channel $channel)
+    {
+        if (!$this->isTwoWaySyncEnabled($channel)) {
+            return false;
+        }
+
+        $ticketComments = $this->zendeskEntityProvider->getNotSyncedTicketComments($channel);
+        $ids = array();
+
+        $ticketComments->rewind();
+        while ($ticketComments->valid()) {
+            /**
+             * @var TicketComment $ticketComment
+             */
+            $ticketComment = $ticketComments->current();
+            $ticketComments->next();
+            $ids[] = $ticketComment->getId();
+
+            if (!$ticketComments->valid() || count($ids) == 100) {
+                $this->syncScheduler->schedule(
+                    $channel,
+                    TicketCommentConnector::TYPE,
+                    array('id' => $ids),
+                    true
+                );
+                $ids = array();
+            }
+        }
 
         return true;
     }

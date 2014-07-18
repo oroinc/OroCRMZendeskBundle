@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Model\EntityProvider;
 
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
@@ -266,6 +267,21 @@ class ZendeskEntityProvider
             ->findOneBy(array('originId' => $originId, 'channel' => $channel));
 
         return $result;
+    }
+
+    /**
+     * @param Channel $channel
+     * @return \Iterator
+     */
+    public function getNotSyncedTicketComments(Channel $channel)
+    {
+        $qb = $this->entityManager->getRepository('OroCRMZendeskBundle:TicketComment')
+            ->createQueryBuilder('c')
+            ->where('c.channel=:channel')
+            ->andWhere('c.originId is NULL')
+            ->setParameters(array('channel' => $channel));
+
+        return new BufferedQueryResultIterator($qb);
     }
 
     /**
