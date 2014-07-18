@@ -127,18 +127,25 @@ class SyncManager
             return false;
         }
 
-        $ticketComments = $this->zendeskEntityProvider->getTicketCommentsByChannel($channel);
+        $ticketComments = $this->zendeskEntityProvider->getNotSyncedTicketComments($channel);
+        $ids = array();
 
         /**
          * @var TicketComment $ticketComment
          */
-        foreach ($ticketComments as $ticketComment) {
-            $this->syncScheduler->schedule(
-                $channel,
-                TicketCommentConnector::TYPE,
-                array('id' => $ticketComment->getId()),
-                true
-            );
+        while (current($ticketComments)) {
+            $ticketComment = current($ticketComments);
+            $ids[] = $ticketComment->getId();
+
+            if (!next($ticketComments) || count($ids) == 100) {
+                $this->syncScheduler->schedule(
+                    $channel,
+                    TicketCommentConnector::TYPE,
+                    array('id' => $ids),
+                    true
+                );
+                $ids = array();
+            }
         }
 
         return true;

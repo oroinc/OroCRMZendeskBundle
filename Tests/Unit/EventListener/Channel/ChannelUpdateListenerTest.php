@@ -32,11 +32,11 @@ class ChannelUpdateListenerTest extends \PHPUnit_Framework_TestCase
     {
         $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
         $oldState = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $event = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Event\ChannelUpdateEvent')
+        $event = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Event\IntegrationUpdateEvent')
             ->disableOriginalConstructor()
             ->getMock();
         $event->expects($this->once())
-            ->method('getChannel')
+            ->method('getIntegration')
             ->will($this->returnValue($channel));
         $event->expects($this->any())
             ->method('getOldState')

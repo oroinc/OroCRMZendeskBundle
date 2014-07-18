@@ -27,10 +27,10 @@ class ZendeskEntityProviderTest extends WebTestCase
             ->get('orocrm_zendesk.entity_provider.zendesk');
     }
 
-    public function testGetTicketCommentsByChannel()
+    public function testGetNotSyncedTicketComments()
     {
         $channel = $this->getReference('zendesk_channel:second_test_channel');
-        $iterator = $this->target->getTicketCommentsByChannel($channel);
+        $iterator = $this->target->getNotSyncedTicketComments($channel);
         $expected = array(
             $this->getReference('zendesk_ticket_52_comment_3'),
             $this->getReference('zendesk_ticket_52_comment_4')

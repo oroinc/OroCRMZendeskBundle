@@ -171,31 +171,29 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
     {
         $channel = $this->getChannel(false);
         $this->assertFalse($this->target->reverseSyncChannel($channel));
-        $commentId = 1;
-        $secondCommentId = 2;
+        $comments = array();
+        $expectedIds = array();
         $comment = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment');
-        $comment->expects($this->once())
-            ->method('getId')
-            ->will($this->returnValue($commentId));
-        $secondComment = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment');
-        $secondComment->expects($this->once())
-            ->method('getId')
-            ->will($this->returnValue($secondCommentId));
+        for ($i=1; $i< 102; $i++) {
+            $comment->expects($this->at($i-1))
+                ->method('getId')
+                ->will($this->returnValue($i));
+            $comments[] = $comment;
+            $expectedIds[]  = $i;
+        }
+        unset($expectedIds[100]);
         $channel = $this->getChannel(true);
-        $comments = array(
-            $comment,
-            $secondComment
-        );
+
         $this->zendeskEntityProvider->expects($this->once())
-            ->method('getTicketCommentsByChannel')
+            ->method('getNotSyncedTicketComments')
             ->with($channel)
             ->will($this->returnValue(new \ArrayIterator($comments)));
         $this->scheduler->expects($this->at(0))
             ->method('schedule')
-            ->with($channel, TicketCommentConnector::TYPE, array('id' => $commentId), true);
+            ->with($channel, TicketCommentConnector::TYPE, array('id' => $expectedIds), true);
         $this->scheduler->expects($this->at(1))
             ->method('schedule')
-            ->with($channel, TicketCommentConnector::TYPE, array('id' => $secondCommentId), true);
+            ->with($channel, TicketCommentConnector::TYPE, array('id' => array(101)), true);
         $this->assertTrue($this->target->reverseSyncChannel($channel));
     }
 

@@ -271,9 +271,9 @@ class ZendeskEntityProvider
 
     /**
      * @param Channel $channel
-     * @return BufferedQueryResultIterator
+     * @return \Iterator
      */
-    public function getTicketCommentsByChannel(Channel $channel)
+    public function getNotSyncedTicketComments(Channel $channel)
     {
         $qb = $this->entityManager->getRepository('OroCRMZendeskBundle:TicketComment')
             ->createQueryBuilder('c')
