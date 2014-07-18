@@ -228,7 +228,7 @@ class ImportUserProcessorTest extends WebTestCase
         $zendeskUser = $this->createZendeskUser()
             ->setOriginId(1)
             ->setEmail($email)
-            ->setName('Bob Miller Jr.')
+            ->setName('Mr. Bob Miller Jr.')
             ->setRole(new ZendeskUserRole($roleName));
 
         $this->assertEquals($zendeskUser, $this->processor->process($zendeskUser));
@@ -238,7 +238,9 @@ class ImportUserProcessorTest extends WebTestCase
         $this->assertFalse($this->entityManager->contains($relatedContact));
         $this->assertEquals($email, $relatedContact->getPrimaryEmail());
         $this->assertEquals('Bob', $relatedContact->getFirstName());
-        $this->assertEquals('Miller Jr.', $relatedContact->getLastName());
+        $this->assertEquals('Miller', $relatedContact->getLastName());
+        $this->assertEquals('Mr.', $relatedContact->getNamePrefix());
+        $this->assertEquals('Jr.', $relatedContact->getNameSuffix());
     }
 
     protected function createZendeskUser()
