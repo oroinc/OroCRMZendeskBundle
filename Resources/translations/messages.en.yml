@@ -9,10 +9,8 @@ orocrm:
             related_case.label:       Case
             comments.label:           Comments
             collaborators.label:      Collaborators
-            created_at.label:         Created At
             origin_created_at.label:  Original Created At
             origin_updated_at.label:  Original Updated At
-            updated_at.label:         Updated At
             due_at.label:             Due At
             description.label:        Description
             subject.label:            Subject
@@ -36,9 +34,7 @@ orocrm:
             author.label:             Author
             body.label:               Body
             related_comment.label:    Case comment
-            created_at.label:         Created At
             origin_created_at.label:  Original Created At
-            updated_at.label:         Updated At
             html_body.label:          Html body
             id.label:                 Id
             origin_id.label:          Ticket Comment Number
@@ -52,7 +48,6 @@ orocrm:
             active.label:                 Active
             alias.label:                  Alias
             related_contact.label:        Contact
-            created_at.label:             Created At
             origin_created_at.label:      Original Created At
             details.label:                Details
             email.label:                  Email
@@ -67,7 +62,6 @@ orocrm:
             only_private_comments.label:  Only private comments
             time_zone.label:              Time-zone
             origin_updated_at.label:      Original Updated At
-            updated_at.label:             Updated At
             url.label:                    Url
             related_user.label:           User
             verified.label:               Verified
