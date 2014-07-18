@@ -102,6 +102,16 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             'priority'       => CasePriority::PRIORITY_LOW,
             'reference'      => 'orocrm_zendesk:case_6'
         ),
+        array(
+            'subject'        => 'Case 7, Zendesk Ticket 45',
+            'description'    => 'Case 7, Zendesk Ticket 45 Description',
+            'owner'          => 'user:james.cook@example.com',
+            'assignedTo'     => 'user:james.cook@example.com',
+            'status'         => CaseStatus::STATUS_OPEN,
+            'relatedContact' => 'contact:jim.smith@example.com',
+            'priority'       => CasePriority::PRIORITY_LOW,
+            'reference'      => 'orocrm_zendesk:case_7'
+        ),
     );
 
     /**

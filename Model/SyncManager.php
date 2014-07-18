@@ -119,28 +119,29 @@ class SyncManager
 
     /**
      * @param Channel $channel
+     * @return bool
      */
     public function reverseSyncChannel(Channel $channel)
     {
-        $tickets = $this->zendeskEntityProvider->getTicketsByChannel($channel);
-        $ids = array();
-
-        foreach ($tickets as $ticket) {
-            $this->syncScheduler->schedule(
-                $channel,
-                TicketConnector::TYPE,
-                array('id' => $ticket->getId()),
-                true
-            );
-            $ids[] = $ticket->getId();
+        if (!$this->isTwoWaySyncEnabled($channel)) {
+            return false;
         }
 
-        /*$this->syncScheduler->schedule(
-            $channel,
-            TicketConnector::TYPE,
-            array('id' => $ids),
-            true
-        );*/
+        $ticketComments = $this->zendeskEntityProvider->getTicketCommentsByChannel($channel);
+
+        /**
+         * @var TicketComment $ticketComment
+         */
+        foreach ($ticketComments as $ticketComment) {
+            $this->syncScheduler->schedule(
+                $channel,
+                TicketCommentConnector::TYPE,
+                array('id' => $ticketComment->getId()),
+                true
+            );
+        }
+
+        return true;
     }
 
     /**

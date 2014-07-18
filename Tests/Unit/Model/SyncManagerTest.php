@@ -167,6 +167,38 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $this->target->syncCase($case, $channel);
     }
 
+    public function testReverseSyncChannel()
+    {
+        $channel = $this->getChannel(false);
+        $this->assertFalse($this->target->reverseSyncChannel($channel));
+        $commentId = 1;
+        $secondCommentId = 2;
+        $comment = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment');
+        $comment->expects($this->once())
+            ->method('getId')
+            ->will($this->returnValue($commentId));
+        $secondComment = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment');
+        $secondComment->expects($this->once())
+            ->method('getId')
+            ->will($this->returnValue($secondCommentId));
+        $channel = $this->getChannel(true);
+        $comments = array(
+            $comment,
+            $secondComment
+        );
+        $this->zendeskEntityProvider->expects($this->once())
+            ->method('getTicketCommentsByChannel')
+            ->with($channel)
+            ->will($this->returnValue(new \ArrayIterator($comments)));
+        $this->scheduler->expects($this->at(0))
+            ->method('schedule')
+            ->with($channel, TicketCommentConnector::TYPE, array('id' => $commentId), true);
+        $this->scheduler->expects($this->at(1))
+            ->method('schedule')
+            ->with($channel, TicketCommentConnector::TYPE, array('id' => $secondCommentId), true);
+        $this->assertTrue($this->target->reverseSyncChannel($channel));
+    }
+
     /**
      * @param bool $isTwoWaySyncEnabled
      * @return \PHPUnit_Framework_MockObject_MockObject

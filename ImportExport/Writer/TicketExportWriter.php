@@ -31,7 +31,7 @@ class TicketExportWriter extends AbstractExportWriter
     /**
      * @var Ticket[]
      */
-    protected $ticketsList = [];
+    protected $newTickets = [];
 
     /**
      * @param SyncScheduler $syncScheduler
@@ -61,9 +61,8 @@ class TicketExportWriter extends AbstractExportWriter
             $this->updateTicket($ticket);
         } else {
             $this->createTicket($ticket);
+            $this->newTickets[] = $ticket;
         }
-
-        $this->ticketsList[] = $ticket;
 
         $this->getLogger()->setMessagePrefix('');
     }
@@ -173,8 +172,8 @@ class TicketExportWriter extends AbstractExportWriter
      */
     protected function postFlush()
     {
-        $this->createNewTicketComments($this->ticketsList);
-        $this->ticketsList = [];
+        $this->createNewTicketComments($this->newTickets);
+        $this->newTickets = [];
     }
 
     /**
