@@ -130,14 +130,16 @@ class SyncManager
         $ticketComments = $this->zendeskEntityProvider->getNotSyncedTicketComments($channel);
         $ids = array();
 
-        /**
-         * @var TicketComment $ticketComment
-         */
-        while (current($ticketComments)) {
-            $ticketComment = current($ticketComments);
+        $ticketComments->rewind();
+        while ($ticketComments->current()) {
+            /**
+             * @var TicketComment $ticketComment
+             */
+            $ticketComment = $ticketComments->current();
+            $ticketComments->next();
             $ids[] = $ticketComment->getId();
 
-            if (!next($ticketComments) || count($ids) == 100) {
+            if (!$ticketComments->current() || count($ids) == 100) {
                 $this->syncScheduler->schedule(
                     $channel,
                     TicketCommentConnector::TYPE,
