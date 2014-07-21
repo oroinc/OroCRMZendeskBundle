@@ -80,7 +80,7 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('priority_name', 'string', array('notnull' => false, 'length' => 16));
         $table->addColumn('requester_id', 'integer', array('notnull' => false));
         $table->addColumn('case_id', 'integer', array('notnull' => false));
-        $table->addColumn('channel_id', 'smallint', array('notnull' => false));
+        $table->addColumn('channel_id', 'integer', array('notnull' => false));
         $table->addColumn('type_name', 'string', array('notnull' => false, 'length' => 16));
         $table->addColumn('origin_id', 'bigint', array('notnull' => false));
         $table->addColumn('url', 'string', array('notnull' => false, 'length' => 255));
@@ -174,7 +174,7 @@ class OroCRMZendeskBundle implements Migration
         /** Generate table orocrm_zd_user **/
         $table = $schema->createTable('orocrm_zd_user');
         $table->addColumn('id', 'integer', array('autoincrement' => true));
-        $table->addColumn('channel_id', 'smallint', array('notnull' => false));
+        $table->addColumn('channel_id', 'integer', array('notnull' => false));
         $table->addColumn('related_contact_id', 'integer', array('notnull' => false));
         $table->addColumn('related_user_id', 'integer', array('notnull' => false));
         $table->addColumn('role_name', 'string', array('notnull' => false, 'length' => 16));
@@ -330,7 +330,7 @@ class OroCRMZendeskBundle implements Migration
         /** Generate table orocrm_zd_comment **/
         $table = $schema->createTable('orocrm_zd_comment');
         $table->addColumn('id', 'integer', array('autoincrement' => true));
-        $table->addColumn('channel_id', 'smallint', array('notnull' => false));
+        $table->addColumn('channel_id', 'integer', array('notnull' => false));
         $table->addColumn('related_comment_id', 'integer', array('notnull' => false));
         $table->addColumn('author_id', 'integer', array('notnull' => false));
         $table->addColumn('ticket_id', 'integer', array('notnull' => false));
