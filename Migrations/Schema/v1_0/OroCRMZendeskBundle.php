@@ -96,7 +96,7 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('origin_updated_at', 'datetime', array('notnull' => false));
         $table->setPrimaryKey(array('id'));
         $table->addUniqueIndex(array('case_id'), 'UNIQ_45472C5FCF10D4F5');
-        $table->addUniqueIndex(array('origin_id', 'channel_id'), 'unq_origin_id_channel_id');
+        $table->addUniqueIndex(array('origin_id', 'channel_id'), 'zd_ticket_oid_cid_unq');
         $table->addIndex(array('type_name'), 'IDX_45472C5F892CBB0E', array());
         $table->addIndex(array('status_name'), 'IDX_45472C5F6625D392', array());
         $table->addIndex(array('priority_name'), 'IDX_45472C5F965BD3DF', array());
@@ -199,7 +199,7 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('time_zone', 'string', array('notnull' => false, 'length' => 30));
         $table->addColumn('locale', 'string', array('notnull' => false, 'length' => 30));
         $table->setPrimaryKey(array('id'));
-        $table->addUniqueIndex(array('origin_id', 'channel_id'), 'unq_origin_id_channel_id');
+        $table->addUniqueIndex(array('origin_id', 'channel_id'), 'zd_user_oid_cid_unq');
         $table->addIndex(array('role_name'), 'IDX_5CD5C9CDE09C0C92', array());
         $table->addIndex(array('related_contact_id'), 'IDX_5CD5C9CD6D6C2DFA', array());
         $table->addIndex(array('related_user_id'), 'IDX_5CD5C9CD98771930', array());
@@ -343,7 +343,7 @@ class OroCRMZendeskBundle implements Migration
         $table->addColumn('updated_at', 'datetime', array());
         $table->setPrimaryKey(array('id'));
         $table->addUniqueIndex(array('related_comment_id'), 'UNIQ_20AD0BDA72A475A3');
-        $table->addUniqueIndex(array('origin_id', 'channel_id'), 'unq_origin_id_channel_id');
+        $table->addUniqueIndex(array('origin_id', 'channel_id'), 'zd_comment_oid_cid_unq');
         $table->addIndex(array('author_id'), 'IDX_20AD0BDAF675F31B', array());
         $table->addIndex(array('ticket_id'), 'IDX_20AD0BDA700047D2', array());
         $table->addIndex(array('channel_id'), 'IDX_20AD0BDA72F5A1AA', array());
