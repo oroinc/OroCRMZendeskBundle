@@ -61,7 +61,7 @@ class ImportUserProcessor extends AbstractImportProcessor
             $this->getContext()->incrementAddCount();
         }
 
-        $this->helper->syncRelatedEntities($entity, $this->getChannel());
+        $this->helper->syncRelatedEntities($entity);
 
         return $entity;
     }
