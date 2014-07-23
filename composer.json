@@ -1,7 +1,8 @@
 {
     "name": "oro/crm-zendesk",
-    "type": "symfony-bundle",
     "description": "OroCRM Zendesk Integration",
+    "homepage": "https://github.com/orocrm/OroCRMZendeskBundle.git",
+    "license": "OSL-3.0",
     "keywords": ["OroCRM", "Zendesk", "Integration"],
     "authors": [
         {
