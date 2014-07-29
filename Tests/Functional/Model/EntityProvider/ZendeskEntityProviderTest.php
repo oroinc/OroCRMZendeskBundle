@@ -31,15 +31,20 @@ class ZendeskEntityProviderTest extends WebTestCase
     {
         $channel = $this->getReference('zendesk_channel:second_test_channel');
         $iterator = $this->target->getNotSyncedTicketComments($channel);
+
+        $commentThree = $this->getReference('zendesk_ticket_52_comment_3');
+        $commentFour = $this->getReference('zendesk_ticket_52_comment_4');
         $expected = array(
-            $this->getReference('zendesk_ticket_52_comment_3'),
-            $this->getReference('zendesk_ticket_52_comment_4')
+            $commentThree->getId() => $commentThree,
+            $commentFour->getId() => $commentFour
         );
         $this->assertCount(2, $iterator);
         foreach ($iterator as $ticketComment) {
             $this->assertInstanceOf('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment', $ticketComment);
-            $this->assertEquals(current($expected), $ticketComment);
-            next($expected);
+            $ticketId = $ticketComment->getId();
+            $this->assertNotEmpty($ticketId);
+            $this->assertArrayHasKey($ticketId, $expected);
+            $this->assertEquals($expected[$ticketId], $ticketComment);
         }
     }
 }
