@@ -20,39 +20,36 @@ class OroCRMZendeskBundle implements Migration
         $queries->addPreQuery('ALTER TABLE orocrm_zd_user DROP FOREIGN KEY fk_orocrm_zd_user_channel_id;');
 
         $table = $schema->getTable('orocrm_zd_ticket');
-        $table->changeColumn('channel_id', ['type' => Type::getType('integer')]);
+        $table->getColumn('channel_id')->setType(Type::getType('integer'));
         $table->dropIndex('unq_origin_id_channel_id');
         $table->addUniqueIndex(['origin_id', 'channel_id'], 'zd_ticket_oid_cid_unq');
         $table->addForeignKeyConstraint(
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onDelete' => 'SET NULL', 'onUpdate' => null],
-            'fk_orocrm_zd_ticket_channel_id'
+            ['onDelete' => 'SET NULL', 'onUpdate' => null]
         );
 
         $table = $schema->getTable('orocrm_zd_user');
-        $table->changeColumn('channel_id', ['type' => Type::getType('integer')]);
+        $table->getColumn('channel_id')->setType(Type::getType('integer'));
         $table->dropIndex('unq_origin_id_channel_id');
         $table->addUniqueIndex(['origin_id', 'channel_id'], 'zd_user_oid_cid_unq');
         $table->addForeignKeyConstraint(
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onDelete' => 'SET NULL', 'onUpdate' => null],
-            'fk_orocrm_zd_user_channel_id'
+            ['onDelete' => 'SET NULL', 'onUpdate' => null]
         );
 
         $table = $schema->getTable('orocrm_zd_comment');
-        $table->changeColumn('channel_id', ['type' => Type::getType('integer')]);
+        $table->getColumn('channel_id')->setType(Type::getType('integer'));
         $table->dropIndex('unq_origin_id_channel_id');
         $table->addUniqueIndex(['origin_id', 'channel_id'], 'zd_comment_oid_cid_unq');
         $table->addForeignKeyConstraint(
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onDelete' => 'SET NULL', 'onUpdate' => null],
-            'FK_20AD0BDA72F5A1AA'
+            ['onDelete' => 'SET NULL', 'onUpdate' => null]
         );
     }
 }
