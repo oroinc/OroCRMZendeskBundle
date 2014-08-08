@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Model\SyncHelper;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
@@ -174,6 +175,12 @@ class TicketSyncHelper extends AbstractSyncHelper
         if (!$relatedCase) {
             $relatedCase = $this->caseEntityManager->createCase();
             $ticket->setRelatedCase($relatedCase);
+            $relatedCase->setReportedAt($ticket->getOriginCreatedAt());
+            if ($ticket->getStatus() &&
+                $ticket->getStatus()->getName() == TicketStatus::STATUS_CLOSED
+            ) {
+                $relatedCase->setClosedAt($ticket->getOriginUpdatedAt());
+            }
         }
 
         if (!$ticket->getSubject()) {
