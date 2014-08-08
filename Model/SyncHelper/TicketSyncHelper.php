@@ -176,6 +176,10 @@ class TicketSyncHelper extends AbstractSyncHelper
             $ticket->setRelatedCase($relatedCase);
         }
 
+        if (!$ticket->getSubject()) {
+            $ticket->setSubject('N\A');
+        }
+
         $changeSet = new ChangeSet($relatedCase, $ticket);
 
         $changeSet->add('subject', 'subject');
