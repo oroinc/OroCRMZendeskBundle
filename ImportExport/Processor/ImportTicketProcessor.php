@@ -87,6 +87,15 @@ class ImportTicketProcessor extends AbstractImportProcessor
 
             $relatedCaseChanges = $this->helper->calculateRelatedCaseChanges($entity, $this->getChannel());
             $relatedCaseChanges->apply();
+            $contact = $entity->getRelatedCase()
+                ->getRelatedContact();
+            if ($relatedCaseChanges['relatedContact'] && $contact && $contact->hasAccounts()) {
+                $entity->getRelatedCase()
+                    ->setRelatedAccount(
+                        $contact->getAccounts()
+                            ->first()
+                    );
+            }
         }
 
         $this->syncState->addTicketId($entity->getOriginId());
