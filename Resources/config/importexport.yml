@@ -48,6 +48,7 @@ services:
         arguments:
             - @orocrm_zendesk.sync_helper.ticket
             - @orocrm_zendesk.sync_state
+            - @orocrm_zendesk.entity_provider.oro
 
     orocrm_zendesk.importexport.processor.import_ticket_comment:
         parent: orocrm_zendesk.importexport.processor.import_abstract
