@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\ZendeskBundle\Model\SyncHelper;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
@@ -11,6 +12,9 @@ use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
 
+/**
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class TicketSyncHelper extends AbstractSyncHelper
 {
     /**
@@ -199,6 +203,21 @@ class TicketSyncHelper extends AbstractSyncHelper
         $this->addCasePriorityChanges($changeSet, $ticket, $channel);
 
         return $changeSet;
+    }
+
+    public function updateCaseRelatedAccount(CaseEntity $caseEntity)
+    {
+        $contact = $caseEntity->getRelatedContact();
+        if (!$contact) {
+            return;
+        }
+
+        $account = $this->oroProvider->getAccountByContact($contact);
+        if (!$account) {
+            return;
+        }
+
+        $caseEntity->setRelatedAccount($account);
     }
 
     /**
