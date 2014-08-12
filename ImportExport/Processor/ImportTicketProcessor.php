@@ -5,7 +5,9 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
+use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeValue;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
@@ -24,13 +26,20 @@ class ImportTicketProcessor extends AbstractImportProcessor
     protected $helper;
 
     /**
-     * @param TicketSyncHelper $helper
-     * @param SyncState $syncState
+     * @var OroEntityProvider
      */
-    public function __construct(TicketSyncHelper $helper, SyncState $syncState)
+    protected $oroProvider;
+
+    /**
+     * @param TicketSyncHelper  $helper
+     * @param SyncState         $syncState
+     * @param OroEntityProvider $oroEntityProvider
+     */
+    public function __construct(TicketSyncHelper $helper, SyncState $syncState, OroEntityProvider $oroEntityProvider)
     {
         $this->helper = $helper;
         $this->syncState = $syncState;
+        $this->oroProvider = $oroEntityProvider;
     }
 
     /**
@@ -87,12 +96,30 @@ class ImportTicketProcessor extends AbstractImportProcessor
 
             $relatedCaseChanges = $this->helper->calculateRelatedCaseChanges($entity, $this->getChannel());
             $relatedCaseChanges->apply();
-            $this->helper->updateCaseRelatedAccount($entity->getRelatedCase());
+            $this->updateCaseRelatedAccount($entity->getRelatedCase());
         }
 
         $this->syncState->addTicketId($entity->getOriginId());
 
         return $entity;
+    }
+
+    /**
+     * @param CaseEntity $caseEntity
+     */
+    public function updateCaseRelatedAccount(CaseEntity $caseEntity)
+    {
+        $contact = $caseEntity->getRelatedContact();
+        if (!$contact) {
+            return;
+        }
+
+        $account = $this->oroProvider->getAccountByContact($contact);
+        if (!$account) {
+            return;
+        }
+
+        $caseEntity->setRelatedAccount($account);
     }
 
     /**

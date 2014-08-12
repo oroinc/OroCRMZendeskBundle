@@ -171,8 +171,8 @@ class OroEntityProvider
     public function getAccountByContact(Contact $contact)
     {
         $repository = $this->entityManager->getRepository('OroCRMAccountBundle:Account');
-        $qb = $repository->createQueryBuilder('a');
-        $qb->where('a.defaultContact =:contact')
+        $qb = $repository->createQueryBuilder('account');
+        $qb->where('account.defaultContact = :contact')
             ->setMaxResults(1)
             ->setParameter('contact', $contact);
 
@@ -182,9 +182,9 @@ class OroEntityProvider
             return $result[0];
         }
 
-        $qb = $repository->createQueryBuilder('a');
-        $qb->leftJoin('a.contacts', 'c')
-            ->where('c.id =:id')
+        $qb = $repository->createQueryBuilder('account');
+        $qb->leftJoin('account.contacts', 'contact')
+            ->where('contact.id = :id')
             ->setMaxResults(1);
         $result = $qb->getQuery()->execute(array('id' => $contact->getId()));
 
