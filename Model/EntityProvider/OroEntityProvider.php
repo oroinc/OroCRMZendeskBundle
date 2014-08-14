@@ -168,6 +168,29 @@ class OroEntityProvider
         );
     }
 
+    public function getAccountByContact(Contact $contact)
+    {
+        $repository = $this->entityManager->getRepository('OroCRMAccountBundle:Account');
+        $qb = $repository->createQueryBuilder('account');
+        $qb->where('account.defaultContact = :contact')
+            ->setMaxResults(1)
+            ->setParameter('contact', $contact);
+
+        $result = $qb->getQuery()->execute();
+
+        if (count($result) > 0) {
+            return $result[0];
+        }
+
+        $qb = $repository->createQueryBuilder('account');
+        $qb->leftJoin('account.contacts', 'contact')
+            ->where('contact.id = :id')
+            ->setMaxResults(1);
+        $result = $qb->getQuery()->execute(array('id' => $contact->getId()));
+
+        return count($result) > 0 ? $result[0] : null;
+    }
+
     /**
      * @param $id
      *

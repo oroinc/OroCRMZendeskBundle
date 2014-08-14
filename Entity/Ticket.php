@@ -18,7 +18,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
  * @ORM\Table(
  *      name="orocrm_zd_ticket",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unq_origin_id_channel_id", columns={"origin_id", "channel_id"})
+ *          @ORM\UniqueConstraint(name="zd_ticket_oid_cid_unq", columns={"origin_id", "channel_id"})
  *     }
  * )
  * @ORM\HasLifecycleCallbacks()
