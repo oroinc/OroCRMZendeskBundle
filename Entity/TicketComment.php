@@ -16,7 +16,7 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
  * @ORM\Table(
  *      name="orocrm_zd_comment",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unq_origin_id_channel_id", columns={"origin_id", "channel_id"})
+ *          @ORM\UniqueConstraint(name="zd_comment_oid_cid_unq", columns={"origin_id", "channel_id"})
  *     }
  * )
  * @ORM\HasLifecycleCallbacks()
