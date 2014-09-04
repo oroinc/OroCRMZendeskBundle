@@ -25,9 +25,20 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
             ),
             'enabled' => 0,
             'transport' => 'orocrm_zendesk:zendesk_demo_transport',
-            'reference' => 'orocrm_zendesk:zendesk_demo_channel'
+            'reference' => 'orocrm_zendesk:zendesk_demo_channel',
+            'organization' => null
         )
     );
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDependencies()
+    {
+        return array(
+            'OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM\LoadTransportData'
+        );
+    }
 
     /**
      * {@inheritdoc}
@@ -38,6 +49,7 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
             $channel = new Channel();
 
             $data['transport'] = $this->getReference($data['transport']);
+            $data['organization'] = $this->getReference('default_organization');
 
             $this->setEntityPropertyValues($channel, $data, array('reference'));
             $manager->persist($channel);
@@ -46,15 +58,5 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
         }
 
         $manager->flush();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDependencies()
-    {
-        return array(
-            'OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM\LoadTransportData'
-        );
     }
 }
