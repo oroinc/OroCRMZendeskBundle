@@ -7,10 +7,23 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Translatable\Translatable;
 
+use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
+use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="orocrm_zd_ticket_status")
  * @Gedmo\TranslationEntity(class="OroCRM\Bundle\ZendeskBundle\Entity\TicketStatusTranslation")
+ * @Config(
+ *      defaultValues={
+ *          "grouping"={
+ *              "groups"={"dictionary"}
+ *          },
+ *          "dictionary"={
+ *              "virtual_fields"={"label"}
+ *          }
+ *      }
+ * )
  */
 class TicketStatus implements Translatable
 {
@@ -27,6 +40,13 @@ class TicketStatus implements Translatable
      *
      * @ORM\Id
      * @ORM\Column(name="name", type="string", length=16)
+     * @ConfigField(
+     *      defaultValues={
+     *          "importexport"={
+     *              "identity"=true
+     *          }
+     *      }
+     * )
      */
     protected $name;
 
