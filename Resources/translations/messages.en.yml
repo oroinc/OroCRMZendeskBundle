@@ -41,6 +41,34 @@ orocrm:
             public.label:             Public
             ticket.label:             Ticket
 
+        ticketpriority:
+            entity_label:             Ticket Priority
+            entity_plural_label:      Ticket Priorities
+            entity_description:       Represent ticket priority
+            name.label:               Name
+            label.label:              Label
+
+        ticketstatus:
+            entity_label:             Ticket Status
+            entity_plural_label:      Ticket Statuses
+            entity_description:       Represent ticket status
+            name.label:               Name
+            label.label:              Label
+
+        tickettype:
+            entity_label:             Ticket Type
+            entity_plural_label:      Ticket Types
+            entity_description:       Represent ticket type
+            name.label:               Name
+            label.label:              Label
+
+        userrole:
+            entity_label:             Zendesk User Role
+            entity_plural_label:      Zendesk User Roles
+            entity_description:       Represent a role of Zendesk user
+            name.label:               Name
+            label.label:              Label
+
         user:
             entity_label:                 Zendesk User
             entity_plural_label:          Zendesk Users
