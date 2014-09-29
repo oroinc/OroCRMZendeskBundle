@@ -132,5 +132,8 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
             $defaultUser = $this->oroProvider->getDefaultUser($this->channel);
             $caseComment->setOwner($defaultUser);
         }
+
+        // set case organization
+        $caseComment->setOrganization($this->getRefreshedChannelOrganization($this->channel));
     }
 }

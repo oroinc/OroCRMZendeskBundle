@@ -218,6 +218,9 @@ class TicketSyncHelper extends AbstractSyncHelper
             $owner = $this->oroProvider->getDefaultUser($channel);
             $changeSet->add('owner', ['value' => $owner], 'id');
         }
+
+        // set case organization
+        $changeSet->add('organization', ['value' => $this->getRefreshedChannelOrganization($channel)], 'id');
     }
 
     /**
