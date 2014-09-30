@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Log\NullLogger;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
 
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
 use OroCRM\Bundle\CaseBundle\Model\CaseEntityManager;
@@ -180,6 +181,19 @@ abstract class AbstractSyncHelper implements LoggerAwareInterface
             $channel = $this->oroProvider->getChannelById($channel->getId());
             $entity->setChannel($channel);
         }
+    }
+
+    /**
+     * @param Channel $channel
+     * @return null|Organization
+     */
+    protected function getRefreshedChannelOrganization(Channel $channel)
+    {
+        if ($channel->getId()) {
+            return $this->oroProvider->getChannelById($channel->getId())->getOrganization();
+        }
+
+        return null;
     }
 
     /**
