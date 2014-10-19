@@ -110,14 +110,14 @@ class UserTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testGetPrimaryPhoneNumber()
+    public function testGetPhoneNumber()
     {
         $user = new User();
 
-        $this->assertNull($user->getPrimaryPhoneNumber());
+        $this->assertNull($user->getPhoneNumber());
 
         $user->setPhone('123-123');
-        $this->assertEquals('123-123', $user->getPrimaryPhoneNumber());
+        $this->assertEquals('123-123', $user->getPhoneNumber());
     }
 
     public function testGetPhoneNumbers()
