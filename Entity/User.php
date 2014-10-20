@@ -4,7 +4,6 @@ namespace OroCRM\Bundle\ZendeskBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Oro\Bundle\AddressBundle\Model\PhoneHolderInterface;
 use Oro\Bundle\EmailBundle\Model\EmailHolderInterface;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
@@ -34,7 +33,7 @@ use OroCRM\Bundle\ContactBundle\Entity\Contact;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class User implements EmailHolderInterface, PhoneHolderInterface
+class User implements EmailHolderInterface
 {
     use IntegrationEntityTrait;
 
@@ -726,27 +725,5 @@ class User implements EmailHolderInterface, PhoneHolderInterface
         if (!$this->updatedAtLocked) {
             $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPhoneNumber()
-    {
-        return !empty($this->phone) ? $this->phone : null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPhoneNumbers()
-    {
-        $phones = [];
-
-        if (!empty($this->phone)) {
-            $phones[] = $this->phone;
-        }
-
-        return $phones;
     }
 }
