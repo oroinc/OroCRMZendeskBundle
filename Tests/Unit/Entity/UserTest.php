@@ -109,24 +109,4 @@ class UserTest extends \PHPUnit_Framework_TestCase
             array('relatedContact', $contact),
         );
     }
-
-    public function testGetPhoneNumber()
-    {
-        $user = new User();
-
-        $this->assertNull($user->getPhoneNumber());
-
-        $user->setPhone('123-123');
-        $this->assertEquals('123-123', $user->getPhoneNumber());
-    }
-
-    public function testGetPhoneNumbers()
-    {
-        $user = new User();
-
-        $this->assertSame([], $user->getPhoneNumbers());
-
-        $user->setPhone('123-123');
-        $this->assertSame(['123-123'], $user->getPhoneNumbers());
-    }
 }
