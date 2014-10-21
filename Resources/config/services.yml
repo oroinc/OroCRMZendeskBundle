@@ -35,6 +35,8 @@ parameters:
     # Placeholder filter
     orocrm_zendesk.placeholder.filter.class:                  OroCRM\Bundle\ZendeskBundle\Placeholder\PlaceholderFilter
 
+    orocrm_zendesk.provider.phone.user.class:                 OroCRM\Bundle\ZendeskBundle\Provider\UserPhoneProvider
+
 services:
     orocrm_zendesk.entity_mapper:
         class: %orocrm_zendesk.entity_mapper.class%
@@ -167,3 +169,8 @@ services:
         arguments:
             - @orocrm_zendesk.entity_provider.oro
             - @orocrm_zendesk.entity_provider.zendesk
+
+    orocrm_zendesk.provider.phone.user:
+        class: %orocrm_zendesk.provider.phone.user.class%
+        tags:
+            - { name: oro_address.phone_provider, class: %orocrm_zendesk.entity.user.class% }

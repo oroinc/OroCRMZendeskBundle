@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Oro\Bundle\EmailBundle\Model\EmailHolderInterface;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
@@ -32,7 +33,7 @@ use OroCRM\Bundle\ContactBundle\Entity\Contact;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
-class User
+class User implements EmailHolderInterface
 {
     use IntegrationEntityTrait;
 
