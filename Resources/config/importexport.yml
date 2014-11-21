@@ -154,7 +154,7 @@ services:
     orocrm_zendesk.importexport.writer.export_abstract:
         abstract: true
         calls:
-            - [setEntityManager, [@doctrine.orm.entity_manager]]
+            - [setRegistry, [@doctrine]]
             - [setTransport, [@orocrm_zendesk.transport.rest_transport]]
             - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
             - [setContextRegistry, [@oro_importexport.context_registry]]

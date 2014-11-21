@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
@@ -12,24 +12,25 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 
 class EntityMapper
 {
-    const STATUS_KEY = 'status';
+    const STATUS_KEY   = 'status';
     const PRIORITY_KEY = 'priority';
-    const CASE_KEY = 'case';
-    const TICKET_KEY = 'ticket';
+    const CASE_KEY     = 'case';
+    const TICKET_KEY   = 'ticket';
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $map;
 
+    /** @var ManagerRegistry */
+    protected $registry;
+
     /**
-     * @param EntityManager $entityManager
-     * @param array $map
+     * @param ManagerRegistry $registry
+     * @param array           $map
      */
-    public function __construct(EntityManager $entityManager, array $map)
+    public function __construct(ManagerRegistry $registry, array $map)
     {
-        $this->entityManager = $entityManager;
-        $this->map = $map;
+        $this->registry = $registry;
+        $this->map      = $map;
     }
 
     /**
@@ -43,17 +44,20 @@ class EntityMapper
     /**
      * @param TicketStatus|string $ticketStatus
      * @param Channel             $channel
+     *
      * @return CaseStatus|null
      */
     public function getCaseStatus($ticketStatus, Channel $channel)
     {
         $name = $this->getCaseStatusName($ticketStatus, $channel);
-        return $name ? $this->entityManager->find('OroCRMCaseBundle:CaseStatus', $name) : null;
+
+        return $name ? $this->registry->getRepository('OroCRMCaseBundle:CaseStatus')->find($name) : null;
     }
 
     /**
      * @param TicketStatus|string $ticketStatus
      * @param Channel             $channel
+     *
      * @return string|null
      */
     public function getCaseStatusName($ticketStatus, Channel $channel)
@@ -67,17 +71,20 @@ class EntityMapper
     /**
      * @param TicketPriority|string $ticketPriority
      * @param Channel               $channel
+     *
      * @return CaseStatus|null
      */
     public function getCasePriority($ticketPriority, Channel $channel)
     {
         $name = $this->getCasePriorityName($ticketPriority, $channel);
-        return $name ? $this->entityManager->find('OroCRMCaseBundle:CasePriority', $name) : null;
+
+        return $name ? $this->registry->getRepository('OroCRMCaseBundle:CasePriority')->find($name) : null;
     }
 
     /**
      * @param TicketPriority|string $ticketPriority
      * @param Channel               $channel
+     *
      * @return string|null
      */
     public function getCasePriorityName($ticketPriority, Channel $channel)
@@ -91,17 +98,20 @@ class EntityMapper
     /**
      * @param CaseStatus|string $caseStatus
      * @param Channel           $channel
+     *
      * @return TicketStatus|null
      */
     public function getTicketStatus($caseStatus, Channel $channel)
     {
         $name = $this->getTicketStatusName($caseStatus, $channel);
-        return $name ? $this->entityManager->find('OroCRMZendeskBundle:TicketStatus', $name) : null;
+
+        return $name ? $this->registry->getRepository('OroCRMZendeskBundle:TicketStatus')->find($name) : null;
     }
 
     /**
      * @param CaseStatus|string $caseStatus
      * @param Channel           $channel
+     *
      * @return null|string
      */
     public function getTicketStatusName($caseStatus, Channel $channel)
@@ -115,17 +125,20 @@ class EntityMapper
     /**
      * @param CasePriority|string $casePriority
      * @param Channel             $channel
+     *
      * @return TicketPriority|null
      */
     public function getTicketPriority($casePriority, Channel $channel)
     {
         $name = $this->getTicketPriorityName($casePriority, $channel);
-        return $name ? $this->entityManager->find('OroCRMZendeskBundle:TicketPriority', $name) : null;
+
+        return $name ? $this->registry->getRepository('OroCRMZendeskBundle:TicketPriority')->find($name) : null;
     }
 
     /**
      * @param CasePriority|string $casePriority
      * @param Channel             $channel
+     *
      * @return null|string
      */
     public function getTicketPriorityName($casePriority, Channel $channel)
@@ -141,6 +154,7 @@ class EntityMapper
      *
      * @param string $value
      * @param string $key
+     *
      * @return null|string
      */
     protected function getTicket2CaseValue($value, $key)
@@ -153,6 +167,7 @@ class EntityMapper
      *
      * @param string $value
      * @param string $key
+     *
      * @return null|string
      */
     protected function getCase2TicketValue($value, $key)
@@ -167,6 +182,7 @@ class EntityMapper
      * @param string $value
      * @param string $from
      * @param string $to
+     *
      * @return null|string
      */
     protected function getMappedValue($map, $value, $from, $to)
@@ -182,7 +198,8 @@ class EntityMapper
 
     /**
      * @param object|string $stringOrObject
-     * @param string $entityClass
+     * @param string        $entityClass
+     *
      * @return string|null
      */
     protected function getEntityName($stringOrObject, $entityClass)

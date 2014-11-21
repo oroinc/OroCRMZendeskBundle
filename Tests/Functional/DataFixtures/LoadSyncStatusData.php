@@ -55,12 +55,13 @@ class LoadSyncStatusData extends AbstractZendeskFixture implements DependentFixt
     public function load(ObjectManager $manager)
     {
         foreach ($this->statusData as $data) {
-            $entity = new Status();
-
-            $data['channel'] = $this->getReference($data['channel']);
+            $channel = $this->getReference($data['channel']);
+            unset($data['channel']);
+            $entity       = new Status();
             $data['date'] = new \DateTime($data['date']);
 
             $this->setEntityPropertyValues($entity, $data, array('reference'));
+            $channel->addStatus($entity);
 
             if (isset($data['reference'])) {
                 $this->setReference($data['reference'], $entity);

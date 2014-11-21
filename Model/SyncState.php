@@ -2,47 +2,23 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model;
 
-use Doctrine\ORM\EntityManager;
-
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
 
 class SyncState
 {
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
-
-    /**
-     * @param EntityManager $entityManager
-     */
-    public function __construct(EntityManager $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
-    /**
-     * @var array
-     */
-    protected $ticketIds = array();
+    /** @var array */
+    protected $ticketIds = [];
 
     /**
      * @param Channel $channel
-     * @param string $connector
+     * @param string  $connector
+     *
      * @return \DateTime|null
      */
     public function getLastSyncDate(Channel $channel, $connector)
     {
-        $repository = $this->entityManager->getRepository('OroIntegrationBundle:Status');
-
-        /**
-         * @var Status $status
-         */
-        $status = $repository->findOneBy(
-            array('code' => Status::STATUS_COMPLETED, 'channel' => $channel, 'connector' => $connector),
-            array('date' => 'DESC')
-        );
+        $status = $channel->getStatusesForConnector($connector, Status::STATUS_COMPLETED)->first();
 
         return $status ? $status->getDate() : null;
     }
@@ -57,6 +33,7 @@ class SyncState
 
     /**
      * @param int $id
+     *
      * @return SyncState
      */
     public function addTicketId($id)
@@ -68,6 +45,7 @@ class SyncState
 
     /**
      * @param array $ticketIds
+     *
      * @return SyncState
      */
     public function setTicketIds(array $ticketIds)
