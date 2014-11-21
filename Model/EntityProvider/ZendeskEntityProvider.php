@@ -223,9 +223,7 @@ class ZendeskEntityProvider
      */
     public function getUserRole(UserRole $role)
     {
-        $result = $this->registry->getRepository('OroCRMZendeskBundle:UserRole')->find($role->getName());
-
-        return $result;
+        return $this->getUserRoleByName($role->getName());
     }
 
     /**
@@ -235,10 +233,7 @@ class ZendeskEntityProvider
      */
     public function getUserRoleByName($roleName)
     {
-        $result = $this->registry->getRepository('OroCRMZendeskBundle:UserRole')
-            ->find($roleName);
-
-        return $result;
+        return $this->registry->getManager()->find('OroCRMZendeskBundle:UserRole', $roleName);
     }
 
     /**
@@ -325,10 +320,7 @@ class ZendeskEntityProvider
      */
     public function getTicketStatus(TicketStatus $ticketStatus)
     {
-        $result = $this->registry->getRepository('OroCRMZendeskBundle:TicketStatus')
-            ->find($ticketStatus->getName());
-
-        return $result;
+        return $this->registry->getManager()->find('OroCRMZendeskBundle:TicketStatus', $ticketStatus->getName());
     }
 
     /**
@@ -338,10 +330,7 @@ class ZendeskEntityProvider
      */
     public function getTicketPriority(TicketPriority $ticketPriority)
     {
-        $result = $this->registry->getRepository('OroCRMZendeskBundle:TicketPriority')
-            ->find($ticketPriority->getName());
-
-        return $result;
+        return $this->registry->getManager()->find('OroCRMZendeskBundle:TicketPriority', $ticketPriority->getName());
     }
 
     /**
@@ -351,9 +340,6 @@ class ZendeskEntityProvider
      */
     public function getTicketType(TicketType $ticketType)
     {
-        $result = $this->registry->getRepository('OroCRMZendeskBundle:TicketType')
-            ->find($ticketType->getName());
-
-        return $result;
+        return $this->registry->getManager()->find('OroCRMZendeskBundle:TicketType', $ticketType->getName());
     }
 }
