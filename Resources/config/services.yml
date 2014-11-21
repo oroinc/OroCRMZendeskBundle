@@ -39,13 +39,11 @@ services:
     orocrm_zendesk.entity_mapper:
         class: %orocrm_zendesk.entity_mapper.class%
         arguments:
-            - @doctrine.orm.entity_manager
+            - @doctrine
             - %orocrm_zendesk.map%
 
     orocrm_zendesk.sync_state:
         class: %orocrm_zendesk.sync_state.class%
-        arguments:
-            - @doctrine.orm.entity_manager
 
     # Forms and extensions
     orocrm_zendesk.form.type.rest_transport_setting:
@@ -86,7 +84,7 @@ services:
         class: %orocrm_zendesk.model.sync_manager.class%
         arguments:
             - @oro_integration.sync_scheduler
-            - @doctrine.orm.entity_manager
+            - @doctrine
             - @orocrm_zendesk.entity_provider.zendesk
 
     # Listeners
@@ -121,14 +119,14 @@ services:
     orocrm_zendesk.entity_provider.oro:
         class: %orocrm_zendesk.entity_provider.oro.class%
         arguments:
-            - @doctrine.orm.entity_manager
+            - @doctrine
             - %orocrm_zendesk.name_prefixes%
             - %orocrm_zendesk.name_suffixes%
 
     orocrm_zendesk.entity_provider.zendesk:
         class: %orocrm_zendesk.entity_provider.zendesk.class%
         arguments:
-            - @doctrine.orm.entity_manager
+            - @doctrine
 
     # Sync helpers
     orocrm_zendesk.sync_helper.abstract:

@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
 
@@ -11,15 +11,13 @@ use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
  */
 class SyncNewCommentsListenerTest extends AbstractSyncSchedulerTest
 {
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
+    /** @var ManagerRegistry */
+    protected $registry;
 
     protected function setUp()
     {
         $this->initClient([], $this->generateBasicAuthHeader());
-        $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $this->registry = $this->getContainer()->get('doctrine');
 
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
 
@@ -33,14 +31,10 @@ class SyncNewCommentsListenerTest extends AbstractSyncSchedulerTest
         $case = $this->getReference('orocrm_zendesk:case_2');
         $case->setSubject('Updated subject');
 
-        $this->entityManager->flush($case);
+        $this->registry->getManager()->flush($case);
 
-        $jobs = $this->entityManager->getRepository('JMS\\JobQueueBundle\\Entity\\Job')
-            ->findBy(
-                [
-                    'command' => 'oro:integration:reverse:sync',
-                ]
-            );
+        $jobs = $this->registry->getRepository('JMS\\JobQueueBundle\\Entity\\Job')
+            ->findBy(['command' => 'oro:integration:reverse:sync']);
 
         $expectedJobArgs = [
             '--integration=' . $ticket->getChannel()->getId(),
@@ -69,9 +63,9 @@ class SyncNewCommentsListenerTest extends AbstractSyncSchedulerTest
         $case = $this->getReference('orocrm_zendesk:case_3');
 
         $case->setSubject('Updated subject');
-        $this->entityManager->flush($case);
+        $this->registry->getManager()->flush($case);
 
-        $jobs = $this->entityManager->getRepository('JMS\\JobQueueBundle\\Entity\\Job')
+        $jobs = $this->registry->getRepository('JMS\\JobQueueBundle\\Entity\\Job')
             ->findBy(['command' => 'oro:integration:reverse:sync']);
 
         $this->assertCount(

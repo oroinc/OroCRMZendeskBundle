@@ -2,7 +2,8 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model\EntityProvider;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\UserBundle\Entity\Email;
@@ -17,9 +18,9 @@ use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
 class OroEntityProvider
 {
     /**
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * @var array
@@ -32,13 +33,13 @@ class OroEntityProvider
     protected $nameSuffixes;
 
     /**
-     * @param EntityManager $entityManager
+     * @param ManagerRegistry $registry
      * @param array         $namePrefixes
      * @param array         $nameSuffixes
      */
-    public function __construct(EntityManager $entityManager, array $namePrefixes, array $nameSuffixes)
+    public function __construct(ManagerRegistry $registry, array $namePrefixes, array $nameSuffixes)
     {
-        $this->entityManager = $entityManager;
+        $this->registry     = $registry;
         $this->namePrefixes = $namePrefixes;
         $this->nameSuffixes = $nameSuffixes;
     }
@@ -51,7 +52,7 @@ class OroEntityProvider
     {
         $user = $channel->getDefaultUserOwner();
         if ($user) {
-            $user = $this->entityManager->getRepository('OroUserBundle:User')
+            $user = $this->registry->getRepository('OroUserBundle:User')
                 ->find($user->getId());
         }
         return $user;
@@ -64,14 +65,14 @@ class OroEntityProvider
      */
     public function getUser(ZendeskUser $user, $defaultIfNotExist = false)
     {
-        $oroUser = $this->entityManager->getRepository('OroUserBundle:User')
+        $oroUser = $this->registry->getRepository('OroUserBundle:User')
             ->findOneBy(array('email' => $user->getEmail()));
 
         if (!$oroUser) {
             /**
              * @var Email $email
              */
-            $email = $this->entityManager->getRepository('OroUserBundle:Email')
+            $email = $this->registry->getRepository('OroUserBundle:Email')
                 ->findOneBy(
                     array(
                         'email' => $user->getEmail()
@@ -103,7 +104,7 @@ class OroEntityProvider
         /**
          * @var ContactEmail $contactEmail
          */
-        $contactEmail = $this->entityManager->getRepository('OroCRMContactBundle:ContactEmail')
+        $contactEmail = $this->registry->getRepository('OroCRMContactBundle:ContactEmail')
             ->findOneBy(
                 array(
                     'email' => $user->getEmail()
@@ -139,7 +140,7 @@ class OroEntityProvider
      */
     public function getChannelById($channelId)
     {
-        return $this->entityManager->getRepository('OroIntegrationBundle:Channel')->find($channelId);
+        return $this->registry->getRepository('OroIntegrationBundle:Channel')->find($channelId);
     }
 
     /**
@@ -149,7 +150,7 @@ class OroEntityProvider
      */
     public function getEnabledChannels()
     {
-        return $this->entityManager->getRepository('OroIntegrationBundle:Channel')
+        return $this->registry->getRepository('OroIntegrationBundle:Channel')
             ->findBy(array('type' => ChannelType::TYPE, 'enabled' => true));
     }
 
@@ -170,7 +171,8 @@ class OroEntityProvider
 
     public function getAccountByContact(Contact $contact)
     {
-        $repository = $this->entityManager->getRepository('OroCRMAccountBundle:Account');
+        /** @var EntityRepository $repository */
+        $repository = $this->registry->getRepository('OroCRMAccountBundle:Account');
         $qb = $repository->createQueryBuilder('account');
         $qb->where('account.defaultContact = :contact')
             ->setMaxResults(1)
@@ -198,7 +200,7 @@ class OroEntityProvider
      */
     public function getCaseById($id)
     {
-        return $this->entityManager->getRepository('OroCRMCaseBundle:CaseEntity')
+        return $this->registry->getRepository('OroCRMCaseBundle:CaseEntity')
             ->find($id);
     }
 

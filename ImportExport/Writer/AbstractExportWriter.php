@@ -2,13 +2,16 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
+
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
-use Doctrine\ORM\EntityManager;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
+
 use Psr\Log\NullLogger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
 
 use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
@@ -28,9 +31,9 @@ abstract class AbstractExportWriter implements
     LoggerAwareInterface
 {
     /**
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * @var ZendeskTransportInterface
@@ -68,11 +71,11 @@ abstract class AbstractExportWriter implements
     private $context;
 
     /**
-     * @param EntityManager $entityManager
+     * @param ManagerRegistry $registry
      */
-    public function setEntityManager(EntityManager $entityManager)
+    public function setRegistry(ManagerRegistry $registry)
     {
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
     }
 
     /**
@@ -106,21 +109,24 @@ abstract class AbstractExportWriter implements
     public function write(array $entities)
     {
         $this->transport->init($this->getChannel()->getTransport());
+        /** @var EntityManager $em */
+        $em = $this->registry->getManager();
 
         try {
-            $this->entityManager->beginTransaction();
+            $em->beginTransaction();
             foreach ($entities as $entity) {
                 $this->writeItem($entity);
             }
-            $this->entityManager->commit();
+            $em->commit();
+
+            $em->flush();
+            $this->postFlush();
+            $em->clear();
         } catch (\Exception $exception) {
-            $this->entityManager->rollback();
+            $em->rollback();
 
             throw $exception;
         }
-        $this->entityManager->flush();
-        $this->postFlush();
-        $this->entityManager->clear();
     }
 
     /**
@@ -225,7 +231,7 @@ abstract class AbstractExportWriter implements
         }
 
         $user->setChannel($this->getChannel());
-        $this->entityManager->persist($user);
+        $this->registry->getManager()->persist($user);
 
         $this->userHelper->refreshTicket($createdUser, $this->getChannel());
         $this->userHelper->copyEntityProperties($user, $createdUser);

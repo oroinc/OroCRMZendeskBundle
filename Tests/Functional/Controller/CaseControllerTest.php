@@ -62,7 +62,7 @@ class CaseControllerTest extends WebTestCase
     public function testViewWithLinkedTicket()
     {
         /** @var Ticket $expectedTicket */
-        $expectedTicket = $this->getContainer()->get('doctrine.orm.entity_manager')
+        $expectedTicket = $this->getContainer()->get('doctrine')
             ->getRepository('OroCRMZendeskBundle:Ticket')->findOneByOriginId(42);
         $this->assertNotNull($expectedTicket);
 
