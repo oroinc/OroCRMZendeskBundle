@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
@@ -22,9 +22,9 @@ class SyncManager
     protected $syncScheduler;
 
     /**
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * @var ZendeskEntityProvider
@@ -33,16 +33,16 @@ class SyncManager
 
     /**
      * @param SyncScheduler         $syncScheduler
-     * @param EntityManager         $entityManager
+     * @param ManagerRegistry       $registry
      * @param ZendeskEntityProvider $zendeskEntityProvider
      */
     public function __construct(
         SyncScheduler $syncScheduler,
-        EntityManager $entityManager,
+        ManagerRegistry $registry,
         ZendeskEntityProvider $zendeskEntityProvider
     ) {
-        $this->syncScheduler = $syncScheduler;
-        $this->entityManager = $entityManager;
+        $this->syncScheduler         = $syncScheduler;
+        $this->registry              = $registry;
         $this->zendeskEntityProvider = $zendeskEntityProvider;
     }
 
@@ -50,6 +50,7 @@ class SyncManager
      * @param CaseEntity $caseEntity
      * @param Channel    $channel
      * @param bool       $flush
+     *
      * @return bool
      */
     public function syncCase(CaseEntity $caseEntity, Channel $channel, $flush = false)
@@ -57,6 +58,8 @@ class SyncManager
         if ($this->zendeskEntityProvider->getTicketByCase($caseEntity) || !$this->isTwoWaySyncEnabled($channel)) {
             return false;
         }
+
+        $em = $this->registry->getManager();
 
         $ticket = new Ticket();
         $ticket->setChannel($channel);
@@ -72,8 +75,8 @@ class SyncManager
             $ticket->addComment($ticketComment);
         }
 
-        $this->entityManager->persist($ticket);
-        $this->entityManager->flush($ticket);
+        $em->persist($ticket);
+        $em->flush($ticket);
 
         $this->syncScheduler->schedule($channel, TicketConnector::TYPE, array('id' => $ticket->getId()), $flush);
 
@@ -82,6 +85,7 @@ class SyncManager
 
     /**
      * @param CaseComment $caseComment
+     *
      * @return bool
      */
     public function syncComment(CaseComment $caseComment)
@@ -95,6 +99,7 @@ class SyncManager
         if (!$ticket) {
             return false;
         }
+        $em      = $this->registry->getManager();
         $channel = $ticket->getChannel();
 
         $ticketComment = new TicketComment();
@@ -102,8 +107,8 @@ class SyncManager
         $ticketComment->setRelatedComment($caseComment);
         $ticketComment->setTicket($ticket);
 
-        $this->entityManager->persist($ticketComment);
-        $this->entityManager->flush($ticketComment);
+        $em->persist($ticketComment);
+        $em->flush($ticketComment);
 
         if ($this->isTwoWaySyncEnabled($channel)) {
             $this->syncScheduler->schedule(
@@ -119,6 +124,7 @@ class SyncManager
 
     /**
      * @param Channel $channel
+     *
      * @return bool
      */
     public function reverseSyncChannel(Channel $channel)
@@ -128,7 +134,7 @@ class SyncManager
         }
 
         $ticketComments = $this->zendeskEntityProvider->getNotSyncedTicketComments($channel);
-        $ids = array();
+        $ids            = array();
 
         $ticketComments->rewind();
         while ($ticketComments->valid()) {
@@ -155,12 +161,14 @@ class SyncManager
 
     /**
      * @param Channel $channel
+     *
      * @return bool
      */
     protected function isTwoWaySyncEnabled(Channel $channel)
     {
         $isTwoWaySyncEnabled = $channel->getSynchronizationSettings()
             ->offsetGetOr('isTwoWaySyncEnabled', false);
+
         return $isTwoWaySyncEnabled;
     }
 }
