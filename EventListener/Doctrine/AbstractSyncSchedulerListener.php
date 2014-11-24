@@ -167,7 +167,7 @@ abstract class AbstractSyncSchedulerListener implements EventSubscriber
     {
         $channel = $entity->getChannel();
         return $channel && $channel->getSynchronizationSettings()->offsetGetOr('isTwoWaySyncEnabled', false)
-            && $channel->getEnabled();
+            && $channel->isEnabled();
     }
 
     /**
