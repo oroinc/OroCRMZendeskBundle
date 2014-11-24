@@ -53,9 +53,9 @@ class ChannelUpdateListener implements EventSubscriberInterface
      */
     protected function isNotSynced(Channel $channel, Channel $oldState)
     {
-        $alreadySynced = $this->isTwoWaySyncEnabled($oldState) && $oldState->getEnabled();
+        $alreadySynced = $this->isTwoWaySyncEnabled($oldState) && $oldState->isEnabled();
 
-        if (!$this->isTwoWaySyncEnabled($channel) || !$channel->getEnabled() || $alreadySynced) {
+        if (!$this->isTwoWaySyncEnabled($channel) || !$channel->isEnabled() || $alreadySynced) {
             return false;
         }
 
