@@ -60,7 +60,7 @@ class ChannelUpdateListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getSynchronizationSettings')
             ->will($this->returnValue($settings));
         $channel->expects($this->any())
-            ->method('getEnabled')
+            ->method('isEnabled')
             ->will($this->returnValue($data['enable']));
         $settings = $this->getMock('\StdClass', array('offsetGetOr'));
         $settings->expects($this->any())
@@ -70,7 +70,7 @@ class ChannelUpdateListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getSynchronizationSettings')
             ->will($this->returnValue($settings));
         $oldState->expects($this->any())
-            ->method('getEnabled')
+            ->method('isEnabled')
             ->will($this->returnValue($data['enable_old']));
         $this->listener->onUpdate($event);
     }
