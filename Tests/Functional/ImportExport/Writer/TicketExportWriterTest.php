@@ -2,9 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
-use Symfony\Component\Serializer\SerializerInterface;
-
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
@@ -30,9 +28,9 @@ class TicketExportWriterTest extends WebTestCase
     protected $writer;
 
     /**
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -67,8 +65,8 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
-        $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->registry = $this->getContainer()->get('doctrine');
+        $this->context  = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
 
         $this->context->expects($this->any())
             ->method('getOption')
@@ -129,7 +127,7 @@ class TicketExportWriterTest extends WebTestCase
 
           $this->writer->write([$ticket]);
 
-        $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
+        $ticket = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
 
         $this->assertEquals($expected->getOriginId(), $ticket->getOriginId());
         $this->assertEquals($expected->getUrl(), $ticket->getUrl());
@@ -193,7 +191,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticket]);
 
-        $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
+        $ticket = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
 
         $this->assertEquals(1, $ticket->getComments()->count());
         $comment = $ticket->getComments()->first();
@@ -258,7 +256,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticket]);
 
-        $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
+        $ticket  = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
         $comment = $ticket->getComments()->first();
 
         $relatedComment = $comment->getRelatedComment();
@@ -303,7 +301,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticket]);
 
-        $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
+        $ticket = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
         $this->assertEquals(3, $ticket->getComments()->count());
 
         $commentIds = [];
@@ -323,7 +321,7 @@ class TicketExportWriterTest extends WebTestCase
             $this->logOutput
         );
 
-        $job = $this->entityManager->getRepository('JMSJobQueueBundle:Job')
+        $job = $this->registry->getRepository('JMSJobQueueBundle:Job')
             ->findOneBy(['command' => SyncScheduler::JOB_NAME], ['createdAt' => 'DESC']);
 
         $this->assertNotEmpty($job, 'Has scheduled JMS job.');
@@ -362,7 +360,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticket]);
 
-        $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
+        $ticket  = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
 
         $this->assertEquals($expected->getOriginId(), $ticket->getOriginId());
         $this->assertEquals($expected->getUrl(), $ticket->getUrl());
@@ -404,7 +402,7 @@ class TicketExportWriterTest extends WebTestCase
         $ticket->setRequester($requester);
         $ticket->setSubmitter($submitter);
         $ticket->setAssignee($assignee);
-        $this->entityManager->flush($ticket);
+        $this->registry->getManager()->flush($ticket);
 
         $expectedRequester = $this->createUser(10001)
             ->setUrl('https://foo.zendesk.com/api/v2/users/10001.json')
@@ -458,7 +456,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticket]);
 
-        $ticket = $this->entityManager->find(get_class($ticket), $ticket->getId());
+        $ticket  = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
         $this->assertNotEmpty($ticket->getRequester());
         $this->assertEquals($expectedRequester->getOriginId(), $ticket->getRequester()->getOriginId());
 

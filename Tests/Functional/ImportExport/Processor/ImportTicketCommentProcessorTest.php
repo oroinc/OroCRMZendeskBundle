@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
@@ -34,9 +34,9 @@ class ImportTicketCommentProcessorTest extends WebTestCase
     protected $processor;
 
     /**
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * @var Channel
@@ -48,10 +48,10 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         $this->initClient();
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
 
-        $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $this->registry  = $this->getContainer()->get('doctrine');
         $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.import_ticket_comment');
-        $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
-        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
+        $this->context   = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->channel   = $this->getReference('zendesk_channel:first_test_channel');
         $this->processor->setImportExportContext($this->context);
     }
 
@@ -80,7 +80,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
             ->setOriginCreatedAt(new \DateTime());
 
         $this->assertEquals($ticketComment, $this->processor->process($ticketComment));
-        $this->assertFalse($this->entityManager->contains($ticketComment));
+        $this->assertFalse($this->registry->getManager()->contains($ticketComment));
     }
 
     public function testProcessExistingZendeskTicketComment()
@@ -109,8 +109,8 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         $this->assertEquals($ticketComment->getPublic(), $result->getPublic());
         $this->assertEquals($ticketComment->getOriginCreatedAt(), $result->getOriginCreatedAt());
 
-        $this->assertFalse($this->entityManager->contains($ticketComment));
-        $this->assertTrue($this->entityManager->contains($result));
+        $this->assertFalse($this->registry->getManager()->contains($ticketComment));
+        $this->assertTrue($this->registry->getManager()->contains($result));
     }
 
     public function testProcessLinksAuthor()
@@ -129,7 +129,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\User', $ticketComment->getAuthor());
         $this->assertEquals($originId, $ticketComment->getAuthor()->getOriginId());
-        $this->assertTrue($this->entityManager->contains($ticketComment->getAuthor()));
+        $this->assertTrue($this->registry->getManager()->contains($ticketComment->getAuthor()));
     }
 
     public function testProcessCreatesNewCaseComment()
@@ -147,7 +147,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
 
         $comment = $ticketComment->getRelatedComment();
         $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
-        $this->assertFalse($this->entityManager->contains($comment));
+        $this->assertFalse($this->registry->getManager()->contains($comment));
 
         $this->assertEquals($ticketComment->getBody(), $comment->getMessage());
         $this->assertEquals($ticketComment->getOriginCreatedAt(), $comment->getCreatedAt());
@@ -174,7 +174,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         $comment = $ticketComment->getRelatedComment();
         $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
         $this->assertInstanceOf('Oro\\Bundle\\UserBundle\\Entity\\User', $comment->getOwner());
-        $this->assertTrue($this->entityManager->contains($comment->getOwner()));
+        $this->assertTrue($this->registry->getManager()->contains($comment->getOwner()));
         $this->assertEquals($expectedOwner->getId(), $comment->getOwner()->getId());
     }
 
@@ -198,7 +198,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         $comment = $ticketComment->getRelatedComment();
         $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
         $this->assertInstanceOf('OroCRM\\Bundle\\ContactBundle\\Entity\\Contact', $comment->getContact());
-        $this->assertTrue($this->entityManager->contains($comment->getContact()));
+        $this->assertTrue($this->registry->getManager()->contains($comment->getContact()));
         $this->assertEquals($expectedContact->getId(), $comment->getContact()->getId());
     }
 
