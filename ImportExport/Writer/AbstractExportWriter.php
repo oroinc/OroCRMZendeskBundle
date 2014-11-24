@@ -117,9 +117,9 @@ abstract class AbstractExportWriter implements
             foreach ($entities as $entity) {
                 $this->writeItem($entity);
             }
+            $em->flush();
             $em->commit();
 
-            $em->flush();
             $this->postFlush();
             $em->clear();
         } catch (\Exception $exception) {
