@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
@@ -24,9 +24,9 @@ class TicketCommentExportWriterTest extends WebTestCase
     protected $writer;
 
     /**
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -61,8 +61,8 @@ class TicketCommentExportWriterTest extends WebTestCase
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
-        $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->registry = $this->getContainer()->get('doctrine');
+        $this->context  = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
 
         $this->context->expects($this->any())
             ->method('getOption')
@@ -117,7 +117,7 @@ class TicketCommentExportWriterTest extends WebTestCase
 
         $this->writer->write([$comment]);
 
-        $comment = $this->entityManager->find(get_class($comment), $comment->getId());
+        $comment = $this->registry->getRepository(get_class($comment))->find($comment->getId());
 
         $this->assertEquals($expected->getOriginId(), $comment->getOriginId());
         $this->assertEquals($expected->getBody(), $comment->getBody());
@@ -160,7 +160,7 @@ class TicketCommentExportWriterTest extends WebTestCase
 
         $this->writer->write([$comment]);
 
-        $comment = $this->entityManager->find(get_class($comment), $comment->getId());
+        $comment = $this->registry->getRepository(get_class($comment))->find($comment->getId());
         $relatedComment = $comment->getRelatedComment();
         $this->assertNotEmpty($relatedComment->getContact());
         $this->assertEquals('jim.smith@example.com', $relatedComment->getContact()->getPrimaryEmail());
@@ -197,7 +197,7 @@ class TicketCommentExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticketComment]);
 
-        $ticketComment = $this->entityManager->find(get_class($ticketComment), $ticketComment->getId());
+        $ticketComment = $this->registry->getRepository(get_class($ticketComment))->find($ticketComment->getId());
         $author = $ticketComment->getAuthor();
         $this->assertNotEmpty($ticketComment->getAuthor());
         $this->assertEquals($expectedAuthor->getOriginId(), $author->getOriginId());
@@ -229,7 +229,7 @@ class TicketCommentExportWriterTest extends WebTestCase
     {
         $ticketComment = $this->getReference('zendesk_ticket_42_comment_4');
         $author = $ticketComment->getAuthor();
-        $author->setRole($this->entityManager->find('OroCRMZendeskBundle:UserRole', UserRole::ROLE_AGENT));
+        $author->setRole($this->registry->getRepository('OroCRMZendeskBundle:UserRole')->find(UserRole::ROLE_AGENT));
 
         $this->transport->expects($this->never())->method('createUser');
 
@@ -247,7 +247,7 @@ class TicketCommentExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticketComment]);
 
-        $ticketComment = $this->entityManager->find(get_class($ticketComment), $ticketComment->getId());
+        $ticketComment = $this->registry->getRepository(get_class($ticketComment))->find($ticketComment->getId());
         $this->assertEmpty($ticketComment->getAuthor());
 
         $this->assertContains('[info] Zendesk Ticket Comment [id=' . $ticketComment->getId() . ']:', $this->logOutput);

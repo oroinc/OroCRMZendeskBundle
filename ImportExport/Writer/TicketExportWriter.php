@@ -125,7 +125,7 @@ class TicketExportWriter extends AbstractExportWriter
             $this->ticketCommentHelper->refreshTicketComment($createdComment, $this->getChannel());
             $ticket->addComment($createdComment);
 
-            $this->entityManager->persist($createdComment);
+            $this->registry->getManager()->persist($createdComment);
             $this->getContext()->incrementAddCount();
 
             $this->getLogger()->info('Update related case comment.');
@@ -186,13 +186,14 @@ class TicketExportWriter extends AbstractExportWriter
     {
         /** @var TicketComment[] $ticketComments */
         $ticketComments = [];
+        $em = $this->registry->getManager();
         foreach ($tickets as $ticket) {
             $case = $ticket->getRelatedCase();
             if (!$case) {
                 continue;
             }
 
-            $this->entityManager->refresh($case);
+            $em->refresh($case);
 
             /** @var TicketComment $comment */
             foreach ($ticket->getComments() as $comment) {
@@ -213,7 +214,7 @@ class TicketExportWriter extends AbstractExportWriter
                 $ticketComment->setRelatedComment($comment);
                 $ticketComments[] = $ticketComment;
 
-                $this->entityManager->persist($ticketComment);
+                $em->persist($ticketComment);
             }
         }
 
@@ -221,7 +222,7 @@ class TicketExportWriter extends AbstractExportWriter
             return;
         }
 
-        $this->entityManager->flush($ticketComments);
+        $em->flush($ticketComments);
 
         foreach ($ticketComments as $ticketComment) {
             $ids[] = $ticketComment->getId();

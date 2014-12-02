@@ -2,7 +2,8 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Model\EntityProvider;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\UserBundle\Entity\Email;
@@ -17,9 +18,9 @@ use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
 class OroEntityProvider
 {
     /**
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * @var array
@@ -32,51 +33,50 @@ class OroEntityProvider
     protected $nameSuffixes;
 
     /**
-     * @param EntityManager $entityManager
-     * @param array         $namePrefixes
-     * @param array         $nameSuffixes
+     * @param ManagerRegistry $registry
+     * @param array           $namePrefixes
+     * @param array           $nameSuffixes
      */
-    public function __construct(EntityManager $entityManager, array $namePrefixes, array $nameSuffixes)
+    public function __construct(ManagerRegistry $registry, array $namePrefixes, array $nameSuffixes)
     {
-        $this->entityManager = $entityManager;
+        $this->registry     = $registry;
         $this->namePrefixes = $namePrefixes;
         $this->nameSuffixes = $nameSuffixes;
     }
 
     /**
      * @param Channel $channel
+     *
      * @return null|OroUser
      */
     public function getDefaultUser(Channel $channel)
     {
         $user = $channel->getDefaultUserOwner();
         if ($user) {
-            $user = $this->entityManager->getRepository('OroUserBundle:User')
+            $user = $this->registry->getRepository('OroUserBundle:User')
                 ->find($user->getId());
         }
+
         return $user;
     }
 
     /**
      * @param ZendeskUser $user
      * @param bool        $defaultIfNotExist
+     *
      * @return OroUser|null
      */
     public function getUser(ZendeskUser $user, $defaultIfNotExist = false)
     {
-        $oroUser = $this->entityManager->getRepository('OroUserBundle:User')
+        $oroUser = $this->registry->getRepository('OroUserBundle:User')
             ->findOneBy(array('email' => $user->getEmail()));
 
         if (!$oroUser) {
             /**
              * @var Email $email
              */
-            $email = $this->entityManager->getRepository('OroUserBundle:Email')
-                ->findOneBy(
-                    array(
-                        'email' => $user->getEmail()
-                    )
-                );
+            $email = $this->registry->getRepository('OroUserBundle:Email')
+                ->findOneBy(array('email' => $user->getEmail()));
 
             if ($email) {
                 $oroUser = $email->getUser();
@@ -92,6 +92,7 @@ class OroEntityProvider
 
     /**
      * @param ZendeskUser $user
+     *
      * @return Contact|null
      */
     public function getContact(ZendeskUser $user)
@@ -103,7 +104,7 @@ class OroEntityProvider
         /**
          * @var ContactEmail $contactEmail
          */
-        $contactEmail = $this->entityManager->getRepository('OroCRMContactBundle:ContactEmail')
+        $contactEmail = $this->registry->getRepository('OroCRMContactBundle:ContactEmail')
             ->findOneBy(
                 array(
                     'email' => $user->getEmail()
@@ -135,11 +136,12 @@ class OroEntityProvider
 
     /**
      * @param $channelId
+     *
      * @return null|Channel
      */
     public function getChannelById($channelId)
     {
-        return $this->entityManager->getRepository('OroIntegrationBundle:Channel')->find($channelId);
+        return $this->registry->getManager()->find('OroIntegrationBundle:Channel', $channelId);
     }
 
     /**
@@ -149,8 +151,8 @@ class OroEntityProvider
      */
     public function getEnabledChannels()
     {
-        return $this->entityManager->getRepository('OroIntegrationBundle:Channel')
-            ->findBy(array('type' => ChannelType::TYPE, 'enabled' => true));
+        return $this->registry->getRepository('OroIntegrationBundle:Channel')
+            ->getConfiguredChannelsForSync(ChannelType::TYPE);
     }
 
     /**
@@ -170,8 +172,9 @@ class OroEntityProvider
 
     public function getAccountByContact(Contact $contact)
     {
-        $repository = $this->entityManager->getRepository('OroCRMAccountBundle:Account');
-        $qb = $repository->createQueryBuilder('account');
+        /** @var EntityRepository $repository */
+        $repository = $this->registry->getRepository('OroCRMAccountBundle:Account');
+        $qb         = $repository->createQueryBuilder('account');
         $qb->where('account.defaultContact = :contact')
             ->setMaxResults(1)
             ->setParameter('contact', $contact);
@@ -198,13 +201,13 @@ class OroEntityProvider
      */
     public function getCaseById($id)
     {
-        return $this->entityManager->getRepository('OroCRMCaseBundle:CaseEntity')
-            ->find($id);
+        return $this->registry->getManager()->find('OroCRMCaseBundle:CaseEntity', $id);
     }
 
     /**
      * @param ZendeskUser $user
      * @param Contact     $contact
+     *
      * @return null|Contact
      */
     protected function setContactName(ZendeskUser $user, Contact $contact)
@@ -236,6 +239,7 @@ class OroEntityProvider
     /**
      * @param array   $nameParts
      * @param Contact $contact
+     *
      * @return array
      */
     protected function setContactNamePrefixAndSuffix(array $nameParts, Contact $contact)
@@ -255,6 +259,7 @@ class OroEntityProvider
 
     /**
      * @param string $namePart
+     *
      * @return bool
      */
     protected function isNamePrefix($namePart)
@@ -262,11 +267,13 @@ class OroEntityProvider
         if (substr($namePart, -1) == '.') {
             $namePart = substr_replace($namePart, '', -1);
         }
+
         return array_search($namePart, $this->namePrefixes) !== false;
     }
 
     /**
      * @param string $namePart
+     *
      * @return bool
      */
     protected function isNameSuffix($namePart)
@@ -274,6 +281,7 @@ class OroEntityProvider
         if (substr($namePart, -1) == '.') {
             $namePart = substr_replace($namePart, '', -1);
         }
+
         return array_search($namePart, $this->nameSuffixes) !== false;
     }
 }

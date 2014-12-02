@@ -27,23 +27,28 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
+    protected $registry;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
     protected $zendeskEntityProvider;
 
     protected function setUp()
     {
         $this->scheduler = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Manager\SyncScheduler')
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
         $this->entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
+        $this->registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $this->registry->expects($this->any())->method('getManager')
+            ->willReturn($this->entityManager);
         $this->zendeskEntityProvider = $this->getMockBuilder(
             'OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider'
         )
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
 
-        $this->target = new SyncManager($this->scheduler, $this->entityManager, $this->zendeskEntityProvider);
+        $this->target = new SyncManager($this->scheduler, $this->registry, $this->zendeskEntityProvider);
     }
 
     public function testSyncCommentSyncOnlyNewComments()
