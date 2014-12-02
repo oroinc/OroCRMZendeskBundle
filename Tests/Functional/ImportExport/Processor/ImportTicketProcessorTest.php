@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
@@ -26,9 +26,9 @@ class ImportTicketProcessorTest extends WebTestCase
     protected $processor;
 
     /**
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -46,10 +46,10 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->client->startTransaction();
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
-        $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $this->registry  = $this->getContainer()->get('doctrine');
         $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.import_ticket');
-        $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
-        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
+        $this->context   = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->channel   = $this->getReference('zendesk_channel:first_test_channel');
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
@@ -80,7 +80,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
         $actual = $this->getSyncStateService()->getTicketIds();
         $this->assertEquals($expected, $actual);
-        $this->assertFalse($this->entityManager->contains($zendeskTicket));
+        $this->assertFalse($this->registry->getManager()->contains($zendeskTicket));
     }
 
     public function testProcessExistingZendeskTicket()
@@ -119,8 +119,8 @@ class ImportTicketProcessorTest extends WebTestCase
         $actual = $this->getSyncStateService()->getTicketIds();
         $this->assertEquals($expected, $actual);
 
-        $this->assertFalse($this->entityManager->contains($zendeskTicket));
-        $this->assertTrue($this->entityManager->contains($result));
+        $this->assertFalse($this->registry->getManager()->contains($zendeskTicket));
+        $this->assertTrue($this->registry->getManager()->contains($result));
     }
 
     public function testProcessSkipSyncExistingZendeskTicketIfItAlreadyUpdated()
@@ -154,7 +154,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket', $zendeskTicket->getProblem());
         $this->assertEquals($originId, $zendeskTicket->getProblem()->getOriginId());
-        $this->assertTrue($this->entityManager->contains($zendeskTicket->getProblem()));
+        $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getProblem()));
     }
 
     public function testProcessLinksType()
@@ -168,7 +168,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketType', $zendeskTicket->getType());
         $this->assertEquals($name, $zendeskTicket->getType()->getName());
-        $this->assertTrue($this->entityManager->contains($zendeskTicket->getType()));
+        $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getType()));
     }
 
     public function testProcessLinksStatus()
@@ -182,7 +182,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketStatus', $zendeskTicket->getStatus());
         $this->assertEquals($name, $zendeskTicket->getStatus()->getName());
-        $this->assertTrue($this->entityManager->contains($zendeskTicket->getStatus()));
+        $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getStatus()));
     }
 
     public function testProcessLinksPriority()
@@ -196,7 +196,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketPriority', $zendeskTicket->getPriority());
         $this->assertEquals($name, $zendeskTicket->getPriority()->getName());
-        $this->assertTrue($this->entityManager->contains($zendeskTicket->getPriority()));
+        $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getPriority()));
     }
 
     public function testProcessLinksCollaborators()
@@ -213,7 +213,7 @@ class ImportTicketProcessorTest extends WebTestCase
             $zendeskTicket->getCollaborators()->first()
         );
         $this->assertEquals($originId, $zendeskTicket->getCollaborators()->first()->getOriginId());
-        $this->assertTrue($this->entityManager->contains($zendeskTicket->getCollaborators()->first()));
+        $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getCollaborators()->first()));
     }
 
     public function testProcessLinksRequester()
@@ -227,7 +227,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\User', $zendeskTicket->getRequester());
         $this->assertEquals($originId, $zendeskTicket->getRequester()->getOriginId());
-        $this->assertTrue($this->entityManager->contains($zendeskTicket->getRequester()));
+        $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getRequester()));
     }
 
     public function testProcessLinksSubmitter()
@@ -241,7 +241,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\User', $zendeskTicket->getSubmitter());
         $this->assertEquals($originId, $zendeskTicket->getSubmitter()->getOriginId());
-        $this->assertTrue($this->entityManager->contains($zendeskTicket->getSubmitter()));
+        $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getSubmitter()));
     }
 
     public function testProcessLinksAssignee()
@@ -255,7 +255,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\User', $zendeskTicket->getAssignee());
         $this->assertEquals($originId, $zendeskTicket->getAssignee()->getOriginId());
-        $this->assertTrue($this->entityManager->contains($zendeskTicket->getAssignee()));
+        $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getAssignee()));
     }
 
     public function testProcessCreatesNewCase()
@@ -269,7 +269,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $case = $zendeskTicket->getRelatedCase();
         $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseEntity', $case);
-        $this->assertFalse($this->entityManager->contains($case));
+        $this->assertFalse($this->registry->getManager()->contains($case));
 
         $this->assertEquals($zendeskTicket->getSubject(), $case->getSubject());
         $this->assertEquals($zendeskTicket->getDescription(), $case->getDescription());
@@ -373,7 +373,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $case = $zendeskTicket->getRelatedCase();
         $this->assertNotEmpty($zendeskTicket->$getter()->getRelatedUser());
         $this->assertNotEmpty($case->getOwner());
-        $this->assertTrue($this->entityManager->contains($case->getOwner()));
+        $this->assertTrue($this->registry->getManager()->contains($case->getOwner()));
         $this->assertSame(
             $zendeskTicket->$getter()->getRelatedUser(),
             $case->getOwner()
@@ -405,7 +405,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $case = $zendeskTicket->getRelatedCase();
         $this->assertNotEmpty($zendeskTicket->$getter()->getRelatedUser());
         $this->assertNotEmpty($case->getAssignedTo());
-        $this->assertTrue($this->entityManager->contains($case->getAssignedTo()));
+        $this->assertTrue($this->registry->getManager()->contains($case->getAssignedTo()));
         $this->assertSame(
             $zendeskTicket->$getter()->getRelatedUser(),
             $case->getAssignedTo()
@@ -437,7 +437,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $case = $zendeskTicket->getRelatedCase();
         $this->assertNotEmpty($zendeskTicket->$getter()->getRelatedContact());
         $this->assertNotEmpty($case->getRelatedContact());
-        $this->assertTrue($this->entityManager->contains($case->getRelatedContact()));
+        $this->assertTrue($this->registry->getManager()->contains($case->getRelatedContact()));
         $this->assertSame(
             $zendeskTicket->$getter()->getRelatedContact(),
             $case->getRelatedContact()
@@ -512,7 +512,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->assertEquals($expectedStatus, $processZendeskTicket->getStatus()->getName());
         $this->assertEquals($expectedPriority, $processZendeskTicket->getPriority()->getName());
 
-        $this->assertTrue($this->entityManager->contains($result));
+        $this->assertTrue($this->registry->getManager()->contains($result));
     }
 
     public function testProcessLocalWinsIgnoresRelatedCaseRemoteConflictChanges()
@@ -566,7 +566,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->assertNotEmpty($result);
         $this->assertEquals($result->getId(), $zendeskTicket->getId());
 
-        $this->assertTrue($this->entityManager->contains($result));
+        $this->assertTrue($this->registry->getManager()->contains($result));
 
         $this->assertEquals($expectedSubject, $relatedCase->getSubject());
         $this->assertEquals($expectedDescription, $relatedCase->getDescription());
@@ -637,7 +637,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->assertNotEmpty($result);
         $this->assertEquals($result->getId(), $zendeskTicket->getId());
 
-        $this->assertTrue($this->entityManager->contains($result));
+        $this->assertTrue($this->registry->getManager()->contains($result));
 
         $this->assertEquals($expectedSubject, $relatedCase->getSubject());
         $this->assertEquals($expectedDescription, $relatedCase->getDescription());
@@ -691,7 +691,7 @@ class ImportTicketProcessorTest extends WebTestCase
      */
     protected function getCaseStatus($name)
     {
-        return $this->entityManager
+        return $this->registry
             ->getRepository('OroCRMCaseBundle:CaseStatus')
             ->find($name);
     }
@@ -702,7 +702,7 @@ class ImportTicketProcessorTest extends WebTestCase
      */
     protected function getCasePriority($name)
     {
-        return $this->entityManager
+        return $this->registry
             ->getRepository('OroCRMCaseBundle:CasePriority')
             ->find($name);
     }

@@ -194,9 +194,9 @@ class TicketSyncHelper extends AbstractSyncHelper
 
         $this->addCaseOwnerChanges($changeSet, $ticket, $channel);
         $this->addCaseAssignedToChanges($changeSet, $ticket, $channel);
-        $this->addCaseRelatedContactChanges($changeSet, $ticket, $channel);
-        $this->addCaseStatusChanges($changeSet, $ticket, $channel);
-        $this->addCasePriorityChanges($changeSet, $ticket, $channel);
+        $this->addCaseRelatedContactChanges($changeSet, $ticket);
+        $this->addCaseStatusChanges($changeSet, $ticket);
+        $this->addCasePriorityChanges($changeSet, $ticket);
 
         return $changeSet;
     }
@@ -245,9 +245,8 @@ class TicketSyncHelper extends AbstractSyncHelper
     /**
      * @param ChangeSet $changeSet
      * @param Ticket $ticket
-     * @param Channel $channel
      */
-    protected function addCaseRelatedContactChanges(ChangeSet $changeSet, Ticket $ticket, Channel $channel)
+    protected function addCaseRelatedContactChanges(ChangeSet $changeSet, Ticket $ticket)
     {
         if ($ticket->getRequester() && $ticket->getRequester()->getRelatedContact()) {
             $changeSet->add('relatedContact', ['property' => 'requester', 'path' => 'requester.relatedContact'], 'id');
@@ -261,13 +260,12 @@ class TicketSyncHelper extends AbstractSyncHelper
     /**
      * @param ChangeSet $changeSet
      * @param Ticket $ticket
-     * @param Channel $channel
      */
-    protected function addCaseStatusChanges(ChangeSet $changeSet, Ticket $ticket, Channel $channel)
+    protected function addCaseStatusChanges(ChangeSet $changeSet, Ticket $ticket)
     {
         if ($ticket->getStatus()) {
             $name = $ticket->getStatus()->getName();
-            $value = $this->entityMapper->getCaseStatus($name, $channel);
+            $value = $this->entityMapper->getCaseStatus($name);
             if (!$value) {
                 $this->getLogger()->error("Can't convert Zendesk status [name=$name]");
             } else {
@@ -283,13 +281,12 @@ class TicketSyncHelper extends AbstractSyncHelper
     /**
      * @param ChangeSet $changeSet
      * @param Ticket $ticket
-     * @param Channel $channel
      */
-    protected function addCasePriorityChanges(ChangeSet $changeSet, Ticket $ticket, Channel $channel)
+    protected function addCasePriorityChanges(ChangeSet $changeSet, Ticket $ticket)
     {
         if ($ticket->getPriority()) {
             $name = $ticket->getPriority()->getName();
-            $value = $this->entityMapper->getCasePriority($name, $channel);
+            $value = $this->entityMapper->getCasePriority($name);
             if (!$value) {
                 $this->getLogger()->error("Can't convert Zendesk priority [name=$name]");
             } else {

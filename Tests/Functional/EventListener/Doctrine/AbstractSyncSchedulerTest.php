@@ -27,7 +27,7 @@ abstract class AbstractSyncSchedulerTest extends WebTestCase
      */
     protected function getAdminUser()
     {
-        $result = $this->getContainer()->get('doctrine.orm.entity_manager')
+        $result = $this->getContainer()->get('doctrine')
             ->getRepository('OroUserBundle:User')
             ->findOneByUsername(LoadAdminUserData::DEFAULT_ADMIN_USERNAME);
 

@@ -11,11 +11,19 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
      */
     protected $entityManager;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $registry;
+
     protected function setUp()
     {
         $this->entityManager = $this->getMockBuilder('Doctrine\\ORM\\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
+        $this->registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $this->registry->expects($this->any())->method('getManager')
+            ->willReturn($this->entityManager);
     }
 
     public function testGetData()
@@ -54,8 +62,7 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
             )
         );
         $mapper = $this->getMapper($map);
-        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $actual = $mapper->getCaseStatusName($ticketStatus, $channel);
+        $actual = $mapper->getCaseStatusName($ticketStatus);
         $this->assertEquals($expected, $actual);
     }
 
@@ -69,8 +76,7 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
             )
         );
         $mapper = $this->getMapper($map);
-        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $actual = $mapper->getCaseStatusName($ticketStatus, $channel);
+        $actual = $mapper->getCaseStatusName($ticketStatus);
         $this->assertNull($actual);
     }
 
@@ -86,8 +92,7 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
             )
         );
         $mapper = $this->getMapper($map);
-        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $actual = $mapper->getTicketStatusName($status, $channel);
+        $actual = $mapper->getTicketStatusName($status);
         $this->assertEquals($expected, $actual);
     }
 
@@ -103,8 +108,7 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
             )
         );
         $mapper = $this->getMapper($map);
-        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $actual = $mapper->getTicketPriorityName($priority, $channel);
+        $actual = $mapper->getTicketPriorityName($priority);
         $this->assertEquals($expected, $actual);
     }
 
@@ -120,8 +124,7 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
             )
         );
         $mapper = $this->getMapper($map);
-        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $actual = $mapper->getCasePriorityName($priority, $channel);
+        $actual = $mapper->getCasePriorityName($priority);
         $this->assertEquals($expected, $actual);
     }
 
@@ -131,6 +134,6 @@ class EntityMapperTest extends \PHPUnit_Framework_TestCase
      */
     protected function getMapper($map = array())
     {
-        return new EntityMapper($this->entityManager, $map);
+        return new EntityMapper($this->registry, $map);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ImportUserProcessor;
@@ -23,9 +23,9 @@ class ImportUserProcessorTest extends WebTestCase
     protected $processor;
 
     /**
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -42,10 +42,10 @@ class ImportUserProcessorTest extends WebTestCase
         $this->initClient();
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData']);
 
-        $this->entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $this->registry  = $this->getContainer()->get('doctrine');
         $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.import_user');
-        $this->context = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
-        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
+        $this->context   = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->channel   = $this->getReference('zendesk_channel:first_test_channel');
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
@@ -67,7 +67,7 @@ class ImportUserProcessorTest extends WebTestCase
         $zendeskUser = $this->createZendeskUser()->setOriginId(1);
 
         $this->assertEquals($zendeskUser, $this->processor->process($zendeskUser));
-        $this->assertFalse($this->entityManager->contains($zendeskUser));
+        $this->assertFalse($this->registry->getManager()->contains($zendeskUser));
     }
 
     public function testProcessExistingZendeskUser()
@@ -114,8 +114,8 @@ class ImportUserProcessorTest extends WebTestCase
         $this->assertEquals($zendeskUser->getVerified(), $result->getVerified());
         $this->assertEquals($zendeskUser->getTimeZone(), $result->getTimeZone());
         $this->assertEquals($zendeskUser->getLocale(), $result->getLocale());
-        $this->assertFalse($this->entityManager->contains($zendeskUser));
-        $this->assertTrue($this->entityManager->contains($result));
+        $this->assertFalse($this->registry->getManager()->contains($zendeskUser));
+        $this->assertTrue($this->registry->getManager()->contains($result));
     }
 
     public function testProcessSkipSyncExistingZendeskUserIfItAlreadyUpdated()
@@ -160,7 +160,7 @@ class ImportUserProcessorTest extends WebTestCase
 
         $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\UserRole', $zendeskUser->getRole());
         $this->assertEquals($roleName, $zendeskUser->getRole()->getName());
-        $this->assertTrue($this->entityManager->contains($zendeskUser->getRole()));
+        $this->assertTrue($this->registry->getManager()->contains($zendeskUser->getRole()));
     }
 
     /**
@@ -179,7 +179,7 @@ class ImportUserProcessorTest extends WebTestCase
 
         $this->assertInstanceOf('Oro\\Bundle\\UserBundle\\Entity\\User', $zendeskUser->getRelatedUser());
         $this->assertEquals($email, $zendeskUser->getRelatedUser()->getEmail());
-        $this->assertTrue($this->entityManager->contains($zendeskUser->getRelatedUser()));
+        $this->assertTrue($this->registry->getManager()->contains($zendeskUser->getRelatedUser()));
     }
 
     public function userCompatibleRoleDataProvider()
@@ -205,7 +205,7 @@ class ImportUserProcessorTest extends WebTestCase
     public function testProcessLinksRelatedContact()
     {
         $roleName = ZendeskUserRole::ROLE_END_USER;
-        $email = 'mike.johnson@example.com';
+        $email    = 'mike.johnson@example.com';
 
         $zendeskUser = $this->createZendeskUser()
             ->setOriginId(1)
@@ -217,13 +217,13 @@ class ImportUserProcessorTest extends WebTestCase
         $relatedContact = $zendeskUser->getRelatedContact();
         $this->assertInstanceOf('OroCRM\\Bundle\\ContactBundle\\Entity\\Contact', $relatedContact);
         $this->assertEquals($email, $relatedContact->getPrimaryEmail());
-        $this->assertTrue($this->entityManager->contains($relatedContact));
+        $this->assertTrue($this->registry->getManager()->contains($relatedContact));
     }
 
     public function testProcessCreatesRelatedContact()
     {
         $roleName = ZendeskUserRole::ROLE_END_USER;
-        $email = 'bob.miller@example.com';
+        $email    = 'bob.miller@example.com';
 
         $zendeskUser = $this->createZendeskUser()
             ->setOriginId(1)
@@ -235,7 +235,7 @@ class ImportUserProcessorTest extends WebTestCase
 
         $relatedContact = $zendeskUser->getRelatedContact();
         $this->assertInstanceOf('OroCRM\\Bundle\\ContactBundle\\Entity\\Contact', $relatedContact);
-        $this->assertFalse($this->entityManager->contains($relatedContact));
+        $this->assertFalse($this->registry->getManager()->contains($relatedContact));
         $this->assertEquals($email, $relatedContact->getPrimaryEmail());
         $this->assertEquals('Bob', $relatedContact->getFirstName());
         $this->assertEquals('Miller', $relatedContact->getLastName());
