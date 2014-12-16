@@ -3,12 +3,10 @@
 namespace OroCRM\Bundle\ZendeskBundle\Controller\Api\Rest;
 
 use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
-use Symfony\Component\HttpFoundation\Response;
 
-use FOS\Rest\Util\Codes;
+use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Routing\ClassResourceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
