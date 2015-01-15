@@ -252,20 +252,33 @@ class TicketSyncHelper extends AbstractSyncHelper
         $channelOrganizationId = $this->getRefreshedChannelOrganization($channel)->getId();
         if ($ticket->getRequester()
             && $ticket->getRequester()->getRelatedContact()
-            && $ticket->getRequester()->getRelatedContact()->getOrganization()->getId() == $channelOrganizationId
+            && $this->checkObjectOrganizationId($ticket->getRequester()->getRelatedContact(), $channelOrganizationId)
         ) {
             $changeSet->add('relatedContact', ['property' => 'requester', 'path' => 'requester.relatedContact'], 'id');
         } elseif ($ticket->getSubmitter()
             && $ticket->getSubmitter()->getRelatedContact()
-            && $ticket->getSubmitter()->getRelatedContact()->getOrganization()->getId() == $channelOrganizationId
+            && $this->checkObjectOrganizationId($ticket->getSubmitter()->getRelatedContact(), $channelOrganizationId)
         ) {
             $changeSet->add('relatedContact', ['property' => 'submitter', 'path' => 'submitter.relatedContact'], 'id');
         } elseif ($ticket->getAssignee()
             && $ticket->getAssignee()->getRelatedContact()
-            && $ticket->getAssignee()->getRelatedContact()->getOrganization()->getId() == $channelOrganizationId
+            && $this->checkObjectOrganizationId($ticket->getAssignee()->getRelatedContact(), $channelOrganizationId)
         ) {
             $changeSet->add('relatedContact', ['property' => 'assignee', 'path' => 'assignee.relatedContact'], 'id');
         }
+    }
+
+    /**
+     * Check if given object organization is the same as channel organization id
+     *
+     * @param object $object
+     * @param int $channelOrganizationId
+     * @return bool
+     */
+    protected function checkObjectOrganizationId($object, $channelOrganizationId)
+    {
+        return $object->getOrganization()
+            && $object->getOrganization()->getId() == $channelOrganizationId;
     }
 
     /**
