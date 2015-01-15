@@ -118,6 +118,7 @@ class OroEntityProvider
 
         $contact = new Contact();
         $contact->setOwner($this->getDefaultUser($user->getChannel()));
+        $contact->setOrganization($user->getChannel()->getOrganization());
 
         if ($user->getPhone()) {
             $phone = new ContactPhone();
