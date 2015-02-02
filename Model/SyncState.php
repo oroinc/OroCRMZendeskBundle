@@ -18,7 +18,7 @@ class SyncState
      */
     public function getLastSyncDate(Channel $channel, $connector)
     {
-        $status = $channel->getStatusesForConnector($connector, Status::STATUS_COMPLETED)->first();
+        $status = $channel->getLastStatusForConnector($connector, Status::STATUS_COMPLETED);
 
         return $status ? $status->getDate() : null;
     }
