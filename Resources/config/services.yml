@@ -46,6 +46,8 @@ services:
 
     orocrm_zendesk.sync_state:
         class: %orocrm_zendesk.sync_state.class%
+        arguments:
+            - @doctrine
 
     # Forms and extensions
     orocrm_zendesk.form.type.rest_transport_setting:
