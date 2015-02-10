@@ -194,7 +194,7 @@ class TicketSyncHelper extends AbstractSyncHelper
 
         $this->addCaseOwnerChanges($changeSet, $ticket, $channel);
         $this->addCaseAssignedToChanges($changeSet, $ticket, $channel);
-        $this->addCaseRelatedContactChanges($changeSet, $ticket);
+        $this->addCaseRelatedContactChanges($changeSet, $ticket, $channel);
         $this->addCaseStatusChanges($changeSet, $ticket);
         $this->addCasePriorityChanges($changeSet, $ticket);
 
@@ -245,16 +245,40 @@ class TicketSyncHelper extends AbstractSyncHelper
     /**
      * @param ChangeSet $changeSet
      * @param Ticket $ticket
+     * @param Channel $channel
      */
-    protected function addCaseRelatedContactChanges(ChangeSet $changeSet, Ticket $ticket)
+    protected function addCaseRelatedContactChanges(ChangeSet $changeSet, Ticket $ticket, Channel $channel)
     {
-        if ($ticket->getRequester() && $ticket->getRequester()->getRelatedContact()) {
+        $channelOrganizationId = $this->getRefreshedChannelOrganization($channel)->getId();
+        if ($ticket->getRequester()
+            && $ticket->getRequester()->getRelatedContact()
+            && $this->checkObjectOrganizationId($ticket->getRequester()->getRelatedContact(), $channelOrganizationId)
+        ) {
             $changeSet->add('relatedContact', ['property' => 'requester', 'path' => 'requester.relatedContact'], 'id');
-        } elseif ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedContact()) {
+        } elseif ($ticket->getSubmitter()
+            && $ticket->getSubmitter()->getRelatedContact()
+            && $this->checkObjectOrganizationId($ticket->getSubmitter()->getRelatedContact(), $channelOrganizationId)
+        ) {
             $changeSet->add('relatedContact', ['property' => 'submitter', 'path' => 'submitter.relatedContact'], 'id');
-        } elseif ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedContact()) {
+        } elseif ($ticket->getAssignee()
+            && $ticket->getAssignee()->getRelatedContact()
+            && $this->checkObjectOrganizationId($ticket->getAssignee()->getRelatedContact(), $channelOrganizationId)
+        ) {
             $changeSet->add('relatedContact', ['property' => 'assignee', 'path' => 'assignee.relatedContact'], 'id');
         }
+    }
+
+    /**
+     * Check if given object organization is the same as channel organization id
+     *
+     * @param object $object
+     * @param int $channelOrganizationId
+     * @return bool
+     */
+    protected function checkObjectOrganizationId($object, $channelOrganizationId)
+    {
+        return $object->getOrganization()
+            && $object->getOrganization()->getId() == $channelOrganizationId;
     }
 
     /**
