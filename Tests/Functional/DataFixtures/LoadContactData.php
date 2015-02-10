@@ -44,9 +44,11 @@ class LoadContactData extends AbstractZendeskFixture
      */
     public function load(ObjectManager $manager)
     {
+        $organization = $manager->getRepository('OroOrganizationBundle:Organization')->getFirst();
         foreach ($this->data as $data) {
             $entity = new Contact();
 
+            $entity->setOrganization($organization);
             $this->setEntityPropertyValues($entity, $data, array('email', 'reference'));
 
             if (isset($data['reference'])) {

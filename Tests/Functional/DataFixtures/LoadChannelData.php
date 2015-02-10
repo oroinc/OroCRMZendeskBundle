@@ -39,12 +39,14 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
     {
         $userManager = $this->container->get('oro_user.manager');
         $admin = $userManager->findUserByEmail(LoadAdminUserData::DEFAULT_ADMIN_EMAIL);
+        $organization = $manager->getRepository('OroOrganizationBundle:Organization')->getFirst();
         foreach ($this->channelData as $data) {
             $entity = new Channel();
 
             $data['transport'] = $this->getReference($data['transport']);
 
             $entity->setDefaultUserOwner($admin);
+            $entity->setOrganization($organization);
 
             $this->setEntityPropertyValues($entity, $data, array('reference', 'synchronizationSettings'));
             $this->setReference($data['reference'], $entity);
