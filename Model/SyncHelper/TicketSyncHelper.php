@@ -11,6 +11,9 @@ use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
 
+/**
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class TicketSyncHelper extends AbstractSyncHelper
 {
     /**
