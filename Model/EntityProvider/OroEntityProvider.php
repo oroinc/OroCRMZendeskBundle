@@ -101,19 +101,22 @@ class OroEntityProvider
             return null;
         }
 
-        /**
-         * @var ContactEmail $contactEmail
-         */
-        $contactEmail = $this->registry->getRepository('OroCRMContactBundle:ContactEmail')
-            ->findOneBy(
+        $contactEmails = $this->registry->getRepository('OroCRMContactBundle:ContactEmail')
+            ->findBy(
                 array(
                     'email' => $user->getEmail()
                 ),
                 array('primary' => 'DESC')
             );
 
-        if ($contactEmail) {
-            return $contactEmail->getOwner();
+        if (count($contactEmails) > 0) {
+            foreach ($contactEmails as $contactEmail) {
+                /** @var ContactEmail $contactEmail $owner */
+                $owner = $contactEmail->getOwner();
+                if ($owner->getOrganization()->getId() === $user->getChannel()->getOrganization()->getId()) {
+                    return $contactEmail->getOwner();
+                }
+            }
         }
 
         $contact = new Contact();

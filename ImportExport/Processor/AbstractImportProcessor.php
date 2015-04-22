@@ -75,7 +75,7 @@ abstract class AbstractImportProcessor implements
      */
     protected function getChannel()
     {
-        if ($this->channel === null) {
+        if ($this->channel === null || $this->context->getOption('channel') !== $this->channel->getId()) {
             $this->channel = $this->connectorContextMediator->getChannel($this->context);
         }
 
