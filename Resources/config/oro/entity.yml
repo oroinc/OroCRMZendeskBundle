@@ -6,16 +6,18 @@ oro_entity:
         OroCRM\Bundle\ZendeskBundle\Entity\TicketComment:
             alias:        zendeskticketcomment
             plural_alias: zendeskticketcomments
+        OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority:
+            alias:        zendeskticketpriority
+            plural_alias: zendeskticketpriorities
+        OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus:
+            alias:        zendeskticketstatus
+            plural_alias: zendeskticketstatuses
+        OroCRM\Bundle\ZendeskBundle\Entity\TicketType:
+            alias:        zendesktickettype
+            plural_alias: zendesktickettypes
         OroCRM\Bundle\ZendeskBundle\Entity\User:
             alias:        zendeskuser
             plural_alias: zendeskusers
-
-    entity_alias_exclusions:
-        - OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority
-        - OroCRM\Bundle\ZendeskBundle\Entity\TicketPriorityTranslation
-        - OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus
-        - OroCRM\Bundle\ZendeskBundle\Entity\TicketStatusTranslation
-        - OroCRM\Bundle\ZendeskBundle\Entity\TicketType
-        - OroCRM\Bundle\ZendeskBundle\Entity\TicketTypeTranslation
-        - OroCRM\Bundle\ZendeskBundle\Entity\UserRole
-        - OroCRM\Bundle\ZendeskBundle\Entity\UserRoleTranslation
+        OroCRM\Bundle\ZendeskBundle\Entity\UserRole:
+            alias:        zendeskuserrole
+            plural_alias: zendeskuserroles
