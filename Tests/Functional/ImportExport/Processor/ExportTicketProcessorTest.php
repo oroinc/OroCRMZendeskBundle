@@ -60,6 +60,8 @@ class ExportTicketProcessorTest extends WebTestCase
     {
         //see testProcessorReturnNullIfRequesterDoesNotFoundAndDefaultUserNotExist
         $this->channel->getTransport()->setZendeskUserEmail($this->previousEmail);
+
+        parent::tearDown();
     }
     /**
      * @dataProvider processDataProvider
