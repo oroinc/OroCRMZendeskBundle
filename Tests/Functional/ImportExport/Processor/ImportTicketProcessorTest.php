@@ -40,8 +40,6 @@ class ImportTicketProcessorTest extends WebTestCase
      */
     protected $channel;
 
-    protected static $connections = [];
-
     protected function setUp()
     {
         $this->initClient([], [], true);
