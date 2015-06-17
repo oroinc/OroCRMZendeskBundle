@@ -100,6 +100,8 @@ class TicketExportWriterTest extends WebTestCase
         $this->getContainer()->set('orocrm_zendesk.importexport.writer.export_ticket', null);
         $this->logOutput = null;
         $this->client->rollbackTransaction();
+
+        parent::tearDown();
     }
 
     public function testWriteCreatesTicket()
