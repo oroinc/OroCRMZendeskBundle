@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Strategy;
+namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -44,6 +44,7 @@ class ImportTicketProcessorTest extends WebTestCase
     {
         $this->initClient([], [], true);
         $this->client->startTransaction();
+
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
         $this->registry  = $this->getContainer()->get('doctrine');
@@ -60,6 +61,8 @@ class ImportTicketProcessorTest extends WebTestCase
     {
         $this->getSyncStateService()->setTicketIds(array());
         $this->client->rollbackTransaction();
+
+        parent::tearDown();
     }
 
     /**

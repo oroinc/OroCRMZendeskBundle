@@ -60,6 +60,8 @@ class ExportTicketCommentProcessorTest extends WebTestCase
     {
         // @see testNewCommentWithoutAuthor
         $this->channel->getTransport()->setZendeskUserEmail($this->previousEmail);
+
+        parent::tearDown();
     }
 
     public function testNewCommentWithoutAuthor()
