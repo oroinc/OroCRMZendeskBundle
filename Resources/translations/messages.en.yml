@@ -118,6 +118,16 @@ orocrm:
             sync_to_zendesk:
                 label: Publish to Zendesk
                 empty: Choose an integration...
+            email:
+                description: Zendesk API email
+            token:
+                description: Zendesk API token
+            zendesk_url:
+                description: Example: https://company.zendesk.com or company.zendesk.com
+            cron_schedule:
+                tooltip: Synchronization Cron schedule
+            zendesk_user_email:
+                description: Email of Zendesk user that will be used by default when relevant user linked with OroCRM wasn't found
 
         channel_type.label: 'Zendesk'
         connector:
