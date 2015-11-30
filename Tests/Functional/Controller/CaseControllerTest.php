@@ -142,7 +142,7 @@ class CaseControllerTest extends WebTestCase
     {
         $labelNode = $crawler->filterXPath("//label[text()=\"{$label}\"]");
         $this->assertTrue($labelNode->count() > 0, "label({$label}) not found");
-        $value = $labelNode->parents()->first()->filterXPath('//div[@class="control-label"]');
+        $value = $labelNode->parents()->first()->filterXPath('//div[@class="control-label html-content"]');
         $this->assertTrue($value->count() > 0, "value({$label}) not found");
         return $value;
     }
