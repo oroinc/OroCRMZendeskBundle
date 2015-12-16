@@ -163,6 +163,9 @@ class TicketNormalizerTest extends WebTestCase
                     'assignee_id' => $assigneeId,
                     'due_at' => $dueAt,
                 ),
+                'context' => array(
+                    'format' => \DateTime::ISO8601
+                )
             ),
             'new' => array(
                 'denormalized' => $this->createTicket()
