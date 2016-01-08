@@ -189,7 +189,7 @@ class OroCRMZendeskBundleInstaller implements Installation
         $table->addColumn('origin_id', 'bigint', ['notnull' => false]);
         $table->addColumn('url', 'string', ['notnull' => false, 'length' => 255]);
         $table->addColumn('external_id', 'string', ['notnull' => false, 'length' => 50]);
-        $table->addColumn('name', 'string', ['notnull' => false, 'length' => 100]);
+        $table->addColumn('name', 'string', ['notnull' => false, 'length' => 255]);
         $table->addColumn('details', 'text', ['notnull' => false]);
         $table->addColumn('ticket_restrictions', 'string', ['notnull' => false, 'length' => 30]);
         $table->addColumn('only_private_comments', 'boolean', ['default' => '0']);
@@ -202,8 +202,8 @@ class OroCRMZendeskBundleInstaller implements Installation
         $table->addColumn('verified', 'boolean', ['default' => '0']);
         $table->addColumn('active', 'boolean', ['default' => '0']);
         $table->addColumn('alias', 'string', ['notnull' => false, 'length' => 100]);
-        $table->addColumn('email', 'string', ['notnull' => false, 'length' => 100]);
-        $table->addColumn('phone', 'string', ['notnull' => false, 'length' => 30]);
+        $table->addColumn('email', 'string', ['notnull' => false, 'length' => 255]);
+        $table->addColumn('phone', 'string', ['notnull' => false, 'length' => 50]);
         $table->addColumn('time_zone', 'string', ['notnull' => false, 'length' => 30]);
         $table->addColumn('locale', 'string', ['notnull' => false, 'length' => 30]);
         $table->setPrimaryKey(['id']);
