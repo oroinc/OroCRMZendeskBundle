@@ -20,6 +20,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             'subject'       => 'Case #1',
             'description'   => 'Case #1: Description',
             'assignedTo'    => 'user:bob.miller@example.com',
+            'owner'         => 'user:bob.miller@example.com',
             'reference'     => 'orocrm_zendesk:case_1',
             'comments' => array(
                 array(
@@ -63,17 +64,20 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
         array(
             'subject'       => 'Case #3',
             'description'   => 'Case #3: Description',
+            'owner'         => 'user:admin@example.com',
             'reference'     => 'orocrm_zendesk:case_3'
         ),
         array(
             'subject'       => 'Case #4',
             'description'   => 'Case #4: Description',
+            'owner'         => 'user:admin@example.com',
             'reference'     => 'orocrm_zendesk:case_4'
         ),
         array(
             'subject'       => 'Case #5',
             'description'   => 'Case #5: Description',
             'reference'     => 'orocrm_zendesk:case_5',
+            'owner'         => 'user:admin@example.com',
             'comments' => array(
                 array(
                     'reference' => 'case_5_comment_1',
