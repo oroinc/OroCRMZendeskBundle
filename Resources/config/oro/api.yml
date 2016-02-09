@@ -1,0 +1,6 @@
+oro_api:
+    entities:
+        OroCRM\Bundle\ZendeskBundle\Entity\Ticket: ~
+        OroCRM\Bundle\ZendeskBundle\Entity\TicketComment: ~
+        OroCRM\Bundle\ZendeskBundle\Entity\User: ~
+        OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport: ~
