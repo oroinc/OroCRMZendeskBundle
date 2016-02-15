@@ -69,7 +69,7 @@ class User implements EmailHolderInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=100, nullable=true)
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
     protected $name;
 
@@ -133,14 +133,14 @@ class User implements EmailHolderInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=100, nullable=true)
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
      */
     protected $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="phone", type="string", length=30, nullable=true)
+     * @ORM\Column(name="phone", type="string", length=50, nullable=true)
      */
     protected $phone;
 
