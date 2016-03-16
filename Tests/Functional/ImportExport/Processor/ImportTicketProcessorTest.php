@@ -18,6 +18,9 @@ use OroCRM\Bundle\ZendeskBundle\Model\SyncState;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
+/**
+ * @dbIsolation
+ */
 class ImportTicketProcessorTest extends WebTestCase
 {
     /**
@@ -43,7 +46,6 @@ class ImportTicketProcessorTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient([], [], true);
-        $this->client->startTransaction();
 
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
@@ -60,9 +62,9 @@ class ImportTicketProcessorTest extends WebTestCase
     public function tearDown()
     {
         $this->getSyncStateService()->setTicketIds(array());
-        $this->client->rollbackTransaction();
 
         parent::tearDown();
+        parent::cleanUpConnections();
     }
 
     /**
