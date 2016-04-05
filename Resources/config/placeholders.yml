@@ -10,8 +10,8 @@ placeholders:
 items:
     orocrm_zendesk_case_ticket_info:
         template: OroCRMZendeskBundle:Case:caseTicketInfo.html.twig
-        applicable: @orocrm_zendesk.placeholder.filter->isTicketAvailable($entity$)
+        applicable: "@orocrm_zendesk.placeholder.filter->isTicketAvailable($entity$)"
 
     orocrm_zendesk_case_sync_button:
         template: OroCRMZendeskBundle:Case:syncButton.html.twig
-        applicable: @orocrm_zendesk.placeholder.filter->isSyncApplicableForCaseEntity($entity$)
+        applicable: "@orocrm_zendesk.placeholder.filter->isSyncApplicableForCaseEntity($entity$)"
