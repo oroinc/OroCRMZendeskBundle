@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
+use Oro\Bundle\IntegrationBundle\Manager\ReverseSyncScheduler;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 
@@ -324,7 +324,7 @@ class TicketExportWriterTest extends WebTestCase
         );
 
         $job = $this->registry->getRepository('JMSJobQueueBundle:Job')
-            ->findOneBy(['command' => SyncScheduler::JOB_NAME], ['createdAt' => 'DESC']);
+            ->findOneBy(['command' => ReverseSyncScheduler::JOB_NAME], ['createdAt' => 'DESC']);
 
         $this->assertNotEmpty($job, 'Has scheduled JMS job.');
         $this->assertEquals(

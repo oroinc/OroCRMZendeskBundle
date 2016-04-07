@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
 
-use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
+use Oro\Bundle\IntegrationBundle\Manager\ReverseSyncScheduler;
 
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
@@ -14,7 +14,7 @@ use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 class TicketExportWriter extends AbstractExportWriter
 {
     /**
-     * @var SyncScheduler
+     * @var ReverseSyncScheduler
      */
     protected $syncScheduler;
 
@@ -34,12 +34,12 @@ class TicketExportWriter extends AbstractExportWriter
     protected $newTickets = [];
 
     /**
-     * @param SyncScheduler $syncScheduler
+     * @param ReverseSyncScheduler $syncScheduler
      * @param TicketSyncHelper $ticketHelper
      * @param TicketCommentSyncHelper $ticketCommentHelper
      */
     public function __construct(
-        SyncScheduler $syncScheduler,
+        ReverseSyncScheduler $syncScheduler,
         TicketSyncHelper $ticketHelper,
         TicketCommentSyncHelper $ticketCommentHelper
     ) {
