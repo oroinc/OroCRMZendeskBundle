@@ -10,7 +10,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Symfony\Component\Security\Core\Util\ClassUtils;
 
 use Oro\Bundle\EntityConfigBundle\DependencyInjection\Utils\ServiceLink;
-use Oro\Bundle\IntegrationBundle\Manager\ReverseSyncScheduler;
+use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\SecurityBundle\SecurityFacade;
 
 /**
@@ -187,7 +187,7 @@ abstract class AbstractSyncSchedulerListener implements EventSubscriber
     }
 
     /**
-     * @return ReverseSyncScheduler
+     * @return SyncScheduler
      */
     protected function getSyncScheduler()
     {

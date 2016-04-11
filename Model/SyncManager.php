@@ -5,7 +5,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Model;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\IntegrationBundle\Manager\ReverseSyncScheduler;
+use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
@@ -17,7 +17,7 @@ use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
 class SyncManager
 {
     /**
-     * @var ReverseSyncScheduler
+     * @var SyncScheduler
      */
     protected $syncScheduler;
 
@@ -32,12 +32,12 @@ class SyncManager
     protected $zendeskEntityProvider;
 
     /**
-     * @param ReverseSyncScheduler         $syncScheduler
+     * @param SyncScheduler         $syncScheduler
      * @param ManagerRegistry       $registry
      * @param ZendeskEntityProvider $zendeskEntityProvider
      */
     public function __construct(
-        ReverseSyncScheduler $syncScheduler,
+        SyncScheduler $syncScheduler,
         ManagerRegistry $registry,
         ZendeskEntityProvider $zendeskEntityProvider
     ) {
