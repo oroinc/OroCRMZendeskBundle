@@ -64,7 +64,6 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->getSyncStateService()->setTicketIds(array());
 
         parent::tearDown();
-        parent::cleanUpConnections();
     }
 
     /**
