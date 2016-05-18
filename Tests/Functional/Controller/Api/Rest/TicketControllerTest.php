@@ -33,8 +33,6 @@ class TicketControllerTest extends WebTestCase
 
     public function testPostSyncCaseActionFail()
     {
-        print($this->getContainer()->getParameter('database_name'). "\n");
-
         $caseId = $this->getReference('orocrm_zendesk:case_3')->getId();
         $channelId = $this->getReference('zendesk_channel:first_test_channel')->getId();
         $this->client->request(
