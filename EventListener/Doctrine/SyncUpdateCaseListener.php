@@ -78,12 +78,8 @@ class SyncUpdateCaseListener extends AbstractSyncSchedulerListener
      */
     protected function scheduleSync($entity)
     {
-        /** @var Ticket $entity */
-        $this->getSyncScheduler()->schedule(
-            $entity->getChannel(),
-            TicketConnector::TYPE,
-            ['id' => $entity->getId()],
-            false
-        );
+        $this->getSyncScheduler()->schedule($entity->getChannel()->getId(), TicketConnector::TYPE, [
+            'id' => $entity->getId()
+        ]);
     }
 }

@@ -108,19 +108,17 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($ticket));
         $this->entityManager->expects($this->once())
             ->method('persist')
-            ->with(
-                $this->callback(
-                    function (TicketComment $ticketComment) use ($channel, $ticket, $comment) {
-                        $this->assertEquals($channel, $ticketComment->getChannel());
-                        $this->assertEquals($ticket, $ticketComment->getTicket());
-                        $this->assertEquals($comment, $ticketComment->getRelatedComment());
-                        return true;
-                    }
-                )
-            );
+            ->with(self::isInstanceOf(TicketComment::class))
+            ->willReturnCallback(function (TicketComment $ticketComment) use ($channel, $ticket, $comment) {
+                $this->assertEquals($channel, $ticketComment->getChannel());
+                $this->assertEquals($ticket, $ticketComment->getTicket());
+                $this->assertEquals($comment, $ticketComment->getRelatedComment());
+
+                return true;
+            });
         $this->scheduler->expects($this->once())
             ->method('schedule')
-            ->with($channel, TicketCommentConnector::TYPE, $this->arrayHasKey('id'), false);
+            ->with($channel->getId(), TicketCommentConnector::TYPE, $this->arrayHasKey('id'));
         $this->assertTrue($this->target->syncComment($comment));
     }
 
@@ -144,10 +142,10 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $case = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseEntity');
         $firstComment = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseComment');
         $secondComment = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseComment');
-        $comments = array(
+        $comments = [
             $firstComment,
             $secondComment
-        );
+        ];
         $case->expects($this->once())
             ->method('getComments')
             ->will($this->returnValue($comments));
@@ -176,8 +174,8 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
     {
         $channel = $this->getChannel(false);
         $this->assertFalse($this->target->reverseSyncChannel($channel));
-        $comments = array();
-        $expectedIds = array();
+        $comments = [];
+        $expectedIds = [];
         $comment = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment');
         for ($i=1; $i< 102; $i++) {
             $comment->expects($this->at($i-1))
@@ -195,10 +193,10 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(new \ArrayIterator($comments)));
         $this->scheduler->expects($this->at(0))
             ->method('schedule')
-            ->with($channel, TicketCommentConnector::TYPE, array('id' => $expectedIds), true);
+            ->with($channel->getId(), TicketCommentConnector::TYPE, ['id' => $expectedIds]);
         $this->scheduler->expects($this->at(1))
             ->method('schedule')
-            ->with($channel, TicketCommentConnector::TYPE, array('id' => array(101)), true);
+            ->with($channel->getId(), TicketCommentConnector::TYPE, ['id' => [101]]);
         $this->assertTrue($this->target->reverseSyncChannel($channel));
     }
 
@@ -209,6 +207,12 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
     protected function getChannel($isTwoWaySyncEnabled)
     {
         $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $channel
+            ->expects($this->any())
+            ->method('getId')
+            ->willReturn(123)
+        ;
+
         $synchronizationSettings = $this->getMockBuilder('Oro\Component\Config\Common\ConfigObject')
             ->disableOriginalConstructor()
             ->getMock();

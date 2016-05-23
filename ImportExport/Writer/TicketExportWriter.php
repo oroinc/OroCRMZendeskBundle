@@ -3,12 +3,11 @@
 namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
 
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
-
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
+use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
 class TicketExportWriter extends AbstractExportWriter
@@ -233,7 +232,7 @@ class TicketExportWriter extends AbstractExportWriter
         );
 
         $this->syncScheduler->schedule(
-            $this->getChannel(),
+            $this->getChannel()->getId(),
             TicketCommentConnector::TYPE,
             ['id' => $ids]
         );

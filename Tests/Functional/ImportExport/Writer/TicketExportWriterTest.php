@@ -3,22 +3,21 @@
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-
-use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\IntegrationBundle\Async\Topics;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Component\MessageQueue\Client\MessagePriority;
+use Oro\Component\MessageQueue\Client\TraceableMessageProducer;
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
 use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
+use OroCRM\Bundle\ZendeskBundle\Entity\User;
+use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
 /**
  * @dbIsolationPerTest
@@ -128,7 +127,7 @@ class TicketExportWriterTest extends WebTestCase
             ->with($ticket)
             ->will($this->returnValue(['ticket' => $expected, 'comment' => null]));
 
-          $this->writer->write([$ticket]);
+        $this->writer->write([$ticket]);
 
         $ticket = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
 
@@ -323,15 +322,18 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertContains('Schedule job to sync existing ticket comments', $this->logOutput);
         $this->assertTicketCommentIds($this->logOutput, $commentIds);
 
-        $job = $this->registry->getRepository('JMSJobQueueBundle:Job')
-            ->findOneBy(['command' => SyncScheduler::JOB_NAME], ['createdAt' => 'DESC']);
+        $traces = $this->getMessageProducer()->getTopicTraces(Topics::REVERS_SYNC_INTEGRATION);
 
-        $this->assertNotEmpty($job, 'Has scheduled JMS job.');
-        $arguments = $job->getArgs();
-        $this->assertCount(3, $arguments);
-        $this->assertContains('--integration=' . $this->channel->getId(), $arguments);
-        $this->assertContains('--connector=' . TicketCommentConnector::TYPE, $arguments);
-        $this->assertTicketJobParameters($arguments, $commentIds);
+        self::assertCount(1, $traces);
+        self::assertEquals([
+            'integrationId' => $this->channel->getId(),
+            'connector_parameters' => [
+                'id' => $commentIds,
+            ],
+            'connector' => 'ticket_comment',
+            'transport_batch_size' => 100,
+        ], $traces[0]['message']);
+        self::assertEquals(MessagePriority::VERY_LOW, $traces[0]['priority']);
     }
 
     public function testWriteUpdatesTicket()
@@ -540,5 +542,13 @@ class TicketExportWriterTest extends WebTestCase
             }
         }
         $this->assertTrue($hasParameters);
+    }
+
+    /**
+     * @return TraceableMessageProducer
+     */
+    private function getMessageProducer()
+    {
+        return self::getContainer()->get('oro_message_queue.message_producer');
     }
 }

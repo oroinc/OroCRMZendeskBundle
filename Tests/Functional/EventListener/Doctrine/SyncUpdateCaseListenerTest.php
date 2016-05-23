@@ -3,13 +3,15 @@
 namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-
+use Oro\Bundle\IntegrationBundle\Async\Topics;
+use Oro\Component\MessageQueue\Client\MessagePriority;
+use Oro\Component\MessageQueue\Client\TraceableMessageProducer;
 use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
 
 /**
  * @dbIsolation
  */
-class SyncNewCommentsListenerTest extends AbstractSyncSchedulerTest
+class SyncUpdateCaseListenerTest extends AbstractSyncSchedulerTest
 {
     /** @var ManagerRegistry */
     protected $registry;
@@ -33,45 +35,37 @@ class SyncNewCommentsListenerTest extends AbstractSyncSchedulerTest
 
         $this->registry->getManager()->flush($case);
 
-        $jobs = $this->registry->getRepository('JMS\\JobQueueBundle\\Entity\\Job')
-            ->findBy(['command' => 'oro:integration:reverse:sync']);
+        $traces = $this->getMessageProducer()->getTopicTraces(Topics::REVERS_SYNC_INTEGRATION);
 
-        $expectedJobArgs = [
-            '--integration=' . $ticket->getChannel()->getId(),
-            '--connector=' . TicketConnector::TYPE,
-            '--params=' . serialize(['id' => $ticket->getId()]),
-        ];
-
-        $found = false;
-        foreach ($jobs as $job) {
-            if ($job->getArgs() == $expectedJobArgs) {
-                $found = true;
-                break;
-            }
-        }
-
-        $this->assertTrue($found, 'Can\'t find JMS job for ticket sync.');
-
-        return count($jobs);
+        self::assertCount(1, $traces);
+        self::assertEquals([
+            'integrationId' => $ticket->getChannel()->getId(),
+            'connector_parameters' => ['id' => $ticket->getId()],
+            'connector' => TicketConnector::TYPE,
+            'transport_batch_size' => 100,
+        ], $traces[0]['message']);
+        self::assertEquals(MessagePriority::VERY_LOW, $traces[0]['priority']);
     }
 
-    /**
-     * @depends testListenerCreatesSyncJobOnCaseUpdate
-     */
-    public function testListenerSkipsCaseWithoutRelatedTicket($jobsCount)
+    public function testListenerSkipsCaseWithoutRelatedTicket()
     {
+        $this->getMessageProducer()->clearTraces();
+
         $case = $this->getReference('orocrm_zendesk:case_3');
 
         $case->setSubject('Updated subject');
         $this->registry->getManager()->flush($case);
 
-        $jobs = $this->registry->getRepository('JMS\\JobQueueBundle\\Entity\\Job')
-            ->findBy(['command' => 'oro:integration:reverse:sync']);
+        $traces = $this->getMessageProducer()->getTopicTraces(Topics::REVERS_SYNC_INTEGRATION);
 
-        $this->assertCount(
-            $jobsCount,
-            $jobs,
-            'JMS job queue should not be affected by listener for case wihtout ticket.'
-        );
+        self::assertCount(0, $traces);
+    }
+
+    /**
+     * @return TraceableMessageProducer
+     */
+    private function getMessageProducer()
+    {
+        return self::getContainer()->get('oro_message_queue.message_producer');
     }
 }
