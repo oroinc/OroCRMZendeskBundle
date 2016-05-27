@@ -60,7 +60,7 @@ class TicketExportWriterTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $this->client->startTransaction();
+        $this->startTransaction();
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
@@ -99,9 +99,11 @@ class TicketExportWriterTest extends WebTestCase
         $this->getContainer()->set('orocrm_zendesk.transport.rest_transport', null);
         $this->getContainer()->set('orocrm_zendesk.importexport.writer.export_ticket', null);
         $this->logOutput = null;
-        $this->client->rollbackTransaction();
 
         parent::tearDown();
+
+        self::$loadedFixtures = [];
+        $this->rollbackTransaction();
     }
 
     public function testWriteCreatesTicket()
