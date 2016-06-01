@@ -209,7 +209,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
     protected function getChannel($isTwoWaySyncEnabled)
     {
         $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $synchronizationSettings = $this->getMockBuilder('Oro\Bundle\DataGridBundle\Common\DataObject')
+        $synchronizationSettings = $this->getMockBuilder('Oro\Component\Config\Common\ConfigObject')
             ->disableOriginalConstructor()
             ->getMock();
         $synchronizationSettings->expects($this->once())
