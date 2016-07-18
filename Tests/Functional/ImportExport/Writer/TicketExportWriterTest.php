@@ -20,6 +20,9 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
 use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
+/**
+ * @dbIsolationPerTest
+ */
 class TicketExportWriterTest extends WebTestCase
 {
     /**
@@ -60,7 +63,6 @@ class TicketExportWriterTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $this->startTransaction();
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
@@ -101,9 +103,6 @@ class TicketExportWriterTest extends WebTestCase
         $this->logOutput = null;
 
         parent::tearDown();
-
-        self::$loadedFixtures = [];
-        $this->rollbackTransaction();
     }
 
     public function testWriteCreatesTicket()
