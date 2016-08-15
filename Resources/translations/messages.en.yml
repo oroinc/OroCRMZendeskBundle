@@ -123,7 +123,7 @@ orocrm:
             token:
                 description: Zendesk API token
             zendesk_url:
-                description: Example: https://company.zendesk.com or company.zendesk.com
+                description: 'Example: https://company.zendesk.com or company.zendesk.com'
             cron_schedule:
                 tooltip: Synchronization Cron schedule
             zendesk_user_email:

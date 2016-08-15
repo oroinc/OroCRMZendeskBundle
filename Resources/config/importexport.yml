@@ -32,46 +32,46 @@ services:
     orocrm_zendesk.importexport.processor.import_abstract:
         abstract: true
         calls:
-             - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
-             - [setLogger, [@oro_integration.logger.strategy]]
-             - [setContextRegistry, [@oro_importexport.context_registry]]
+             - [setConnectorContextMediator, ['@oro_integration.provider.connector_context_mediator']]
+             - [setLogger, ['@oro_integration.logger.strategy']]
+             - [setContextRegistry, ['@oro_importexport.context_registry']]
 
     orocrm_zendesk.importexport.processor.import_user:
         parent: orocrm_zendesk.importexport.processor.import_abstract
         class: %orocrm_zendesk.importexport.processor.import_user.class%
         arguments:
-            - @orocrm_zendesk.sync_helper.user
+            - '@orocrm_zendesk.sync_helper.user'
 
     orocrm_zendesk.importexport.processor.import_ticket:
         parent: orocrm_zendesk.importexport.processor.import_abstract
         class: %orocrm_zendesk.importexport.processor.import_ticket.class%
         arguments:
-            - @orocrm_zendesk.sync_helper.ticket
-            - @orocrm_zendesk.sync_state
-            - @orocrm_zendesk.entity_provider.oro
+            - '@orocrm_zendesk.sync_helper.ticket'
+            - '@orocrm_zendesk.sync_state'
+            - '@orocrm_zendesk.entity_provider.oro'
 
     orocrm_zendesk.importexport.processor.import_ticket_comment:
         parent: orocrm_zendesk.importexport.processor.import_abstract
         class: %orocrm_zendesk.importexport.processor.import_ticket_comment.class%
         arguments:
-            - @orocrm_zendesk.sync_helper.ticket_comment
+            - '@orocrm_zendesk.sync_helper.ticket_comment'
 
     # Export processors
     orocrm_zendesk.importexport.processor.export_abstract:
         abstract: true
         calls:
-             - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
-             - [setLogger, [@oro_integration.logger.strategy]]
-             - [setZendeskProvider, [@orocrm_zendesk.entity_provider.zendesk]]
-             - [setContextRegistry, [@oro_importexport.context_registry]]
+             - [setConnectorContextMediator, ['@oro_integration.provider.connector_context_mediator']]
+             - [setLogger, ['@oro_integration.logger.strategy']]
+             - [setZendeskProvider, ['@orocrm_zendesk.entity_provider.zendesk']]
+             - [setContextRegistry, ['@oro_importexport.context_registry']]
 
     orocrm_zendesk.importexport.processor.export_ticket:
         parent: orocrm_zendesk.importexport.processor.export_abstract
         class: %orocrm_zendesk.importexport.processor.export_ticket.class%
         arguments:
-            - @orocrm_zendesk.transport.rest_transport
-            - @orocrm_zendesk.sync_helper.ticket
-            - @orocrm_zendesk.entity_mapper
+            - '@orocrm_zendesk.transport.rest_transport'
+            - '@orocrm_zendesk.sync_helper.ticket'
+            - '@orocrm_zendesk.entity_mapper'
 
     orocrm_zendesk.importexport.processor.export_ticket_comment:
         parent: orocrm_zendesk.importexport.processor.export_abstract
@@ -123,30 +123,30 @@ services:
     orocrm_zendesk.zendesk.user_connector:
         class: %orocrm_zendesk.zendesk.user_connector.class%
         arguments:
-          - @orocrm_zendesk.sync_state
-          - @oro_importexport.context_registry
-          - @oro_integration.logger.strategy
-          - @oro_integration.provider.connector_context_mediator
+          - '@orocrm_zendesk.sync_state'
+          - '@oro_importexport.context_registry'
+          - '@oro_integration.logger.strategy'
+          - '@oro_integration.provider.connector_context_mediator'
         tags:
           - { name: oro_integration.connector, type: user, channel_type: zendesk }
 
     orocrm_zendesk.zendesk.ticket_connector:
         class: %orocrm_zendesk.zendesk.ticket_connector.class%
         arguments:
-          - @orocrm_zendesk.sync_state
-          - @oro_importexport.context_registry
-          - @oro_integration.logger.strategy
-          - @oro_integration.provider.connector_context_mediator
+          - '@orocrm_zendesk.sync_state'
+          - '@oro_importexport.context_registry'
+          - '@oro_integration.logger.strategy'
+          - '@oro_integration.provider.connector_context_mediator'
         tags:
           - { name: oro_integration.connector, type: ticket, channel_type: zendesk }
 
     orocrm_zendesk.zendesk.ticket_comment_connector:
         class: %orocrm_zendesk.zendesk.ticket_comment_connector.class%
         arguments:
-          - @orocrm_zendesk.sync_state
-          - @oro_importexport.context_registry
-          - @oro_integration.logger.strategy
-          - @oro_integration.provider.connector_context_mediator
+          - '@orocrm_zendesk.sync_state'
+          - '@oro_importexport.context_registry'
+          - '@oro_integration.logger.strategy'
+          - '@oro_integration.provider.connector_context_mediator'
         tags:
           - { name: oro_integration.connector, type: ticket_comment, channel_type: zendesk }
 
@@ -154,23 +154,23 @@ services:
     orocrm_zendesk.importexport.writer.export_abstract:
         abstract: true
         calls:
-            - [setRegistry, [@doctrine]]
-            - [setTransport, [@orocrm_zendesk.transport.rest_transport]]
-            - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
-            - [setContextRegistry, [@oro_importexport.context_registry]]
-            - [setUserHelper, [@orocrm_zendesk.sync_helper.user]]
-            - [setLogger, [@oro_integration.logger.strategy]]
+            - [setRegistry, ['@doctrine']]
+            - [setTransport, ['@orocrm_zendesk.transport.rest_transport']]
+            - [setConnectorContextMediator, ['@oro_integration.provider.connector_context_mediator']]
+            - [setContextRegistry, ['@oro_importexport.context_registry']]
+            - [setUserHelper, ['@orocrm_zendesk.sync_helper.user']]
+            - [setLogger, ['@oro_integration.logger.strategy']]
 
     orocrm_zendesk.importexport.writer.export_ticket:
         class: %orocrm_zendesk.importexport.writer.export_ticket.class%
         parent: orocrm_zendesk.importexport.writer.export_abstract
         arguments:
-            - @oro_integration.sync_scheduler
-            - @orocrm_zendesk.sync_helper.ticket
-            - @orocrm_zendesk.sync_helper.ticket_comment
+            - '@oro_integration.sync_scheduler'
+            - '@orocrm_zendesk.sync_helper.ticket'
+            - '@orocrm_zendesk.sync_helper.ticket_comment'
 
     orocrm_zendesk.importexport.writer.export_ticket_comment:
         class: %orocrm_zendesk.importexport.writer.export_ticket_comment.class%
         parent: orocrm_zendesk.importexport.writer.export_abstract
         arguments:
-            - @orocrm_zendesk.sync_helper.ticket_comment
+            - '@orocrm_zendesk.sync_helper.ticket_comment'

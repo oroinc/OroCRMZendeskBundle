@@ -20,6 +20,9 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
 use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
+/**
+ * @dbIsolationPerTest
+ */
 class TicketExportWriterTest extends WebTestCase
 {
     /**
@@ -60,7 +63,6 @@ class TicketExportWriterTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $this->client->startTransaction();
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
@@ -99,7 +101,6 @@ class TicketExportWriterTest extends WebTestCase
         $this->getContainer()->set('orocrm_zendesk.transport.rest_transport', null);
         $this->getContainer()->set('orocrm_zendesk.importexport.writer.export_ticket', null);
         $this->logOutput = null;
-        $this->client->rollbackTransaction();
 
         parent::tearDown();
     }
@@ -315,26 +316,22 @@ class TicketExportWriterTest extends WebTestCase
             $commentIds[] = $comment->getId();
             $this->assertNotNull($comment->getRelatedComment(), 'Ticket comment has related case comment.');
         }
+        sort($commentIds);
 
         $this->assertContains('Create ticket comment for case comment', $this->logOutput);
 
-        $this->assertContains(
-            sprintf('Schedule job to sync existing ticket comments [ids=%s].', implode(', ', $commentIds)),
-            $this->logOutput
-        );
+        $this->assertContains('Schedule job to sync existing ticket comments', $this->logOutput);
+        $this->assertTicketCommentIds($this->logOutput, $commentIds);
 
         $job = $this->registry->getRepository('JMSJobQueueBundle:Job')
             ->findOneBy(['command' => SyncScheduler::JOB_NAME], ['createdAt' => 'DESC']);
 
         $this->assertNotEmpty($job, 'Has scheduled JMS job.');
-        $this->assertEquals(
-            [
-                '--integration=' . $this->channel->getId(),
-                '--connector=' . TicketCommentConnector::TYPE,
-                '--params=' . serialize(['id' => $commentIds]),
-            ],
-            $job->getArgs()
-        );
+        $arguments = $job->getArgs();
+        $this->assertCount(3, $arguments);
+        $this->assertContains('--integration=' . $this->channel->getId(), $arguments);
+        $this->assertContains('--connector=' . TicketCommentConnector::TYPE, $arguments);
+        $this->assertTicketJobParameters($arguments, $commentIds);
     }
 
     public function testWriteUpdatesTicket()
@@ -511,5 +508,37 @@ class TicketExportWriterTest extends WebTestCase
     protected function createUserRole($name)
     {
         return new UserRole($name);
+    }
+
+    /**
+     * @param string $output
+     * @param array $expectedIds
+     */
+    protected function assertTicketCommentIds($output, array $expectedIds)
+    {
+        preg_match('/Schedule job to sync existing ticket comments \[ids=(.*?)\]/', $output, $matches);
+        $this->assertArrayHasKey(1, $matches);
+        $actualIds = explode(', ', $matches[1]);
+        sort($actualIds);
+        $this->assertEquals($expectedIds, $actualIds);
+    }
+
+    /**
+     * @param array $arguments
+     * @param array $expectedIds
+     */
+    protected function assertTicketJobParameters(array $arguments, array $expectedIds)
+    {
+        $hasParameters = false;
+        foreach ($arguments as $argument) {
+            if (strpos($argument, '--params=') === 0) {
+                $hasParameters = true;
+                $actualParameters = unserialize(substr($argument, 9));
+                $this->assertArrayHasKey('id', $actualParameters);
+                sort($actualParameters['id']);
+                $this->assertEquals(['id' => $expectedIds], $actualParameters);
+            }
+        }
+        $this->assertTrue($hasParameters);
     }
 }

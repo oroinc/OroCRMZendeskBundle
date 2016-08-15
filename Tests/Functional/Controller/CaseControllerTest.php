@@ -38,6 +38,7 @@ class CaseControllerTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient(array(), $this->generateBasicAuthHeader());
+        $this->client->useHashNavigation(true);
 
         $this->loadFixtures(array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'));
         $this->caseWithTicket = $this->getReference('orocrm_zendesk:case_1');
