@@ -35,7 +35,7 @@ class SyncUpdateCaseListenerTest extends AbstractSyncSchedulerTest
 
         $this->registry->getManager()->flush($case);
 
-        $traces = $this->getMessageProducer()->getTopicTraces(Topics::REVERS_SYNC_INTEGRATION);
+        $traces = $this->getMessageProducer()->getTopicSentMessages(Topics::REVERS_SYNC_INTEGRATION);
 
         self::assertCount(1, $traces);
         self::assertEquals([
@@ -43,20 +43,20 @@ class SyncUpdateCaseListenerTest extends AbstractSyncSchedulerTest
             'connector_parameters' => ['id' => $ticket->getId()],
             'connector' => TicketConnector::TYPE,
             'transport_batch_size' => 100,
-        ], $traces[0]['message']);
-        self::assertEquals(MessagePriority::VERY_LOW, $traces[0]['priority']);
+        ], $traces[0]['message']->getBody());
+        self::assertEquals(MessagePriority::VERY_LOW, $traces[0]['message']->getPriority());
     }
 
     public function testListenerSkipsCaseWithoutRelatedTicket()
     {
-        $this->getMessageProducer()->clearTraces();
+        $this->getMessageProducer()->clear();
 
         $case = $this->getReference('orocrm_zendesk:case_3');
 
         $case->setSubject('Updated subject');
         $this->registry->getManager()->flush($case);
 
-        $traces = $this->getMessageProducer()->getTopicTraces(Topics::REVERS_SYNC_INTEGRATION);
+        $traces = $this->getMessageProducer()->getTopicSentMessages(Topics::REVERS_SYNC_INTEGRATION);
 
         self::assertCount(0, $traces);
     }

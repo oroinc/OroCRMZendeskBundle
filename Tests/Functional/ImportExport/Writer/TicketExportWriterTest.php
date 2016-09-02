@@ -322,7 +322,7 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertContains('Schedule job to sync existing ticket comments', $this->logOutput);
         $this->assertTicketCommentIds($this->logOutput, $commentIds);
 
-        $traces = $this->getMessageProducer()->getTopicTraces(Topics::REVERS_SYNC_INTEGRATION);
+        $traces = $this->getMessageProducer()->getTopicSentMessages(Topics::REVERS_SYNC_INTEGRATION);
 
         self::assertCount(1, $traces);
         self::assertEquals([
@@ -332,8 +332,8 @@ class TicketExportWriterTest extends WebTestCase
             ],
             'connector' => 'ticket_comment',
             'transport_batch_size' => 100,
-        ], $traces[0]['message']);
-        self::assertEquals(MessagePriority::VERY_LOW, $traces[0]['priority']);
+        ], $traces[0]['message']->getBody());
+        self::assertEquals(MessagePriority::VERY_LOW, $traces[0]['message']->getPriority());
     }
 
     public function testWriteUpdatesTicket()
