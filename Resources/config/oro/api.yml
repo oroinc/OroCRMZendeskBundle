@@ -1,4 +1,4 @@
-api:
+oro_api:
     entities:
         OroCRM\Bundle\ZendeskBundle\Entity\Ticket: ~
         OroCRM\Bundle\ZendeskBundle\Entity\TicketComment: ~
