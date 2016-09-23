@@ -17,7 +17,7 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
 use OroCRM\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData;
-use OroCRM\Bundle\ContactBundle\Entity\Contact;
+use Oro\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;

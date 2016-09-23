@@ -9,10 +9,10 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\UserBundle\Entity\Email;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
-use OroCRM\Bundle\ContactBundle\Entity\ContactEmail;
+use Oro\Bundle\ContactBundle\Entity\ContactEmail;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
-use OroCRM\Bundle\ContactBundle\Entity\Contact;
-use OroCRM\Bundle\ContactBundle\Entity\ContactPhone;
+use Oro\Bundle\ContactBundle\Entity\Contact;
+use Oro\Bundle\ContactBundle\Entity\ContactPhone;
 use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
 
 class OroEntityProvider
