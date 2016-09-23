@@ -5,7 +5,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\UserBundle\Entity\User;
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketCommentProcessor;

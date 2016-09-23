@@ -11,7 +11,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
 use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 
 /**
  * @ORM\Entity
@@ -225,7 +225,7 @@ class Ticket
     /**
      * @var CaseEntity
      *
-     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseEntity", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Oro\Bundle\CaseBundle\Entity\CaseEntity", cascade={"persist"})
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedCase;

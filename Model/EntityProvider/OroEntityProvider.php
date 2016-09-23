@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\UserBundle\Entity\Email;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\ContactBundle\Entity\ContactEmail;
 use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use Oro\Bundle\ContactBundle\Entity\Contact;
@@ -101,7 +101,7 @@ class OroEntityProvider
             return null;
         }
 
-        $contactEmails = $this->registry->getRepository('OroCRMContactBundle:ContactEmail')
+        $contactEmails = $this->registry->getRepository('OroContactBundle:ContactEmail')
             ->findBy(
                 array(
                     'email' => $user->getEmail()
@@ -177,7 +177,7 @@ class OroEntityProvider
     public function getAccountByContact(Contact $contact)
     {
         /** @var EntityRepository $repository */
-        $repository = $this->registry->getRepository('OroCRMAccountBundle:Account');
+        $repository = $this->registry->getRepository('OroAccountBundle:Account');
         $qb         = $repository->createQueryBuilder('account');
         $qb->where('account.defaultContact = :contact')
             ->setMaxResults(1)
@@ -205,7 +205,7 @@ class OroEntityProvider
      */
     public function getCaseById($id)
     {
-        return $this->registry->getManager()->find('OroCRMCaseBundle:CaseEntity', $id);
+        return $this->registry->getManager()->find('OroCaseBundle:CaseEntity', $id);
     }
 
     /**

@@ -73,7 +73,7 @@ class TicketCommentTest extends \PHPUnit_Framework_TestCase
         $ticket = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\Ticket')
             ->disableOriginalConstructor()
             ->getMock();
-        $comment = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Entity\CaseComment')
+        $comment = $this->getMockBuilder('Oro\Bundle\CaseBundle\Entity\CaseComment')
             ->disableOriginalConstructor()
             ->getMock();
 

@@ -138,7 +138,7 @@ services:
         arguments:
             - '@orocrm_zendesk.entity_provider.zendesk'
             - '@orocrm_zendesk.entity_provider.oro'
-            - '@orocrm_case.manager'
+            - '@oro_case.manager'
 
     orocrm_zendesk.sync_helper.ticket:
         parent: orocrm_zendesk.sync_helper.abstract

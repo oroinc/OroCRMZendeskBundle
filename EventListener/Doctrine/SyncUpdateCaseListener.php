@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\EventListener\Doctrine;
 
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
 

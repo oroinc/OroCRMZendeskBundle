@@ -11,7 +11,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 
 class SyncWithZendeskExtension extends AbstractTypeExtension
 {

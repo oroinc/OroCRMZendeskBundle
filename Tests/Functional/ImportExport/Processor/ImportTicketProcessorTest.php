@@ -6,8 +6,8 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
-use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
-use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
+use Oro\Bundle\CaseBundle\Entity\CasePriority;
+use Oro\Bundle\CaseBundle\Entity\CaseStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
@@ -696,7 +696,7 @@ class ImportTicketProcessorTest extends WebTestCase
     protected function getCaseStatus($name)
     {
         return $this->registry
-            ->getRepository('OroCRMCaseBundle:CaseStatus')
+            ->getRepository('OroCaseBundle:CaseStatus')
             ->find($name);
     }
 
@@ -707,7 +707,7 @@ class ImportTicketProcessorTest extends WebTestCase
     protected function getCasePriority($name)
     {
         return $this->registry
-            ->getRepository('OroCRMCaseBundle:CasePriority')
+            ->getRepository('OroCaseBundle:CasePriority')
             ->find($name);
     }
 }

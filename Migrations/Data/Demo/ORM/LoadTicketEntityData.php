@@ -12,15 +12,15 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
 use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
-use OroCRM\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData;
+use Oro\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData;
 use Oro\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 
@@ -187,7 +187,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
         if ($this->cases === null) {
             $this->cases = $this->entityManager->createQueryBuilder()
                 ->select('e')
-                ->from('OroCRMCaseBundle:CaseEntity', 'e')
+                ->from('OroCaseBundle:CaseEntity', 'e')
                 ->setMaxResults(LoadCaseEntityData::CASES_COUNT)
                 ->getQuery()
                 ->execute();
@@ -320,7 +320,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     public function getDependencies()
     {
         return array(
-            'OroCRM\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData',
+            'Oro\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData',
             'OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM\LoadChannelData'
         );
     }

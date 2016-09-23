@@ -53,7 +53,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncCommentSyncOnlyNewComments()
     {
-        $existComment = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseComment');
+        $existComment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
         $existComment->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(42));
@@ -64,8 +64,8 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncCommentSyncOnlyIfChannelHasTwoWaySyncEnabled()
     {
-        $case = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseEntity');
-        $comment = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseComment');
+        $case = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
+        $comment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
         $comment->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(null));
@@ -89,8 +89,8 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncCommentSync()
     {
-        $comment = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseComment');
-        $case = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseEntity');
+        $comment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
+        $case = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
         $comment->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(null));
@@ -126,7 +126,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncCaseSyncOnlyIfChannelHasTwoWaySyncEnabled()
     {
-        $case = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseEntity');
+        $case = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
         $channel = $this->getChannel(false);
 
         $this->entityManager->expects($this->never())
@@ -141,9 +141,9 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncCase()
     {
-        $case = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseEntity');
-        $firstComment = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseComment');
-        $secondComment = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseComment');
+        $case = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
+        $firstComment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
+        $secondComment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
         $comments = array(
             $firstComment,
             $secondComment

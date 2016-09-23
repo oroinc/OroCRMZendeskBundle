@@ -4,8 +4,8 @@ namespace OroCRM\Bundle\ZendeskBundle\Model;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
-use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
+use Oro\Bundle\CaseBundle\Entity\CasePriority;
+use Oro\Bundle\CaseBundle\Entity\CaseStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 
@@ -49,7 +49,7 @@ class EntityMapper
     {
         $name = $this->getCaseStatusName($ticketStatus);
 
-        return $name ? $this->registry->getManager()->find('OroCRMCaseBundle:CaseStatus', $name) : null;
+        return $name ? $this->registry->getManager()->find('OroCaseBundle:CaseStatus', $name) : null;
     }
 
     /**
@@ -74,7 +74,7 @@ class EntityMapper
     {
         $name = $this->getCasePriorityName($ticketPriority);
 
-        return $name ? $this->registry->getManager()->find('OroCRMCaseBundle:CasePriority', $name) : null;
+        return $name ? $this->registry->getManager()->find('OroCaseBundle:CasePriority', $name) : null;
     }
 
     /**

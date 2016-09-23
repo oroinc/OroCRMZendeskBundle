@@ -7,8 +7,8 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
-use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
+use Oro\Bundle\CaseBundle\Entity\CasePriority;
+use Oro\Bundle\CaseBundle\Entity\CaseStatus;
 
 class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
@@ -124,7 +124,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
      */
     public function load(ObjectManager $manager)
     {
-        $caseManager = $this->container->get('orocrm_case.manager');
+        $caseManager = $this->container->get('oro_case.manager');
 
         foreach ($this->data as $data) {
             $entity = $caseManager->createCase();
@@ -142,10 +142,10 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
                 $data['relatedContact'] = $this->getReference($data['relatedContact']);
             }
             if (isset($data['status'])) {
-                $data['status'] = $manager->find('OroCRMCaseBundle:CaseStatus', $data['status']);
+                $data['status'] = $manager->find('OroCaseBundle:CaseStatus', $data['status']);
             }
             if (isset($data['priority'])) {
-                $data['priority'] = $manager->find('OroCRMCaseBundle:CasePriority', $data['priority']);
+                $data['priority'] = $manager->find('OroCaseBundle:CasePriority', $data['priority']);
             }
             $this->setEntityPropertyValues($entity, $data, array('reference', 'comments'));
 

@@ -37,11 +37,11 @@ class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testBeforeSaveStartCommentJobIfEntityIsComment()
     {
-        $formHandlerEvent = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Event\FormHandlerEvent')
+        $formHandlerEvent = $this->getMockBuilder('Oro\Bundle\CaseBundle\Event\FormHandlerEvent')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entity = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseComment');
+        $entity = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
         $formHandlerEvent->expects($this->once())
             ->method('getEntity')
             ->will($this->returnValue($entity));
@@ -54,11 +54,11 @@ class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
     public function testBeforeSaveStartCommentJobIfEntityIsCase()
     {
         $expectedId = 42;
-        $formHandlerEvent = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Event\FormHandlerEvent')
+        $formHandlerEvent = $this->getMockBuilder('Oro\Bundle\CaseBundle\Event\FormHandlerEvent')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entity = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseEntity');
+        $entity = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
         $form = $this->getMockBuilder('Symfony\Component\Form\Form')
             ->disableOriginalConstructor()
             ->getMock();

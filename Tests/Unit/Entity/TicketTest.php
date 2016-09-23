@@ -81,7 +81,7 @@ class TicketTest extends \PHPUnit_Framework_TestCase
         $ticketPriority = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority')
             ->disableOriginalConstructor()
             ->getMock();
-        $case = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Entity\CaseEntity')
+        $case = $this->getMockBuilder('Oro\Bundle\CaseBundle\Entity\CaseEntity')
             ->disableOriginalConstructor()
             ->getMock();
         $comment = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment')

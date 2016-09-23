@@ -43,7 +43,7 @@ class OroEntityProviderTest extends WebTestCase
         $user->setChannel($this->channel);
         $defaultOwner = $this->channel->getDefaultUserOwner();
         $contact = $this->target->getContact($user);
-        $this->assertInstanceOf('OroCRM\Bundle\ContactBundle\Entity\Contact', $contact);
+        $this->assertInstanceOf('Oro\Bundle\ContactBundle\Entity\Contact', $contact);
         $this->assertEquals(
             $expected['phone'],
             $contact->getPrimaryPhone()

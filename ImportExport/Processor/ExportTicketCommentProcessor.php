@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
 
 class ExportTicketCommentProcessor extends AbstractExportProcessor

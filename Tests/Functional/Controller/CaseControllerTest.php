@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\Controller;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
