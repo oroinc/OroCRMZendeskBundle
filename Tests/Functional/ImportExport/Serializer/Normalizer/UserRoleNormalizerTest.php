@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Serializer\Normalizer;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Serializer\Normalizer;
 
 use Oro\Bundle\ImportExportBundle\Serializer\Serializer;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 
 class UserRoleNormalizerTest extends WebTestCase
 {
@@ -24,7 +24,7 @@ class UserRoleNormalizerTest extends WebTestCase
      */
     public function testDenormalize($data, $expected)
     {
-        $actual = $this->serializer->deserialize($data, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\UserRole', null);
+        $actual = $this->serializer->deserialize($data, 'Oro\\Bundle\\ZendeskBundle\\Entity\\UserRole', null);
 
         $this->assertEquals($expected, $actual);
     }

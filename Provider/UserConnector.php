@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Provider;
+namespace Oro\Bundle\ZendeskBundle\Provider;
 
 class UserConnector extends AbstractZendeskConnector
 {
-    const IMPORT_ENTITY = 'OroCRM\Bundle\ZendeskBundle\Entity\User';
+    const IMPORT_ENTITY = 'Oro\Bundle\ZendeskBundle\Entity\User';
     const TYPE = 'user';
     const IMPORT_JOB = 'zendesk_user_import';
 
@@ -21,7 +21,7 @@ class UserConnector extends AbstractZendeskConnector
      */
     public function getLabel()
     {
-        return 'orocrm.zendesk.connector.user.label';
+        return 'oro.zendesk.connector.user.label';
     }
 
     /**

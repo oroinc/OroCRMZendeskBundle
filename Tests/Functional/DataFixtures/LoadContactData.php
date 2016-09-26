@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
-
-use OroCRM\Bundle\ContactBundle\Entity\Contact;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\Persistence\ObjectManager;
+
+use OroCRM\Bundle\ContactBundle\Entity\Contact;
 use OroCRM\Bundle\ContactBundle\Entity\ContactEmail;
 
 class LoadContactData extends AbstractZendeskFixture

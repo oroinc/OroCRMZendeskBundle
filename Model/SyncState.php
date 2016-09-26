@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Model;
+namespace Oro\Bundle\ZendeskBundle\Model;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 

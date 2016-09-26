@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
+use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 
 /**
  * @dbIsolation
@@ -19,16 +19,16 @@ class SyncNewCommentsListenerTest extends AbstractSyncSchedulerTest
         $this->initClient([], $this->generateBasicAuthHeader());
         $this->registry = $this->getContainer()->get('doctrine');
 
-        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
 
         $this->setSecurityContextTokenByUser($this->getAdminUser());
     }
 
     public function testListenerCreatesSyncJobOnCaseUpdate()
     {
-        $ticket = $this->getReference('orocrm_zendesk:ticket_43');
+        $ticket = $this->getReference('oro_zendesk:ticket_43');
 
-        $case = $this->getReference('orocrm_zendesk:case_2');
+        $case = $this->getReference('oro_zendesk:case_2');
         $case->setSubject('Updated subject');
 
         $this->registry->getManager()->flush($case);
@@ -60,7 +60,7 @@ class SyncNewCommentsListenerTest extends AbstractSyncSchedulerTest
      */
     public function testListenerSkipsCaseWithoutRelatedTicket($jobsCount)
     {
-        $case = $this->getReference('orocrm_zendesk:case_3');
+        $case = $this->getReference('oro_zendesk:case_3');
 
         $case->setSubject('Updated subject');
         $this->registry->getManager()->flush($case);

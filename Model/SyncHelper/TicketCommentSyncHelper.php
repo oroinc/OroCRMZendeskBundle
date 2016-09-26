@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Model\SyncHelper;
+namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 
 class TicketCommentSyncHelper extends AbstractSyncHelper
 {

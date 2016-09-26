@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Form\Extension;
+namespace Oro\Bundle\ZendeskBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
 
 class CaseCommentPublicExtension extends AbstractTypeExtension
 {

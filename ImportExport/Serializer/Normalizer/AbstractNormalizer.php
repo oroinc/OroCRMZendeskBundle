@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;

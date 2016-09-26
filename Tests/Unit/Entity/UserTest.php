@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\User;
 
 class UserTest extends \PHPUnit_Framework_TestCase
 {
@@ -67,7 +67,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
      */
     public function settersAndGettersDataProvider()
     {
-        $role = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\UserRole')
+        $role = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\UserRole')
             ->disableOriginalConstructor()
             ->getMock();
 

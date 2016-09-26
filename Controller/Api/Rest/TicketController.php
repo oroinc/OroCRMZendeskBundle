@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Controller\Api\Rest;
+namespace Oro\Bundle\ZendeskBundle\Controller\Api\Rest;
 
-use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -52,7 +52,7 @@ class TicketController extends FOSRestController
             return $this->handleView($this->view(['message' => 'Invalid channel type.'], Codes::HTTP_BAD_REQUEST));
         }
 
-        $this->get('orocrm_zendesk.model.sync_manager')->syncCase($caseEntity, $channel, true);
+        $this->get('oro_zendesk.model.sync_manager')->syncCase($caseEntity, $channel, true);
 
         return $this->handleView($this->view('', Codes::HTTP_OK));
     }

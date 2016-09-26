@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Exception;
+namespace Oro\Bundle\ZendeskBundle\Exception;
 
 use Guzzle\Common\Exception\GuzzleException;
 use Guzzle\Http\Message\RequestInterface;

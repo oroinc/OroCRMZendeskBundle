@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Model;
+namespace Oro\Bundle\ZendeskBundle\Model;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -8,11 +8,11 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
+use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
+use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 
 class SyncManager
 {

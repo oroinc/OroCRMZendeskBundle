@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\EventListener\CaseEntity;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\EventListener\CaseEntity;
 
-use OroCRM\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener;
-use OroCRM\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
+use Oro\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener;
+use Oro\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
 
 class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,11 +24,11 @@ class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->syncManager = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Model\SyncManager')
+        $this->syncManager = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncManager')
             ->disableOriginalConstructor()
             ->getMock();
         $this->oroEntityProvider = $this->getMockBuilder(
-            'OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider'
+            'Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider'
         )
             ->disableOriginalConstructor()
             ->getMock();

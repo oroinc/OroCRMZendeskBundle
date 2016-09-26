@@ -1,11 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
-
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
 
 class ImportTicketCommentProcessor extends AbstractImportProcessor
 {
@@ -30,7 +29,7 @@ class ImportTicketCommentProcessor extends AbstractImportProcessor
         if (!$entity instanceof TicketComment) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Imported entity must be instance of OroCRM\Bundle\ZendeskBundle\Entity\TicketComment, %s given.',
+                    'Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment, %s given.',
                     is_object($entity) ? get_class($entity) : gettype($entity)
                 )
             );

@@ -1,4 +1,4 @@
-orocrm:
+oro:
     zendesk:
         reverse_sync:
                 success_message:  Publishing to Zendesk was scheduled

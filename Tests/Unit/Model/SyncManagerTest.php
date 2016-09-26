@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Model;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Model;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncManager;
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Model\SyncManager;
+use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
 class SyncManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -44,7 +44,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $this->registry->expects($this->any())->method('getManager')
             ->willReturn($this->entityManager);
         $this->zendeskEntityProvider = $this->getMockBuilder(
-            'OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider'
+            'Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider'
         )
             ->disableOriginalConstructor()->getMock();
 
@@ -72,7 +72,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $comment->expects($this->once())
             ->method('getCase')
             ->will($this->returnValue($case));
-        $ticket = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\Ticket');
+        $ticket = $this->getMock('Oro\Bundle\ZendeskBundle\Entity\Ticket');
         $channel = $this->getChannel(false);
         $ticket->expects($this->once())
             ->method('getChannel')
@@ -97,7 +97,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $comment->expects($this->once())
             ->method('getCase')
             ->will($this->returnValue($case));
-        $ticket = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\Ticket');
+        $ticket = $this->getMock('Oro\Bundle\ZendeskBundle\Entity\Ticket');
         $channel = $this->getChannel(true);
         $ticket->expects($this->once())
             ->method('getChannel')
@@ -178,7 +178,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->target->reverseSyncChannel($channel));
         $comments = array();
         $expectedIds = array();
-        $comment = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment');
+        $comment = $this->getMock('Oro\Bundle\ZendeskBundle\Entity\TicketComment');
         for ($i=1; $i< 102; $i++) {
             $comment->expects($this->at($i-1))
                 ->method('getId')

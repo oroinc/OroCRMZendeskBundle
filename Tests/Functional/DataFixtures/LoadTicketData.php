@@ -1,18 +1,18 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
+use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 
 class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
@@ -21,7 +21,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
      */
     protected $data = array(
         array(
-            'reference' => 'orocrm_zendesk:ticket_43',
+            'reference' => 'oro_zendesk:ticket_43',
             'originId' => 43,
             'url' => 'https://foo.zendesk.com/api/v2/tickets/43.json',
             'subject' => 'Zendesk Ticket 43',
@@ -35,18 +35,18 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'assignee' => 'zendesk_user:fred.taylor@example.com',
             'createdAt' => '2014-06-05T12:24:23Z',
             'updatedAt' => '2014-06-05T13:43:21Z',
-            'relatedCase' => 'orocrm_zendesk:case_2',
+            'relatedCase' => 'oro_zendesk:case_2',
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
             'channel' => 'zendesk_channel:first_test_channel'
         ),
         array(
-            'reference' => 'orocrm_zendesk:ticket_42',
+            'reference' => 'oro_zendesk:ticket_42',
             'originId' => 42,
             'url' => 'https://foo.zendesk.com/api/v2/tickets/42.json',
             'subject' => 'Zendesk Ticket 42',
             'description' => 'Zendesk Ticket 42 Description',
             'externalId' => '7e24caa0-87f7-44d6-922b-0330ed9fd06c',
-            'problem' => 'orocrm_zendesk:ticket_43',
+            'problem' => 'oro_zendesk:ticket_43',
             'collaborators' => array('zendesk_user:fred.taylor@example.com', 'zendesk_user:alex.taylor@example.com'),
             'type' => TicketType::TYPE_TASK,
             'status' => TicketStatus::STATUS_PENDING,
@@ -59,7 +59,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'createdAt' => '2014-06-10T15:54:22Z',
             'updatedAt' => '2014-06-10T17:45:31Z',
             'dueAt' => '2014-06-11T12:13:11Z',
-            'relatedCase' => 'orocrm_zendesk:case_1',
+            'relatedCase' => 'oro_zendesk:case_1',
             'comments' => array(
                 array(
                     'reference' => 'zendesk_ticket_42_comment_1',
@@ -107,7 +107,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'channel' => 'zendesk_channel:first_test_channel'
         ),
         array(
-            'reference' => 'orocrm_zendesk:ticket_44_case_6',
+            'reference' => 'oro_zendesk:ticket_44_case_6',
             'originId' => 44,
             'url' => 'https://foo.zendesk.com/api/v2/tickets/44.json',
             'subject' => 'Case 6, Zendesk Ticket 44',
@@ -123,11 +123,11 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'createdAt' => '2014-06-10T15:54:22Z',
             'updatedAt' => '2014-06-10T17:45:31Z',
             'dueAt' => '2014-06-11T12:13:11Z',
-            'relatedCase' => 'orocrm_zendesk:case_6',
+            'relatedCase' => 'oro_zendesk:case_6',
             'channel' => 'zendesk_channel:first_test_channel'
         ),
         array(
-            'reference' => 'orocrm_zendesk:not_synced_ticket',
+            'reference' => 'oro_zendesk:not_synced_ticket',
             'subject' => 'Not Synced Zendesk Ticket',
             'description' => 'Not Synced Zendesk Ticket Description',
             'type' => TicketType::TYPE_TASK,
@@ -138,12 +138,12 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'assignee' => 'zendesk_user:fred.taylor@example.com',
             'createdAt' => '2014-06-05T12:24:23Z',
             'updatedAt' => '2014-06-05T13:43:21Z',
-            'relatedCase' => 'orocrm_zendesk:case_4',
+            'relatedCase' => 'oro_zendesk:case_4',
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
             'channel' => 'zendesk_channel:first_test_channel'
         ),
         array(
-            'reference' => 'orocrm_zendesk:not_synced_ticket_with_case_comments',
+            'reference' => 'oro_zendesk:not_synced_ticket_with_case_comments',
             'subject' => 'Not Synced Zendesk Ticket with Case Comments',
             'description' => 'Not Synced Zendesk Ticket with Case Comments Description',
             'type' => TicketType::TYPE_TASK,
@@ -154,12 +154,12 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'assignee' => 'zendesk_user:fred.taylor@example.com',
             'createdAt' => '2014-06-05T12:24:23Z',
             'updatedAt' => '2014-06-05T13:43:21Z',
-            'relatedCase' => 'orocrm_zendesk:case_5',
+            'relatedCase' => 'oro_zendesk:case_5',
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
             'channel' => 'zendesk_channel:first_test_channel',
         ),
         array(
-            'reference' => 'orocrm_zendesk:synced_ticket_with_not_synced_comments',
+            'reference' => 'oro_zendesk:synced_ticket_with_not_synced_comments',
             'subject' => 'Synced Zendesk Ticket with not synced Comments',
             'description' => 'Synced Zendesk Ticket with not synced Comments Description',
             'type' => TicketType::TYPE_TASK,
@@ -171,7 +171,7 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
             'assignee' => 'zendesk_user:fred.taylor@example.com',
             'createdAt' => '2014-06-05T12:24:23Z',
             'updatedAt' => '2014-06-05T13:43:21Z',
-            'relatedCase' => 'orocrm_zendesk:case_7',
+            'relatedCase' => 'oro_zendesk:case_7',
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
             'channel' => 'zendesk_channel:second_test_channel',
             'comments' => array(
@@ -239,9 +239,9 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
                 $data['collaborators'] = $collaborators;
             }
 
-            $data['priority'] = $manager->find('OroCRMZendeskBundle:TicketPriority', $data['priority']);
-            $data['status'] = $manager->find('OroCRMZendeskBundle:TicketStatus', $data['status']);
-            $data['type'] = $manager->find('OroCRMZendeskBundle:TicketType', $data['type']);
+            $data['priority'] = $manager->find('OroZendeskBundle:TicketPriority', $data['priority']);
+            $data['status'] = $manager->find('OroZendeskBundle:TicketStatus', $data['status']);
+            $data['type'] = $manager->find('OroZendeskBundle:TicketType', $data['type']);
 
             if (isset($data['channel'])) {
                 $data['channel'] = $this->getReference($data['channel']);
@@ -314,9 +314,9 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
     public function getDependencies()
     {
         return array(
-            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadCaseEntityData',
-            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData',
-            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData'
+            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadCaseEntityData',
+            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData',
+            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData'
         );
     }
 }

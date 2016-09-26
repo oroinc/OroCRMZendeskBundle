@@ -1,24 +1,23 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-
 use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
 use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
+use Oro\Bundle\ZendeskBundle\Entity\TicketType;
+use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
+use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
 /**
  * @dbIsolationPerTest
@@ -63,7 +62,7 @@ class TicketExportWriterTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
+        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
@@ -75,7 +74,7 @@ class TicketExportWriterTest extends WebTestCase
             ->will($this->returnValueMap([['channel', null, $this->channel->getId()]]));
 
         $this->transport =
-            $this->getMock('OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\ZendeskTransportInterface');
+            $this->getMock('Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\ZendeskTransportInterface');
 
         $this->logger = $this->getMock('Psr\\Log\\LoggerInterface');
 
@@ -89,17 +88,17 @@ class TicketExportWriterTest extends WebTestCase
                 )
             );
 
-        $this->getContainer()->set('orocrm_zendesk.transport.rest_transport', $this->transport);
+        $this->getContainer()->set('oro_zendesk.transport.rest_transport', $this->transport);
 
-        $this->writer = $this->getContainer()->get('orocrm_zendesk.importexport.writer.export_ticket');
+        $this->writer = $this->getContainer()->get('oro_zendesk.importexport.writer.export_ticket');
         $this->writer->setImportExportContext($this->context);
         $this->writer->setLogger($this->logger);
     }
 
     protected function tearDown()
     {
-        $this->getContainer()->set('orocrm_zendesk.transport.rest_transport', null);
-        $this->getContainer()->set('orocrm_zendesk.importexport.writer.export_ticket', null);
+        $this->getContainer()->set('oro_zendesk.transport.rest_transport', null);
+        $this->getContainer()->set('oro_zendesk.importexport.writer.export_ticket', null);
         $this->logOutput = null;
 
         parent::tearDown();
@@ -107,7 +106,7 @@ class TicketExportWriterTest extends WebTestCase
 
     public function testWriteCreatesTicket()
     {
-        $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket');
+        $ticket = $this->getReference('oro_zendesk:not_synced_ticket');
 
         $expected = $this->createTicket()
             ->setOriginId(10001)
@@ -162,7 +161,7 @@ class TicketExportWriterTest extends WebTestCase
 
     public function testWriteCreatesComment()
     {
-        $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket');
+        $ticket = $this->getReference('oro_zendesk:not_synced_ticket');
 
         $expectedTicket = $this->createTicket()
             ->setOriginId(10001)
@@ -227,7 +226,7 @@ class TicketExportWriterTest extends WebTestCase
 
     public function testWriteCreatesCommentWithExistingContact()
     {
-        $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket');
+        $ticket = $this->getReference('oro_zendesk:not_synced_ticket');
 
         $expectedTicket = $this->createTicket()
             ->setOriginId(10001)
@@ -272,7 +271,7 @@ class TicketExportWriterTest extends WebTestCase
 
     public function testWriteSchedulesTicketCommentSync()
     {
-        $ticket = $this->getReference('orocrm_zendesk:not_synced_ticket_with_case_comments');
+        $ticket = $this->getReference('oro_zendesk:not_synced_ticket_with_case_comments');
 
         $expectedTicket = $this->createTicket()
             ->setOriginId(10001)
@@ -336,7 +335,7 @@ class TicketExportWriterTest extends WebTestCase
 
     public function testWriteUpdatesTicket()
     {
-        $ticket = $this->getReference('orocrm_zendesk:ticket_43');
+        $ticket = $this->getReference('oro_zendesk:ticket_43');
 
         $expected = $this->createTicket()
             ->setOriginId($ticket->getOriginId())
@@ -397,7 +396,7 @@ class TicketExportWriterTest extends WebTestCase
         $submitter = $this->getReference('zendesk_user:garry.smith@example.com');
         $assignee = $submitter;
 
-        $ticket = $this->getReference('orocrm_zendesk:ticket_43');
+        $ticket = $this->getReference('oro_zendesk:ticket_43');
         $ticket->setRequester($requester);
         $ticket->setSubmitter($submitter);
         $ticket->setAssignee($assignee);

@@ -1,16 +1,15 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
+namespace Oro\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
-use OroCRM\Bundle\ZendeskBundle\Provider\UserConnector;
-use OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\AbstractZendeskFixture;
-
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
+use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
+use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
+use Oro\Bundle\ZendeskBundle\Provider\UserConnector;
+use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\AbstractZendeskFixture;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 
 class LoadChannelData extends AbstractZendeskFixture implements DependentFixtureInterface
@@ -25,8 +24,8 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
                 TicketCommentConnector::TYPE
             ),
             'enabled'      => 0,
-            'transport'    => 'orocrm_zendesk:zendesk_demo_transport',
-            'reference'    => 'orocrm_zendesk:zendesk_demo_channel',
+            'transport'    => 'oro_zendesk:zendesk_demo_transport',
+            'reference'    => 'oro_zendesk:zendesk_demo_channel',
             'organization' => null
         )
     );
@@ -37,7 +36,7 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
     public function getDependencies()
     {
         return array(
-            'OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM\LoadTransportData'
+            'Oro\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM\LoadTransportData'
         );
     }
 

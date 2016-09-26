@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Model;
+namespace Oro\Bundle\ZendeskBundle\Model;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
-use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
+use Oro\Bundle\CaseBundle\Entity\CasePriority;
+use Oro\Bundle\CaseBundle\Entity\CaseStatus;
+use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 
 class EntityMapper
 {
@@ -60,7 +60,7 @@ class EntityMapper
     public function getCaseStatusName($ticketStatus)
     {
         return $this->getTicket2CaseValue(
-            $this->getEntityName($ticketStatus, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketStatus'),
+            $this->getEntityName($ticketStatus, 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketStatus'),
             self::STATUS_KEY
         );
     }
@@ -85,7 +85,7 @@ class EntityMapper
     public function getCasePriorityName($ticketPriority)
     {
         return $this->getTicket2CaseValue(
-            $this->getEntityName($ticketPriority, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketPriority'),
+            $this->getEntityName($ticketPriority, 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketPriority'),
             self::PRIORITY_KEY
         );
     }
@@ -99,7 +99,7 @@ class EntityMapper
     {
         $name = $this->getTicketStatusName($caseStatus);
 
-        return $name ? $this->registry->getManager()->find('OroCRMZendeskBundle:TicketStatus', $name) : null;
+        return $name ? $this->registry->getManager()->find('OroZendeskBundle:TicketStatus', $name) : null;
     }
 
     /**
@@ -110,7 +110,7 @@ class EntityMapper
     public function getTicketStatusName($caseStatus)
     {
         return $this->getCase2TicketValue(
-            $this->getEntityName($caseStatus, 'OroCRM\\Bundle\\CaseBundle\\Entity\\CaseStatus'),
+            $this->getEntityName($caseStatus, 'Oro\\Bundle\\CaseBundle\\Entity\\CaseStatus'),
             self::STATUS_KEY
         );
     }
@@ -124,7 +124,7 @@ class EntityMapper
     {
         $name = $this->getTicketPriorityName($casePriority);
 
-        return $name ? $this->registry->getManager()->find('OroCRMZendeskBundle:TicketPriority', $name) : null;
+        return $name ? $this->registry->getManager()->find('OroZendeskBundle:TicketPriority', $name) : null;
     }
 
     /**
@@ -135,7 +135,7 @@ class EntityMapper
     public function getTicketPriorityName($casePriority)
     {
         return $this->getCase2TicketValue(
-            $this->getEntityName($casePriority, 'OroCRM\\Bundle\\CaseBundle\\Entity\\CasePriority'),
+            $this->getEntityName($casePriority, 'Oro\\Bundle\\CaseBundle\\Entity\\CasePriority'),
             self::PRIORITY_KEY
         );
     }

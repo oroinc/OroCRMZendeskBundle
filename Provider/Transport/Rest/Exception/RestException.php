@@ -1,11 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception;
+namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestResponseInterface;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException as BaseException;
-
-use OroCRM\Bundle\ZendeskBundle\Exception\ZendeskException;
+use Oro\Bundle\ZendeskBundle\Exception\ZendeskException;
 
 class RestException extends BaseException implements ZendeskException
 {

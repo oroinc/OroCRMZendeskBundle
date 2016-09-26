@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
 
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 

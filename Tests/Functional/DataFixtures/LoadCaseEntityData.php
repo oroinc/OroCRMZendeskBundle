@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
@@ -21,7 +21,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             'description'   => 'Case #1: Description',
             'assignedTo'    => 'user:bob.miller@example.com',
             'owner'         => 'user:bob.miller@example.com',
-            'reference'     => 'orocrm_zendesk:case_1',
+            'reference'     => 'oro_zendesk:case_1',
             'comments' => array(
                 array(
                     'reference' => 'case_1_comment_1',
@@ -59,24 +59,24 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             'subject'       => 'Case #2',
             'description'   => 'Case #2: Description',
             'owner'         => 'user:admin@example.com',
-            'reference'     => 'orocrm_zendesk:case_2'
+            'reference'     => 'oro_zendesk:case_2'
         ),
         array(
             'subject'       => 'Case #3',
             'description'   => 'Case #3: Description',
             'owner'         => 'user:admin@example.com',
-            'reference'     => 'orocrm_zendesk:case_3'
+            'reference'     => 'oro_zendesk:case_3'
         ),
         array(
             'subject'       => 'Case #4',
             'description'   => 'Case #4: Description',
             'owner'         => 'user:admin@example.com',
-            'reference'     => 'orocrm_zendesk:case_4'
+            'reference'     => 'oro_zendesk:case_4'
         ),
         array(
             'subject'       => 'Case #5',
             'description'   => 'Case #5: Description',
-            'reference'     => 'orocrm_zendesk:case_5',
+            'reference'     => 'oro_zendesk:case_5',
             'owner'         => 'user:admin@example.com',
             'comments' => array(
                 array(
@@ -104,7 +104,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             'status'         => CaseStatus::STATUS_OPEN,
             'relatedContact' => 'contact:jim.smith@example.com',
             'priority'       => CasePriority::PRIORITY_LOW,
-            'reference'      => 'orocrm_zendesk:case_6'
+            'reference'      => 'oro_zendesk:case_6'
         ),
         array(
             'subject'        => 'Case 7, Zendesk Ticket 45',
@@ -114,7 +114,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             'status'         => CaseStatus::STATUS_OPEN,
             'relatedContact' => 'contact:jim.smith@example.com',
             'priority'       => CasePriority::PRIORITY_LOW,
-            'reference'      => 'orocrm_zendesk:case_7'
+            'reference'      => 'oro_zendesk:case_7'
         ),
     );
 
@@ -184,7 +184,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
     public function getDependencies()
     {
         return array(
-            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadOroUserData'
+            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadOroUserData'
         );
     }
 }
