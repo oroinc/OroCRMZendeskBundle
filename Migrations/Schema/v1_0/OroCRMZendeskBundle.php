@@ -358,7 +358,7 @@ class OroCRMZendeskBundle implements Migration
             array('onDelete' => 'SET NULL', 'onUpdate' => null)
         );
         $table->addForeignKeyConstraint(
-            $schema->getTable('oro_case_comment'),
+            $schema->getTable('orocrm_case_comment'),
             array('related_comment_id'),
             array('id'),
             array('onDelete' => 'SET NULL', 'onUpdate' => null)
