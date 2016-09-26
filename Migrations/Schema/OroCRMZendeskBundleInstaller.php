@@ -366,7 +366,7 @@ class OroCRMZendeskBundleInstaller implements Installation
             ['onDelete' => 'SET NULL', 'onUpdate' => null]
         );
         $table->addForeignKeyConstraint(
-            $schema->getTable('orocrm_case_comment'),
+            $schema->getTable('oro_case_comment'),
             ['related_comment_id'],
             ['id'],
             ['onDelete' => 'SET NULL', 'onUpdate' => null]

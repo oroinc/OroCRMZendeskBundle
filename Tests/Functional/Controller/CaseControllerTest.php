@@ -49,7 +49,7 @@ class CaseControllerTest extends WebTestCase
     {
         $crawler = $this->client->request(
             'GET',
-            $this->getUrl('orocrm_case_view', array('id' => $this->caseWithoutTicket->getId()))
+            $this->getUrl('oro_case_view', array('id' => $this->caseWithoutTicket->getId()))
         );
 
         $result = $this->client->getResponse();
@@ -69,7 +69,7 @@ class CaseControllerTest extends WebTestCase
 
         $crawler = $this->client->request(
             'GET',
-            $this->getUrl('orocrm_case_view', array('id' => $this->caseWithTicket->getId()))
+            $this->getUrl('oro_case_view', array('id' => $this->caseWithTicket->getId()))
         );
         $result = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
@@ -117,7 +117,7 @@ class CaseControllerTest extends WebTestCase
     {
         $crawler = $this->client->request(
             'GET',
-            $this->getUrl('orocrm_case_update', array('id' => $this->caseWithoutTicket->getId()))
+            $this->getUrl('oro_case_update', array('id' => $this->caseWithoutTicket->getId()))
         );
 
         $result = $this->client->getResponse();
@@ -130,7 +130,7 @@ class CaseControllerTest extends WebTestCase
     {
         $crawler = $this->client->request(
             'GET',
-            $this->getUrl('orocrm_case_update', array('id' => $this->caseWithTicket->getId()))
+            $this->getUrl('oro_case_update', array('id' => $this->caseWithTicket->getId()))
         );
 
         $result = $this->client->getResponse();

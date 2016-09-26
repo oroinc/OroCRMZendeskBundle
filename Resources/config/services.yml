@@ -61,7 +61,7 @@ services:
             - '@orocrm_zendesk.entity_provider.zendesk'
             - '@orocrm_zendesk.entity_provider.oro'
         tags:
-            - { name: form.type_extension, alias: orocrm_case_entity }
+            - { name: form.type_extension, alias: oro_case_entity }
 
     orocrm_zendesk.form.extension.channel_connectors:
         class: %orocrm_zendesk.form.extension.channel_connectors.class%
@@ -73,7 +73,7 @@ services:
         arguments:
             - '@orocrm_zendesk.entity_provider.zendesk'
         tags:
-            - { name: form.type_extension, alias: orocrm_case_comment }
+            - { name: form.type_extension, alias: oro_case_comment }
 
     # Integration related services
     orocrm_zendesk.transport.rest_transport:

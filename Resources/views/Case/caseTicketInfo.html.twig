@@ -1,4 +1,4 @@
-{% if resource_granted('orocrm_case_view') %}
+{% if resource_granted('oro_case_view') %}
     {% import 'OroUIBundle::macros.html.twig' as UI %}
     {% import 'OroEmailBundle::macros.html.twig' as email %}
 
@@ -11,7 +11,7 @@
                         {{ user.name|escape }}
                     </a>
                 {% elseif user.relatedContact and resource_granted('VIEW', user.relatedContact) %}
-                    <a href="{{ path('orocrm_contact_view', {'id': user.relatedContact.id}) }}">
+                    <a href="{{ path('oro_contact_view', {'id': user.relatedContact.id}) }}">
                         {{ user.name|escape }}
                     </a>
                 {% else %}
@@ -61,7 +61,7 @@
                         {{ UI.renderProperty('orocrm.zendesk.ticket.priority.label'|trans, ticket.priority.label|default(false)) }}
                         {% set problem %}
                             {% if ticket.problem and ticket.problem.relatedCase %}
-                                <a href="{{ path('orocrm_case_view', {'id': ticket.problem.relatedCase.id}) }}">
+                                <a href="{{ path('oro_case_view', {'id': ticket.problem.relatedCase.id}) }}">
                                     {{ ticket.problem.subject }}
                                 </a>
                             {% endif %}

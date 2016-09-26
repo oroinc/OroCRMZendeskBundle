@@ -84,6 +84,6 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'orocrm_case_entity';
+        return 'oro_case_entity';
     }
 }

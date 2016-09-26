@@ -60,6 +60,6 @@ class CaseCommentPublicExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'orocrm_case_comment';
+        return 'oro_case_comment';
     }
 }
