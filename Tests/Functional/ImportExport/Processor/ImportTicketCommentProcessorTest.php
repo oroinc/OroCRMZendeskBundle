@@ -146,7 +146,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         $this->assertEquals($ticketComment, $this->processor->process($ticketComment));
 
         $comment = $ticketComment->getRelatedComment();
-        $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
+        $this->assertInstanceOf('Oro\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
         $this->assertFalse($this->registry->getManager()->contains($comment));
 
         $this->assertEquals($ticketComment->getBody(), $comment->getMessage());
@@ -172,7 +172,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         $this->assertSame($ticketComment, $this->processor->process($ticketComment));
 
         $comment = $ticketComment->getRelatedComment();
-        $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
+        $this->assertInstanceOf('Oro\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
         $this->assertInstanceOf('Oro\\Bundle\\UserBundle\\Entity\\User', $comment->getOwner());
         $this->assertTrue($this->registry->getManager()->contains($comment->getOwner()));
         $this->assertEquals($expectedOwner->getId(), $comment->getOwner()->getId());
@@ -196,8 +196,8 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         $this->assertSame($ticketComment, $this->processor->process($ticketComment));
 
         $comment = $ticketComment->getRelatedComment();
-        $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
-        $this->assertInstanceOf('OroCRM\\Bundle\\ContactBundle\\Entity\\Contact', $comment->getContact());
+        $this->assertInstanceOf('Oro\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
+        $this->assertInstanceOf('Oro\\Bundle\\ContactBundle\\Entity\\Contact', $comment->getContact());
         $this->assertTrue($this->registry->getManager()->contains($comment->getContact()));
         $this->assertEquals($expectedContact->getId(), $comment->getContact()->getId());
     }

@@ -215,7 +215,7 @@ class ImportUserProcessorTest extends WebTestCase
         $this->assertEquals($zendeskUser, $this->processor->process($zendeskUser));
 
         $relatedContact = $zendeskUser->getRelatedContact();
-        $this->assertInstanceOf('OroCRM\\Bundle\\ContactBundle\\Entity\\Contact', $relatedContact);
+        $this->assertInstanceOf('Oro\\Bundle\\ContactBundle\\Entity\\Contact', $relatedContact);
         $this->assertEquals($email, $relatedContact->getPrimaryEmail());
         $this->assertTrue($this->registry->getManager()->contains($relatedContact));
     }
@@ -234,7 +234,7 @@ class ImportUserProcessorTest extends WebTestCase
         $this->assertEquals($zendeskUser, $this->processor->process($zendeskUser));
 
         $relatedContact = $zendeskUser->getRelatedContact();
-        $this->assertInstanceOf('OroCRM\\Bundle\\ContactBundle\\Entity\\Contact', $relatedContact);
+        $this->assertInstanceOf('Oro\\Bundle\\ContactBundle\\Entity\\Contact', $relatedContact);
         $this->assertFalse($this->registry->getManager()->contains($relatedContact));
         $this->assertEquals($email, $relatedContact->getPrimaryEmail());
         $this->assertEquals('Bob', $relatedContact->getFirstName());
