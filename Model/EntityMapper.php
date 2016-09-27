@@ -4,8 +4,8 @@ namespace Oro\Bundle\ZendeskBundle\Model;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use Oro\Bundle\CaseBundle\Entity\CasePriority;
-use Oro\Bundle\CaseBundle\Entity\CaseStatus;
+use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
+use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 

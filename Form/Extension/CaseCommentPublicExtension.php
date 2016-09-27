@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
-use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 
 class CaseCommentPublicExtension extends AbstractTypeExtension
 {
