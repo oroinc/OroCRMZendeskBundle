@@ -272,7 +272,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $case = $zendeskTicket->getRelatedCase();
-        $this->assertInstanceOf('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseEntity', $case);
+        $this->assertInstanceOf('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity', $case);
         $this->assertFalse($this->registry->getManager()->contains($case));
 
         $this->assertEquals($zendeskTicket->getSubject(), $case->getSubject());
