@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Migrations\Data\ORM;
+namespace Oro\Bundle\ZendeskBundle\Migrations\Data\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 
 class LoadStatusData extends AbstractTranslatableEntityFixture
 {
@@ -29,7 +29,7 @@ class LoadStatusData extends AbstractTranslatableEntityFixture
      */
     protected function loadEntities(ObjectManager $manager)
     {
-        $repository = $manager->getRepository('OroCRMZendeskBundle:TicketStatus');
+        $repository = $manager->getRepository('OroZendeskBundle:TicketStatus');
 
         $translationLocales = $this->getTranslationLocales();
 

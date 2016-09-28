@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Twig;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Twig;
 
-use OroCRM\Bundle\ZendeskBundle\Twig\ZendeskExtension;
+use Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension;
 
 class ZendeskExtensionTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,10 +24,10 @@ class ZendeskExtensionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->oroProvider = $this->getMockBuilder(
-            'OroCRM\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\OroEntityProvider'
+            'Oro\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\OroEntityProvider'
         )->disableOriginalConstructor()->getMock();
         $this->zendeskProvider = $this->getMockBuilder(
-            'OroCRM\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\ZendeskEntityProvider'
+            'Oro\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\ZendeskEntityProvider'
         )->disableOriginalConstructor()->getMock();
 
         $this->extension = new ZendeskExtension($this->oroProvider, $this->zendeskProvider);
@@ -39,12 +39,12 @@ class ZendeskExtensionTest extends \PHPUnit_Framework_TestCase
         $zendeskUrl = 'https://test.zendesk.com';
         $expectedUrl = "{$zendeskUrl}/tickets/{$id}";
 
-        $ticket = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\Ticket');
+        $ticket = $this->getMock('Oro\Bundle\ZendeskBundle\Entity\Ticket');
         $ticket->expects($this->atLeastOnce())
             ->method('getOriginId')
             ->will($this->returnValue($id));
         $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $transport = $this->getMock('OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport');
+        $transport = $this->getMock('Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport');
         $transport->expects($this->once())
             ->method('getUrl')
             ->will($this->returnValue($zendeskUrl));

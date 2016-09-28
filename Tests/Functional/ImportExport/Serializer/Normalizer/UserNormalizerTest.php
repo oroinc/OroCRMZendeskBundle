@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Serializer\Normalizer;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Serializer\Normalizer;
 
 use Oro\Bundle\ImportExportBundle\Serializer\Serializer;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserNormalizer;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserNormalizer;
 
 /**
  * @outputBuffering enabled
@@ -32,7 +32,7 @@ class UserNormalizerTest extends WebTestCase
     {
         $actual = $this->serializer->deserialize(
             $data,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+            'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
             null
         );
 

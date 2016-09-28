@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
+namespace Oro\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\AbstractFixture;
@@ -13,15 +13,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\Model\EntityMapper;
 use Oro\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData;
 use Oro\Bundle\ContactBundle\Entity\Contact;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\TicketType;
+use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 
 class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
@@ -81,7 +81,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     {
         $this->entityManager = $manager;
 
-        $demoZendeskChannel = $this->getReference('orocrm_zendesk:zendesk_demo_channel');
+        $demoZendeskChannel = $this->getReference('oro_zendesk:zendesk_demo_channel');
 
         for ($i = 0; $i < static::TICKET_COUNT; ++$i) {
             $ticket = $this->createTicketEntity($demoZendeskChannel);
@@ -129,16 +129,16 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
         );
 
         if ($data['hasIncidents']) {
-            $type = $this->entityManager->getRepository('OroCRMZendeskBundle:TicketType')
+            $type = $this->entityManager->getRepository('OroZendeskBundle:TicketType')
                 ->findOneBy(array('name' => TicketType::TYPE_PROBLEM));
         } else {
-            $type = $this->getRandomEntity('OroCRMZendeskBundle:TicketType');
+            $type = $this->getRandomEntity('OroZendeskBundle:TicketType');
         }
 
         /**
          * @var EntityMapper $entityMapper
          */
-        $entityMapper = $this->container->get('orocrm_zendesk.entity_mapper');
+        $entityMapper = $this->container->get('oro_zendesk.entity_mapper');
 
         $status = $entityMapper->getTicketStatus($case->getStatus()->getName());
 
@@ -321,7 +321,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     {
         return array(
             'Oro\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData',
-            'OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM\LoadChannelData'
+            'Oro\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM\LoadChannelData'
         );
     }
 
@@ -350,7 +350,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
      */
     protected function getRoleByName($roleName)
     {
-        $role = $this->entityManager->getRepository('OroCRMZendeskBundle:UserRole')
+        $role = $this->entityManager->getRepository('OroZendeskBundle:UserRole')
             ->findOneBy(array('name' => $roleName));
 
         return $role;

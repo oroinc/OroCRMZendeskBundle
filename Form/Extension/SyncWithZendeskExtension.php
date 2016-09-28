@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Form\Extension;
+namespace Oro\Bundle\ZendeskBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -8,9 +8,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 
 class SyncWithZendeskExtension extends AbstractTypeExtension
@@ -58,10 +57,10 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
             self::ZENDESK_CHANNEL_FIELD,
             'choice',
             array(
-                'label'       => 'orocrm.zendesk.form.sync_to_zendesk.label',
+                'label'       => 'oro.zendesk.form.sync_to_zendesk.label',
                 'mapped'      => false,
                 'required'    => false,
-                'empty_value' => 'orocrm.zendesk.form.sync_to_zendesk.empty',
+                'empty_value' => 'oro.zendesk.form.sync_to_zendesk.empty',
                 'choices'     => $choices
             )
         );

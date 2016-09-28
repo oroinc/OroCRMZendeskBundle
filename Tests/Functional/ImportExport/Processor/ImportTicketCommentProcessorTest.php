@@ -1,14 +1,14 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketCommentProcessor;
-use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketCommentProcessor;
+use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 /**
@@ -46,10 +46,10 @@ class ImportTicketCommentProcessorTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
 
         $this->registry  = $this->getContainer()->get('doctrine');
-        $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.import_ticket_comment');
+        $this->processor = $this->getContainer()->get('oro_zendesk.importexport.processor.import_ticket_comment');
         $this->context   = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
         $this->channel   = $this->getReference('zendesk_channel:first_test_channel');
         $this->processor->setImportExportContext($this->context);
@@ -57,12 +57,12 @@ class ImportTicketCommentProcessorTest extends WebTestCase
 
     protected function postFixtureLoad()
     {
-        self::$ticketId = $this->getReference('orocrm_zendesk:ticket_42')->getOriginId();
+        self::$ticketId = $this->getReference('oro_zendesk:ticket_42')->getOriginId();
     }
 
     /**
      * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Imported entity must be instance of OroCRM\Bundle\ZendeskBundle\Entity\TicketComment,
+     * @expectedExceptionMessage Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment,
      * stdClass given.
      */
     public function testProcessFailsWithInvalidArgument()
@@ -99,7 +99,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
 
         $result = $this->processor->process($ticketComment);
 
-        $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment', $result);
+        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment', $result);
 
         $this->assertNotSame($ticketComment, $result);
         $this->assertNotNull($result->getId());
@@ -127,7 +127,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
 
         $this->assertSame($ticketComment, $this->processor->process($ticketComment));
 
-        $this->assertInstanceOf('OroCRM\\Bundle\\ZendeskBundle\\Entity\\User', $ticketComment->getAuthor());
+        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\User', $ticketComment->getAuthor());
         $this->assertEquals($originId, $ticketComment->getAuthor()->getOriginId());
         $this->assertTrue($this->registry->getManager()->contains($ticketComment->getAuthor()));
     }

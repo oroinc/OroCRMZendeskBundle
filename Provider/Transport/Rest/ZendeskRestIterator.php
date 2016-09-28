@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest;
+namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
 use Symfony\Component\Serializer\SerializerInterface;
 

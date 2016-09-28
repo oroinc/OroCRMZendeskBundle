@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest\Exception;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest\Exception;
 
-use OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 
 class RestExceptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -38,7 +38,7 @@ class RestExceptionTest extends \PHPUnit_Framework_TestCase
         $exception = InvalidRecordException::createFromResponse($response, $message, $previous);
 
         $this->assertInstanceOf(
-            'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\InvalidRecordException',
+            'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\InvalidRecordException',
             $exception
         );
         $this->assertSame($previous, $exception->getPrevious());

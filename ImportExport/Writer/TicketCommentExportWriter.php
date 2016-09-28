@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Writer;
 
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 
 class TicketCommentExportWriter extends AbstractExportWriter
 {

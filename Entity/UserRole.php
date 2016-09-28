@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Entity;
+namespace Oro\Bundle\ZendeskBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,7 +13,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 /**
  * @ORM\Entity
  * @ORM\Table(name="orocrm_zd_user_role")
- * @Gedmo\TranslationEntity(class="OroCRM\Bundle\ZendeskBundle\Entity\UserRoleTranslation")
+ * @Gedmo\TranslationEntity(class="Oro\Bundle\ZendeskBundle\Entity\UserRoleTranslation")
  * @Config(
  *      defaultValues={
  *          "grouping"={

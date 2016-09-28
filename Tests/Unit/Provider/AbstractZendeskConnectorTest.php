@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Provider;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider;
 
-use OroCRM\Bundle\ZendeskBundle\Provider\AbstractZendeskConnector;
+use Oro\Bundle\ZendeskBundle\Provider\AbstractZendeskConnector;
 
 class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,7 +32,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
         $this->mediator = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator')
             ->disableOriginalConstructor()
             ->getMock();
-        $syncState = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Model\SyncState')
+        $syncState = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncState')
             ->disableOriginalConstructor()
             ->getMock();
         $context = $this->getMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
@@ -54,7 +54,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
             $this->mediator
         );
 
-        $this->connector = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Provider\AbstractZendeskConnector')
+        $this->connector = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Provider\AbstractZendeskConnector')
             ->setConstructorArgs($constructorArgs)
             ->setMethods(array('getConnectorSource'))
             ->getMockForAbstractClass();
@@ -82,7 +82,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidateConfiguration()
     {
-        $transport = $this->getMock('OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
+        $transport = $this->getMock('Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
         $this->mediator->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($transport));

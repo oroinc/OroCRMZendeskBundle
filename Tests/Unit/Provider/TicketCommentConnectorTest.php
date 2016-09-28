@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Provider;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider;
 
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
+use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
 class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
 {
@@ -62,10 +62,10 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
         $this->mediator = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->syncState = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Model\SyncState')
+        $this->syncState = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncState')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->transport = $this->getMock('OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
+        $this->transport = $this->getMock('Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
         $this->context = $this->getMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
         $this->mediator->expects($this->any())
             ->method('getTransport')

@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception;
+namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestResponseInterface;
 

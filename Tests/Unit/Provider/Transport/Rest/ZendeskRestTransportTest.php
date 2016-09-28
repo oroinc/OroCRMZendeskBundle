@@ -1,17 +1,17 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport;
 
 class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
 {
-    const TICKET_TYPE = 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket';
-    const COMMENT_TYPE = 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment';
-    const USER_TYPE = 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User';
+    const TICKET_TYPE = 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket';
+    const COMMENT_TYPE = 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment';
+    const USER_TYPE = 'Oro\\Bundle\\ZendeskBundle\\Entity\\User';
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -53,7 +53,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         $result = $this->transport->getUsers();
 
         $this->assertInstanceOf(
-            'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\ZendeskRestIterator',
+            'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\ZendeskRestIterator',
             $result
         );
 
@@ -78,7 +78,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         $result = $this->transport->getTickets();
 
         $this->assertInstanceOf(
-            'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\ZendeskRestIterator',
+            'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\ZendeskRestIterator',
             $result
         );
 
@@ -88,7 +88,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals(['query' => 'type:ticket'], 'params', $result);
         $this->assertAttributeEquals($this->serializer, 'serializer', $result);
         $this->assertAttributeEquals(
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+            'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
             'itemType',
             $result
         );
@@ -110,7 +110,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         $result = $this->transport->getTicketComments($ticketId);
 
         $this->assertInstanceOf(
-            'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\ZendeskRestIterator',
+            'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\ZendeskRestIterator',
             $result
         );
 
@@ -120,7 +120,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals([], 'params', $result);
         $this->assertAttributeEquals($this->serializer, 'serializer', $result);
         $this->assertAttributeEquals(
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
+            'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
             'itemType',
             $result
         );
@@ -228,7 +228,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                     'jsonData' => [],
                 ],
                 'expectedException' => [
-                    'class' => 'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
+                    'class' => 'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
                     'message' => 'Unsuccessful response: Can\'t get user data from response.'
                 ]
             ],
@@ -247,7 +247,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                     'jsonException' => new \Exception(),
                 ],
                 'expectedException' => [
-                    'class' => 'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
+                    'class' => 'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
                     'message' => 'Unsuccessful response: Can\'t parse create user response.'
                 ]
             ],
@@ -275,7 +275,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                 ],
                 'expectedException' => [
                     'class' =>
-                        'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\InvalidRecordException',
+                        'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\InvalidRecordException',
                     'message' => 'Can\'t create user.' . PHP_EOL . 'Validation errors:' . PHP_EOL
                         . '[email] Email: can\'t be empty'
                 ]
@@ -447,7 +447,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                     'jsonData' => [],
                 ],
                 'expectedException' => [
-                    'class' => 'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
+                    'class' => 'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
                     'message' => 'Unsuccessful response: Can\'t get ticket data from response.'
                 ]
             ],
@@ -466,7 +466,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                     'jsonException' => new \Exception(),
                 ],
                 'expectedException' => [
-                    'class' => 'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
+                    'class' => 'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
                     'message' => 'Unsuccessful response: Can\'t parse create ticket response.'
                 ]
             ],
@@ -494,7 +494,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                 ],
                 'expectedException' => [
                     'class' =>
-                        'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\InvalidRecordException',
+                        'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\InvalidRecordException',
                     'message' => 'Can\'t create ticket.' . PHP_EOL . 'Validation errors:' . PHP_EOL
                         . '[author_id] Author: can\'t be empty'
                 ]
@@ -626,7 +626,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                     'jsonData' => [],
                 ],
                 'expectedException' => [
-                    'class' => 'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
+                    'class' => 'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
                     'message' => 'Unsuccessful response: Can\'t get ticket data from response.'
                 ]
             ],
@@ -650,7 +650,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                     'jsonException' => new \Exception(),
                 ],
                 'expectedException' => [
-                    'class' => 'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
+                    'class' => 'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
                     'message' => 'Unsuccessful response: Can\'t parse update ticket response.'
                 ]
             ],
@@ -683,7 +683,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                 ],
                 'expectedException' => [
                     'class' =>
-                        'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\InvalidRecordException',
+                        'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\InvalidRecordException',
                     'message' => 'Can\'t update ticket.' . PHP_EOL . 'Validation errors:' . PHP_EOL
                         . '[author_id] Author: can\'t be empty'
                 ]
@@ -834,7 +834,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                     ],
                 ],
                 'expectedException' => [
-                    'class' => 'OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
+                    'class' => 'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\RestException',
                     'message' => 'Can\'t get comment data from response.',
                 ],
             ],

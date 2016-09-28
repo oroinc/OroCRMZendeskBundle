@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Provider;
+namespace Oro\Bundle\ZendeskBundle\Provider;
 
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 
 class TicketConnector extends AbstractZendeskConnector implements TwoWaySyncConnectorInterface
 {
-    const IMPORT_ENTITY = 'OroCRM\Bundle\ZendeskBundle\Entity\Ticket';
+    const IMPORT_ENTITY = 'Oro\Bundle\ZendeskBundle\Entity\Ticket';
     const IMPORT_JOB = 'zendesk_ticket_import';
     const EXPORT_JOB = 'zendesk_ticket_export';
     const TYPE = 'ticket';
@@ -24,7 +24,7 @@ class TicketConnector extends AbstractZendeskConnector implements TwoWaySyncConn
      */
     public function getLabel()
     {
-        return 'orocrm.zendesk.connector.ticket.label';
+        return 'oro.zendesk.connector.ticket.label';
     }
 
     /**

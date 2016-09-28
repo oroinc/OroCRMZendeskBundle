@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\EventListener\Channel;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\EventListener\Channel;
 
-use OroCRM\Bundle\ZendeskBundle\EventListener\Channel\ChannelUpdateListener;
-use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
+use Oro\Bundle\ZendeskBundle\EventListener\Channel\ChannelUpdateListener;
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 
 class ChannelUpdateListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +19,7 @@ class ChannelUpdateListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->syncManager = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Model\SyncManager')
+        $this->syncManager = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncManager')
             ->disableOriginalConstructor()
             ->getMock();
         $this->listener = new ChannelUpdateListener($this->syncManager);

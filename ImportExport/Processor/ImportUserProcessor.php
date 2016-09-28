@@ -1,11 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
-
-use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper;
+use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper;
 
 class ImportUserProcessor extends AbstractImportProcessor
 {
@@ -30,7 +29,7 @@ class ImportUserProcessor extends AbstractImportProcessor
         if (!$entity instanceof ZendeskUser) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Imported entity must be instance of OroCRM\\Bundle\\ZendeskBundle\\Entity\\User, %s given.',
+                    'Imported entity must be instance of Oro\\Bundle\\ZendeskBundle\\Entity\\User, %s given.',
                     is_object($entity) ? get_class($entity) : gettype($entity)
                 )
             );
