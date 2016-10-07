@@ -39,7 +39,7 @@ class SyncUpdateCaseListenerTest extends AbstractSyncSchedulerTest
 
         self::assertCount(1, $traces);
         self::assertEquals([
-            'integrationId' => $ticket->getChannel()->getId(),
+            'integration_id' => $ticket->getChannel()->getId(),
             'connector_parameters' => ['id' => $ticket->getId()],
             'connector' => TicketConnector::TYPE,
             'transport_batch_size' => 100,

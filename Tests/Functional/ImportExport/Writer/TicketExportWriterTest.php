@@ -326,7 +326,7 @@ class TicketExportWriterTest extends WebTestCase
 
         self::assertCount(1, $traces);
         self::assertEquals([
-            'integrationId' => $this->channel->getId(),
+            'integration_id' => $this->channel->getId(),
             'connector_parameters' => [
                 'id' => $commentIds,
             ],
