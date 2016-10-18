@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest;
 
-use OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestIterator;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestIterator;
 
 class ZendeskRestIteratorTest extends \PHPUnit_Framework_TestCase
 {

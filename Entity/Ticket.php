@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Entity;
+namespace Oro\Bundle\ZendeskBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,7 +10,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 
 use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 
 /**
  * @ORM\Entity
@@ -223,7 +223,7 @@ class Ticket
     /**
      * @var CaseEntity
      *
-     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseEntity", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Oro\Bundle\CaseBundle\Entity\CaseEntity", cascade={"persist"})
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedCase;

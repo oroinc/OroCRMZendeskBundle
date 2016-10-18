@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\NullLogger;
@@ -14,8 +14,8 @@ use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Processor\ContextAwareProcessor;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
+use Oro\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 
 abstract class AbstractExportProcessor implements
     StepExecutionAwareInterface,

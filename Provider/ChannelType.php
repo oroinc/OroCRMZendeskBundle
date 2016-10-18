@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Provider;
+namespace Oro\Bundle\ZendeskBundle\Provider;
 
 use Oro\Bundle\IntegrationBundle\Provider\ChannelInterface;
 use Oro\Bundle\IntegrationBundle\Provider\IconAwareIntegrationInterface;
@@ -14,7 +14,7 @@ class ChannelType implements ChannelInterface, IconAwareIntegrationInterface
      */
     public function getLabel()
     {
-        return 'orocrm.zendesk.channel_type.label';
+        return 'oro.zendesk.channel_type.label';
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -69,7 +69,7 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
     public function getDependencies()
     {
         return array(
-            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTransportData'
+            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTransportData'
         );
     }
 }

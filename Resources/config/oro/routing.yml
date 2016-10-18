@@ -1,5 +1,5 @@
-orocrm_zendesk_bundle_api:
-    resource: "@OroCRMZendeskBundle/Controller/Api/Rest/TicketController.php"
+oro_zendesk_bundle_api:
+    resource: "@OroZendeskBundle/Controller/Api/Rest/TicketController.php"
     type:         rest
     prefix:       api/rest/{version}/
     requirements:

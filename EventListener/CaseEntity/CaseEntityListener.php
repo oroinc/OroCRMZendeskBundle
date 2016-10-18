@@ -1,16 +1,16 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\EventListener\CaseEntity;
+namespace Oro\Bundle\ZendeskBundle\EventListener\CaseEntity;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
-use OroCRM\Bundle\CaseBundle\Event\FormHandlerEvent;
-use OroCRM\Bundle\CaseBundle\Event\Events;
-use OroCRM\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncManager;
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Event\FormHandlerEvent;
+use Oro\Bundle\CaseBundle\Event\Events;
+use Oro\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
+use Oro\Bundle\ZendeskBundle\Model\SyncManager;
 
 class CaseEntityListener implements EventSubscriberInterface
 {

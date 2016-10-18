@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 
 class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFixtureInterface
 {
@@ -98,7 +98,7 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
                 $this->addReference($data['reference'], $entity);
             }
             if (isset($data['role'])) {
-                $data['role'] = $manager->find('OroCRMZendeskBundle:UserRole', $data['role']);
+                $data['role'] = $manager->find('OroZendeskBundle:UserRole', $data['role']);
             }
             if (isset($data['relatedUser'])) {
                 $data['relatedUser'] = $this->getReference($data['relatedUser']);
@@ -127,9 +127,9 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
     public function getDependencies()
     {
         return array(
-            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadContactData',
-            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadOroUserData',
-            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData'
+            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadContactData',
+            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadOroUserData',
+            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData'
         );
     }
 }

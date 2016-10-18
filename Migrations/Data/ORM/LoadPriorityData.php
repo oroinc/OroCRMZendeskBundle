@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Migrations\Data\ORM;
+namespace Oro\Bundle\ZendeskBundle\Migrations\Data\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
+use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 
 class LoadPriorityData extends AbstractTranslatableEntityFixture
 {
@@ -28,7 +28,7 @@ class LoadPriorityData extends AbstractTranslatableEntityFixture
      */
     protected function loadEntities(ObjectManager $manager)
     {
-        $repository = $manager->getRepository('OroCRMZendeskBundle:TicketPriority');
+        $repository = $manager->getRepository('OroZendeskBundle:TicketPriority');
 
         $translationLocales = $this->getTranslationLocales();
 

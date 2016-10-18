@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport;
+namespace Oro\Bundle\ZendeskBundle\ImportExport;
 
 use Psr\Log\LogLevel;
 
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
-use OroCRM\Bundle\ZendeskBundle\Logger\AbstractLoggerDecorator;
+use Oro\Bundle\ZendeskBundle\Logger\AbstractLoggerDecorator;
 
 class ImportExportLogger extends AbstractLoggerDecorator implements ContextAwareInterface
 {

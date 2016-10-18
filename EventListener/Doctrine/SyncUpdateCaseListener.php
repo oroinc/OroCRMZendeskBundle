@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\EventListener\Doctrine;
+namespace Oro\Bundle\ZendeskBundle\EventListener\Doctrine;
 
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 
 /**
  * This class is responsible for scheduling sync job for Zendesk ticket related to updated case entity.
@@ -67,7 +67,7 @@ class SyncUpdateCaseListener extends AbstractSyncSchedulerListener
         $result = null;
         /** @var CaseEntity $entity */
         if ($entity->getId()) {
-            $result = $this->entityManager->getRepository('OroCRMZendeskBundle:Ticket')
+            $result = $this->entityManager->getRepository('OroZendeskBundle:Ticket')
                 ->findOneBy(['relatedCase' => $entity]);
         }
         return $result;

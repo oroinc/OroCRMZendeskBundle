@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 
 class TicketTest extends \PHPUnit_Framework_TestCase
 {
@@ -69,22 +69,22 @@ class TicketTest extends \PHPUnit_Framework_TestCase
      */
     public function settersAndGettersDataProvider()
     {
-        $zendeskUser = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\User')
+        $zendeskUser = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\User')
             ->disableOriginalConstructor()
             ->getMock();
-        $ticketType = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\TicketType')
+        $ticketType = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\TicketType')
             ->disableOriginalConstructor()
             ->getMock();
-        $ticketStatus = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus')
+        $ticketStatus = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\TicketStatus')
             ->disableOriginalConstructor()
             ->getMock();
-        $ticketPriority = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority')
+        $ticketPriority = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\TicketPriority')
             ->disableOriginalConstructor()
             ->getMock();
-        $case = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Entity\CaseEntity')
+        $case = $this->getMockBuilder('Oro\Bundle\CaseBundle\Entity\CaseEntity')
             ->disableOriginalConstructor()
             ->getMock();
-        $comment = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment')
+        $comment = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\TicketComment')
             ->disableOriginalConstructor()
             ->getMock();
         $ticket = new Ticket();

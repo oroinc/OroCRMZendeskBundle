@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
 class TicketNormalizer extends AbstractNormalizer
 {
@@ -31,38 +31,38 @@ class TicketNormalizer extends AbstractNormalizer
             'problem' => array(
                 'normalize' => false,
                 'normalizeName' => 'problem_id',
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket'
+                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket'
             ),
             'collaborators' => array(
                 'normalizeName' => 'collaborator_ids',
-                'type' => 'ArrayCollection<OroCRM\\Bundle\\ZendeskBundle\\Entity\\User>',
+                'type' => 'ArrayCollection<Oro\\Bundle\\ZendeskBundle\\Entity\\User>',
                 'context' => array('mode' => self::SHORT_MODE),
             ),
             'type' => array(
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketType',
+                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketType',
                 'context' => array('mode' => self::SHORT_MODE),
             ),
             'status' => array(
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketStatus',
+                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketStatus',
                 'context' => array('mode' => self::SHORT_MODE),
             ),
             'priority' => array(
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketPriority',
+                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketPriority',
                 'context' => array('mode' => self::SHORT_MODE),
             ),
             'requester' => array(
                 'normalizeName' => 'requester_id',
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
                 'context' => array('mode' => self::SHORT_MODE),
             ),
             'submitter' => array(
                 'normalizeName' => 'submitter_id',
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
                 'context' => array('mode' => self::SHORT_MODE),
             ),
             'assignee' => array(
                 'normalizeName' => 'assignee_id',
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
                 'context' => array('mode' => self::SHORT_MODE),
             ),
             'due_at' => array(
@@ -110,6 +110,6 @@ class TicketNormalizer extends AbstractNormalizer
      */
     protected function getTargetClassName()
     {
-        return 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket';
+        return 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket';
     }
 }

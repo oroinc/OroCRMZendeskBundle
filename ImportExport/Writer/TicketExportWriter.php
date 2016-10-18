@@ -1,15 +1,14 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Writer;
 
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
-
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
+use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
 class TicketExportWriter extends AbstractExportWriter
 {

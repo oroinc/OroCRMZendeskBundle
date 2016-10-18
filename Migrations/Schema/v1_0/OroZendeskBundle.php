@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Migrations\Schema\v1_0;
+namespace Oro\Bundle\ZendeskBundle\Migrations\Schema\v1_0;
 
 use Doctrine\DBAL\Schema\Schema;
 
 use Oro\Bundle\MigrationBundle\Migration\Migration;
 use Oro\Bundle\MigrationBundle\Migration\QueryBag;
 
-class OroCRMZendeskBundle implements Migration
+class OroZendeskBundle implements Migration
 {
     /**
      * {@inheritdoc}

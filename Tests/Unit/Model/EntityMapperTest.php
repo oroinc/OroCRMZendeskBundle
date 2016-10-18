@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Model;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Model;
 
-use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
+use Oro\Bundle\ZendeskBundle\Model\EntityMapper;
 
 class EntityMapperTest extends \PHPUnit_Framework_TestCase
 {

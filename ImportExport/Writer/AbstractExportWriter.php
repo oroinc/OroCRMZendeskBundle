@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Writer;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Writer;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -18,11 +18,11 @@ use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper;
-use OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
 abstract class AbstractExportWriter implements
     ItemWriterInterface,

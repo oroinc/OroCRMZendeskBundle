@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Migrations\Data\ORM;
+namespace Oro\Bundle\ZendeskBundle\Migrations\Data\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 
 class LoadRolesData extends AbstractTranslatableEntityFixture
 {
@@ -26,7 +26,7 @@ class LoadRolesData extends AbstractTranslatableEntityFixture
      */
     protected function loadEntities(ObjectManager $manager)
     {
-        $repository = $manager->getRepository('OroCRMZendeskBundle:UserRole');
+        $repository = $manager->getRepository('OroZendeskBundle:UserRole');
 
         $translationLocales = $this->getTranslationLocales();
 

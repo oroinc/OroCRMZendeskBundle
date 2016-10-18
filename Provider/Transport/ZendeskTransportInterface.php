@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Provider\Transport;
+namespace Oro\Bundle\ZendeskBundle\Provider\Transport;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\User;
 
 interface ZendeskTransportInterface extends TransportInterface
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
+use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 
 class TicketTypeTest extends \PHPUnit_Framework_TestCase
 {

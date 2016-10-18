@@ -1,17 +1,16 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Serializer\Normalizer;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Serializer\Normalizer;
 
 use Oro\Bundle\ImportExportBundle\Serializer\Serializer;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketNormalizer;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
+use Oro\Bundle\ZendeskBundle\Entity\TicketType;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketNormalizer;
 
 /**
  * @outputBuffering enabled
@@ -42,7 +41,7 @@ class TicketNormalizerTest extends WebTestCase
     {
         $actual = $this->serializer->deserialize(
             $normalized,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+            'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
             null
         );
 

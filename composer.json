@@ -1,9 +1,9 @@
 {
     "name": "oro/crm-zendesk",
     "description": "OroCRM Zendesk Integration",
-    "homepage": "https://github.com/orocrm/OroCRMZendeskBundle.git",
+    "homepage": "https://github.com/orocrm/OroZendeskBundle.git",
     "license": "OSL-3.0",
-    "keywords": ["OroCRM", "Zendesk", "Integration"],
+    "keywords": ["Oro", "Zendesk", "Integration"],
     "authors": [
         {
             "name": "Oro, Inc",
@@ -12,10 +12,10 @@
     ],
     "autoload": {
         "psr-0": {
-            "OroCRM\\Bundle\\ZendeskBundle": "src/"
+            "Oro\\Bundle\\ZendeskBundle": "src/"
         }
     },
-    "target-dir": "src/OroCRM/Bundle/ZendeskBundle",
+    "target-dir": "src/Oro/Bundle/ZendeskBundle",
     "require": {
         "php": ">=5.5.9",
         "oro/crm": "1.x-dev"

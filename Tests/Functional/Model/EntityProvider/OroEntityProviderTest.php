@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\Model\EntityProvider;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\Model\EntityProvider;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 
 /**
  * @dbIsolation
@@ -27,12 +27,12 @@ class OroEntityProviderTest extends WebTestCase
         $this->initClient();
         $this->loadFixtures(
             array(
-                'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData'
+                'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData'
             )
         );
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->target = $this->getContainer()
-            ->get('orocrm_zendesk.entity_provider.oro');
+            ->get('oro_zendesk.entity_provider.oro');
     }
 
     /**
@@ -43,7 +43,7 @@ class OroEntityProviderTest extends WebTestCase
         $user->setChannel($this->channel);
         $defaultOwner = $this->channel->getDefaultUserOwner();
         $contact = $this->target->getContact($user);
-        $this->assertInstanceOf('OroCRM\Bundle\ContactBundle\Entity\Contact', $contact);
+        $this->assertInstanceOf('Oro\Bundle\ContactBundle\Entity\Contact', $contact);
         $this->assertEquals(
             $expected['phone'],
             $contact->getPrimaryPhone()

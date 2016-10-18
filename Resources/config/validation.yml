@@ -1,4 +1,4 @@
-OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport:
+Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport:
     properties:
         url:
           - NotBlank: ~

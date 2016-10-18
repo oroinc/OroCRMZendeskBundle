@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -9,8 +9,7 @@ use Psr\Log\NullLogger;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 
-use OroCRM\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
-
+use Oro\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
 use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\ImportExportBundle\Processor\ContextAwareProcessor;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
