@@ -142,7 +142,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $case = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
         $firstComment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
         $secondComment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
-        $comments = array(
+        $comments = [
             $firstComment,
             $secondComment
         ];
