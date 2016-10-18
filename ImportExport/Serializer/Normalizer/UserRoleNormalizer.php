@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
 class UserRoleNormalizer extends AbstractNormalizer
 {
@@ -21,6 +21,6 @@ class UserRoleNormalizer extends AbstractNormalizer
      */
     protected function getTargetClassName()
     {
-        return 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\UserRole';
+        return 'Oro\\Bundle\\ZendeskBundle\\Entity\\UserRole';
     }
 }

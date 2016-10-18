@@ -1,18 +1,17 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketCommentExportWriter;
-
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
+use Oro\Bundle\ZendeskBundle\Entity\TicketType;
+use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketCommentExportWriter;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 
@@ -59,7 +58,7 @@ class TicketCommentExportWriterTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
+        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
@@ -71,7 +70,7 @@ class TicketCommentExportWriterTest extends WebTestCase
             ->will($this->returnValueMap([['channel', null, $this->channel->getId()]]));
 
         $this->transport =
-            $this->getMock('OroCRM\\Bundle\\ZendeskBundle\\Provider\\Transport\\ZendeskTransportInterface');
+            $this->getMock('Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\ZendeskTransportInterface');
 
         $this->logger = $this->getMock('Psr\\Log\\LoggerInterface');
 
@@ -85,17 +84,17 @@ class TicketCommentExportWriterTest extends WebTestCase
                 )
             );
 
-        $this->getContainer()->set('orocrm_zendesk.transport.rest_transport', $this->transport);
+        $this->getContainer()->set('oro_zendesk.transport.rest_transport', $this->transport);
 
-        $this->writer = $this->getContainer()->get('orocrm_zendesk.importexport.writer.export_ticket_comment');
+        $this->writer = $this->getContainer()->get('oro_zendesk.importexport.writer.export_ticket_comment');
         $this->writer->setImportExportContext($this->context);
         $this->writer->setLogger($this->logger);
     }
 
     protected function tearDown()
     {
-        $this->getContainer()->set('orocrm_zendesk.transport.rest_transport', null);
-        $this->getContainer()->set('orocrm_zendesk.importexport.writer.export_ticket_comment', null);
+        $this->getContainer()->set('oro_zendesk.transport.rest_transport', null);
+        $this->getContainer()->set('oro_zendesk.importexport.writer.export_ticket_comment', null);
         $this->logOutput = null;
 
         parent::tearDown();
@@ -232,7 +231,7 @@ class TicketCommentExportWriterTest extends WebTestCase
     {
         $ticketComment = $this->getReference('zendesk_ticket_42_comment_4');
         $author = $ticketComment->getAuthor();
-        $author->setRole($this->registry->getRepository('OroCRMZendeskBundle:UserRole')->find(UserRole::ROLE_AGENT));
+        $author->setRole($this->registry->getRepository('OroZendeskBundle:UserRole')->find(UserRole::ROLE_AGENT));
 
         $this->transport->expects($this->never())->method('createUser');
 

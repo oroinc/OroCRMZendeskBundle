@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet;
+namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;

@@ -1,5 +1,5 @@
 parameters:
-    orocrm_zendesk.name_suffixes:
+    oro_zendesk.name_suffixes:
         - Jr
         - Sr
         - Jnr

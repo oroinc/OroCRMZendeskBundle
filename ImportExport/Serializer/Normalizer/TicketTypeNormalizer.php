@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
 class TicketTypeNormalizer extends AbstractNormalizer
 {
@@ -21,6 +21,6 @@ class TicketTypeNormalizer extends AbstractNormalizer
      */
     protected function getTargetClassName()
     {
-        return 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketType';
+        return 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketType';
     }
 }

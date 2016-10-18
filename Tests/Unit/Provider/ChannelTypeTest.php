@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Provider;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider;
 
-use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 
 class ChannelTypeTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,6 +16,6 @@ class ChannelTypeTest extends \PHPUnit_Framework_TestCase
 
     public function testPublicInterface()
     {
-        $this->assertEquals('orocrm.zendesk.channel_type.label', $this->channel->getLabel());
+        $this->assertEquals('oro.zendesk.channel_type.label', $this->channel->getLabel());
     }
 }

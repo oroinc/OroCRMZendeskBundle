@@ -1,17 +1,17 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
-use OroCRM\Bundle\CaseBundle\Entity\CasePriority;
-use OroCRM\Bundle\CaseBundle\Entity\CaseStatus;
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketProcessor;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Entity\CasePriority;
+use Oro\Bundle\CaseBundle\Entity\CaseStatus;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketProcessor;
 
 /**
  * @outputBuffering enabled
@@ -43,10 +43,10 @@ class ExportTicketProcessorTest extends WebTestCase
     {
         $this->initClient();
 
-        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
         $this->context = $this->getMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
 
-        $this->processor = $this->getContainer()->get('orocrm_zendesk.importexport.processor.export_ticket');
+        $this->processor = $this->getContainer()->get('oro_zendesk.importexport.processor.export_ticket');
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->previousEmail = $this->channel->getTransport()->getZendeskUserEmail();
         $this->context->expects($this->any())
@@ -207,7 +207,7 @@ class ExportTicketProcessorTest extends WebTestCase
         /**
          * @var Ticket $ticket
          */
-        $ticket = $this->getReference('orocrm_zendesk:ticket_43');
+        $ticket = $this->getReference('oro_zendesk:ticket_43');
         $ticket->setRequester(null);
         $actual = $this->processor->process($ticket);
         $this->assertNotEmpty($actual);
@@ -219,7 +219,7 @@ class ExportTicketProcessorTest extends WebTestCase
         /**
          * @var Ticket $ticket
          */
-        $ticket = $this->getReference('orocrm_zendesk:ticket_43');
+        $ticket = $this->getReference('oro_zendesk:ticket_43');
         $ticket->getRelatedCase()->setRelatedContact($this->getReference('contact:alex.johnson@example.com'));
         $actual = $this->processor->process($ticket);
         $this->assertNotNull($actual->getRequester());

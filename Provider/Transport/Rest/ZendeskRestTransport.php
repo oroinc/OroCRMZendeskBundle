@@ -1,17 +1,16 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest;
+namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Transport\AbstractRestTransport;
-
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\RestException;
-use OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\RestException;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
 /**
  * @link http://developer.zendesk.com/documentation/rest_api/introduction.html
@@ -57,7 +56,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             ]
         );
 
-        $result->setupDeserialization($this->serializer, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User');
+        $result->setupDeserialization($this->serializer, 'Oro\\Bundle\\ZendeskBundle\\Entity\\User');
 
         return $result;
     }
@@ -82,7 +81,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             ]
         );
 
-        $result->setupDeserialization($this->serializer, 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket');
+        $result->setupDeserialization($this->serializer, 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket');
 
         return $result;
     }
@@ -105,7 +104,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
 
         $result->setupDeserialization(
             $this->serializer,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
+            'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
             ['ticket_id' => $ticketId]
         );
 
@@ -122,7 +121,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
 
         return $this->serializer->deserialize(
             $this->createEntity('users.json', 'user', $userData),
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+            'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
             null
         );
     }
@@ -141,7 +140,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
 
         $resultTicket = $this->serializer->deserialize(
             $ticketData,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+            'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
             null
         );
 
@@ -149,7 +148,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         if ($commentData) {
             $resultComment = $this->serializer->deserialize(
                 $commentData,
-                'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
+                'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
                 null
             );
         }
@@ -188,7 +187,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
 
         return $this->serializer->deserialize(
             $ticketData,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+            'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
             null
         );
     }
@@ -209,7 +208,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
 
         return $this->serializer->deserialize(
             $updatedTicketData,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+            'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
             null
         );
     }
@@ -240,7 +239,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
 
         return $this->serializer->deserialize(
             $createdTicketData,
-            'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
+            'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
             null
         );
     }
@@ -359,7 +358,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      */
     public function getLabel()
     {
-        return 'orocrm.zendesk.transport.rest.label';
+        return 'oro.zendesk.transport.rest.label';
     }
 
     /**
@@ -367,7 +366,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      */
     public function getSettingsFormType()
     {
-        return 'orocrm_zendesk_rest_transport_setting_form_type';
+        return 'oro_zendesk_rest_transport_setting_form_type';
     }
 
     /**
@@ -375,7 +374,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      */
     public function getSettingsEntityFQCN()
     {
-        return 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\ZendeskRestTransport';
+        return 'Oro\\Bundle\\ZendeskBundle\\Entity\\ZendeskRestTransport';
     }
 
     /**

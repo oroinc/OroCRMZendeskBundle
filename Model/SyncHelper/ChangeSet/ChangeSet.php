@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet;
+namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -148,7 +148,7 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
             throw new \InvalidArgumentException(
                 sprintf(
                     '$value must be an instance of %s, but %s given.',
-                    'OroCRM\\Bundle\\ZendeskBundle\\Model\\SyncHelper\\ChangeSet\\ChangeValue',
+                    'Oro\\Bundle\\ZendeskBundle\\Model\\SyncHelper\\ChangeSet\\ChangeValue',
                     is_object($value) ? get_class($value) : gettype($value)
                 )
             );

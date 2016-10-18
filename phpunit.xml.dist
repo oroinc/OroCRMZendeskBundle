@@ -13,7 +13,7 @@
         >
 
     <testsuites>
-        <testsuite name="OroCRMZendeskBundle Test Suite">
+        <testsuite name="OroZendeskBundle Test Suite">
             <directory>./Tests/Unit</directory>
         </testsuite>
     </testsuites>

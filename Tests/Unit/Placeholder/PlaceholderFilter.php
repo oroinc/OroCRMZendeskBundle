@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Placeholder\Filter;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Placeholder\Filter;
 
-use OroCRM\Bundle\ZendeskBundle\Placeholder\PlaceholderFilter;
+use Oro\Bundle\ZendeskBundle\Placeholder\PlaceholderFilter;
 
 class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,11 +24,11 @@ class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->oroProvider = $this->getMockBuilder(
-            'OroCRM\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\OroEntityProvider'
+            'Oro\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\OroEntityProvider'
         )->disableOriginalConstructor()->getMock();
 
         $this->zendeskProvider = $this->getMockBuilder(
-            'OroCRM\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\ZendeskEntityProvider'
+            'Oro\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\ZendeskEntityProvider'
         )->disableOriginalConstructor()->getMock();
 
         $this->filter = new PlaceholderFilter($this->oroProvider, $this->zendeskProvider);
@@ -46,8 +46,8 @@ class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 
     public function testTicketAvailable()
     {
-        $entity = $this->getMock('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseEntity');
-        $ticket = $this->getMock('OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket');
+        $entity = $this->getMock('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity');
+        $ticket = $this->getMock('Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket');
 
         $this->zendeskProvider->expects($this->once())
             ->method('getTicketByCase')
@@ -59,7 +59,7 @@ class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 
     public function testTicketNotAvailable()
     {
-        $entity = $this->getMock('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseEntity');
+        $entity = $this->getMock('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity');
 
         $this->zendeskProvider->expects($this->once())
             ->method('getTicketByCase')
@@ -81,7 +81,7 @@ class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncApplicable()
     {
-        $entity = $this->getMock('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseEntity');
+        $entity = $this->getMock('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity');
         $channel = $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel');
 
         $this->zendeskProvider->expects($this->once())
@@ -98,7 +98,7 @@ class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncNotApplicable()
     {
-        $entity = $this->getMock('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseEntity');
+        $entity = $this->getMock('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity');
 
         $this->zendeskProvider->expects($this->once())
             ->method('getTicketByCase')
@@ -114,8 +114,8 @@ class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncNotApplicableForExistingTicket()
     {
-        $entity = $this->getMock('OroCRM\\Bundle\\CaseBundle\\Entity\\CaseEntity');
-        $ticket = $this->getMock('OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket');
+        $entity = $this->getMock('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity');
+        $ticket = $this->getMock('Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket');
 
         $this->zendeskProvider->expects($this->once())
             ->method('getTicketByCase')

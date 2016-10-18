@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Model\EntityProvider;
+namespace Oro\Bundle\ZendeskBundle\Model\EntityProvider;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -8,12 +8,12 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\UserBundle\Entity\Email;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
-use OroCRM\Bundle\ContactBundle\Entity\ContactEmail;
-use OroCRM\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
-use OroCRM\Bundle\ContactBundle\Entity\Contact;
-use OroCRM\Bundle\ContactBundle\Entity\ContactPhone;
-use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\ContactBundle\Entity\ContactEmail;
+use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
+use Oro\Bundle\ContactBundle\Entity\Contact;
+use Oro\Bundle\ContactBundle\Entity\ContactPhone;
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 
 class OroEntityProvider
 {
@@ -101,7 +101,7 @@ class OroEntityProvider
             return null;
         }
 
-        $contactEmails = $this->registry->getRepository('OroCRMContactBundle:ContactEmail')
+        $contactEmails = $this->registry->getRepository('OroContactBundle:ContactEmail')
             ->findBy(
                 array(
                     'email' => $user->getEmail()
@@ -177,7 +177,7 @@ class OroEntityProvider
     public function getAccountByContact(Contact $contact)
     {
         /** @var EntityRepository $repository */
-        $repository = $this->registry->getRepository('OroCRMAccountBundle:Account');
+        $repository = $this->registry->getRepository('OroAccountBundle:Account');
         $qb         = $repository->createQueryBuilder('account');
         $qb->where('account.defaultContact = :contact')
             ->setMaxResults(1)
@@ -205,7 +205,7 @@ class OroEntityProvider
      */
     public function getCaseById($id)
     {
-        return $this->registry->getManager()->find('OroCRMCaseBundle:CaseEntity', $id);
+        return $this->registry->getManager()->find('OroCaseBundle:CaseEntity', $id);
     }
 
     /**

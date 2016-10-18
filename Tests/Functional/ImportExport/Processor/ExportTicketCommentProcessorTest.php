@@ -1,14 +1,14 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\UserBundle\Entity\User;
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
-use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
-use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketCommentProcessor;
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
+use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketCommentProcessor;
 
 /**
  * @outputBuffering enabled
@@ -40,12 +40,12 @@ class ExportTicketCommentProcessorTest extends WebTestCase
     {
         $this->initClient();
 
-        $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
         $this->context = $this->getMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
 
 
         $this->processor = $this->getContainer()
-            ->get('orocrm_zendesk.importexport.processor.export_ticket_comment');
+            ->get('oro_zendesk.importexport.processor.export_ticket_comment');
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->previousEmail = $this->channel->getTransport()->getZendeskUserEmail();
@@ -91,7 +91,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $ticketComment = $this->createTicketComment($expectedMessage, $userWithoutZendeskUser);
         $actual = $this->processor->process($ticketComment);
 
-        $this->assertInstanceOf('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
+        $this->assertInstanceOf('Oro\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
         $this->assertEquals($expectedMessage, $actual->getBody());
         $this->assertTrue($actual->getPublic());
         $this->assertEquals($expectedAuthor, $actual->getAuthor());
@@ -106,7 +106,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $ticketComment = $this->createTicketComment($expectedMessage, $owner);
         $actual = $this->processor->process($ticketComment);
 
-        $this->assertInstanceOf('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
+        $this->assertInstanceOf('Oro\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
         $this->assertEquals($expectedMessage, $actual->getBody());
         $this->assertTrue($actual->getPublic());
         $this->assertEquals($expectedAuthor, $actual->getAuthor());
@@ -129,7 +129,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
             ->setContact($this->getReference('contact:jim.smith@example.com'));
         $actual = $this->processor->process($ticketComment);
 
-        $this->assertInstanceOf('OroCRM\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
+        $this->assertInstanceOf('Oro\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
         $this->assertEquals($expectedMessage, $actual->getBody());
         $this->assertTrue($actual->getPublic());
         $this->assertEquals($expectedAuthor, $actual->getAuthor());
@@ -138,7 +138,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
     // @codingStandardsIgnoreStart
     /**
      * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Imported entity must be instance of OroCRM\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.
+     * @expectedExceptionMessage Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.
      */
     // @codingStandardsIgnoreEnd
     public function testProcessReturnExceptionIfInvalidEntityType()

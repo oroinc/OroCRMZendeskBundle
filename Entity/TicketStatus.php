@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Entity;
+namespace Oro\Bundle\ZendeskBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,7 +13,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 /**
  * @ORM\Entity
  * @ORM\Table(name="orocrm_zd_ticket_status")
- * @Gedmo\TranslationEntity(class="OroCRM\Bundle\ZendeskBundle\Entity\TicketStatusTranslation")
+ * @Gedmo\TranslationEntity(class="Oro\Bundle\ZendeskBundle\Entity\TicketStatusTranslation")
  * @Config(
  *      defaultValues={
  *          "grouping"={

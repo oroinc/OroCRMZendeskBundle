@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Logger;
+namespace Oro\Bundle\ZendeskBundle\Logger;
 
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;

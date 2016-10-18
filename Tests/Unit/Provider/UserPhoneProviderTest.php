@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Provider;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Provider\UserPhoneProvider;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Provider\UserPhoneProvider;
 
 class UserPhoneProviderTest extends \PHPUnit_Framework_TestCase
 {

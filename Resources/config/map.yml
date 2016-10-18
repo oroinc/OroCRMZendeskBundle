@@ -1,5 +1,5 @@
 parameters:
-    orocrm_zendesk.map:
+    oro_zendesk.map:
         status:
             -
               case:   open

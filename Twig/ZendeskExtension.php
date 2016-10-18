@@ -1,14 +1,14 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Twig;
+namespace Oro\Bundle\ZendeskBundle\Twig;
 
 use Guzzle\Http\Url;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
-use OroCRM\Bundle\ZendeskBundle\Exception\ConfigurationException;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
+use Oro\Bundle\ZendeskBundle\Exception\ConfigurationException;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 
 class ZendeskExtension extends \Twig_Extension
 {
@@ -34,14 +34,14 @@ class ZendeskExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction(
-                'orocrm_zendesk_enabled_two_way_sync_channels',
+                'oro_zendesk_enabled_two_way_sync_channels',
                 [$this->oroProvider, 'getEnabledTwoWaySyncChannels']
             ),
             new \Twig_SimpleFunction(
-                'orocrm_zendesk_ticket_by_related_case',
+                'oro_zendesk_ticket_by_related_case',
                 [$this->zendeskProvider, 'getTicketByCase']
             ),
-            new \Twig_SimpleFunction('orocrm_zendesk_ticket_url', [$this, 'getTicketUrl']),
+            new \Twig_SimpleFunction('oro_zendesk_ticket_url', [$this, 'getTicketUrl']),
         );
     }
 
@@ -50,7 +50,7 @@ class ZendeskExtension extends \Twig_Extension
      */
     public function getName()
     {
-        return 'orocrm_zendesk';
+        return 'oro_zendesk';
     }
 
     /**
