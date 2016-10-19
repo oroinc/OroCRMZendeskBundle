@@ -1,15 +1,14 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Entity;
+namespace Oro\Bundle\ZendeskBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
-
 use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
-use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
 
 /**
  * @ORM\Entity
@@ -122,7 +121,7 @@ class TicketComment
     /**
      * @var CaseComment
      *
-     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CaseBundle\Entity\CaseComment", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Oro\Bundle\CaseBundle\Entity\CaseComment", cascade={"persist"})
      * @ORM\JoinColumn(name="related_comment_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedComment;

@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
+use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 
 class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
 {

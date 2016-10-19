@@ -1,17 +1,16 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Processor;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
-
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
-use OroCRM\Bundle\ZendeskBundle\Model\EntityMapper;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeValue;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
-use OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Model\EntityMapper;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeValue;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
 class ExportTicketProcessor extends AbstractExportProcessor
 {
@@ -55,7 +54,7 @@ class ExportTicketProcessor extends AbstractExportProcessor
         if (!$ticket instanceof Ticket) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Imported entity must be instance of OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket, %s given.',
+                    'Imported entity must be instance of Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket, %s given.',
                     is_object($ticket) ? get_class($ticket) : gettype($ticket)
                 )
             );

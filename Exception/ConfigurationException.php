@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Exception;
+namespace Oro\Bundle\ZendeskBundle\Exception;
 
 class ConfigurationException extends \Exception implements ZendeskException
 {

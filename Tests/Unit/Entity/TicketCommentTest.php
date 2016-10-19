@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 
 class TicketCommentTest extends \PHPUnit_Framework_TestCase
 {
@@ -67,13 +67,13 @@ class TicketCommentTest extends \PHPUnit_Framework_TestCase
      */
     public function settersAndGettersDataProvider()
     {
-        $zendeskUser = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\User')
+        $zendeskUser = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\User')
             ->disableOriginalConstructor()
             ->getMock();
-        $ticket = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Entity\Ticket')
+        $ticket = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\Ticket')
             ->disableOriginalConstructor()
             ->getMock();
-        $comment = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Entity\CaseComment')
+        $comment = $this->getMockBuilder('Oro\Bundle\CaseBundle\Entity\CaseComment')
             ->disableOriginalConstructor()
             ->getMock();
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Unit\EventListener\CaseEntity;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\EventListener\CaseEntity;
 
-use OroCRM\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener;
-use OroCRM\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
+use Oro\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener;
+use Oro\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
 
 class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,11 +24,11 @@ class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->syncManager = $this->getMockBuilder('OroCRM\Bundle\ZendeskBundle\Model\SyncManager')
+        $this->syncManager = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncManager')
             ->disableOriginalConstructor()
             ->getMock();
         $this->oroEntityProvider = $this->getMockBuilder(
-            'OroCRM\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider'
+            'Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider'
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -37,11 +37,11 @@ class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testBeforeSaveStartCommentJobIfEntityIsComment()
     {
-        $formHandlerEvent = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Event\FormHandlerEvent')
+        $formHandlerEvent = $this->getMockBuilder('Oro\Bundle\CaseBundle\Event\FormHandlerEvent')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entity = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseComment');
+        $entity = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
         $formHandlerEvent->expects($this->once())
             ->method('getEntity')
             ->will($this->returnValue($entity));
@@ -54,11 +54,11 @@ class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
     public function testBeforeSaveStartCommentJobIfEntityIsCase()
     {
         $expectedId = 42;
-        $formHandlerEvent = $this->getMockBuilder('OroCRM\Bundle\CaseBundle\Event\FormHandlerEvent')
+        $formHandlerEvent = $this->getMockBuilder('Oro\Bundle\CaseBundle\Event\FormHandlerEvent')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entity = $this->getMock('OroCRM\Bundle\CaseBundle\Entity\CaseEntity');
+        $entity = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
         $form = $this->getMockBuilder('Symfony\Component\Form\Form')
             ->disableOriginalConstructor()
             ->getMock();

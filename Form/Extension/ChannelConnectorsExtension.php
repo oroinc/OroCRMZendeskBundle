@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Form\Extension;
+namespace Oro\Bundle\ZendeskBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
-use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 
 class ChannelConnectorsExtension extends AbstractTypeExtension
 {

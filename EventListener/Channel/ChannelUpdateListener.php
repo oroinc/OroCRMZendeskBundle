@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\EventListener\Channel;
+namespace Oro\Bundle\ZendeskBundle\EventListener\Channel;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\ZendeskBundle\Provider\ChannelType;
-use OroCRM\Bundle\ZendeskBundle\Model\SyncManager;
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
+use Oro\Bundle\ZendeskBundle\Model\SyncManager;
 use Oro\Bundle\IntegrationBundle\Event\IntegrationUpdateEvent;
 
 class ChannelUpdateListener implements EventSubscriberInterface

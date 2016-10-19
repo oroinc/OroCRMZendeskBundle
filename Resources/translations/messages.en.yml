@@ -1,4 +1,4 @@
-orocrm:
+oro:
     zendesk:
         ticket_info_title: Zendesk ticket info
         ticket:
@@ -127,7 +127,7 @@ orocrm:
             cron_schedule:
                 tooltip: Synchronization Cron schedule
             zendesk_user_email:
-                description: Email of Zendesk user that will be used by default when relevant user linked with OroCRM wasn't found
+                description: Email of Zendesk user that will be used by default when relevant user linked with Oro wasn't found
 
         channel_type.label: 'Zendesk'
         connector:

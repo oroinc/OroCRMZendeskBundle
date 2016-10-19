@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Provider;
+namespace Oro\Bundle\ZendeskBundle\Provider;
 
 use Oro\Bundle\AddressBundle\Provider\PhoneProviderInterface;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\User;
 
 class UserPhoneProvider implements PhoneProviderInterface
 {

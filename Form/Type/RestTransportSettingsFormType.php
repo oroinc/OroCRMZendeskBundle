@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Form\Type;
+namespace Oro\Bundle\ZendeskBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class RestTransportSettingsFormType extends AbstractType
 {
-    const NAME = 'orocrm_zendesk_rest_transport_setting_form_type';
+    const NAME = 'oro_zendesk_rest_transport_setting_form_type';
 
     /**
      * {@inheritdoc}
@@ -19,17 +19,17 @@ class RestTransportSettingsFormType extends AbstractType
             'url',
             'url',
             [
-                'label' => 'orocrm.zendesk.zendeskresttransport.url.label',
+                'label' => 'oro.zendesk.zendeskresttransport.url.label',
                 'required' => true,
-                'tooltip' => 'orocrm.zendesk.form.zendesk_url.description',
+                'tooltip' => 'oro.zendesk.form.zendesk_url.description',
             ]
         );
         $builder->add(
             'email',
             'email',
             [
-                'label' => 'orocrm.zendesk.zendeskresttransport.email.label',
-                'tooltip' => 'orocrm.zendesk.form.email.description',
+                'label' => 'oro.zendesk.zendeskresttransport.email.label',
+                'tooltip' => 'oro.zendesk.form.email.description',
                 'required' => true,
             ]
         );
@@ -37,8 +37,8 @@ class RestTransportSettingsFormType extends AbstractType
             'token',
             'text',
             [
-                'label' => 'orocrm.zendesk.zendeskresttransport.token.label',
-                'tooltip' => 'orocrm.zendesk.form.token.description',
+                'label' => 'oro.zendesk.zendeskresttransport.token.label',
+                'tooltip' => 'oro.zendesk.form.token.description',
                 'required' => true
             ]
         );
@@ -46,8 +46,8 @@ class RestTransportSettingsFormType extends AbstractType
             'zendeskUserEmail',
             'text',
             [
-                'label' => 'orocrm.zendesk.zendeskresttransport.zendesk_user_email.label',
-                'tooltip' => 'orocrm.zendesk.form.zendesk_user_email.description',
+                'label' => 'oro.zendesk.zendeskresttransport.zendesk_user_email.label',
+                'tooltip' => 'oro.zendesk.form.zendesk_user_email.description',
                 'required' => true
             ]
         );
@@ -58,7 +58,7 @@ class RestTransportSettingsFormType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(['data_class' => 'OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport']);
+        $resolver->setDefaults(['data_class' => 'Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport']);
     }
 
     /**

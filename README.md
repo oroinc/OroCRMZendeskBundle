@@ -1,4 +1,4 @@
-OroCRMZendeskBundle
+OroZendeskBundle
 ===================
 
 Integration with Zendesk (https://www.zendesk.com/).

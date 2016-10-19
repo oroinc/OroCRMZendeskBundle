@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
+use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 
 class LoadTransportData extends AbstractZendeskFixture
 {

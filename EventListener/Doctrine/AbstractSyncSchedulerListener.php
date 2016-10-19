@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\EventListener\Doctrine;
+namespace Oro\Bundle\ZendeskBundle\EventListener\Doctrine;
 
 use Doctrine\ORM\Events;
 use Doctrine\Common\EventSubscriber;
@@ -14,7 +14,7 @@ use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\SecurityBundle\SecurityFacade;
 
 /**
- * This class is responsible for scheduling sync job of integration entity of Zendesk related to OroCRM entity.
+ * This class is responsible for scheduling sync job of integration entity of Zendesk related to Oro entity.
  */
 abstract class AbstractSyncSchedulerListener implements EventSubscriber
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\IntegrationBundle\Entity\Status;
-use OroCRM\Bundle\ZendeskBundle\Provider\TicketConnector;
-use OroCRM\Bundle\ZendeskBundle\Provider\UserConnector;
+use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
+use Oro\Bundle\ZendeskBundle\Provider\UserConnector;
 
 class LoadSyncStatusData extends AbstractZendeskFixture implements DependentFixtureInterface
 {
@@ -79,7 +79,7 @@ class LoadSyncStatusData extends AbstractZendeskFixture implements DependentFixt
     public function getDependencies()
     {
         return array(
-            'OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData'
+            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData'
         );
     }
 }

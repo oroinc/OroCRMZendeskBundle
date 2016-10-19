@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Model\SyncHelper;
+namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\ZendeskBundle\Entity\User;
-use OroCRM\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
 
 class UserSyncHelper extends AbstractSyncHelper
 {

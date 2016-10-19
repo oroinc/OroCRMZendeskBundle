@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
+namespace Oro\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
-use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
-use OroCRM\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\AbstractZendeskFixture;
+use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
+use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\AbstractZendeskFixture;
 
 class LoadTransportData extends AbstractZendeskFixture
 {
@@ -15,7 +15,7 @@ class LoadTransportData extends AbstractZendeskFixture
             'email' => 'demo@mail.com',
             'token' => 'c8541140-fdfe-11e3-a3ac-0800200c9a66',
             'zendeskUserEmail' => 'demo_user@mail.com',
-            'reference' => 'orocrm_zendesk:zendesk_demo_transport'
+            'reference' => 'oro_zendesk:zendesk_demo_transport'
         )
     );
     /**

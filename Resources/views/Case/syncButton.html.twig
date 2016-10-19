@@ -1,5 +1,5 @@
 {% if resource_granted('EDIT', entity) %}
-    {% set channels = orocrm_zendesk_enabled_two_way_sync_channels() %}
+    {% set channels = oro_zendesk_enabled_two_way_sync_channels() %}
     {% set firstChannel = channels|first %}
     <div class="btn-group zendesk-integration-btn-group">
         <a type="button"
@@ -7,7 +7,7 @@
            href="#"
            data-channel-id="{{ firstChannel.id }}"
         >
-           <i class="icon-upload-alt  hide-text"></i>{{ "orocrm.zendesk.form.sync_to_zendesk.label"|trans }}
+           <i class="icon-upload-alt  hide-text"></i>{{ "oro.zendesk.form.sync_to_zendesk.label"|trans }}
         </a>
         <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
             <span class="caret"></span>
@@ -36,13 +36,13 @@
                     mediator.execute('showLoading');
                     $.post(url, function(res, status, jqXHR) {
                         mediator.once('page:afterChange', function(){
-                            messenger.notificationFlashMessage('success', __('orocrm.zendesk.reverse_sync.success_message'));
+                            messenger.notificationFlashMessage('success', __('oro.zendesk.reverse_sync.success_message'));
                         });
                         mediator.execute('refreshPage', {restore: true});
                     }).always(function () {
                         mediator.execute('hideLoading');
                     }).fail(function(){
-                        messenger.notificationFlashMessage('error', __('orocrm.zendesk.reverse_sync.fail_message'));
+                        messenger.notificationFlashMessage('error', __('oro.zendesk.reverse_sync.fail_message'));
                     });
 
                     return false;

@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\DependencyInjection;
+namespace Oro\Bundle\ZendeskBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-class OroCRMZendeskExtension extends Extension
+class OroZendeskExtension extends Extension
 {
     /**
      * {@inheritDoc}

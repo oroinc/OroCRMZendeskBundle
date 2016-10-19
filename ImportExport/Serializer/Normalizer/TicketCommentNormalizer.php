@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
+namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
 class TicketCommentNormalizer extends AbstractNormalizer
 {
@@ -16,7 +16,7 @@ class TicketCommentNormalizer extends AbstractNormalizer
             ),
             'author' => array(
                 'normalizeName' => 'author_id',
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\User',
+                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
                 'context' => array('mode' => self::SHORT_MODE),
             ),
             'body',
@@ -33,7 +33,7 @@ class TicketCommentNormalizer extends AbstractNormalizer
             ),
             'ticket' => array(
                 'normalizeName' => 'ticket_id',
-                'type' => 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\Ticket',
+                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
                 'context' => array('mode' => self::SHORT_MODE),
             )
         );
@@ -55,6 +55,6 @@ class TicketCommentNormalizer extends AbstractNormalizer
      */
     protected function getTargetClassName()
     {
-        return 'OroCRM\\Bundle\\ZendeskBundle\\Entity\\TicketComment';
+        return 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment';
     }
 }

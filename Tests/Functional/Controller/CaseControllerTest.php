@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\ZendeskBundle\Tests\Functional\Controller;
+namespace Oro\Bundle\ZendeskBundle\Tests\Functional\Controller;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
-use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 /**
@@ -40,16 +40,16 @@ class CaseControllerTest extends WebTestCase
         $this->initClient(array(), $this->generateBasicAuthHeader());
         $this->client->useHashNavigation(true);
 
-        $this->loadFixtures(array('OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'));
-        $this->caseWithTicket = $this->getReference('orocrm_zendesk:case_1');
-        $this->caseWithoutTicket = $this->getReference('orocrm_zendesk:case_3');
+        $this->loadFixtures(array('Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'));
+        $this->caseWithTicket = $this->getReference('oro_zendesk:case_1');
+        $this->caseWithoutTicket = $this->getReference('oro_zendesk:case_3');
     }
 
     public function testViewWithoutLinkedTicket()
     {
         $crawler = $this->client->request(
             'GET',
-            $this->getUrl('orocrm_case_view', array('id' => $this->caseWithoutTicket->getId()))
+            $this->getUrl('oro_case_view', array('id' => $this->caseWithoutTicket->getId()))
         );
 
         $result = $this->client->getResponse();
@@ -64,12 +64,12 @@ class CaseControllerTest extends WebTestCase
     {
         /** @var Ticket $expectedTicket */
         $expectedTicket = $this->getContainer()->get('doctrine')
-            ->getRepository('OroCRMZendeskBundle:Ticket')->findOneByOriginId(42);
+            ->getRepository('OroZendeskBundle:Ticket')->findOneByOriginId(42);
         $this->assertNotNull($expectedTicket);
 
         $crawler = $this->client->request(
             'GET',
-            $this->getUrl('orocrm_case_view', array('id' => $this->caseWithTicket->getId()))
+            $this->getUrl('oro_case_view', array('id' => $this->caseWithTicket->getId()))
         );
         $result = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
@@ -117,7 +117,7 @@ class CaseControllerTest extends WebTestCase
     {
         $crawler = $this->client->request(
             'GET',
-            $this->getUrl('orocrm_case_update', array('id' => $this->caseWithoutTicket->getId()))
+            $this->getUrl('oro_case_update', array('id' => $this->caseWithoutTicket->getId()))
         );
 
         $result = $this->client->getResponse();
@@ -130,7 +130,7 @@ class CaseControllerTest extends WebTestCase
     {
         $crawler = $this->client->request(
             'GET',
-            $this->getUrl('orocrm_case_update', array('id' => $this->caseWithTicket->getId()))
+            $this->getUrl('oro_case_update', array('id' => $this->caseWithTicket->getId()))
         );
 
         $result = $this->client->getResponse();

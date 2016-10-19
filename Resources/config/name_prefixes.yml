@@ -1,5 +1,5 @@
 parameters:
-    orocrm_zendesk.name_prefixes:
+    oro_zendesk.name_prefixes:
         - Mr
         - Mrs
         - Ms
