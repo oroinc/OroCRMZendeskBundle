@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 
@@ -15,7 +14,6 @@ use Oro\Bundle\IntegrationBundle\Entity\Transport;
  *
  * @ORM\Entity
  * @Config()
- * @Oro\Loggable()
  */
 class ZendeskRestTransport extends Transport
 {
@@ -23,7 +21,6 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_url", type="string", length=255, nullable=false)
-     * @Oro\Versioned()
      */
     protected $url;
 
@@ -31,7 +28,6 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_email", type="string", length=100, nullable=false)
-     * @Oro\Versioned()
      */
     protected $email;
 
@@ -39,7 +35,6 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_token", type="string", length=255, nullable=false)
-     * @Oro\Versioned()
      */
     protected $token;
 
@@ -47,7 +42,6 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_default_user_email", type="string", length=100, nullable=false)
-     * @Oro\Versioned()
      */
     protected $zendeskUserEmail;
 
