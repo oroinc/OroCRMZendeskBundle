@@ -5,8 +5,9 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Async\Topics;
+use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
+use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
-use Oro\Component\MessageQueue\Client\TraceableMessageProducer;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 
 /**
@@ -14,6 +15,8 @@ use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
  */
 class SyncUpdateCaseListenerTest extends AbstractSyncSchedulerTest
 {
+    use MessageQueueExtension;
+
     /** @var ManagerRegistry */
     protected $registry;
 
@@ -36,37 +39,27 @@ class SyncUpdateCaseListenerTest extends AbstractSyncSchedulerTest
 
         $this->registry->getManager()->flush($case);
 
-        $traces = $this->getMessageProducer()->getTopicSentMessages(Topics::REVERS_SYNC_INTEGRATION);
-
-        self::assertCount(1, $traces);
-        self::assertEquals([
-            'integration_id' => $ticket->getChannel()->getId(),
-            'connector_parameters' => ['id' => $ticket->getId()],
-            'connector' => TicketConnector::TYPE,
-            'transport_batch_size' => 100,
-        ], $traces[0]['message']->getBody());
-        self::assertEquals(MessagePriority::VERY_LOW, $traces[0]['message']->getPriority());
+        self::assertMessageSent(
+            Topics::REVERS_SYNC_INTEGRATION,
+            new Message(
+                [
+                    'integration_id' => $ticket->getChannel()->getId(),
+                    'connector_parameters' => ['id' => $ticket->getId()],
+                    'connector' => TicketConnector::TYPE,
+                    'transport_batch_size' => 100,
+                ],
+                MessagePriority::VERY_LOW
+            )
+        );
     }
 
     public function testListenerSkipsCaseWithoutRelatedTicket()
     {
-        $this->getMessageProducer()->clear();
-
         $case = $this->getReference('oro_zendesk:case_3');
 
         $case->setSubject('Updated subject');
         $this->registry->getManager()->flush($case);
 
-        $traces = $this->getMessageProducer()->getTopicSentMessages(Topics::REVERS_SYNC_INTEGRATION);
-
-        self::assertCount(0, $traces);
-    }
-
-    /**
-     * @return TraceableMessageProducer
-     */
-    private function getMessageProducer()
-    {
-        return self::getContainer()->get('oro_message_queue.message_producer');
+        self::assertMessagesEmpty(Topics::REVERS_SYNC_INTEGRATION);
     }
 }

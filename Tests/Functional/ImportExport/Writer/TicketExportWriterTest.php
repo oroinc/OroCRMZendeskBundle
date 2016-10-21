@@ -6,9 +6,10 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Async\Topics;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
-use Oro\Component\MessageQueue\Client\TraceableMessageProducer;
 use Oro\Bundle\CaseBundle\Entity\CasePriority;
 use Oro\Bundle\CaseBundle\Entity\CaseStatus;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
@@ -25,6 +26,8 @@ use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
  */
 class TicketExportWriterTest extends WebTestCase
 {
+    use MessageQueueExtension;
+
     /**
      * @var TicketExportWriter
      */
@@ -323,18 +326,20 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertContains('Schedule job to sync existing ticket comments', $this->logOutput);
         $this->assertTicketCommentIds($this->logOutput, $commentIds);
 
-        $traces = $this->getMessageProducer()->getTopicSentMessages(Topics::REVERS_SYNC_INTEGRATION);
-
-        self::assertCount(1, $traces);
-        self::assertEquals([
-            'integration_id' => $this->channel->getId(),
-            'connector_parameters' => [
-                'id' => $commentIds,
-            ],
-            'connector' => 'ticket_comment',
-            'transport_batch_size' => 100,
-        ], $traces[0]['message']->getBody());
-        self::assertEquals(MessagePriority::VERY_LOW, $traces[0]['message']->getPriority());
+        self::assertMessageSent(
+            Topics::REVERS_SYNC_INTEGRATION,
+            new Message(
+                [
+                    'integration_id' => $this->channel->getId(),
+                    'connector_parameters' => [
+                        'id' => $commentIds,
+                    ],
+                    'connector' => 'ticket_comment',
+                    'transport_batch_size' => 100,
+                ],
+                MessagePriority::VERY_LOW
+            )
+        );
     }
 
     public function testWriteUpdatesTicket()
@@ -543,13 +548,5 @@ class TicketExportWriterTest extends WebTestCase
             }
         }
         $this->assertTrue($hasParameters);
-    }
-
-    /**
-     * @return TraceableMessageProducer
-     */
-    private function getMessageProducer()
-    {
-        return self::getContainer()->get('oro_message_queue.message_producer');
     }
 }
