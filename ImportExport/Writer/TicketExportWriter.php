@@ -6,8 +6,8 @@ use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
-use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
 class TicketExportWriter extends AbstractExportWriter
@@ -232,7 +232,7 @@ class TicketExportWriter extends AbstractExportWriter
         );
 
         $this->syncScheduler->schedule(
-            $this->getChannel(),
+            $this->getChannel()->getId(),
             TicketCommentConnector::TYPE,
             ['id' => $ids]
         );

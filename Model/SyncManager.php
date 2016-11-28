@@ -78,7 +78,7 @@ class SyncManager
         $em->persist($ticket);
         $em->flush($ticket);
 
-        $this->syncScheduler->schedule($channel, TicketConnector::TYPE, array('id' => $ticket->getId()), $flush);
+        $this->syncScheduler->schedule($channel->getId(), TicketConnector::TYPE, array('id' => $ticket->getId()));
 
         return true;
     }
@@ -112,10 +112,9 @@ class SyncManager
 
         if ($this->isTwoWaySyncEnabled($channel)) {
             $this->syncScheduler->schedule(
-                $channel,
+                $channel->getId(),
                 TicketCommentConnector::TYPE,
-                array('id' => $ticketComment->getId()),
-                false
+                array('id' => $ticketComment->getId())
             );
         }
 
@@ -147,10 +146,9 @@ class SyncManager
 
             if (!$ticketComments->valid() || count($ids) == 100) {
                 $this->syncScheduler->schedule(
-                    $channel,
+                    $channel->getId(),
                     TicketCommentConnector::TYPE,
-                    array('id' => $ids),
-                    true
+                    array('id' => $ids)
                 );
                 $ids = array();
             }

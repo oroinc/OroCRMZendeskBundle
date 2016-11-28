@@ -4,26 +4,30 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\IntegrationBundle\Async\Topics;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Component\MessageQueue\Client\Message;
+use Oro\Component\MessageQueue\Client\MessagePriority;
 use Oro\Bundle\CaseBundle\Entity\CasePriority;
 use Oro\Bundle\CaseBundle\Entity\CaseStatus;
-use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
-use Oro\Bundle\ZendeskBundle\Entity\User;
-use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\TicketType;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
-use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
 /**
  * @dbIsolationPerTest
  */
 class TicketExportWriterTest extends WebTestCase
 {
+    use MessageQueueExtension;
+
     /**
      * @var TicketExportWriter
      */
@@ -127,7 +131,7 @@ class TicketExportWriterTest extends WebTestCase
             ->with($ticket)
             ->will($this->returnValue(['ticket' => $expected, 'comment' => null]));
 
-          $this->writer->write([$ticket]);
+        $this->writer->write([$ticket]);
 
         $ticket = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
 
@@ -322,15 +326,20 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertContains('Schedule job to sync existing ticket comments', $this->logOutput);
         $this->assertTicketCommentIds($this->logOutput, $commentIds);
 
-        $job = $this->registry->getRepository('JMSJobQueueBundle:Job')
-            ->findOneBy(['command' => SyncScheduler::JOB_NAME], ['createdAt' => 'DESC']);
-
-        $this->assertNotEmpty($job, 'Has scheduled JMS job.');
-        $arguments = $job->getArgs();
-        $this->assertCount(3, $arguments);
-        $this->assertContains('--integration=' . $this->channel->getId(), $arguments);
-        $this->assertContains('--connector=' . TicketCommentConnector::TYPE, $arguments);
-        $this->assertTicketJobParameters($arguments, $commentIds);
+        self::assertMessageSent(
+            Topics::REVERS_SYNC_INTEGRATION,
+            new Message(
+                [
+                    'integration_id' => $this->channel->getId(),
+                    'connector_parameters' => [
+                        'id' => $commentIds,
+                    ],
+                    'connector' => 'ticket_comment',
+                    'transport_batch_size' => 100,
+                ],
+                MessagePriority::VERY_LOW
+            )
+        );
     }
 
     public function testWriteUpdatesTicket()
