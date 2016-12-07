@@ -24,7 +24,7 @@ use Oro\Bundle\ContactBundle\Entity\Contact;
  * @Config(
  *  defaultValues={
  *      "entity"={
- *          "icon"="icon-list-alt"
+ *          "icon"="fa-list-alt"
  *      }
  *  }
  * )
