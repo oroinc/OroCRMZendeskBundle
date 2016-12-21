@@ -50,7 +50,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
 
         $this->registry  = $this->getContainer()->get('doctrine');
         $this->processor = $this->getContainer()->get('oro_zendesk.importexport.processor.import_ticket_comment');
-        $this->context   = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->context   = $this->createMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
         $this->channel   = $this->getReference('zendesk_channel:first_test_channel');
         $this->processor->setImportExportContext($this->context);
     }

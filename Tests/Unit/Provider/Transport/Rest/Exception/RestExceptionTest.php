@@ -19,7 +19,7 @@ class RestExceptionTest extends \PHPUnit_Framework_TestCase
     ) {
         $previous = new \Exception();
 
-        $response = $this->getMock('Oro\\Bundle\\IntegrationBundle\\Provider\\Rest\\Client\\RestResponseInterface');
+        $response = $this->createMock('Oro\\Bundle\\IntegrationBundle\\Provider\\Rest\\Client\\RestResponseInterface');
 
         if ($jsonException) {
             $response->expects($this->once())

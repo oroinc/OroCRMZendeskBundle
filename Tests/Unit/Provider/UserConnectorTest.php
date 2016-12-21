@@ -65,13 +65,13 @@ class UserConnectorTest extends \PHPUnit_Framework_TestCase
         $this->syncState = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncState')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->transport = $this->getMock('Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
-        $this->context = $this->getMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
+        $this->transport = $this->createMock('Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
+        $this->context = $this->createMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
         $this->mediator->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($this->transport));
-        $this->channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $transportEntity = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Transport');
+        $this->channel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $transportEntity = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Transport');
         $this->channel->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($transportEntity));
@@ -99,7 +99,7 @@ class UserConnectorTest extends \PHPUnit_Framework_TestCase
             array('id' => 51),
         );
         $expectedSyncDate = new \DateTime('2014-06-10T12:12:21Z');
-        $expectedChannel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $expectedChannel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
         $this->mediator->expects($this->atLeastOnce())
             ->method('getChannel')
             ->will($this->returnValue($expectedChannel));

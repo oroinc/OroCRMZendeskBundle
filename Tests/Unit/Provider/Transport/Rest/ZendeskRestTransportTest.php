@@ -35,13 +35,13 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->client = $this->getMock('Oro\\Bundle\\IntegrationBundle\\Provider\\Rest\\Client\\RestClientInterface');
+        $this->client = $this->createMock('Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface');
 
-        $this->clientFactory = $this->getMock(
+        $this->clientFactory = $this->createMock(
             'Oro\\Bundle\\IntegrationBundle\\Provider\\Rest\\Client\\RestClientFactoryInterface'
         );
 
-        $this->serializer = $this->getMock('Symfony\\Component\\Serializer\\SerializerInterface');
+        $this->serializer = $this->createMock('Symfony\\Component\\Serializer\\SerializerInterface');
 
         $this->transport = new ZendeskRestTransport($this->serializer);
         $this->transport->setRestClientFactory($this->clientFactory);
@@ -173,10 +173,8 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($response));
 
         if ($expectedException) {
-            $this->setExpectedException(
-                $expectedException['class'],
-                $expectedException['message']
-            );
+            $this->expectException($expectedException['class']);
+            $this->expectExceptionMessage($expectedException['message']);
         }
 
         $actualResult = $this->transport->createUser($data);
@@ -317,10 +315,8 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($response));
 
         if ($expectedException) {
-            $this->setExpectedException(
-                $expectedException['class'],
-                $expectedException['message']
-            );
+            $this->expectException($expectedException['class']);
+            $this->expectExceptionMessage($expectedException['message']);
         }
 
         $actualResult = $this->transport->createTicket($data);
@@ -542,10 +538,8 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         }
 
         if ($expectedException) {
-            $this->setExpectedException(
-                $expectedException['class'],
-                $expectedException['message']
-            );
+            $this->expectException($expectedException['class']);
+            $this->expectExceptionMessage($expectedException['message']);
         }
 
         $actualResult = $this->transport->updateTicket($data);
@@ -735,10 +729,8 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         }
 
         if ($expectedException) {
-            $this->setExpectedException(
-                $expectedException['class'],
-                $expectedException['message']
-            );
+            $this->expectException($expectedException['class']);
+            $this->expectExceptionMessage($expectedException['message']);
         }
 
         $actualResult = $this->transport->addTicketComment($data);
@@ -849,7 +841,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         $token = 'ZsOcahXwCc6rcwLRsqQH27CPCTdpwM2FTfWHDpTBDZi4kBI5';
         $clientOptions = ['auth' => [$email . '/token', $token]];
 
-        $settings = $this->getMock('Symfony\\Component\\HttpFoundation\\ParameterBag');
+        $settings = $this->createMock('Symfony\\Component\\HttpFoundation\\ParameterBag');
         $settings->expects($this->exactly(3))
             ->method('get')
             ->will(
@@ -862,7 +854,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                 )
             );
 
-        $entity = $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Transport');
+        $entity = $this->createMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Transport');
         $entity->expects($this->atLeastOnce())
             ->method('getSettingsBag')
             ->will($this->returnValue($settings));
@@ -875,7 +867,7 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
 
     protected function getMockResponse(array $expectedResponseData)
     {
-        $response = $this->getMock('Oro\\Bundle\\IntegrationBundle\\Provider\\Rest\\Client\\RestResponseInterface');
+        $response = $this->createMock('Oro\\Bundle\\IntegrationBundle\\Provider\\Rest\\Client\\RestResponseInterface');
 
         if (isset($expectedResponseData['statusCode'])) {
             $response->expects($this->atLeastOnce())

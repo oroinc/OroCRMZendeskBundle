@@ -30,8 +30,8 @@ class ChannelUpdateListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testOnUpdate($data, $expectedRunSync = false)
     {
-        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $oldState = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $channel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $oldState = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
         $event = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Event\IntegrationUpdateEvent')
             ->disableOriginalConstructor()
             ->getMock();
@@ -52,7 +52,7 @@ class ChannelUpdateListenerTest extends \PHPUnit_Framework_TestCase
         $channel->expects($this->once())
             ->method('getType')
             ->will($this->returnValue($data['type']));
-        $settings = $this->getMock('\StdClass', array('offsetGetOr'));
+        $settings = $this->createPartialMock(\ArrayObject::class, array('offsetGetOr'));
         $settings->expects($this->any())
             ->method('offsetGetOr')
             ->will($this->returnValue($data['sync_enable']));
@@ -62,7 +62,7 @@ class ChannelUpdateListenerTest extends \PHPUnit_Framework_TestCase
         $channel->expects($this->any())
             ->method('isEnabled')
             ->will($this->returnValue($data['enable']));
-        $settings = $this->getMock('\StdClass', array('offsetGetOr'));
+        $settings = $this->createPartialMock(\ArrayObject::class, array('offsetGetOr'));
         $settings->expects($this->any())
             ->method('offsetGetOr')
             ->will($this->returnValue($data['sync_enable_old']));

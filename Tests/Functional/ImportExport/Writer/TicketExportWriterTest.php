@@ -71,16 +71,16 @@ class TicketExportWriterTest extends WebTestCase
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
         $this->registry = $this->getContainer()->get('doctrine');
-        $this->context  = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->context  = $this->createMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
 
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap([['channel', null, $this->channel->getId()]]));
 
         $this->transport =
-            $this->getMock('Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\ZendeskTransportInterface');
+            $this->createMock('Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\ZendeskTransportInterface');
 
-        $this->logger = $this->getMock('Psr\\Log\\LoggerInterface');
+        $this->logger = $this->createMock('Psr\\Log\\LoggerInterface');
 
         $this->logger->expects($this->any(0))
             ->method('log')

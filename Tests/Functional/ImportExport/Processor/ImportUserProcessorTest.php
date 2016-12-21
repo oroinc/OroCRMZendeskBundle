@@ -44,7 +44,7 @@ class ImportUserProcessorTest extends WebTestCase
 
         $this->registry  = $this->getContainer()->get('doctrine');
         $this->processor = $this->getContainer()->get('oro_zendesk.importexport.processor.import_user');
-        $this->context   = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->context   = $this->createMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
         $this->channel   = $this->getReference('zendesk_channel:first_test_channel');
         $this->context->expects($this->any())
             ->method('getOption')
