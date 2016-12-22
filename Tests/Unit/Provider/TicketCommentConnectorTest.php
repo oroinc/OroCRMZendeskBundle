@@ -65,13 +65,13 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
         $this->syncState = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncState')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->transport = $this->getMock('Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
-        $this->context = $this->getMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
+        $this->transport = $this->createMock('Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
+        $this->context = $this->createMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
         $this->mediator->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($this->transport));
-        $this->channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $transportEntity = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Transport');
+        $this->channel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $transportEntity = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Transport');
         $this->channel->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($transportEntity));

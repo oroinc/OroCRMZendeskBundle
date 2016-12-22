@@ -35,9 +35,9 @@ class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
         $syncState = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncState')
             ->disableOriginalConstructor()
             ->getMock();
-        $context = $this->getMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
-        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $transportEntity = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Transport');
+        $context = $this->createMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
+        $channel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $transportEntity = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Transport');
         $channel->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($transportEntity));
@@ -61,7 +61,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
         $this->stepExecutor = $this->getMockBuilder('Akeneo\Bundle\BatchBundle\Entity\StepExecution')
             ->disableOriginalConstructor()
             ->getMock();
-        $iterator = $this->getMock('\Iterator');
+        $iterator = $this->createMock('\Iterator');
         $this->connector->expects($this->any())
             ->method('getConnectorSource')
             ->will($this->returnValue($iterator));
@@ -73,7 +73,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidateConfigurationThrowExceptionIfTransportInvalid()
     {
-        $transport = $this->getMock('Oro\Bundle\IntegrationBundle\Provider\TransportInterface');
+        $transport = $this->createMock('Oro\Bundle\IntegrationBundle\Provider\TransportInterface');
         $this->mediator->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($transport));
@@ -82,7 +82,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidateConfiguration()
     {
-        $transport = $this->getMock('Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
+        $transport = $this->createMock('Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
         $this->mediator->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($transport));

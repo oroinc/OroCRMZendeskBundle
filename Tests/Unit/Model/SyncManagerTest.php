@@ -40,7 +40,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()->getMock();
         $this->entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()->getMock();
-        $this->registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $this->registry = $this->createMock('Doctrine\Common\Persistence\ManagerRegistry');
         $this->registry->expects($this->any())->method('getManager')
             ->willReturn($this->entityManager);
         $this->zendeskEntityProvider = $this->getMockBuilder(
@@ -53,7 +53,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncCommentSyncOnlyNewComments()
     {
-        $existComment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
+        $existComment = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
         $existComment->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(42));
@@ -64,15 +64,15 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncCommentSyncOnlyIfChannelHasTwoWaySyncEnabled()
     {
-        $case = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
-        $comment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
+        $case = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
+        $comment = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
         $comment->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(null));
         $comment->expects($this->once())
             ->method('getCase')
             ->will($this->returnValue($case));
-        $ticket = $this->getMock('Oro\Bundle\ZendeskBundle\Entity\Ticket');
+        $ticket = $this->createMock('Oro\Bundle\ZendeskBundle\Entity\Ticket');
         $channel = $this->getChannel(false);
         $ticket->expects($this->once())
             ->method('getChannel')
@@ -89,15 +89,15 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncCommentSync()
     {
-        $comment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
-        $case = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
+        $comment = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
+        $case = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
         $comment->expects($this->once())
             ->method('getId')
             ->will($this->returnValue(null));
         $comment->expects($this->once())
             ->method('getCase')
             ->will($this->returnValue($case));
-        $ticket = $this->getMock('Oro\Bundle\ZendeskBundle\Entity\Ticket');
+        $ticket = $this->createMock('Oro\Bundle\ZendeskBundle\Entity\Ticket');
         $channel = $this->getChannel(true);
         $ticket->expects($this->once())
             ->method('getChannel')
@@ -124,7 +124,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncCaseSyncOnlyIfChannelHasTwoWaySyncEnabled()
     {
-        $case = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
+        $case = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
         $channel = $this->getChannel(false);
 
         $this->entityManager->expects($this->never())
@@ -139,9 +139,9 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testSyncCase()
     {
-        $case = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
-        $firstComment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
-        $secondComment = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
+        $case = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
+        $firstComment = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
+        $secondComment = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
         $comments = [
             $firstComment,
             $secondComment
@@ -176,7 +176,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->target->reverseSyncChannel($channel));
         $comments = [];
         $expectedIds = [];
-        $comment = $this->getMock('Oro\Bundle\ZendeskBundle\Entity\TicketComment');
+        $comment = $this->createMock('Oro\Bundle\ZendeskBundle\Entity\TicketComment');
         for ($i=1; $i< 102; $i++) {
             $comment->expects($this->at($i-1))
                 ->method('getId')
@@ -206,7 +206,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected function getChannel($isTwoWaySyncEnabled)
     {
-        $channel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $channel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
         $channel
             ->expects($this->any())
             ->method('getId')

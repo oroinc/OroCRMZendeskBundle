@@ -41,7 +41,7 @@ class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entity = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
+        $entity = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
         $formHandlerEvent->expects($this->once())
             ->method('getEntity')
             ->will($this->returnValue($entity));
@@ -58,14 +58,14 @@ class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entity = $this->getMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
+        $entity = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
         $form = $this->getMockBuilder('Symfony\Component\Form\Form')
             ->disableOriginalConstructor()
             ->getMock();
         $channelField = $this->getMockBuilder('Symfony\Component\Form\Form')
             ->disableOriginalConstructor()
             ->getMock();
-        $expectedChannel = $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $expectedChannel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
         $channelField->expects($this->once())
             ->method('getData')
             ->will($this->returnValue($expectedId));

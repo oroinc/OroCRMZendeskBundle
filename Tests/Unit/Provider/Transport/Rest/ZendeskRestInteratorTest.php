@@ -33,7 +33,7 @@ class ZendeskRestIteratorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->client = $this->getMock('Oro\\Bundle\\IntegrationBundle\\Provider\\Rest\\Client\\RestClientInterface');
+        $this->client = $this->createMock('Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface');
         $this->iterator = new ZendeskRestIterator($this->client, $this->resource, $this->dataKeyName, $this->params);
     }
 
