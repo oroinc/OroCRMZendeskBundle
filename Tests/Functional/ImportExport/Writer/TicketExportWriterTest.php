@@ -451,7 +451,7 @@ class TicketExportWriterTest extends WebTestCase
             ->method('updateTicket')
             ->with(
                 $this->callback(
-                    function ($ticket) use ($ticket, $expectedRequester, $expectedSubmitter) {
+                    function ($ticket) use ($expectedRequester, $expectedSubmitter) {
                         $this->assertEquals($expectedRequester->getOriginId(), $ticket->getRequester()->getOriginId());
                         $this->assertEquals($expectedSubmitter->getOriginId(), $ticket->getSubmitter()->getOriginId());
                         $this->assertEquals($expectedSubmitter->getOriginId(), $ticket->getAssignee()->getOriginId());
