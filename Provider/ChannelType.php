@@ -22,6 +22,6 @@ class ChannelType implements ChannelInterface, IconAwareIntegrationInterface
      */
     public function getIcon()
     {
-        return 'bundles/orocrmzendesk/img/zendesk.com.ico';
+        return 'bundles/orozendesk/img/zendesk.com.ico';
     }
 }
