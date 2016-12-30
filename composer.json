@@ -18,7 +18,7 @@
     "target-dir": "src/Oro/Bundle/ZendeskBundle",
     "require": {
         "php": ">=5.6",
-        "oro/crm": "1.x-dev"
+        "oro/crm": "2.0.0-rc.1"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
