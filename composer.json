@@ -11,17 +11,13 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "Oro\\Bundle\\ZendeskBundle": "src/"
-        }
+        "psr-4": {"Oro\\Bundle\\ZendeskBundle\\": ""},
+        "exclude-from-classmap": ["/Tests/"]
     },
-    "target-dir": "src/Oro/Bundle/ZendeskBundle",
     "require": {
         "php": ">=5.6",
         "oro/crm": "1.x-dev"
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "extra": {
         "branch-alias": {
             "dev-master": "1.x-dev"
