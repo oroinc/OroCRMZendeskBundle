@@ -126,6 +126,7 @@ services:
             - '@doctrine'
             - %oro_zendesk.name_prefixes%
             - %oro_zendesk.name_suffixes%
+        lazy: true
 
     oro_zendesk.entity_provider.zendesk:
         class: %oro_zendesk.entity_provider.zendesk.class%
