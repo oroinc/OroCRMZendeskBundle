@@ -34,15 +34,16 @@
                     var url = routing.generate('oro_api_post_ticket_sync_case', {id: '{{ entity.id }}', channelId: id});
 
                     mediator.execute('showLoading');
-                    $.post(url, function(res, status, jqXHR) {
+                    $.post({
+                        url: url,
+                        errorHandlerMessage: __('oro.zendesk.reverse_sync.fail_message')
+                    }).done(function(res, status, jqXHR) {
                         mediator.once('page:afterChange', function(){
                             messenger.notificationFlashMessage('success', __('oro.zendesk.reverse_sync.success_message'));
                         });
                         mediator.execute('refreshPage', {restore: true});
                     }).always(function () {
                         mediator.execute('hideLoading');
-                    }).fail(function(){
-                        messenger.notificationFlashMessage('error', __('oro.zendesk.reverse_sync.fail_message'));
                     });
 
                     return false;
