@@ -8,10 +8,6 @@ use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 
-/**
- * @outputBuffering enabled
- * @dbIsolation
- */
 class TicketCommentNormalizerTest extends WebTestCase
 {
     /**

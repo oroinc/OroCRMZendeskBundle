@@ -11,11 +11,6 @@ use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketCommentProcessor
 use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
-/**
- * @outputBuffering enabled
- * @dbIsolation
- * @dbReindex
- */
 class ImportTicketCommentProcessorTest extends WebTestCase
 {
     /**

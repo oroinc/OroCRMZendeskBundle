@@ -10,11 +10,6 @@ use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
-/**
- * @outputBuffering enabled
- * @dbIsolation
- * @dbReindex
- */
 class ImportUserProcessorTest extends WebTestCase
 {
     /**

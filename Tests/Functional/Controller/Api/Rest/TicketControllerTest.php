@@ -2,14 +2,8 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\Controller\Api\Rest;
 
-use Doctrine\ORM\EntityManager;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
-/**
- * @outputBuffering enabled
- * @dbReindex
- * @dbIsolation
- */
 class TicketControllerTest extends WebTestCase
 {
     protected function setUp()
