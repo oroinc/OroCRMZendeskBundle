@@ -5,7 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Model\EntityProvider;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
@@ -285,7 +285,7 @@ class ZendeskEntityProvider
             ->andWhere('c.originId is NULL')
             ->setParameters(array('channel' => $channel));
 
-        return new BufferedQueryResultIterator($qb);
+        return new BufferedIdentityQueryResultIterator($qb);
     }
 
     /**
