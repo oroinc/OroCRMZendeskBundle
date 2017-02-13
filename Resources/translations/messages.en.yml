@@ -104,6 +104,7 @@ oro:
             token.label:              API Token
             id.label:                 Id
             zendesk_user_email.label: Default Zendesk user email
+            channel.label:            Channel
 
         transport:
             rest:
