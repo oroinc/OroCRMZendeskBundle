@@ -2,35 +2,39 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Twig;
 
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension;
+use Oro\Component\Testing\Unit\TwigExtensionTestCaseTrait;
 
 class ZendeskExtensionTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var ZendeskExtension
-     */
+    use TwigExtensionTestCaseTrait;
+
+    /** @var ZendeskExtension */
     protected $extension;
 
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $oroProvider;
 
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
+    /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $zendeskProvider;
 
     protected function setUp()
     {
-        $this->oroProvider = $this->getMockBuilder(
-            'Oro\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\OroEntityProvider'
-        )->disableOriginalConstructor()->getMock();
-        $this->zendeskProvider = $this->getMockBuilder(
-            'Oro\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\ZendeskEntityProvider'
-        )->disableOriginalConstructor()->getMock();
+        $this->oroProvider = $this->getMockBuilder(OroEntityProvider::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->zendeskProvider = $this->getMockBuilder(ZendeskEntityProvider::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->extension = new ZendeskExtension($this->oroProvider, $this->zendeskProvider);
+        $container = self::getContainerBuilder()
+            ->add('oro_zendesk.entity_provider.oro', $this->oroProvider)
+            ->add('oro_zendesk.entity_provider.zendesk', $this->zendeskProvider)
+            ->getContainer($this);
+
+        $this->extension = new ZendeskExtension($container);
     }
 
     public function testGetTicketUrl()
@@ -54,7 +58,10 @@ class ZendeskExtensionTest extends \PHPUnit_Framework_TestCase
         $channel->expects($this->once())
             ->method('getTransport')
             ->will($this->returnValue($transport));
-        $url = $this->extension->getTicketUrl($ticket);
-        $this->assertEquals($expectedUrl, $url);
+
+        $this->assertEquals(
+            $expectedUrl,
+            self::callTwigFunction($this->extension, 'oro_zendesk_ticket_url', [$ticket])
+        );
     }
 }
