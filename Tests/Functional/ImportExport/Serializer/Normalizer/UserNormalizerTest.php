@@ -8,10 +8,6 @@ use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserNormalizer;
 
-/**
- * @outputBuffering enabled
- * @dbIsolation
- */
 class UserNormalizerTest extends WebTestCase
 {
     /**

@@ -5,9 +5,6 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\Model\EntityProvider;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 
-/**
- * @dbIsolation
- */
 class ZendeskEntityProviderTest extends WebTestCase
 {
     /**

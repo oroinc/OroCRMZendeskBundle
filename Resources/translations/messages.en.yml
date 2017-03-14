@@ -4,97 +4,206 @@ oro:
         ticket:
             entity_label:             Ticket
             entity_plural_label:      Tickets
+            entity_description:       Issues that were reported by customers or found internally and are managed via Zendesk.
             channel.label:            Integration
-            assignee.label:           Assignee
-            related_case.label:       Case
-            comments.label:           Comments
-            collaborators.label:      Collaborators
-            origin_created_at.label:  Original Created At
-            origin_updated_at.label:  Original Updated At
-            due_at.label:             Due At
-            description.label:        Description
-            subject.label:            Subject
-            external_id.label:        External id
-            has_incidents.label:      Has incidents
+            assignee:
+                label:                Assignee
+                description:          A Zendesk user that a Zendesk ticket is assigned to.
+            related_case:
+                label:                Case
+                description:          An Oro case that is associated with a Zendesk ticket.
+            comments:
+                label:                Comments
+                description:          Comments made on a specific Zendesk ticket.
+            collaborators:
+                label:                Collaborators
+                description:          Zendesk users included in a Zendesk ticket communications (these users also called CC's).
+            origin_created_at:
+                label:                Original Created At
+                description:          The date and time when a Zendesk ticket was created on the Zendesk side.
+            origin_updated_at:
+                label:                Original Updated At
+                description:          The date and time when a Zendesk ticket was last updated on the Zendesk side.
+            due_at:
+                label:                Due At
+                description:          A date and time before which a Zendesk ticket that has the 'task' ticket type must be resolved.
+            description:
+                label:                Description
+                description:          A full description of what is a Zendesk ticket about.
+            subject:
+                label:                Subject
+                description:          A short, single line description of what is a Zendesk ticket about.
+            external_id:
+                label:                External id
+                description:          The Zendesk ticket ID manually specified on the Zendesk side when required.
+            has_incidents:
+                label:                Has incidents
+                description:          Whether a Zendesk ticket describes some issue, a problem. Tickets that are marked as 'problems' can be later linked to other tickets, e.g. those that describe tasks.
             id.label:                 Id
-            origin_id.label:          Ticket Number
-            priority.label:           Priority
-            problem.label:            Problem
-            recipient.label:          Recipient email
-            requester.label:          Requester
-            status.label:             Status
-            submitter.label:          Submitter
-            type.label:               Type
-            url.label:                Url
+            origin_id:
+                label:                Ticket Number
+                description:          The Zendesk ticket ID automatically assigned on the Zendesk side on ticket creation.
+            priority:
+                label:                Priority
+                description:          A Zendesk ticket priority.
+            problem:
+                label:                Problem
+                description:          A Zendesk ticket where the problem that led to the current Zendesk ticket creation described.
+            recipient:
+                label:                Recipient email
+                description:          An email address that a Zendesk ticket updates are sent from.
+            requester:
+                label:                Requester
+                description:          A Zendesk user who initiated a Zendesk ticket creation. A submitter can be the same person as a requestor if the latter creates a ticket perosnally.
+            status:
+                label:                Status
+                description:          A Zendesk ticket status.
+            submitter:
+                label:                Submitter
+                description:          A Zendesk user who created a ticket.
+            type:
+                label:                Type
+                description:          A Zendesk ticket type.
+            url:
+                label:                Url
+                description:          A Zendesk ticket's API url.
 
         ticketcomment:
             entity_label:             Ticket comment
             entity_plural_label:      Ticket comments
+            entity_description:       A written remark on a Zendesk ticket.
             channel.label:            Integration
-            author.label:             Author
-            body.label:               Body
-            related_comment.label:    Case comment
-            origin_created_at.label:  Original Created At
-            html_body.label:          Html body
+            author:
+                label:                Author
+                description:          A Zendesk user who authored the comment.
+            body:
+                label:                Body
+                description:          A Zendesk ticket comment text.
+            related_comment:
+                label:                Case comment
+                description:          An Oro case comment that is associated with a Zendesk ticket.
+            origin_created_at:
+                label:                Original Created At
+                description:          The date and time when a Zendesk ticket comment was created on the Zendesk side.
+            html_body:
+                label:                Html body
+                description:          A Zendesk ticket comment text formatted as HTML.
             id.label:                 Id
-            origin_id.label:          Ticket Comment Number
-            public.label:             Public
-            ticket.label:             Ticket
+            origin_id:
+                label:                Ticket Comment Number
+                description:          The Zendesk ticket comment ID specified on the Zendesk side.
+            public:
+                label:                Public
+                description:          Defines whether a Zendesk ticket comment is public.
+            ticket:
+                label:                Ticket
+                description:          A  Zendesk ticket that the comment was made on.
 
         ticketpriority:
             entity_label:             Ticket Priority
             entity_plural_label:      Ticket Priorities
-            entity_description:       Represent ticket priority
+            entity_description:       A Zendesk ticket priority helps determine the order in which Zendesk tickets must be managed.
             name.label:               Name
-            label.label:              Label
+            label:
+                label:                Label
+                description:          The label of a Zendesk ticket priority ('Urgent,' 'High,' 'Normal,' or 'Low').
 
         ticketstatus:
             entity_label:             Ticket Status
             entity_plural_label:      Ticket Statuses
-            entity_description:       Represent ticket status
+            entity_description:       The phase of work on a Zendesk ticket.
             name.label:               Name
-            label.label:              Label
+            label:
+                label:                Label
+                description:          The label of a Zendesk ticket status ('New,' 'Open,' 'Hold,' 'Pending,' 'Solved,' or 'Closed').
 
         tickettype:
             entity_label:             Ticket Type
             entity_plural_label:      Ticket Types
-            entity_description:       Represent ticket type
+            entity_description:       A Zendesk ticket type helps determine what kind of work the Zendesk ticket requires.
             name.label:               Name
-            label.label:              Label
+            label:
+                label:                Label
+                description:          The label of a Zendesk ticket type ('Incident,' 'Problem,' 'Question,' or 'Task').
 
         userrole:
             entity_label:             Zendesk User Role
             entity_plural_label:      Zendesk User Roles
-            entity_description:       Represent a role of Zendesk user
+            entity_description:       A Zendesk user role defines permissions for Zendesk users to perform certain activities.
             name.label:               Name
-            label.label:              Label
+            label:
+                label:                Label
+                description:          The label of a Zendesk user role ('Admin,' 'Agent,' or 'End-user'). An admin is a member of support staff who has permissions to manage your Zendesk, agents are regular support staff, end-users are product consumers who generate tickets.
 
         user:
             entity_label:                 Zendesk User
             entity_plural_label:          Zendesk Users
+            entity_description:           People who can create tickets in Zendesk, manage these tickets or Zendesk itself.
             channel.label:                Integration
-            active.label:                 Active
-            alias.label:                  Alias
-            related_contact.label:        Contact
-            origin_created_at.label:      Original Created At
-            details.label:                Details
-            email.label:                  Email
-            external_id.label:            External id
+            active:
+                label:                    Active
+                description:              Whether the user is active or has been deleted.
+            alias:
+                label:                    Alias
+                description:              A Zendesk user name visible to end-users.
+            related_contact:
+                label:                    Contact
+                description:              An Oro contact that is associated with a Zendesk user. Related contact appears when the ticket is submitted to Zendesk from a customer side.
+            origin_created_at:
+                label:                    Original Created At
+                description:              The date and time when a Zendesk user was created on the Zendesk side.
+            details:
+                label:                    Details
+                description:              The most important additional information about a Zendesk user.
+            email:
+                label:                    Email
+                description:              A primary email specified for a Zendesk user.
+            external_id:
+                label:                    External id
+                description:              The Zendesk user ID manually specified on the Zendesk side when required.
             id.label:                     Id
-            origin_id.label:              User Number
-            last_login_at.label:          Last login at
-            locale.label:                 Locale
-            name.label:                   Name
-            notes.label:                  Notes
-            ticket_restriction.label:     Ticket restriction
-            only_private_comments.label:  Only private comments
-            time_zone.label:              Time-zone
-            origin_updated_at.label:      Original Updated At
-            url.label:                    Url
-            related_user.label:           User
-            verified.label:               Verified
-            phone.label:                  Phone
-            role.label:                   Role
+            origin_id:
+                label:                    User Number
+                description:              The Zendesk user ID automatically assigned on the Zendesk side on user creation.
+            last_login_at:
+                label:                    Last login at
+                description:              The date and time when a Zendesk user last logged into Zendesk.
+            locale:
+                label:                    Locale
+                description:              Defines a Zendesk user's language and region.
+            name:
+                label:                    Name
+                description:              A Zendesk user name.
+            notes:
+                label:                    Notes
+                description:              Remarks, additional information about a Zendesk user.
+            ticket_restriction:
+                label:                    Ticket restriction
+                description:              Defines which tickets a Zendesk user has access to.
+            only_private_comments:
+                label:                    Only private comments
+                description:              Defines whether a Zendesk user can create only private comments.
+            time_zone:
+                label:                    Time-zone
+                description:              A timezone specified for a Zendesk user. The format is Zendesk-specific, but can be mapped to tz database names.
+            origin_updated_at:
+                label:                    Original Updated At
+                description:              The date and time when a Zendesk user was last updated on the Zendesk side.
+            url:
+                label:                    Url
+                description:              A Zendesk user's API url.
+            related_user:
+                label:                    User
+                description:              An Oro user that is associated with a Zendesk user. Related user appears when the ticket is submitted to Zendesk by an Oro user.
+            verified:
+                label:                    Verified
+                description:              Whether a Zendesk user's identity has been verified.
+            phone:
+                label:                    Phone
+                description:              A primary phone specified for a Zendesk user.
+            role:
+                label:                    Role
+                description:              A Zendesk role specified for a Zendesk user.
 
         zendeskresttransport:
             entity_label:             Zendesk Integration
@@ -104,6 +213,7 @@ oro:
             token.label:              API Token
             id.label:                 Id
             zendesk_user_email.label: Default Zendesk user email
+            channel.label:            Channel
 
         transport:
             rest:

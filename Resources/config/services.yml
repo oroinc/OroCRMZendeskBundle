@@ -29,9 +29,6 @@ parameters:
     oro_zendesk.sync_helper.ticket_comment.class:          Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper
     oro_zendesk.sync_helper.user.class:                    Oro\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper
 
-    # Twig Extensions
-    oro_zendesk.twig.extension.class:                      Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension
-
     # Placeholder filter
     oro_zendesk.placeholder.filter.class:                  Oro\Bundle\ZendeskBundle\Placeholder\PlaceholderFilter
 
@@ -157,10 +154,10 @@ services:
 
     # Twig extensions
     oro_zendesk.twig.extension:
-        class: %oro_zendesk.twig.extension.class%
+        class: Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension
+        public: false
         arguments:
-            - '@oro_zendesk.entity_provider.oro'
-            - '@oro_zendesk.entity_provider.zendesk'
+            - '@service_container'
         tags:
             - { name: twig.extension }
 
