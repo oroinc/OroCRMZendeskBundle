@@ -1,0 +1,219 @@
+# Oro\Bundle\ZendeskBundle\Entity\User
+
+## ACTIONS  
+
+### get
+
+Retrieve a specific Zendesk user record.
+
+{@inheritdoc}
+
+### get_list
+
+Retrieve a collection of Zendesk user records.
+
+{@inheritdoc}
+
+### create
+
+Create a new Zendesk user record.
+The created record is returned in the response.
+
+{@inheritdoc}
+
+{@request:json_api}
+Example:
+
+`</api/zendeskusers>`
+
+```JSON
+{  
+   "data":{  
+      "type":"zendeskusers",
+      "attributes":{  
+         "originId":"1000000",
+         "name":"Arthur Figueroa",
+         "email":"arthur.figueroa_7c48c@msn.com"
+      },
+      "relationships":{  
+         "role":{  
+            "data":{  
+               "type":"zendeskuserroles",
+               "id":"agent"
+            }
+         },
+         "relatedContact":{  
+            "data":{  
+               "type":"contacts",
+               "id":"1"
+            }
+         },
+         "relatedUser":{  
+            "data":{  
+               "type":"users",
+               "id":"5"
+            }
+         }
+      }
+   }
+}
+```
+{@/request}
+
+### update
+
+Edit a specific Zendesk user record.
+
+{@inheritdoc}
+
+{@request:json_api}
+Example:
+
+`</api/zendeskusers/52>`
+
+```JSON
+{  
+   "data":{  
+      "type":"zendeskusers",
+      "id":"52",
+      "attributes":{  
+         "originId":"1000000",
+         "name":"Arthur Figueroa",
+         "email":"arthur.figueroa_7c48c@msn.com"
+      },
+      "relationships":{  
+         "role":{  
+            "data":{  
+               "type":"zendeskuserroles",
+               "id":"agent"
+            }
+         },
+         "relatedContact":{  
+            "data":{  
+               "type":"contacts",
+               "id":"1"
+            }
+         },
+         "relatedUser":{  
+            "data":{  
+               "type":"users",
+               "id":"5"
+            }
+         }
+      }
+   }
+}
+```
+{@/request}
+
+### delete
+
+Delete a specific Zendesk user record.
+
+{@inheritdoc}
+
+### delete_list
+
+Delete a collection of Zendesk user records.
+The list of records that will be deleted, could be limited by filters.
+
+{@inheritdoc}
+
+## FIELDS
+
+### id
+
+#### update
+
+{@inheritdoc}
+
+**The required field**
+
+## SUBRESOURCES
+
+### relatedContact
+
+#### get_subresource
+
+Retrieve the record of the Oro contact that is associated with a specific Zendesk user. 
+
+#### get_relationship
+
+Retrieve the ID of the Oro contact that is associated with a specific Zendesk user. 
+
+#### update_relationship
+
+Replace the Oro user that is associated with a specific Zendesk user.   
+
+{@request:json_api}
+Example:
+
+`</api/zendeskusers/1/relationships/relatedContact>`
+
+```JSON
+{
+  "data": {
+    "type": "contacts",
+    "id": "1"
+  }
+}
+```
+{@/request}
+
+### relatedUser
+
+#### get_subresource
+
+Retrieve the record of the Oro user that is associated with a specific Zendesk user. Related user appears when the ticket is submitted to Zendesk by an Oro user.
+
+#### get_relationship
+
+Retrieve the ID of the Oro user that is associated with a specific Zendesk user.
+
+#### update_relationship
+
+Replace the Oro user that is associated with a specific Zendesk user.
+
+{@request:json_api}
+Example:
+
+`</api/zendeskusers/1/relationships/relatedUser>`
+
+```JSON
+{
+  "data": {
+    "type": "users",
+    "id": "1"
+  }
+}
+```
+{@/request}
+
+### role
+
+#### get_subresource
+
+Retrieve the record of the Zendesk role that is assigned to a specific Zendesk user.
+
+#### get_relationship
+
+Retrieve the ID of the Zendesk role that is assigned to a specific Zendesk user.
+
+#### update_relationship
+
+Replace the Zendesk role for a specific Zendesk user.
+
+{@request:json_api}
+Example:
+
+`</api/zendeskusers/1/relationships/role>`
+
+```JSON
+{
+  "data": {
+    "type": "zendeskuserroles",
+    "id": "agent"
+  }
+}
+```
+{@/request}
