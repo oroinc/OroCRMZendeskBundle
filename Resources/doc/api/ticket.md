@@ -578,6 +578,35 @@ Example:
 ```
 {@/request}
 
+### channel
+
+#### get_subresource
+
+Retrieve an integration channel via which information about the Zendesk ticket is received.
+
+#### get_relationship
+
+Retrieve the ID of an integration channel via which information about the Zendesk ticket is received.
+
+#### update_relationship
+
+Replace an integration channel via which information about the Zendesk ticket is received.
+
+{@request:json_api}
+Example:
+
+`</api/zendesktickets/1/relationships/channel>`
+
+```JSON
+{
+  "data": {
+    "type": "integrationchannels",
+    "id": "1"
+  }
+}
+```
+{@/request}
+
 
 # Oro\Bundle\ZendeskBundle\Entity\TicketType
 
