@@ -2,16 +2,16 @@ api:
     entities:
         Oro\Bundle\ZendeskBundle\Entity\Ticket:
             documentation_resource: '@OroZendeskBundle/Resources/doc/api/ticket.md'
+        Oro\Bundle\ZendeskBundle\Entity\TicketPriority:
+            documentation_resource: '@OroZendeskBundle/Resources/doc/api/ticket.md'
+        Oro\Bundle\ZendeskBundle\Entity\TicketStatus:
+            documentation_resource: '@OroZendeskBundle/Resources/doc/api/ticket.md'
+        Oro\Bundle\ZendeskBundle\Entity\TicketType:
+            documentation_resource: '@OroZendeskBundle/Resources/doc/api/ticket.md'
         Oro\Bundle\ZendeskBundle\Entity\TicketComment:
             documentation_resource: '@OroZendeskBundle/Resources/doc/api/ticket_comment.md'
         Oro\Bundle\ZendeskBundle\Entity\User:
             documentation_resource: '@OroZendeskBundle/Resources/doc/api/user.md'
-        Oro\Bundle\ZendeskBundle\Entity\TicketPriority:
-            documentation_resource: '@OroZendeskBundle/Resources/doc/api/ticket_priority.md'
-        Oro\Bundle\ZendeskBundle\Entity\TicketStatus:
-            documentation_resource: '@OroZendeskBundle/Resources/doc/api/ticket_status.md'
-        Oro\Bundle\ZendeskBundle\Entity\TicketType:
-            documentation_resource: '@OroZendeskBundle/Resources/doc/api/ticket_type.md'
         Oro\Bundle\ZendeskBundle\Entity\UserRole:
             documentation_resource: '@OroZendeskBundle/Resources/doc/api/user_role.md'
 #        Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport: ~
