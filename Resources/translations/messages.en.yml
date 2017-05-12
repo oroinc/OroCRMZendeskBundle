@@ -5,7 +5,9 @@ oro:
             entity_label:             Ticket
             entity_plural_label:      Tickets
             entity_description:       Issues that were reported by customers or found internally and are managed via Zendesk.
-            channel.label:            Integration
+            channel:
+                label:                Integration
+                description:          The integration via which information about a Zendesk ticket is received.
             assignee:
                 label:                Assignee
                 description:          A Zendesk user that a Zendesk ticket is assigned to.
@@ -72,7 +74,9 @@ oro:
             entity_label:             Ticket comment
             entity_plural_label:      Ticket comments
             entity_description:       A written remark on a Zendesk ticket.
-            channel.label:            Integration
+            channel:
+                label:                Integration
+                description:          The integration via which information about a Zendesk ticket comment is received.
             author:
                 label:                Author
                 description:          A Zendesk user who authored the comment.
@@ -139,7 +143,9 @@ oro:
             entity_label:                 Zendesk User
             entity_plural_label:          Zendesk Users
             entity_description:           People who can create tickets in Zendesk, manage these tickets or Zendesk itself.
-            channel.label:                Integration
+            channel:
+                label:                    Integration
+                description:              The integration via which information about a Zendesk user is received.
             active:
                 label:                    Active
                 description:              Whether the user is active or has been deleted.
