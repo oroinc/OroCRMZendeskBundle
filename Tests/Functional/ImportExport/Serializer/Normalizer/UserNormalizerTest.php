@@ -26,6 +26,8 @@ class UserNormalizerTest extends WebTestCase
      */
     public function testDenormalize($data, User $expected)
     {
+        $this->markTestSkipped('CRM-8206');
+
         $actual = $this->serializer->deserialize(
             $data,
             'Oro\\Bundle\\ZendeskBundle\\Entity\\User',

@@ -35,6 +35,8 @@ class TicketNormalizerTest extends WebTestCase
      */
     public function testDenormalize($normalized, Ticket $denormalized)
     {
+        $this->markTestSkipped('CRM-8206');
+
         $actual = $this->serializer->deserialize(
             $normalized,
             'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
