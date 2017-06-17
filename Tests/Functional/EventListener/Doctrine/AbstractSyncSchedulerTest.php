@@ -15,9 +15,9 @@ abstract class AbstractSyncSchedulerTest extends WebTestCase
      */
     protected function setSecurityContextTokenByUser(User $user)
     {
-        $securityContext = $this->getContainer()->get('security.context');
+        $tokenStorage = $this->getContainer()->get('security.token_storage');
         $token = new UsernamePasswordToken($user, $user->getUsername(), 'main');
-        $securityContext->setToken($token);
+        $tokenStorage->setToken($token);
     }
 
     /**
