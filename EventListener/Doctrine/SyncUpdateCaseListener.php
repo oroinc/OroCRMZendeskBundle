@@ -3,7 +3,6 @@
 namespace Oro\Bundle\ZendeskBundle\EventListener\Doctrine;
 
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
-use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 
 /**

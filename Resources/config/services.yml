@@ -92,7 +92,7 @@ services:
     oro_zendesk.listener.doctrine.sync_abstract:
         abstract: true
         arguments:
-            - '@oro_security.security_facade.link'
+            - '@oro_security.token_accessor'
             - '@oro_integration.sync_scheduler.link'
 
     oro_zendesk.listener.doctrine.sync_update_case:

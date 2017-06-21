@@ -11,41 +11,33 @@ use Symfony\Component\Security\Core\Util\ClassUtils;
 
 use Oro\Bundle\EntityConfigBundle\DependencyInjection\Utils\ServiceLink;
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
-use Oro\Bundle\SecurityBundle\SecurityFacade;
+use Oro\Bundle\SecurityBundle\Authentication\TokenAccessorInterface;
 
 /**
  * This class is responsible for scheduling sync job of integration entity of Zendesk related to Oro entity.
  */
 abstract class AbstractSyncSchedulerListener implements EventSubscriber
 {
-    /**
-     * @var ServiceLink
-     */
+    /** @var TokenAccessorInterface */
+    private $tokenAccessor;
+
+    /** @var ServiceLink */
     private $syncScheduler;
 
-    /**
-     * @var ServiceLink
-     */
-    private $securityFacade;
-
-    /**
-     * @var array
-     */
+    /** @var array */
     private $scheduledSyncMap;
 
-    /**
-     * @var EntityManager
-     */
+    /** @var EntityManager */
     protected $entityManager;
 
     /**
-     * @param ServiceLink $securityFacadeLink
-     * @param ServiceLink $schedulerServiceLink
+     * @param TokenAccessorInterface $tokenAccessor
+     * @param ServiceLink            $schedulerServiceLink
      */
-    public function __construct(ServiceLink $securityFacadeLink, ServiceLink $schedulerServiceLink)
+    public function __construct(TokenAccessorInterface $tokenAccessor, ServiceLink $schedulerServiceLink)
     {
+        $this->tokenAccessor = $tokenAccessor;
         $this->syncScheduler = $schedulerServiceLink;
-        $this->securityFacade = $securityFacadeLink;
     }
 
     /**
@@ -65,7 +57,7 @@ abstract class AbstractSyncSchedulerListener implements EventSubscriber
         $this->entityManager = $event->getEntityManager();
 
         // check for logged user is for confidence that data changes mes from UI, not from sync process.
-        if (!$this->getSecurityFacade()->hasLoggedUser()) {
+        if (!$this->tokenAccessor->hasUser()) {
             return;
         }
 
@@ -177,14 +169,6 @@ abstract class AbstractSyncSchedulerListener implements EventSubscriber
      * @return mixed
      */
     abstract protected function scheduleSync($entity);
-
-    /**
-     * @return SecurityFacade
-     */
-    protected function getSecurityFacade()
-    {
-        return $this->securityFacade->getService();
-    }
 
     /**
      * @return SyncScheduler
