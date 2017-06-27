@@ -18,7 +18,7 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
     /**
      * @var PropertyAccessor
      */
-    static private $propertyAccessor;
+    private static $propertyAccessor;
 
     /**
      * @var SerializerInterface|NormalizerInterface|DenormalizerInterface

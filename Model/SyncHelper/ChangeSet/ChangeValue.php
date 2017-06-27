@@ -13,7 +13,7 @@ class ChangeValue
     /**
      * @var PropertyAccessor
      */
-    static private $propertyAccessor;
+    private static $propertyAccessor;
 
     /**
      * @var mixed

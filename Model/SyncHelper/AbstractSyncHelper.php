@@ -23,7 +23,7 @@ abstract class AbstractSyncHelper implements LoggerAwareInterface
     /**
      * @var PropertyAccessor
      */
-    static private $propertyAccessor;
+    private static $propertyAccessor;
 
     /**
      * @var Channel

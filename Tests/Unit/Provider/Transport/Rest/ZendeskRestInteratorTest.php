@@ -4,7 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest;
 
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestIterator;
 
-class ZendeskRestIteratorTest extends \PHPUnit_Framework_TestCase
+class ZendeskRestInteratorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
