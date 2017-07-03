@@ -2,12 +2,11 @@
 
 namespace OroCRM\Bundle\ZendeskBundle\EventListener\Doctrine;
 
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Events;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-
-use Symfony\Component\Security\Core\Util\ClassUtils;
 
 use Oro\Bundle\EntityConfigBundle\DependencyInjection\Utils\ServiceLink;
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
@@ -122,15 +121,16 @@ abstract class AbstractSyncSchedulerListener implements EventSubscriber
      *
      * @param mixed $entity
      * @return bool
-     * @throws \InvalidArgumentException If entity doesn't use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait
+     * @throws \InvalidArgumentException If entity doesn't have an association with the integration channel
      */
     protected function isIntegrationEntityValid($entity)
     {
-        $class = ClassUtils::getRealClass($entity);
-        $integrationTrait = 'Oro\\Bundle\\IntegrationBundle\\Model\\IntegrationEntityTrait';
-        if (!in_array($integrationTrait, class_uses($class))) {
+        if (!method_exists($entity, 'getChannel')) {
             throw new \InvalidArgumentException(
-                sprintf('$entity is instance of %s expect to use %s trait.', $class, $integrationTrait)
+                sprintf(
+                    '$entity is instance of %s expect to have "getChannel" method.',
+                    ClassUtils::getClass($entity)
+                )
             );
         }
 
