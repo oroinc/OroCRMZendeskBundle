@@ -14,7 +14,7 @@ class OroZendeskBundleInstaller implements Installation
      */
     public function getMigrationVersion()
     {
-        return 'v1_2';
+        return 'v1_3';
     }
 
     /**
@@ -163,7 +163,7 @@ class OroZendeskBundleInstaller implements Installation
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onDelete' => 'SET NULL', 'onUpdate' => null]
+            ['onDelete' => 'CASCADE', 'onUpdate' => null]
         );
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_zd_ticket_type'),
@@ -220,7 +220,7 @@ class OroZendeskBundleInstaller implements Installation
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onDelete' => 'SET NULL', 'onUpdate' => null]
+            ['onDelete' => 'CASCADE', 'onUpdate' => null]
         );
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_contact'),
@@ -363,7 +363,7 @@ class OroZendeskBundleInstaller implements Installation
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onDelete' => 'SET NULL', 'onUpdate' => null]
+            ['onDelete' => 'CASCADE', 'onUpdate' => null]
         );
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_case_comment'),
