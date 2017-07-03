@@ -8,7 +8,7 @@ use Oro\Bundle\EmailBundle\Model\EmailHolderInterface;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 
-use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
+use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use Oro\Bundle\ContactBundle\Entity\Contact;
 
@@ -30,11 +30,10 @@ use Oro\Bundle\ContactBundle\Entity\Contact;
  * )
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class User implements EmailHolderInterface
 {
-    use IntegrationEntityTrait;
-
     /**
      * @var int
      *
@@ -220,6 +219,14 @@ class User implements EmailHolderInterface
      * @ORM\JoinColumn(name="related_user_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedUser;
+
+    /**
+     * @var Integration
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\IntegrationBundle\Entity\Channel")
+     * @ORM\JoinColumn(name="channel_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $channel;
 
     /**
      * @var bool
@@ -704,6 +711,33 @@ class User implements EmailHolderInterface
     public function getRelatedUser()
     {
         return $this->relatedUser;
+    }
+
+    /**
+     * @param Integration $integration
+     * @return $this
+     */
+    public function setChannel(Integration $integration)
+    {
+        $this->channel = $integration;
+
+        return $this;
+    }
+
+    /**
+     * @return Integration
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannelName()
+    {
+        return $this->channel ? $this->channel->getName() : null;
     }
 
     /**
