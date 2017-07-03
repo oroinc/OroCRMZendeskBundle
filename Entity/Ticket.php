@@ -10,7 +10,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
 
-use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
+use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
 
 /**
@@ -35,8 +35,6 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
  */
 class Ticket
 {
-    use IntegrationEntityTrait;
-
     /**
      * @var int
      *
@@ -229,6 +227,14 @@ class Ticket
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedCase;
+
+    /**
+     * @var Integration
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\IntegrationBundle\Entity\Channel")
+     * @ORM\JoinColumn(name="channel_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $channel;
 
     /**
      * @var bool
@@ -719,6 +725,33 @@ class Ticket
     public function getRelatedCase()
     {
         return $this->relatedCase;
+    }
+
+    /**
+     * @param Integration $integration
+     * @return $this
+     */
+    public function setChannel(Integration $integration)
+    {
+        $this->channel = $integration;
+
+        return $this;
+    }
+
+    /**
+     * @return Integration
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannelName()
+    {
+        return $this->channel ? $this->channel->getName() : null;
     }
 
     /**
