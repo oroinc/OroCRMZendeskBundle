@@ -10,7 +10,7 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * @var PropertyAccessor
      */
-    static private $propertyAccessor;
+    private static $propertyAccessor;
 
     /**
      * @var ChangeValue[]

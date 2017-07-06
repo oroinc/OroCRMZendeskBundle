@@ -27,7 +27,6 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
  */
 class TicketStatus implements Translatable
 {
-
     const STATUS_NEW = 'new';
     const STATUS_OPEN = 'open';
     const STATUS_PENDING = 'pending';

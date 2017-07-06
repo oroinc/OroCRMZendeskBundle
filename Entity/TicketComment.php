@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 
-use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
+use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
 
 /**
@@ -29,8 +29,6 @@ use Oro\Bundle\CaseBundle\Entity\CaseComment;
  */
 class TicketComment
 {
-    use IntegrationEntityTrait;
-
     /**
      * @var int
      * @ORM\Column(type="integer")
@@ -124,6 +122,14 @@ class TicketComment
      * @ORM\JoinColumn(name="related_comment_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $relatedComment;
+
+    /**
+     * @var Integration
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\IntegrationBundle\Entity\Channel")
+     * @ORM\JoinColumn(name="channel_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $channel;
 
     /**
      * @var bool
@@ -325,6 +331,33 @@ class TicketComment
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param Integration $integration
+     * @return $this
+     */
+    public function setChannel(Integration $integration)
+    {
+        $this->channel = $integration;
+
+        return $this;
+    }
+
+    /**
+     * @return Integration
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannelName()
+    {
+        return $this->channel ? $this->channel->getName() : null;
     }
 
     /**
