@@ -60,16 +60,27 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals($this->client, 'client', $result);
         $this->assertAttributeEquals('search.json', 'resource', $result);
         $this->assertAttributeEquals('results', 'dataKeyName', $result);
-        $this->assertAttributeEquals(['query' => 'type:user'], 'params', $result);
+
+        $params = self::getObjectAttribute($result, 'params');
+        $query = isset($params['query']) ? $params['query'] : '';
+        $this->assertContains('type:user created<=', $query);
+        $this->checkThatSearchQueryContainDateInCorrectFormat($query);
     }
 
     public function testGetUsersWorksWithLastUpdatedAt()
     {
         $this->initTransport();
-        $datetime = '2014-06-27T01:08:00+0400';
-        $expectedUpdated = '2014-06-26';
-        $result = $this->transport->getUsers(new \DateTime($datetime));
-        $this->assertAttributeEquals(['query' => 'type:user updated>' . $expectedUpdated], 'params', $result);
+        $datetime = '2017-07-05T21:35:36+000';
+        $result = $this->transport->getUsers(new \DateTime($datetime, new \DateTimeZone('UTC')));
+        $this->assertAttributeEquals(
+            [
+                'query' => 'type:user updated>=2017-07-05T21:35:36+0000',
+                'sort_by' => 'created_at',
+                'sort_order' => 'asc'
+            ],
+            'params',
+            $result
+        );
     }
 
     public function testGetTicketsWorks()
@@ -85,7 +96,12 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals($this->client, 'client', $result);
         $this->assertAttributeEquals('search.json', 'resource', $result);
         $this->assertAttributeEquals('results', 'dataKeyName', $result);
-        $this->assertAttributeEquals(['query' => 'type:ticket'], 'params', $result);
+
+        $params = self::getObjectAttribute($result, 'params');
+        $query = isset($params['query']) ? $params['query'] : '';
+        $this->assertContains('type:ticket created<=', $query);
+        $this->checkThatSearchQueryContainDateInCorrectFormat($query);
+
         $this->assertAttributeEquals($this->serializer, 'serializer', $result);
         $this->assertAttributeEquals(
             'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
@@ -97,10 +113,17 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
     public function testGetTicketsWorksWithLastUpdatedAt()
     {
         $this->initTransport();
-        $datetime = '2014-06-27T01:08:00+0400';
-        $expectedUpdated = '2014-06-26';
-        $result = $this->transport->getTickets(new \DateTime($datetime));
-        $this->assertAttributeEquals(['query' => 'type:ticket updated>' . $expectedUpdated], 'params', $result);
+        $datetime = '2014-06-27T01:08:00+0000';
+        $result = $this->transport->getTickets(new \DateTime($datetime), new \DateTimeZone('UTC'));
+        $this->assertAttributeEquals(
+            [
+                'query' => 'type:ticket updated>=2014-06-27T01:08:00+0000',
+                'sort_by' => 'created_at',
+                'sort_order' => 'asc'
+            ],
+            'params',
+            $result
+        );
     }
 
     public function testGetTicketCommentsWorks()
@@ -831,6 +854,20 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
         ];
+    }
+
+    /**
+     * @param string $query
+     */
+    protected function checkThatSearchQueryContainDateInCorrectFormat($query)
+    {
+        list(, $rawDateTime) = explode('=', $query);
+
+        /**
+         * Check if string contains correct datetime format
+         * If format isn't valid we will receive exception
+         */
+        new \DateTime($rawDateTime);
     }
 
     protected function initTransport()
