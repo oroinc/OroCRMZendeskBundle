@@ -6,6 +6,7 @@ use Oro\Bundle\ZendeskBundle\Provider\UserConnector;
 
 class UserConnectorTest extends \PHPUnit_Framework_TestCase
 {
+    use ExecutionContextTrait;
     /**
      * @var UserConnector
      */
@@ -81,11 +82,35 @@ class UserConnectorTest extends \PHPUnit_Framework_TestCase
         $this->stepExecutor = $this->getMockBuilder('Akeneo\Bundle\BatchBundle\Entity\StepExecution')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $this->stepExecutor
+            ->expects($this->any())
+            ->method('getExecutionContext')
+            ->willReturn($this->initExecutionContext());
+
         $this->connector = new UserConnector(
             $this->syncState,
             $this->registry,
             $this->logger,
             $this->mediator
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function tearDown()
+    {
+        unset(
+            $this->connector,
+            $this->mediator,
+            $this->logger,
+            $this->registry,
+            $this->syncState,
+            $this->transport,
+            $this->context,
+            $this->channel,
+            $this->executionContext
         );
     }
 
@@ -118,7 +143,12 @@ class UserConnectorTest extends \PHPUnit_Framework_TestCase
             ->with($this->stepExecutor)
             ->will($this->returnValue($this->context));
 
+        $isUpdatedLastSyncDateCallback = $this->getIsUpdatedLastSyncDateCallback();
         $this->connector->setStepExecution($this->stepExecutor);
+        $this->assertTrue(
+            $isUpdatedLastSyncDateCallback(),
+            "Last sync date should be saved to context data !"
+        );
 
         foreach ($expectedResults as $expected) {
             $result = $this->connector->read();

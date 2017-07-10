@@ -34,6 +34,8 @@ use Oro\Bundle\ContactBundle\Entity\Contact;
  */
 class User implements EmailHolderInterface
 {
+    const SEARCH_TYPE = 'user';
+
     /**
      * @var int
      *
