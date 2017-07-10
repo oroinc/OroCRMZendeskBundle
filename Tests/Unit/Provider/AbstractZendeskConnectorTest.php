@@ -6,6 +6,7 @@ use Oro\Bundle\ZendeskBundle\Provider\AbstractZendeskConnector;
 
 class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
 {
+    use ExecutionContextTrait;
     /**
      * @var AbstractZendeskConnector
      */
@@ -61,10 +62,29 @@ class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
         $this->stepExecutor = $this->getMockBuilder('Akeneo\Bundle\BatchBundle\Entity\StepExecution')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $this->stepExecutor
+            ->expects($this->any())
+            ->method('getExecutionContext')
+            ->willReturn($this->initExecutionContext());
+
         $iterator = $this->createMock('\Iterator');
         $this->connector->expects($this->any())
             ->method('getConnectorSource')
             ->will($this->returnValue($iterator));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function tearDown()
+    {
+        unset(
+            $this->connector,
+            $this->stepExecutor,
+            $this->mediator,
+            $this->executionContext
+        );
     }
 
     /**
@@ -87,6 +107,11 @@ class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
             ->method('getTransport')
             ->will($this->returnValue($transport));
 
+        $isUpdatedLastSyncDateCallback = $this->getIsUpdatedLastSyncDateCallback();
         $this->connector->setStepExecution($this->stepExecutor);
+        $this->assertTrue(
+            $isUpdatedLastSyncDateCallback(),
+            "Last sync date should be saved to context data !"
+        );
     }
 }

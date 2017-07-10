@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Provider;
 
+use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\IntegrationBundle\Logger\LoggerStrategy;
 use Oro\Bundle\IntegrationBundle\Provider\AbstractConnector;
@@ -35,6 +36,27 @@ abstract class AbstractZendeskConnector extends AbstractConnector
     ) {
         $this->syncState = $syncState;
         parent::__construct($contextRegistry, $logger, $contextMediator);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function initializeFromContext(ContextInterface $context)
+    {
+        parent::initializeFromContext($context);
+        $this->addLastSyncDate();
+    }
+
+    /**
+     * Write last sync date to context
+     */
+    protected function addLastSyncDate()
+    {
+        $today = new \DateTime('now', new \DateTimeZone('UTC'));
+        $this->addStatusData(
+            SyncState::LAST_SYNC_DATE_KEY,
+            $today->format(\DateTime::ISO8601)
+        );
     }
 
     /**

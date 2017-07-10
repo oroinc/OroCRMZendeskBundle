@@ -5,6 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+use Oro\Bundle\IntegrationBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Transport\AbstractRestTransport;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
@@ -40,50 +41,18 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/search.html
      */
-    public function getUsers(\DateTime $lastUpdatedAt = null)
+    public function getUsers(\DateTime $lastSyncDate = null)
     {
-        $query = 'type:user';
-        if ($lastUpdatedAt) {
-            $query .= sprintf(' updated>%s', $lastUpdatedAt->sub(new \DateInterval('P1D'))->format('Y-m-d'));
-        }
-
-        $result = new ZendeskRestIterator(
-            $this->getClient(),
-            'search.json',
-            'results',
-            [
-                'query' => $query,
-            ]
-        );
-
-        $result->setupDeserialization($this->serializer, 'Oro\\Bundle\\ZendeskBundle\\Entity\\User');
-
-        return $result;
+        return $this->getSearchResult(User::class, $lastSyncDate);
     }
 
     /**
      * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/search.html
      */
-    public function getTickets(\DateTime $lastUpdatedAt = null)
+    public function getTickets(\DateTime $lastSyncDate = null)
     {
-        $query = 'type:ticket';
-        if ($lastUpdatedAt) {
-            $query .= sprintf(' updated>%s', $lastUpdatedAt->sub(new \DateInterval('P1D'))->format('Y-m-d'));
-        }
-
-        $result = new ZendeskRestIterator(
-            $this->getClient(),
-            'search.json',
-            'results',
-            [
-                'query' => $query,
-            ]
-        );
-
-        $result->setupDeserialization($this->serializer, 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket');
-
-        return $result;
+        return $this->getSearchResult(Ticket::class, $lastSyncDate);
     }
 
     /**
@@ -242,6 +211,87 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
             null
         );
+    }
+
+    /**
+     * @param string         $classType
+     * @param \DateTime|null $lastUpdatedAt
+     *
+     * @return ZendeskRestIterator
+     */
+    protected function getSearchResult($classType, \DateTime $lastUpdatedAt = null)
+    {
+        if (!defined(sprintf('%s::%s', $classType, 'SEARCH_TYPE'))) {
+            throw new InvalidConfigurationException(
+                sprintf(
+                    "Class `%s` must contain constant `SEARCH_TYPE` to make search request !",
+                    $classType
+                )
+            );
+        }
+
+        $query = sprintf(
+            'type:%s',
+            $classType::SEARCH_TYPE
+        );
+
+        $dateFilter = $this->getDateFilter($lastUpdatedAt);
+        if (is_string($dateFilter)) {
+            $query = sprintf(
+                '%s %s',
+                $query,
+                $dateFilter
+            );
+        }
+
+        $requestParams = array_merge(
+            [
+                'query' => $query
+            ],
+            $this->getSortingParams()
+        );
+
+        $result = new ZendeskRestIterator(
+            $this->getClient(),
+            'search.json',
+            'results',
+            $requestParams
+        );
+
+        $result->setupDeserialization($this->serializer, $classType);
+
+        return $result;
+    }
+
+    /**
+     * Sorting params that help to stabilize page result to prevent duplication within batch items
+     *
+     * @return array
+     */
+    protected function getSortingParams()
+    {
+        return [
+            'sort_by'    => 'created_at',
+            'sort_order' => 'asc',
+        ];
+    }
+
+    /**
+     * @param \DateTime|null $lastUpdatedAt
+     *
+     * @return string
+     */
+    protected function getDateFilter(\DateTime $lastUpdatedAt = null)
+    {
+        if ($lastUpdatedAt) {
+            return sprintf(
+                'updated>=%s',
+                $lastUpdatedAt->format(\DateTime::ISO8601)
+            );
+        }
+
+        $todayDateTime = new \DateTime('now', new \DateTimeZone('UTC'));
+        return sprintf('created<=%s', $todayDateTime->format(\DateTime::ISO8601));
     }
 
     /**
