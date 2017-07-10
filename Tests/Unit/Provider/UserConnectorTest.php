@@ -6,6 +6,7 @@ use OroCRM\Bundle\ZendeskBundle\Provider\UserConnector;
 
 class UserConnectorTest extends \PHPUnit_Framework_TestCase
 {
+    use ExecutionContextTrait;
     /**
      * @var UserConnector
      */
@@ -46,11 +47,6 @@ class UserConnectorTest extends \PHPUnit_Framework_TestCase
      */
     protected $channel;
 
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $stepExecutor;
-
     protected function setUp()
     {
         $this->registry = $this->getMockBuilder('Oro\Bundle\ImportExportBundle\Context\ContextRegistry')
@@ -67,6 +63,7 @@ class UserConnectorTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->transport = $this->getMock('OroCRM\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
         $this->context = $this->getMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
+
         $this->mediator->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($this->transport));
@@ -81,11 +78,35 @@ class UserConnectorTest extends \PHPUnit_Framework_TestCase
         $this->stepExecutor = $this->getMockBuilder('Akeneo\Bundle\BatchBundle\Entity\StepExecution')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $this->stepExecutor
+            ->expects($this->any())
+            ->method('getExecutionContext')
+            ->willReturn($this->initExecutionContext());
+
         $this->connector = new UserConnector(
             $this->syncState,
             $this->registry,
             $this->logger,
             $this->mediator
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function tearDown()
+    {
+        unset(
+            $this->connector,
+            $this->mediator,
+            $this->logger,
+            $this->registry,
+            $this->syncState,
+            $this->transport,
+            $this->context,
+            $this->channel,
+            $this->executionContext
         );
     }
 
@@ -118,7 +139,12 @@ class UserConnectorTest extends \PHPUnit_Framework_TestCase
             ->with($this->stepExecutor)
             ->will($this->returnValue($this->context));
 
+        $isUpdatedLastSyncDateCallback = $this->getIsUpdatedLastSyncDateCallback();
         $this->connector->setStepExecution($this->stepExecutor);
+        $this->assertTrue(
+            $isUpdatedLastSyncDateCallback(),
+            "Last sync date should be saved to context data !"
+        );
 
         foreach ($expectedResults as $expected) {
             $result = $this->connector->read();

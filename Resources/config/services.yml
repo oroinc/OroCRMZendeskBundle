@@ -48,6 +48,8 @@ services:
         class: %orocrm_zendesk.sync_state.class%
         arguments:
             - '@doctrine'
+        calls:
+            - [ setLogger, [ '@logger' ] ]
 
     # Forms and extensions
     orocrm_zendesk.form.type.rest_transport_setting:
