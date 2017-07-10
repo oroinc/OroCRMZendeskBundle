@@ -35,6 +35,8 @@ use OroCRM\Bundle\CaseBundle\Entity\CaseEntity;
  */
 class Ticket
 {
+    const SEARCH_TYPE = 'ticket';
+
     /**
      * @var int
      *
