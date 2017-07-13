@@ -79,7 +79,7 @@ SQL;
 
                 if (!isset($statusData[SyncState::LAST_SYNC_DATE_KEY])) {
                     $statusDate = new \DateTime($statusDateRaw, new \DateTimeZone('UTC'));
-                    $statusDate->setTime(0,0,0);
+                    $statusDate->setTime(0, 0, 0);
                     $statusData[SyncState::LAST_SYNC_DATE_KEY] = $statusDate->format(\DateTime::ISO8601);
                     $this->connection->update(
                         'oro_integration_channel_status',
