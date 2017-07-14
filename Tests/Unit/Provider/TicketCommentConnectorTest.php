@@ -6,6 +6,7 @@ use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
 class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
 {
+    use ExecutionContextTrait;
     /**
      * @var TicketCommentConnector
      */
@@ -82,11 +83,34 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $this->stepExecutor
+            ->expects($this->any())
+            ->method('getExecutionContext')
+            ->willReturn($this->initExecutionContext());
+
         $this->connector = new TicketCommentConnector(
             $this->syncState,
             $this->registry,
             $this->logger,
             $this->mediator
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function tearDown()
+    {
+        unset(
+            $this->connector,
+            $this->mediator,
+            $this->logger,
+            $this->registry,
+            $this->syncState,
+            $this->transport,
+            $this->context,
+            $this->channel,
+            $this->executionContext
         );
     }
 
@@ -146,7 +170,12 @@ class TicketCommentConnectorTest extends \PHPUnit_Framework_TestCase
                 )
             );
 
+        $isUpdatedLastSyncDateCallback = $this->getIsUpdatedLastSyncDateCallback();
         $this->connector->setStepExecution($this->stepExecutor);
+        $this->assertTrue(
+            $isUpdatedLastSyncDateCallback(),
+            "Last sync date should be saved to context data !"
+        );
 
         foreach ($expectedResults as $expected) {
             $result = $this->connector->read();
