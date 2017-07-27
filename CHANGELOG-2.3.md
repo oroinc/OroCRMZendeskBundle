@@ -1,0 +1,5 @@
+ZendeskBundle
+-------------
+* The `AbstractSyncSchedulerListener::getSecurityFacade`<sup>[[?]](https://github.com/oroinc/OroCRMZendeskBundle/tree/2.2.0/EventListener/Doctrine/AbstractSyncSchedulerListener.php#L184 "Oro\Bundle\ZendeskBundle\EventListener\Doctrine\AbstractSyncSchedulerListener::getSecurityFacade")</sup> method was removed.
+* The `AbstractSyncSchedulerListener::__construct(ServiceLink $securityFacadeLink, ServiceLink $schedulerServiceLink)`<sup>[[?]](https://github.com/oroinc/OroCRMZendeskBundle/tree/2.2.0/EventListener/Doctrine/AbstractSyncSchedulerListener.php#L45 "Oro\Bundle\ZendeskBundle\EventListener\Doctrine\AbstractSyncSchedulerListener")</sup> method was changed to `AbstractSyncSchedulerListener::__construct(TokenAccessorInterface $tokenAccessor, ServiceLink $schedulerServiceLink)`<sup>[[?]](https://github.com/oroinc/OroCRMZendeskBundle/tree/2.3.0/EventListener/Doctrine/AbstractSyncSchedulerListener.php#L36 "Oro\Bundle\ZendeskBundle\EventListener\Doctrine\AbstractSyncSchedulerListener")</sup>
+
