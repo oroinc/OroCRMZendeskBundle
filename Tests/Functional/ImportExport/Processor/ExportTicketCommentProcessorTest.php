@@ -7,6 +7,8 @@ use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\UserBundle\Entity\User;
 use OroCRM\Bundle\CaseBundle\Entity\CaseComment;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketComment;
+use OroCRM\Bundle\ZendeskBundle\Entity\Ticket;
+use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketCommentProcessor;
 
@@ -149,8 +151,21 @@ class ExportTicketCommentProcessorTest extends WebTestCase
 
     public function testProcessReturnNullIfCaseIsNull()
     {
+        $this->context->expects($this->once())->method('incrementErrorEntriesCount');
         $ticketComment = new TicketComment();
+        $ticketComment->setTicket($this->createTicketWithStatus(TicketStatus::STATUS_OPEN));
         $this->assertNull($this->processor->process($ticketComment));
+    }
+
+    public function testProcessIfTickedIsClosed()
+    {
+        $this->context->expects($this->once())->method('incrementErrorEntriesCount');
+
+        $owner = $this->getReference('user:james.cook@example.com');
+        $ticketComment = $this->createTicketComment('test', $owner, false, TicketStatus::STATUS_CLOSED);
+        $actual = $this->processor->process($ticketComment);
+
+        $this->assertNull($actual);
     }
 
     /**
@@ -159,15 +174,36 @@ class ExportTicketCommentProcessorTest extends WebTestCase
      * @param bool   $isPublic
      * @return TicketComment
      */
-    protected function createTicketComment($expectedMessage, User $owner, $isPublic = true)
+    protected function createTicketComment($expectedMessage, User $owner, $isPublic = true, $tickedStatus = null)
     {
+        if (null === $tickedStatus) {
+            $tickedStatus = TicketStatus::STATUS_OPEN;
+        }
+
+        $ticket = $this->createTicketWithStatus($tickedStatus);
+
         $ticketComment = new TicketComment();
         $comment = new CaseComment();
         $comment->setPublic($isPublic);
         $comment->setMessage($expectedMessage);
         $comment->setOwner($owner);
         $ticketComment->setRelatedComment($comment);
+        $ticketComment->setTicket($ticket);
 
         return $ticketComment;
+    }
+
+    /**
+     * @param string $status
+     * @return Ticket
+     */
+    protected function createTicketWithStatus($status)
+    {
+        $em = $this->getContainer()->get('doctrine')->getManager();
+
+        $ticket = new Ticket();
+        $ticket->setStatus($em->find('OroCRMZendeskBundle:TicketStatus', $status));
+
+        return $ticket;
     }
 }
