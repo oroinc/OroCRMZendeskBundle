@@ -148,6 +148,7 @@ class SyncManager
                 $this->syncScheduler->schedule(
                     $channel->getId(),
                     TicketCommentConnector::TYPE,
+                    // @TODO: change key id to ids more see in ticket CRM-8405
                     array('id' => $ids)
                 );
                 $ids = array();
