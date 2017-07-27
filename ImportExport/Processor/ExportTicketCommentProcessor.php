@@ -3,6 +3,7 @@
 namespace Oro\Bundle\ZendeskBundle\ImportExport\Processor;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
@@ -35,6 +36,12 @@ class ExportTicketCommentProcessor extends AbstractExportProcessor
      */
     protected function syncComment(TicketComment $ticketComment)
     {
+        $isTicketValid = $this->isTicketValid($ticketComment);
+        if (!$isTicketValid) {
+            $this->getContext()->incrementErrorEntriesCount();
+            return null;
+        }
+
         $comment = $ticketComment->getRelatedComment();
 
         if (!$comment) {
@@ -81,5 +88,31 @@ class ExportTicketCommentProcessor extends AbstractExportProcessor
         }
 
         return $author;
+    }
+
+    /**
+     * @param TicketComment $ticketComment
+     * @return bool
+     */
+    protected function isTicketValid(TicketComment $ticketComment)
+    {
+        $ticket = $ticketComment->getTicket();
+
+        if (null === $ticket) {
+            $this->getLogger()->error(sprintf('Ticket for comment "%s" not found', $ticketComment->getBody()));
+            return false;
+        }
+
+        if ($ticket->getStatus()->getName() === TicketStatus::STATUS_CLOSED) {
+            $this->getLogger()->error(
+                sprintf(
+                    'Comment for ticket "%s" not synced because ticket is closed.',
+                    $ticket->getSubject()
+                )
+            );
+            return false;
+        }
+
+        return true;
     }
 }
