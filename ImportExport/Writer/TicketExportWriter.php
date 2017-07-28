@@ -234,6 +234,7 @@ class TicketExportWriter extends AbstractExportWriter
         $this->syncScheduler->schedule(
             $this->getChannel()->getId(),
             TicketCommentConnector::TYPE,
+            // @TODO: change key id to ids more see in ticket CRM-8405
             ['id' => $ids]
         );
     }
