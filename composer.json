@@ -1,7 +1,7 @@
 {
     "name": "oro/crm-zendesk",
     "description": "OroCRM Zendesk Integration",
-    "homepage": "https://github.com/orocrm/OroCRMZendeskBundle.git",
+    "homepage": "https://github.com/oroinc/OroCRMZendeskBundle.git",
     "license": "OSL-3.0",
     "keywords": ["OroCRM", "Zendesk", "Integration"],
     "authors": [
