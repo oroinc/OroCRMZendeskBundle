@@ -2,6 +2,8 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
+use Psr\Log\LoggerInterface;
+
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Async\Topics;
@@ -20,6 +22,9 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
+use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
+use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
 /**
  * @dbIsolationPerTest
@@ -66,21 +71,21 @@ class TicketExportWriterTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->loadFixtures([LoadTicketData::class]);
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
         $this->registry = $this->getContainer()->get('doctrine');
-        $this->context  = $this->createMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
+        $this->context  = $this->createMock(ContextInterface::class);
 
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap([['channel', null, $this->channel->getId()]]));
 
         $this->transport =
-            $this->createMock('Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\ZendeskTransportInterface');
+            $this->createMock(ZendeskTransportInterface::class);
 
-        $this->logger = $this->createMock('Psr\\Log\\LoggerInterface');
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->logger->expects($this->any(0))
             ->method('log')
