@@ -174,3 +174,5 @@ services:
         parent: orocrm_zendesk.importexport.writer.export_abstract
         arguments:
             - '@orocrm_zendesk.sync_helper.ticket_comment'
+        calls:
+            - [setExceptionHandler, ['@orocrm_zendesk.handler.ticket_comment_exception']]

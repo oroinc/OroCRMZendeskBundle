@@ -12,6 +12,8 @@ use OroCRM\Bundle\ZendeskBundle\Entity\TicketPriority;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketStatus;
 use OroCRM\Bundle\ZendeskBundle\Entity\TicketType;
 use OroCRM\Bundle\ZendeskBundle\ImportExport\Writer\TicketCommentExportWriter;
+use OroCRM\Bundle\ZendeskBundle\Handler\TicketCommentExceptionHandler;
+use OroCRM\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -56,12 +58,17 @@ class TicketCommentExportWriterTest extends WebTestCase
      */
     protected $logOutput;
 
+    /** @var  ExceptionHandlerInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $exceptionHandler;
+
     protected function setUp()
     {
         $this->initClient();
         $this->loadFixtures(['OroCRM\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
+
+        $this->exceptionHandler = new TicketCommentExceptionHandler();
 
         $this->registry = $this->getContainer()->get('doctrine');
         $this->context  = $this->getMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
@@ -90,6 +97,7 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->writer = $this->getContainer()->get('orocrm_zendesk.importexport.writer.export_ticket_comment');
         $this->writer->setImportExportContext($this->context);
         $this->writer->setLogger($this->logger);
+        $this->writer->setExceptionHandler($this->exceptionHandler);
     }
 
     protected function tearDown()
@@ -256,6 +264,54 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->assertContains('[info] Zendesk Ticket Comment [id=' . $ticketComment->getId() . ']:', $this->logOutput);
         $this->assertContains('Create user in Zendesk API [id=' . $author->getId() . '].', $this->logOutput);
         $this->assertContains('Not allowed to create user [role=agent] in Zendesk.', $this->logOutput);
+    }
+
+    public function testCreateCommentToClosedTicketWithExpectedException()
+    {
+        $ticketComment = $this->getReference('zendesk_ticket_42_comment_4');
+        $author = $ticketComment->getAuthor();
+        $author->setRole($this->registry->getRepository('OroCRMZendeskBundle:UserRole')->find(UserRole::ROLE_AGENT));
+
+        $this->transport->expects($this->never())->method('createUser');
+
+        $exception = new InvalidRecordException('', 422);
+
+        $this->transport->expects($this->once())
+            ->method('addTicketComment')
+            ->with($ticketComment)
+            ->willThrowException($exception);
+
+        try {
+            $this->writer->write([$ticketComment]);
+        } catch (\Exception $e) {
+            $this->fail(
+                sprintf(
+                    "Unexpected exception. Please check %s:createTicketComment",
+                    TicketCommentExportWriter::class
+                )
+            );
+        }
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testCreateCommentToClosedTicketWithUnexpectedException()
+    {
+        $ticketComment = $this->getReference('zendesk_ticket_42_comment_4');
+        $author = $ticketComment->getAuthor();
+        $author->setRole($this->registry->getRepository('OroCRMZendeskBundle:UserRole')->find(UserRole::ROLE_AGENT));
+
+        $this->transport->expects($this->never())->method('createUser');
+
+        $exception = new \Exception();
+
+        $this->transport->expects($this->once())
+            ->method('addTicketComment')
+            ->with($ticketComment)
+            ->willThrowException($exception);
+
+        $this->writer->write([$ticketComment]);
     }
 
     protected function createTicket()
