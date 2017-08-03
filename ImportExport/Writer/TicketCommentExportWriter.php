@@ -2,8 +2,9 @@
 
 namespace Oro\Bundle\ZendeskBundle\ImportExport\Writer;
 
-use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Handler\ExceptionHandlerInterface;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
 
 class TicketCommentExportWriter extends AbstractExportWriter
 {
@@ -12,12 +13,26 @@ class TicketCommentExportWriter extends AbstractExportWriter
      */
     protected $ticketCommentHelper;
 
+    /** @var ExceptionHandlerInterface */
+    protected $exceptionHandler;
+
     /**
      * @param TicketCommentSyncHelper $ticketCommentHelper
      */
     public function __construct(TicketCommentSyncHelper $ticketCommentHelper)
     {
         $this->ticketCommentHelper = $ticketCommentHelper;
+    }
+
+    /**
+     * @param ExceptionHandlerInterface $exceptionHandler
+     * @return TicketCommentExportWriter
+     */
+    public function setExceptionHandler(ExceptionHandlerInterface $exceptionHandler)
+    {
+        $this->exceptionHandler = $exceptionHandler;
+
+        return $this;
     }
 
     /**
@@ -62,12 +77,22 @@ class TicketCommentExportWriter extends AbstractExportWriter
 
     /**
      * @param TicketComment $ticketComment
+     * @throws \Exception
      */
     protected function createTicketComment(TicketComment $ticketComment)
     {
         $this->getLogger()->info("Create ticket comment in Zendesk API.");
 
-        $createdTicketComment = $this->transport->addTicketComment($ticketComment);
+        try {
+            $createdTicketComment = $this->transport->addTicketComment($ticketComment);
+        } catch (\Exception $e) {
+            if (!$this->exceptionHandler->process($e, $this->getContext())) {
+                throw $e;
+            } else {
+                // ticket comment skipped, do nothing
+                return;
+            }
+        }
 
         $this->getLogger()->info("Created ticket comment [origin_id={$createdTicketComment->getOriginId()}].");
 
