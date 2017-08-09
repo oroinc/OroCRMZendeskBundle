@@ -176,3 +176,7 @@ services:
         class: %orocrm_zendesk.provider.phone.user.class%
         tags:
             - { name: oro_address.phone_provider, class: %orocrm_zendesk.entity.user.class% }
+
+    #handler
+    orocrm_zendesk.handler.ticket_comment_exception:
+        class: OroCRM\Bundle\ZendeskBundle\Handler\TicketCommentExceptionHandler
