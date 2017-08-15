@@ -121,18 +121,15 @@ class ZendeskEntityProvider
 
         /** @var EntityRepository $repo */
         $repo = $this->registry->getRepository('OroZendeskBundle:User');
-        $qb   = $repo->createQueryBuilder('u');
-        $qb->where($qb->expr()->in('u.email', $emails))
-            ->andWhere('u.channel = :channel');
-        $result = $qb->getQuery()
-            ->setParameters(array('channel' => $channel))
-            ->getOneOrNullResult();
 
-        if (!$result && $defaultIfNotExist) {
+        /** @var User|null $user */
+        $user = $repo->findOneBy(array('email' => $emails, 'channel' => $channel));
+
+        if (!$user && $defaultIfNotExist) {
             return $this->getDefaultZendeskUser($channel);
         }
 
-        return $result;
+        return $user;
     }
 
     /**
