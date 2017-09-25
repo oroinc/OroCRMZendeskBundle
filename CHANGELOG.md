@@ -11,5 +11,5 @@
 - Service `oro_zendesk.twig.extension` was marked as `private`
 ### Removed
 - Parameter `oro_zendesk.twig.extension.class` was removed from the DI container
-- Class `Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension`
+- Class `ZendeskExtension`<sup>[[?]](https://github.com/oroinc/OroCRMZendeskBundle/tree/2.1.0/Twig/ZendeskExtension.php "Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension")</sup>
     - removed property `protected $zendeskProvider`
