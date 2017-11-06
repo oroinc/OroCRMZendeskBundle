@@ -2,6 +2,8 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Job;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
@@ -18,6 +20,7 @@ class TicketCommentExportJobTest extends AbstractImportExportJobTestCase
 
     public function testExportTicketCommentForCloseTicket()
     {
+        /** @var Channel $channel */
         $channel        = $this->getReference('zendesk_channel:first_test_channel');
         $ticketComment  = $this->getReference('zendesk_ticket_42_comment_3');
 
@@ -40,13 +43,12 @@ class TicketCommentExportJobTest extends AbstractImportExportJobTestCase
             $jobLog
         );
 
-        $log = $this->formatImportExportJobLog($jobLog);
+        $this->assertTrue($result);
 
-        $expectedMessage = "Some entities were skipped due to warnings: ";
-        $expectedMessage .= "Error ticket comment not exported because ticket is closed";
+        /** @var Status $status */
+        $status = $channel->getStatuses()->first();
 
-        $this->assertContains($expectedMessage, $log);
-
-        $this->assertTrue($result, "Job Failed with output:\n $log");
+        $this->assertContains('Some entities were skipped due to warnings', $status->getMessage());
+        $this->assertContains('Error ticket comment not exported because ticket is closed', $status->getMessage());
     }
 }
