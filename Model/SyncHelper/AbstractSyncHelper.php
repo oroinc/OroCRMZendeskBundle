@@ -4,11 +4,11 @@ namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Security\Core\Util\ClassUtils;
-use Symfony\Component\HttpKernel\Log\NullLogger;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
