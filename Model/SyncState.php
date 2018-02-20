@@ -2,14 +2,12 @@
 
 namespace Oro\Bundle\ZendeskBundle\Model;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Entity\Repository\ChannelRepository;
+use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-
-use Doctrine\Common\Persistence\ManagerRegistry;
-
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\IntegrationBundle\Entity\Status;
-use Oro\Bundle\IntegrationBundle\Entity\Repository\ChannelRepository;
 
 class SyncState
 {

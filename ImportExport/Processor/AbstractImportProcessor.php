@@ -2,19 +2,17 @@
 
 namespace Oro\Bundle\ZendeskBundle\ImportExport\Processor;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
-
-use Oro\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
+use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\ImportExportBundle\Processor\ContextAwareProcessor;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
-use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
+use Oro\Bundle\ZendeskBundle\ImportExport\ImportExportLogger;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 abstract class AbstractImportProcessor implements
     StepExecutionAwareInterface,

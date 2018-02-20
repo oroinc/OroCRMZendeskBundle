@@ -2,8 +2,8 @@
 
 namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper;
 
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 
 class TicketCommentSyncHelper extends AbstractSyncHelper

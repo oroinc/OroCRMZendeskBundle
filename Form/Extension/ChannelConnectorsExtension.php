@@ -2,14 +2,13 @@
 
 namespace Oro\Bundle\ZendeskBundle\Form\Extension;
 
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-
-use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 
 class ChannelConnectorsExtension extends AbstractTypeExtension
 {

@@ -2,24 +2,23 @@
 
 namespace Oro\Bundle\ZendeskBundle\Model\EntityProvider;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-
+use Doctrine\ORM\EntityRepository;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
-use Oro\Bundle\UserBundle\Entity\User as OroUser;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\ContactBundle\Entity\Contact;
-use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
-use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
-use Oro\Bundle\ZendeskBundle\Entity\TicketType;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
-use Oro\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
+use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
-use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 
 class ZendeskEntityProvider
 {

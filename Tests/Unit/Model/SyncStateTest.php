@@ -2,14 +2,12 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Model;
 
-use Psr\Log\LoggerInterface;
-
 use Doctrine\Common\Persistence\ManagerRegistry;
-
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Repository\ChannelRepository;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Oro\Bundle\ZendeskBundle\Model\SyncState;
+use Psr\Log\LoggerInterface;
 
 class SyncStateTest extends \PHPUnit_Framework_TestCase
 {

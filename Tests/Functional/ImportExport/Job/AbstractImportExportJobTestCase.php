@@ -3,14 +3,11 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Job;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
-
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\SyncProcessor;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport;
 
 class AbstractImportExportJobTestCase extends WebTestCase

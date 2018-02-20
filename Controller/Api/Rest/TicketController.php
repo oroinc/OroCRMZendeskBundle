@@ -2,18 +2,15 @@
 
 namespace Oro\Bundle\ZendeskBundle\Controller\Api\Rest;
 
-use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
-
-use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
+use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-
-use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Rest\RouteResource("ticket")

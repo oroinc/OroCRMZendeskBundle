@@ -2,8 +2,8 @@
 
 namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper;
 
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\CaseBundle\Model\CaseEntityManager;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Model\EntityMapper;

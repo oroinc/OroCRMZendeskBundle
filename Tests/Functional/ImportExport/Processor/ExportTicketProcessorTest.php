@@ -2,11 +2,11 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\CaseBundle\Entity\CasePriority;
 use Oro\Bundle\CaseBundle\Entity\CaseStatus;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;

@@ -2,12 +2,11 @@
 
 namespace Oro\Bundle\ZendeskBundle\Form\Extension;
 
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-
-use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
-use Oro\Bundle\CaseBundle\Entity\CaseComment;
 
 class CaseCommentPublicExtension extends AbstractTypeExtension
 {

@@ -3,11 +3,10 @@
 namespace Oro\Bundle\ZendeskBundle\Model;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;

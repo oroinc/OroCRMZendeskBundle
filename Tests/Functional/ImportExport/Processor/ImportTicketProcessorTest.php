@@ -3,19 +3,18 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use Oro\Bundle\CaseBundle\Entity\CasePriority;
 use Oro\Bundle\CaseBundle\Entity\CaseStatus;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\TicketType;
-use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketProcessor;
-use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
+use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketProcessor;
 use Oro\Bundle\ZendeskBundle\Model\SyncState;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 /**
  * @dbIsolationPerTest

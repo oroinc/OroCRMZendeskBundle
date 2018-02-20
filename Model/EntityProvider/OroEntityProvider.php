@@ -2,17 +2,16 @@
 
 namespace Oro\Bundle\ZendeskBundle\Model\EntityProvider;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-
+use Doctrine\ORM\EntityRepository;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\ContactBundle\Entity\Contact;
+use Oro\Bundle\ContactBundle\Entity\ContactEmail;
+use Oro\Bundle\ContactBundle\Entity\ContactPhone;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\UserBundle\Entity\Email;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
-use Oro\Bundle\CaseBundle\Entity\CaseEntity;
-use Oro\Bundle\ContactBundle\Entity\ContactEmail;
 use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
-use Oro\Bundle\ContactBundle\Entity\Contact;
-use Oro\Bundle\ContactBundle\Entity\ContactPhone;
 use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 
 class OroEntityProvider

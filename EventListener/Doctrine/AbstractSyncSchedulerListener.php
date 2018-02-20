@@ -2,12 +2,11 @@
 
 namespace Oro\Bundle\ZendeskBundle\EventListener\Doctrine;
 
-use Doctrine\Common\Util\ClassUtils;
-use Doctrine\ORM\Events;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-
+use Doctrine\ORM\Events;
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\SecurityBundle\Authentication\TokenAccessorInterface;
 use Oro\Component\DependencyInjection\ServiceLink;
