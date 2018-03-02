@@ -2,11 +2,11 @@
 
 namespace Oro\Bundle\ZendeskBundle\ImportExport\Processor;
 
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\User;
-use Oro\Bundle\CaseBundle\Entity\CaseComment;
-use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 
 class ExportTicketCommentProcessor extends AbstractExportProcessor
 {

@@ -2,8 +2,8 @@
 
 namespace Oro\Bundle\ZendeskBundle\ImportExport\Writer;
 
-use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;

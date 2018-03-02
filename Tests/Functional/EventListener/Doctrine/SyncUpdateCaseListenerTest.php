@@ -3,12 +3,11 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-
 use Oro\Bundle\IntegrationBundle\Async\Topics;
 use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
+use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
-use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 
 class SyncUpdateCaseListenerTest extends AbstractSyncSchedulerTest
 {

@@ -3,9 +3,6 @@
 namespace Oro\Bundle\ZendeskBundle\Twig;
 
 use Guzzle\Http\Url;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
@@ -13,6 +10,7 @@ use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 use Oro\Bundle\ZendeskBundle\Exception\ConfigurationException;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ZendeskExtension extends \Twig_Extension
 {

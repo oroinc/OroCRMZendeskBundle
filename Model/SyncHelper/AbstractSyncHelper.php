@@ -2,21 +2,19 @@
 
 namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper;
 
+use Oro\Bundle\CaseBundle\Model\CaseEntityManager;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
+use Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-
+use Psr\Log\NullLogger;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Security\Core\Util\ClassUtils;
-use Symfony\Component\HttpKernel\Log\NullLogger;
-
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
-use Oro\Bundle\OrganizationBundle\Entity\Organization;
-use Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
-use Oro\Bundle\CaseBundle\Model\CaseEntityManager;
-use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
-use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 
 abstract class AbstractSyncHelper implements LoggerAwareInterface
 {

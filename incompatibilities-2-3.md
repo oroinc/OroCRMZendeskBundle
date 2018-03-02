@@ -1,6 +1,3 @@
-UPGRADE FROM 2.2 to 2.3
-========================
-
 ZendeskBundle
 -------------
 * The `AbstractSyncSchedulerListener::getSecurityFacade`<sup>[[?]](https://github.com/oroinc/OroCRMZendeskBundle/tree/2.2.0/EventListener/Doctrine/AbstractSyncSchedulerListener.php#L184 "Oro\Bundle\ZendeskBundle\EventListener\Doctrine\AbstractSyncSchedulerListener::getSecurityFacade")</sup> method was removed.

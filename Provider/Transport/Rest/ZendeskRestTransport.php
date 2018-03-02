@@ -2,9 +2,6 @@
 
 namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\HttpFoundation\ParameterBag;
-
 use Oro\Bundle\IntegrationBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Transport\AbstractRestTransport;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
@@ -12,6 +9,8 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\RestException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @link http://developer.zendesk.com/documentation/rest_api/introduction.html

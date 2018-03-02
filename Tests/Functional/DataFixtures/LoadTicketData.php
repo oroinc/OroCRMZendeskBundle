@@ -5,14 +5,12 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-
-use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\TicketType;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInterface, DependentFixtureInterface
 {

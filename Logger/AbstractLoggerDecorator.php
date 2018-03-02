@@ -2,10 +2,10 @@
 
 namespace Oro\Bundle\ZendeskBundle\Logger;
 
-use Psr\Log\LogLevel;
-use Psr\Log\NullLogger;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
 
 abstract class AbstractLoggerDecorator implements LoggerInterface
 {

@@ -3,12 +3,11 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ImportUserProcessor;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ImportUserProcessor;
 
 class ImportUserProcessorTest extends WebTestCase
 {

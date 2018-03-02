@@ -2,11 +2,10 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
 
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-
-use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
-use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\UserBundle\Entity\User;
+use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 abstract class AbstractSyncSchedulerTest extends WebTestCase
 {

@@ -2,11 +2,10 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\Controller;
 
-use Symfony\Component\DomCrawler\Crawler;
-
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
-use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Symfony\Component\DomCrawler\Crawler;
 
 class CaseControllerTest extends WebTestCase
 {

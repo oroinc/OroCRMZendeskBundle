@@ -2,11 +2,10 @@
 
 namespace Oro\Bundle\ZendeskBundle\ImportExport;
 
-use Psr\Log\LogLevel;
-
 use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ZendeskBundle\Logger\AbstractLoggerDecorator;
+use Psr\Log\LogLevel;
 
 class ImportExportLogger extends AbstractLoggerDecorator implements ContextAwareInterface
 {

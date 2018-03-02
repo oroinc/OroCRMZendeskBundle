@@ -2,15 +2,14 @@
 
 namespace Oro\Bundle\ZendeskBundle\EventListener\Doctrine;
 
-use Doctrine\Common\Util\ClassUtils;
-use Doctrine\ORM\Events;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-
-use Oro\Bundle\EntityConfigBundle\DependencyInjection\Utils\ServiceLink;
+use Doctrine\ORM\Events;
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\SecurityBundle\Authentication\TokenAccessorInterface;
+use Oro\Component\DependencyInjection\ServiceLink;
 
 /**
  * This class is responsible for scheduling sync job of integration entity of Zendesk related to Oro entity.

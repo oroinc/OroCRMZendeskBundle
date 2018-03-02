@@ -2,9 +2,9 @@
 
 namespace Oro\Bundle\ZendeskBundle\ImportExport\Processor;
 
-use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
-use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
+use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Model\EntityMapper;
 use Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;

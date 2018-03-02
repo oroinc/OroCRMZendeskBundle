@@ -2,10 +2,10 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\UserBundle\Entity\User;
-use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;

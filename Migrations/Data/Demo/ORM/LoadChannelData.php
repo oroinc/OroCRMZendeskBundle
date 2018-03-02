@@ -4,13 +4,12 @@ namespace Oro\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 use Oro\Bundle\ZendeskBundle\Provider\UserConnector;
 use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\AbstractZendeskFixture;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 
 class LoadChannelData extends AbstractZendeskFixture implements DependentFixtureInterface
 {

@@ -2,26 +2,24 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
-use Psr\Log\LoggerInterface;
-
 use Doctrine\Common\Persistence\ManagerRegistry;
-
+use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
-use Oro\Bundle\ZendeskBundle\Entity\User;
-use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\TicketType;
-use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketCommentExportWriter;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
-use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
-use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\Handler\ExceptionHandlerInterface;
-use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 use Oro\Bundle\ZendeskBundle\Handler\TicketCommentExceptionHandler;
+use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketCommentExportWriter;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
+use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
+use Psr\Log\LoggerInterface;
 
 /**
  * @dbIsolationPerTest

@@ -66,7 +66,7 @@
                                 </a>
                             {% endif %}
                         {% endset %}
-                        {{ UI.renderHtmlProperty('oro.zendesk.ticket.problem.label'|trans, problem|trim) }}
+                        {{ UI.renderHtmlProperty('oro.zendesk.ticket.problem.label'|trans, problem|oro_html_sanitize|trim) }}
 
                         {% set collaborators %}
                             {% if ticket.collaborators %}

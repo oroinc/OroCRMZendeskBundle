@@ -3,13 +3,12 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
-use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketCommentProcessor;
 use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketCommentProcessor;
 
 class ImportTicketCommentProcessorTest extends WebTestCase
 {

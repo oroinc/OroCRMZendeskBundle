@@ -3,9 +3,8 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider;
 
 use Akeneo\Bundle\BatchBundle\Item\ExecutionContext;
-
-use Oro\Bundle\ZendeskBundle\Model\SyncState;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
+use Oro\Bundle\ZendeskBundle\Model\SyncState;
 
 trait ExecutionContextTrait
 {

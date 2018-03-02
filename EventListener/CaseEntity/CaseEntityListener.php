@@ -2,15 +2,14 @@
 
 namespace Oro\Bundle\ZendeskBundle\EventListener\CaseEntity;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
-use Oro\Bundle\CaseBundle\Event\FormHandlerEvent;
 use Oro\Bundle\CaseBundle\Event\Events;
+use Oro\Bundle\CaseBundle\Event\FormHandlerEvent;
 use Oro\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\SyncManager;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CaseEntityListener implements EventSubscriberInterface
 {

@@ -2,20 +2,18 @@
 
 namespace Oro\Bundle\ZendeskBundle\Migrations\Schema\v1_2_2;
 
-use Psr\Log\LoggerInterface;
-
-use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Connection;
-
-use Oro\Bundle\MigrationBundle\Migration\Migration;
-use Oro\Bundle\MigrationBundle\Migration\QueryBag;
-use Oro\Bundle\MigrationBundle\Migration\ParametrizedMigrationQuery;
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Types\Type;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
-use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
-use Oro\Bundle\ZendeskBundle\Provider\UserConnector;
-use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
+use Oro\Bundle\MigrationBundle\Migration\Migration;
+use Oro\Bundle\MigrationBundle\Migration\ParametrizedMigrationQuery;
+use Oro\Bundle\MigrationBundle\Migration\QueryBag;
 use Oro\Bundle\ZendeskBundle\Model\SyncState;
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
+use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
+use Oro\Bundle\ZendeskBundle\Provider\UserConnector;
+use Psr\Log\LoggerInterface;
 
 class AddLastSyncDateToChannelStatus extends ParametrizedMigrationQuery implements Migration
 {

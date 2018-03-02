@@ -2,10 +2,9 @@
 
 namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
-use Symfony\Component\Serializer\SerializerInterface;
-
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\AbstractRestIterator;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ZendeskRestIterator extends AbstractRestIterator
 {

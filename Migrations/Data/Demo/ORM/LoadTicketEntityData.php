@@ -7,22 +7,20 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
-
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
-use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
-use Oro\Bundle\ZendeskBundle\Entity\UserRole;
-use Oro\Bundle\ZendeskBundle\Model\EntityMapper;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\CaseBundle\Migrations\Data\Demo\ORM\LoadCaseEntityData;
 use Oro\Bundle\ContactBundle\Entity\Contact;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\UserBundle\Entity\User as OroUser;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 use Oro\Bundle\ZendeskBundle\Entity\User;
-use Oro\Bundle\CaseBundle\Entity\CaseEntity;
-use Oro\Bundle\ZendeskBundle\Entity\Ticket;
-use Oro\Bundle\UserBundle\Entity\User as OroUser;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
+use Oro\Bundle\ZendeskBundle\Model\EntityMapper;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
