@@ -3,7 +3,6 @@
 namespace Oro\Bundle\ZendeskBundle\Form\Extension;
 
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Symfony\Component\Form\AbstractTypeExtension;
@@ -59,7 +58,7 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
                 'label'       => 'oro.zendesk.form.sync_to_zendesk.label',
                 'mapped'      => false,
                 'required'    => false,
-                'empty_value' => 'oro.zendesk.form.sync_to_zendesk.empty',
+                'placeholder' => 'oro.zendesk.form.sync_to_zendesk.empty',
                 'choices'     => $choices
             )
         );
