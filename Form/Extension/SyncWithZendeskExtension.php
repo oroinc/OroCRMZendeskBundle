@@ -3,9 +3,11 @@
 namespace Oro\Bundle\ZendeskBundle\Form\Extension;
 
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Form\Type\CaseEntityType;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -53,7 +55,7 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
 
         $builder->add(
             self::ZENDESK_CHANNEL_FIELD,
-            'choice',
+            ChoiceType::class,
             array(
                 'label'       => 'oro.zendesk.form.sync_to_zendesk.label',
                 'mapped'      => false,
@@ -81,6 +83,6 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'oro_case_entity';
+        return CaseEntityType::class;
     }
 }
