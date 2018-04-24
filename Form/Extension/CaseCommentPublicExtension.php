@@ -3,6 +3,7 @@
 namespace Oro\Bundle\ZendeskBundle\Form\Extension;
 
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\CaseBundle\Form\Type\CaseCommentType;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormInterface;
@@ -59,6 +60,6 @@ class CaseCommentPublicExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'oro_case_comment';
+        return CaseCommentType::class;
     }
 }

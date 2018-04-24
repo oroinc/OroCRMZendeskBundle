@@ -3,6 +3,9 @@
 namespace Oro\Bundle\ZendeskBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,7 +20,7 @@ class RestTransportSettingsFormType extends AbstractType
     {
         $builder->add(
             'url',
-            'url',
+            UrlType::class,
             [
                 'label' => 'oro.zendesk.zendeskresttransport.url.label',
                 'required' => true,
@@ -26,7 +29,7 @@ class RestTransportSettingsFormType extends AbstractType
         );
         $builder->add(
             'email',
-            'email',
+            EmailType::class,
             [
                 'label' => 'oro.zendesk.zendeskresttransport.email.label',
                 'tooltip' => 'oro.zendesk.form.email.description',
@@ -35,7 +38,7 @@ class RestTransportSettingsFormType extends AbstractType
         );
         $builder->add(
             'token',
-            'text',
+            TextType::class,
             [
                 'label' => 'oro.zendesk.zendeskresttransport.token.label',
                 'tooltip' => 'oro.zendesk.form.token.description',
@@ -44,7 +47,7 @@ class RestTransportSettingsFormType extends AbstractType
         );
         $builder->add(
             'zendeskUserEmail',
-            'text',
+            TextType::class,
             [
                 'label' => 'oro.zendesk.zendeskresttransport.zendesk_user_email.label',
                 'tooltip' => 'oro.zendesk.form.zendesk_user_email.description',

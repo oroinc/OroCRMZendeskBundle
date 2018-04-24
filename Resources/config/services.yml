@@ -60,19 +60,19 @@ services:
             - '@oro_zendesk.entity_provider.zendesk'
             - '@oro_zendesk.entity_provider.oro'
         tags:
-            - { name: form.type_extension, alias: oro_case_entity }
+            - { name: form.type_extension, alias: oro_case_entity, extended_type: Oro\Bundle\CaseBundle\Form\Type\CaseEntityType }
 
     oro_zendesk.form.extension.channel_connectors:
         class: '%oro_zendesk.form.extension.channel_connectors.class%'
         tags:
-            - { name: form.type_extension, alias: oro_integration_channel_form }
+            - { name: form.type_extension, alias: oro_integration_channel_form, extended_type: Oro\Bundle\IntegrationBundle\Form\Type\ChannelType }
 
     oro_zendesk.form.extension.case_comment_public:
         class: '%oro_zendesk.form.extension.case_comment_public.class%'
         arguments:
             - '@oro_zendesk.entity_provider.zendesk'
         tags:
-            - { name: form.type_extension, alias: oro_case_comment }
+            - { name: form.type_extension, alias: oro_case_comment, extended_type: Oro\Bundle\CaseBundle\Form\Type\CaseCommentType }
 
     # Integration related services
     oro_zendesk.transport.rest_transport:

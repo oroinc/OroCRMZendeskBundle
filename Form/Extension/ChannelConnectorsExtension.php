@@ -2,7 +2,8 @@
 
 namespace Oro\Bundle\ZendeskBundle\Form\Extension;
 
-use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
+use Oro\Bundle\IntegrationBundle\Form\Type\ChannelType;
+use Oro\Bundle\ZendeskBundle\Provider\ChannelType as ChannelTypeProvider;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -28,7 +29,7 @@ class ChannelConnectorsExtension extends AbstractTypeExtension
     public function onPostSubmit(FormEvent $event)
     {
         $data = $event->getData();
-        if (!$data || $data->getType() !== ChannelType::TYPE) {
+        if (!$data || $data->getType() !== ChannelTypeProvider::TYPE) {
             return;
         }
         $options = $event->getForm()['connectors']->getConfig()->getOptions();
@@ -46,7 +47,7 @@ class ChannelConnectorsExtension extends AbstractTypeExtension
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         $data = $form->getData();
-        if (!$data || $data->getType() !== ChannelType::TYPE) {
+        if (!$data || $data->getType() !== ChannelTypeProvider::TYPE) {
             return;
         }
 
@@ -61,6 +62,6 @@ class ChannelConnectorsExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'oro_integration_channel_form';
+        return ChannelType::class;
     }
 }

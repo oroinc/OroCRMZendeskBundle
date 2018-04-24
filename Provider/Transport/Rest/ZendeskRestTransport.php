@@ -7,6 +7,7 @@ use Oro\Bundle\IntegrationBundle\Provider\Rest\Transport\AbstractRestTransport;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\RestException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -415,7 +416,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      */
     public function getSettingsFormType()
     {
-        return 'oro_zendesk_rest_transport_setting_form_type';
+        return RestTransportSettingsFormType::class;
     }
 
     /**
