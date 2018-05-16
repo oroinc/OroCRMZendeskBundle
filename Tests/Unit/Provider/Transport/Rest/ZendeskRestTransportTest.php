@@ -6,6 +6,7 @@ use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
 {
@@ -878,18 +879,11 @@ class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
         $token = 'ZsOcahXwCc6rcwLRsqQH27CPCTdpwM2FTfWHDpTBDZi4kBI5';
         $clientOptions = ['auth' => [$email . '/token', $token]];
 
-        $settings = $this->createMock('Symfony\\Component\\HttpFoundation\\ParameterBag');
-        $settings->expects($this->exactly(3))
-            ->method('get')
-            ->will(
-                $this->returnValueMap(
-                    [
-                        ['url', null, false, $url],
-                        ['email', null, false, $email],
-                        ['token', null, false, $token],
-                    ]
-                )
-            );
+        $settings = new ParameterBag([
+            'url' => $url,
+            'email' => $email,
+            'token' => $token,
+        ]);
 
         $entity = $this->createMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Transport');
         $entity->expects($this->atLeastOnce())
