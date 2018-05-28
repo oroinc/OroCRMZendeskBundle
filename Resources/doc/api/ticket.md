@@ -18,14 +18,13 @@ Retrieve a collection of Zendesk ticket records.
 ### create
 
 Create a new Zendesk ticket record.
+
 The created record is returned in the response.
 
 {@inheritdoc}
 
 {@request:json_api}
 Example:
-
-`</api/zendesktickets>`
 
 ```JSON
 {  
@@ -112,8 +111,6 @@ Edit a specific Zendesk ticket record.
 
 {@request:json_api}
 Example:
-
-`</api/zendesktickets/15>`
 
 ```JSON
 {  
@@ -202,7 +199,6 @@ Delete a specific Zendesk ticket record.
 ### delete_list
 
 Delete a collection of Zendesk ticket records.
-The list of records that will be deleted, could be limited by filters.
 
 {@inheritdoc}
 
@@ -235,8 +231,6 @@ Replace a Zendesk user that a specific Zendesk ticket is assigned to.
 {@request:json_api}
 Example:
 
-`</api/zendesktickets/1/relationships/assignee>`
-
 ```JSON
 {
   "data": {
@@ -264,8 +258,6 @@ Set Zendesk users that will be included in a specific Zendesk ticket communicati
 {@request:json_api}
 Example:
 
-`</api/zendesktickets/9/relationships/collaborators>`
-
 ```JSON
 {
   "data": [
@@ -273,7 +265,7 @@ Example:
       "type": "zendeskusers",
       "id": "10"
     },
-{
+    {
       "type": "zendeskusers",
       "id": "11"
     }
@@ -289,8 +281,6 @@ Replace Zendesk users included in a specific Zendesk ticket communications.
 {@request:json_api}
 Example:
 
-`</api/zendesktickets/15/relationships/collaborators>`
-
 ```JSON
 {
   "data": [
@@ -298,7 +288,7 @@ Example:
       "type": "zendeskusers",
       "id": "10"
     },
-{
+    {
       "type": "zendeskusers",
       "id": "11"
     }
@@ -328,8 +318,6 @@ Set comments made on a specific Zendesk ticket.
 {@request:json_api}
 Example:
 
-`</api/zendesktickets/1/relationships/comments>`
-
 ```JSON
 {
   "data": [
@@ -352,8 +340,6 @@ Replace comments made on a specific Zendesk ticket.
 
 {@request:json_api}
 Example:
-
-`</api/zendesktickets/1/relationships/comments>`
 
 ```JSON
 {
@@ -392,8 +378,6 @@ Replace the Zendesk priority configured for a specific Zendesk ticket.
 {@request:json_api}
 Example:
 
-`</api/zendesktickets/1/relationships/priority>`
-
 ```JSON
 {
   "data": {
@@ -420,8 +404,6 @@ Replace the Zendesk ticket where the problem that led to a creation of a specifi
 
 {@request:json_api}
 Example:
-
-`</api/zendesktickets/1/relationships/problem>`
 
 ```JSON
 {
@@ -450,8 +432,6 @@ Replace the Oro case that is associated with a specific Zendesk ticket.
 {@request:json_api}
 Example:
 
-`</api/zendesktickets/1/relationships/relatedCase>`
-
 ```JSON
 {
   "data": {
@@ -478,8 +458,6 @@ Replace a Zendesk who initiated a specific Zendesk ticket creation.
 
 {@request:json_api}
 Example:
-
-`</api/zendesktickets/1/relationships/requester>`
 
 ```JSON
 {
@@ -508,8 +486,6 @@ Replace the Zendesk status configured for a specific Zendesk ticket.
 {@request:json_api}
 Example:
 
-`</api/zendesktickets/1/relationships/status>`
-
 ```JSON
 {
   "data": {
@@ -536,8 +512,6 @@ Replace a Zendesk user who created a specific Zendesk ticket.
 
 {@request:json_api}
 Example:
-
-`</api/zendesktickets/1/relationships/submitter>`
 
 ```JSON
 {
@@ -566,8 +540,6 @@ Replace the Zendesk ticket type configured for a specific Zendesk ticket.
 {@request:json_api}
 Example:
 
-`</api/zendesktickets/1/relationships/ticketType>`
-
 ```JSON
 {
   "data": {
@@ -594,8 +566,6 @@ Replace an integration channel via which information about the Zendesk ticket is
 
 {@request:json_api}
 Example:
-
-`</api/zendesktickets/1/relationships/channel>`
 
 ```JSON
 {

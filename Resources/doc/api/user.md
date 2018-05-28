@@ -17,14 +17,13 @@ Retrieve a collection of Zendesk user records.
 ### create
 
 Create a new Zendesk user record.
+
 The created record is returned in the response.
 
 {@inheritdoc}
 
 {@request:json_api}
 Example:
-
-`</api/zendeskusers>`
 
 ```JSON
 {  
@@ -68,8 +67,6 @@ Edit a specific Zendesk user record.
 
 {@request:json_api}
 Example:
-
-`</api/zendeskusers/52>`
 
 ```JSON
 {  
@@ -115,7 +112,6 @@ Delete a specific Zendesk user record.
 ### delete_list
 
 Delete a collection of Zendesk user records.
-The list of records that will be deleted, could be limited by filters.
 
 {@inheritdoc}
 
@@ -148,8 +144,6 @@ Replace the Oro user that is associated with a specific Zendesk user.
 {@request:json_api}
 Example:
 
-`</api/zendeskusers/1/relationships/relatedContact>`
-
 ```JSON
 {
   "data": {
@@ -176,8 +170,6 @@ Replace the Oro user that is associated with a specific Zendesk user.
 
 {@request:json_api}
 Example:
-
-`</api/zendeskusers/1/relationships/relatedUser>`
 
 ```JSON
 {
@@ -206,8 +198,6 @@ Replace the Zendesk role for a specific Zendesk user.
 {@request:json_api}
 Example:
 
-`</api/zendeskusers/1/relationships/role>`
-
 ```JSON
 {
   "data": {
@@ -234,8 +224,6 @@ Replace an integration channel via which information about the Zendesk user is r
 
 {@request:json_api}
 Example:
-
-`</api/zendeskusers/1/relationships/channel>`
 
 ```JSON
 {
