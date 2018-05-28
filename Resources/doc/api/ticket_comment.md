@@ -17,14 +17,13 @@ Retrieve a collection of Zendesk ticket comment records.
 ### create
 
 Create a new Zendesk ticket comment record.
+
 The created record is returned in the response.
 
 {@inheritdoc}
 
 {@request:json_api}
 Example:
-
-`</api/zendeskticketcomments>`
 
 ```JSON
 {  
@@ -70,8 +69,6 @@ Edit a specific Zendesk ticket comment record.
 {@request:json_api}
 Example:
 
-`</api/zendeskticketcomments/55>`
-
 ```JSON
 {  
    "data":{  
@@ -111,7 +108,6 @@ Delete a specific Zendesk ticket comment record.
 ### delete_list
 
 Delete a collection of Zendesk ticket comment records.
-The list of records that will be deleted, could be limited by filters.
 
 {@inheritdoc}
 
@@ -144,8 +140,6 @@ Replace the Zendesk user who authored the comment.
 {@request:json_api}
 Example:
 
-`</api/zendeskticketcomments/1/relationships/author>`
-
 ```JSON
 {
   "data": {
@@ -172,8 +166,6 @@ Replace the Oro case comment that is associated with a specific Zendesk ticket c
 
 {@request:json_api}
 Example:
-
-`</api/zendeskticketcomments/1/relationships/relatedComment>`
 
 ```JSON
 {
@@ -202,8 +194,6 @@ Replace the Zendesk ticket that a specific Zendesk ticket comment was made on.
 {@request:json_api}
 Example:
 
-`</api/zendeskticketcomments/1/relationships/ticket>`
-
 ```JSON
 {
   "data": {
@@ -230,8 +220,6 @@ Replace an integration channel via which information about the Zendesk ticket co
 
 {@request:json_api}
 Example:
-
-`</api/zendeskticketcomments/1/relationships/channel>`
 
 ```JSON
 {
