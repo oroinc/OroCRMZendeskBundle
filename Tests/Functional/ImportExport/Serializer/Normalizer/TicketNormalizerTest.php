@@ -12,10 +12,6 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketNormalizer;
 
-/**
- * @outputBuffering enabled
- * @dbIsolation
- */
 class TicketNormalizerTest extends WebTestCase
 {
     /**

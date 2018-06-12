@@ -12,10 +12,6 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketCommentProcessor;
 
-/**
- * @outputBuffering enabled
- * @dbIsolation
- */
 class ExportTicketCommentProcessorTest extends WebTestCase
 {
     /**

@@ -13,10 +13,6 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketProcessor;
 
-/**
- * @outputBuffering enabled
- * @dbIsolation
- */
 class ExportTicketProcessorTest extends WebTestCase
 {
     /**

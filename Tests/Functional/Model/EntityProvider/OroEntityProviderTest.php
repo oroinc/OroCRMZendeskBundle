@@ -7,9 +7,6 @@ use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 
-/**
- * @dbIsolation
- */
 class OroEntityProviderTest extends WebTestCase
 {
     /**

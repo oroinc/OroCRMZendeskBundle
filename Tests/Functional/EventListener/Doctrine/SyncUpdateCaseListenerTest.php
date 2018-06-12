@@ -10,9 +10,6 @@ use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 
-/**
- * @dbIsolation
- */
 class SyncUpdateCaseListenerTest extends AbstractSyncSchedulerTest
 {
     use MessageQueueExtension;
