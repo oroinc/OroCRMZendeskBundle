@@ -8,11 +8,6 @@ use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
-/**
- * @outputBuffering enabled
- * @dbIsolation
- * @dbReindex
- */
 class CaseControllerTest extends WebTestCase
 {
     /**

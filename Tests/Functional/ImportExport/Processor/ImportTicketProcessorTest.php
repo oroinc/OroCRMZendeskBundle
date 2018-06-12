@@ -18,7 +18,7 @@ use Oro\Bundle\ZendeskBundle\Model\SyncState;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 /**
- * @dbIsolation
+ * @dbIsolationPerTest
  */
 class ImportTicketProcessorTest extends WebTestCase
 {
@@ -44,9 +44,9 @@ class ImportTicketProcessorTest extends WebTestCase
 
     protected function setUp()
     {
-        $this->initClient([], [], true);
+        $this->initClient();
 
-        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData'], true);
+        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
 
         $this->registry  = $this->getContainer()->get('doctrine');
         $this->processor = $this->getContainer()->get('oro_zendesk.importexport.processor.import_ticket');
