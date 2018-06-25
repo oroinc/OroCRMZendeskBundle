@@ -7,7 +7,7 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Model\SyncManager;
 use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
-class SyncManagerTest extends \PHPUnit_Framework_TestCase
+class SyncManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SyncManager
@@ -15,22 +15,22 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
     protected $target;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $scheduler;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityManager;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $registry;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $zendeskEntityProvider;
 
@@ -202,7 +202,7 @@ class SyncManagerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param bool $isTwoWaySyncEnabled
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function getChannel($isTwoWaySyncEnabled)
     {

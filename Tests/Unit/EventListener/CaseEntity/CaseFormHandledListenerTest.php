@@ -5,7 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\EventListener\CaseEntity;
 use Oro\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener;
 use Oro\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
 
-class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
+class CaseFormHandledListenerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CaseEntityListener
@@ -13,12 +13,12 @@ class CaseFormHandledListenerTest extends \PHPUnit_Framework_TestCase
     protected $listener;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $syncManager;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $oroEntityProvider;
 

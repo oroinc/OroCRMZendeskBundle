@@ -4,7 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 
-class UserRoleTest extends \PHPUnit_Framework_TestCase
+class UserRoleTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string

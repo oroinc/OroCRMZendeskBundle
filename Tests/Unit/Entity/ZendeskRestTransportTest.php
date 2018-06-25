@@ -4,7 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
 use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 
-class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
+class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ZendeskRestTransport

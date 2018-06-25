@@ -4,7 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Placeholder\Filter;
 
 use Oro\Bundle\ZendeskBundle\Placeholder\PlaceholderFilter;
 
-class PlaceholderFilter extends \PHPUnit_Framework_TestCase
+class PlaceholderFilter extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PlaceholderFilter
@@ -12,12 +12,12 @@ class PlaceholderFilter extends \PHPUnit_Framework_TestCase
     protected $filter;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $oroProvider;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $zendeskProvider;
 

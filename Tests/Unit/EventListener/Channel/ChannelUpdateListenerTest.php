@@ -5,7 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\EventListener\Channel;
 use Oro\Bundle\ZendeskBundle\EventListener\Channel\ChannelUpdateListener;
 use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 
-class ChannelUpdateListenerTest extends \PHPUnit_Framework_TestCase
+class ChannelUpdateListenerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ChannelUpdateListener
@@ -13,7 +13,7 @@ class ChannelUpdateListenerTest extends \PHPUnit_Framework_TestCase
     protected $listener;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $syncManager;
 

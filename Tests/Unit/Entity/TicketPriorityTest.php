@@ -4,7 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 
-class TicketPriorityTest extends \PHPUnit_Framework_TestCase
+class TicketPriorityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string

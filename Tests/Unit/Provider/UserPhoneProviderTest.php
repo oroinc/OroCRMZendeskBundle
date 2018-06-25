@@ -5,7 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Provider\UserPhoneProvider;
 
-class UserPhoneProviderTest extends \PHPUnit_Framework_TestCase
+class UserPhoneProviderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var UserPhoneProvider */
     protected $provider;

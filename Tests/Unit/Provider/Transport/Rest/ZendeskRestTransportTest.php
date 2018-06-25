@@ -8,24 +8,24 @@ use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class ZendeskRestTransportTest extends \PHPUnit_Framework_TestCase
+class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 {
     const TICKET_TYPE = 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket';
     const COMMENT_TYPE = 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment';
     const USER_TYPE = 'Oro\\Bundle\\ZendeskBundle\\Entity\\User';
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $clientFactory;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $client;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $serializer;
 

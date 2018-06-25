@@ -9,7 +9,7 @@ use Oro\Bundle\ZendeskBundle\Model\SyncState;
 trait ExecutionContextTrait
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $executionContext;
 
@@ -41,7 +41,7 @@ trait ExecutionContextTrait
         $isUpdatedLastSyncDate = false;
 
         /**
-         * @var $this \PHPUnit_Framework_TestCase
+         * @var $this \PHPUnit\Framework\TestCase
          */
         $this->executionContext
             ->expects($this->atLeastOnce())

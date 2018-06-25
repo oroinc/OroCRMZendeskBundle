@@ -18,7 +18,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
     protected static $ticketId;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $context;
 
