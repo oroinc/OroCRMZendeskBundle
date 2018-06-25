@@ -9,7 +9,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Oro\Bundle\ZendeskBundle\Model\SyncState;
 use Psr\Log\LoggerInterface;
 
-class SyncStateTest extends \PHPUnit_Framework_TestCase
+class SyncStateTest extends \PHPUnit\Framework\TestCase
 {
     const STATUS_ID = 1;
 
@@ -24,22 +24,22 @@ class SyncStateTest extends \PHPUnit_Framework_TestCase
     protected $connector = "CONNECTOR";
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $channel;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $channelRepository;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $logger;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $status;
 

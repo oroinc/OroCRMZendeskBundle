@@ -4,15 +4,15 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Model;
 
 use Oro\Bundle\ZendeskBundle\Model\EntityMapper;
 
-class EntityMapperTest extends \PHPUnit_Framework_TestCase
+class EntityMapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityManager;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $registry;
 

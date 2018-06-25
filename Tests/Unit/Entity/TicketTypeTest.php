@@ -4,7 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
 use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 
-class TicketTypeTest extends \PHPUnit_Framework_TestCase
+class TicketTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string

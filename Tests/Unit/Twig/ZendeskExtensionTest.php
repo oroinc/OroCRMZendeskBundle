@@ -7,17 +7,17 @@ use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension;
 use Oro\Component\Testing\Unit\TwigExtensionTestCaseTrait;
 
-class ZendeskExtensionTest extends \PHPUnit_Framework_TestCase
+class ZendeskExtensionTest extends \PHPUnit\Framework\TestCase
 {
     use TwigExtensionTestCaseTrait;
 
     /** @var ZendeskExtension */
     protected $extension;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $oroProvider;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $zendeskProvider;
 
     protected function setUp()

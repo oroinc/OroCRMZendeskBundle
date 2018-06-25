@@ -4,7 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider;
 
 use Oro\Bundle\ZendeskBundle\Provider\AbstractZendeskConnector;
 
-class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
+class AbstractZendeskConnectorTest extends \PHPUnit\Framework\TestCase
 {
     use ExecutionContextTrait;
     /**
@@ -13,12 +13,12 @@ class AbstractZendeskConnectorTest extends \PHPUnit_Framework_TestCase
     protected $connector;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $stepExecutor;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $mediator;
 

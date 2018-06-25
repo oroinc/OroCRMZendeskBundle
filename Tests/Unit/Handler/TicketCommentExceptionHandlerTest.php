@@ -6,12 +6,12 @@ use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ZendeskBundle\Handler\TicketCommentExceptionHandler;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 
-class TicketCommentExceptionHandlerTest extends \PHPUnit_Framework_TestCase
+class TicketCommentExceptionHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var TicketCommentExceptionHandler */
     protected $exceptionHandler;
 
-    /** @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $context;
 
     /** {@inheritdoc} */

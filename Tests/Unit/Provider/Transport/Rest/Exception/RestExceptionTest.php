@@ -4,7 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest\Exception;
 
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 
-class RestExceptionTest extends \PHPUnit_Framework_TestCase
+class RestExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider exceptionDataProvider

@@ -15,7 +15,7 @@ class AbstractImportExportJobTestCase extends WebTestCase
     const SYNC_PROCESSOR = 'oro_integration.reverse_sync.processor';
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $resource;
 

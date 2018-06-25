@@ -22,7 +22,7 @@ class ImportUserProcessorTest extends WebTestCase
     protected $registry;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $context;
 

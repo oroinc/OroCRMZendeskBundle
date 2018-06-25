@@ -5,7 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 
-class TicketTest extends \PHPUnit_Framework_TestCase
+class TicketTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Ticket
