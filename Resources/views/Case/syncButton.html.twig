@@ -1,21 +1,23 @@
 {% if is_granted('EDIT', entity) %}
     {% set channels = oro_zendesk_enabled_two_way_sync_channels() %}
     {% set firstChannel = channels|first %}
+    {% set togglerId = 'dropdown-'|uniqid %}
     <div class="btn-group zendesk-integration-btn-group">
-        <a type="button"
-           class="zendesk-integration-btn btn icons-holder-text no-hash"
+        <a class="zendesk-integration-btn btn icons-holder-text no-hash"
            href="#"
+           role="button"
            data-channel-id="{{ firstChannel.id }}"
         >
-           <i class="fa-upload  hide-text"></i>{{ "oro.zendesk.form.sync_to_zendesk.label"|trans }}
+           <span class="fa-upload  hide-text" aria-hidden="true"></span>{{ "oro.zendesk.form.sync_to_zendesk.label"|trans }}
         </a>
-        <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
-            <span class="caret"></span>
+        <a href="#" role="button" id="{{ togglerId }}" class="btn dropdown-toggle" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false" aria-label="{{ 'oro.zendesk.form.sync_to_zendesk.label'|trans }}">
+            <span class="caret" aria-hidden="true"></span>
         </a>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="{{ togglerId }}">
             {% for channel in channels %}
                 <li>
-                    <a type="button"
+                    <a role="menuitem"
                        class="zendesk-integration-btn icons-holder-text no-hash"
                        href="#" data-channel-id="{{ channel.id }}">
                         {{ channel.name }}
