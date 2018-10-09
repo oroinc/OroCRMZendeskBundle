@@ -12,14 +12,15 @@
         </a>
         <a href="#" role="button" id="{{ togglerId }}" class="btn dropdown-toggle" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false" aria-label="{{ 'oro.zendesk.form.sync_to_zendesk.label'|trans }}">
-            <span class="caret" aria-hidden="true"></span>
-        </a>
+           <span class="sr-only">{{ 'oro.zendesk.form.sync_to_zendesk.label'|trans }}</span>
+       </a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="{{ togglerId }}">
             {% for channel in channels %}
                 <li>
-                    <a role="menuitem"
+                    <a href="#"
+                       role="menuitem"
                        class="zendesk-integration-btn icons-holder-text no-hash"
-                       href="#" data-channel-id="{{ channel.id }}">
+                       data-channel-id="{{ channel.id }}">
                         {{ channel.name }}
                     </a>
                 </li>
