@@ -234,6 +234,7 @@ oro:
             sync_to_zendesk:
                 label: Publish to Zendesk
                 empty: Choose an integration...
+                choose_channel: Choose a channel
             email:
                 description: Zendesk API email
             token:
