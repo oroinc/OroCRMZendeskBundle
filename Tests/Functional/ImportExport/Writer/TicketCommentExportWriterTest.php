@@ -14,7 +14,6 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\Handler\ExceptionHandlerInterface;
-use Oro\Bundle\ZendeskBundle\Handler\TicketCommentExceptionHandler;
 use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketCommentExportWriter;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
