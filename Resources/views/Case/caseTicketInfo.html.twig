@@ -1,9 +1,11 @@
 {% if is_granted('oro_case_view') %}
     {% import 'OroUIBundle::macros.html.twig' as UI %}
     {% import 'OroEmailBundle::macros.html.twig' as email %}
+    {% import _self as caseTicketInfo %}
 
     {% macro render_zendesk_user(label, user) %}
         {% import 'OroUIBundle::macros.html.twig' as UI %}
+        {% import _self as caseTicketInfo %}
         {%- set userHtml -%}
             {%- if user -%}
                 {% if user.relatedUser and is_granted('VIEW', user.relatedUser) %}
@@ -55,9 +57,9 @@
                         {{ UI.renderHtmlProperty('oro.zendesk.ticket.recipient.label'|trans, recipient|trim) }}
                         {{ UI.renderProperty('oro.zendesk.ticket.status.label'|trans, ticket.status.label|default(false)) }}
                         {{ UI.renderProperty('oro.zendesk.ticket.type.label'|trans, ticket.type.label|default(false)) }}
-                        {{ _self.render_zendesk_user('oro.zendesk.ticket.submitter.label'|trans, ticket.submitter) }}
-                        {{ _self.render_zendesk_user('oro.zendesk.ticket.assignee.label'|trans, ticket.assignee) }}
-                        {{ _self.render_zendesk_user('oro.zendesk.ticket.requester.label'|trans, ticket.requester) }}
+                        {{ caseTicketInfo.render_zendesk_user('oro.zendesk.ticket.submitter.label'|trans, ticket.submitter) }}
+                        {{ caseTicketInfo.render_zendesk_user('oro.zendesk.ticket.assignee.label'|trans, ticket.assignee) }}
+                        {{ caseTicketInfo.render_zendesk_user('oro.zendesk.ticket.requester.label'|trans, ticket.requester) }}
                         {{ UI.renderProperty('oro.zendesk.ticket.priority.label'|trans, ticket.priority.label|default(false)) }}
                         {% set problem %}
                             {% if ticket.problem and ticket.problem.relatedCase %}
@@ -71,7 +73,7 @@
                         {% set collaborators %}
                             {% if ticket.collaborators %}
                                 {% for collaborator in ticket.collaborators %}
-                                    {{ _self.render_zendesk_user(false, collaborator) }}
+                                    {{ caseTicketInfo.render_zendesk_user(false, collaborator) }}
                                     {% if loop.length > 1 and not loop.last %}
                                         ,&nbsp;
                                     {% endif %}

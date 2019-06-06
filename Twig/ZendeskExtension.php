@@ -11,8 +11,15 @@ use Oro\Bundle\ZendeskBundle\Exception\ConfigurationException;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class ZendeskExtension extends \Twig_Extension
+/**
+ * Provides Twig functions to display Zendesk-related information:
+ *   - oro_zendesk_enabled_two_way_sync_channels
+ *   - oro_zendesk_ticket_by_related_case
+ */
+class ZendeskExtension extends AbstractExtension
 {
     /** @var ContainerInterface */
     protected $container;
@@ -47,15 +54,15 @@ class ZendeskExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'oro_zendesk_enabled_two_way_sync_channels',
                 [$this, 'getEnabledTwoWaySyncChannels']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'oro_zendesk_ticket_by_related_case',
                 [$this, 'getTicketByCase']
             ),
-            new \Twig_SimpleFunction('oro_zendesk_ticket_url', [$this, 'getTicketUrl']),
+            new TwigFunction('oro_zendesk_ticket_url', [$this, 'getTicketUrl']),
         ];
     }
 
