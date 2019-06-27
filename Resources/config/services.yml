@@ -159,7 +159,7 @@ services:
         class: Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension
         public: false
         arguments:
-            - '@service_container'
+            - '@oro_platform.twig.service_locator'
         tags:
             - { name: twig.extension }
 
