@@ -10,7 +10,8 @@ use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 use Oro\Bundle\ZendeskBundle\Exception\ConfigurationException;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -19,7 +20,7 @@ use Twig\TwigFunction;
  *   - oro_zendesk_enabled_two_way_sync_channels
  *   - oro_zendesk_ticket_by_related_case
  */
-class ZendeskExtension extends AbstractExtension
+class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInterface
 {
     /** @var ContainerInterface */
     protected $container;
@@ -126,5 +127,16 @@ class ZendeskExtension extends AbstractExtension
         } catch (ConfigurationException $exception) {
             return null;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedServices()
+    {
+        return [
+            'oro_zendesk.entity_provider.oro' => OroEntityProvider::class,
+            'oro_zendesk.entity_provider.zendesk' => ZendeskEntityProvider::class,
+        ];
     }
 }
