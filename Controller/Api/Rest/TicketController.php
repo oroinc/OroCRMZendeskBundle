@@ -4,13 +4,13 @@ namespace Oro\Bundle\ZendeskBundle\Controller\Api\Rest;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
 use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Rest\RouteResource("ticket")
@@ -46,11 +46,11 @@ class TicketController extends FOSRestController
     public function postSyncCaseAction(CaseEntity $caseEntity, Channel $channel)
     {
         if ($channel->getType() != ChannelType::TYPE) {
-            return $this->handleView($this->view(['message' => 'Invalid channel type.'], Codes::HTTP_BAD_REQUEST));
+            return $this->handleView($this->view(['message' => 'Invalid channel type.'], Response::HTTP_BAD_REQUEST));
         }
 
         $this->get('oro_zendesk.model.sync_manager')->syncCase($caseEntity, $channel, true);
 
-        return $this->handleView($this->view('', Codes::HTTP_OK));
+        return $this->handleView($this->view('', Response::HTTP_OK));
     }
 }
