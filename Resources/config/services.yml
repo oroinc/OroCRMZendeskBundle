@@ -168,6 +168,7 @@ services:
     # Placeholder filter
     oro_zendesk.placeholder.filter:
         class: '%oro_zendesk.placeholder.filter.class%'
+        public: true
         arguments:
             - '@oro_zendesk.entity_provider.oro'
             - '@oro_zendesk.entity_provider.zendesk'

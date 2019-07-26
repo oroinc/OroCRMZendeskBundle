@@ -93,7 +93,7 @@ class UserNormalizerTest extends WebTestCase
      */
     public function testNormalize($denormalized, $normalized, $context = array())
     {
-        $actual = $this->serializer->serialize($denormalized, null, $context);
+        $actual = $this->serializer->serialize($denormalized, '', $context);
 
         $this->assertEquals($normalized, $actual);
     }

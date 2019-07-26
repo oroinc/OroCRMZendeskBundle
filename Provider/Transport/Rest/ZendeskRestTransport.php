@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
+ * Contains methods for getting and creating tickets, users, ticket comments
  * @link http://developer.zendesk.com/documentation/rest_api/introduction.html
  */
 class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTransportInterface
@@ -91,7 +92,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         return $this->serializer->deserialize(
             $this->createEntity('users.json', 'user', $userData),
             'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
-            null
+            ''
         );
     }
 
@@ -110,7 +111,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         $resultTicket = $this->serializer->deserialize(
             $ticketData,
             'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-            null
+            ''
         );
 
         $resultComment  = null;
@@ -118,7 +119,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             $resultComment = $this->serializer->deserialize(
                 $commentData,
                 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
-                null
+                ''
             );
         }
 
@@ -157,7 +158,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         return $this->serializer->deserialize(
             $ticketData,
             'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-            null
+            ''
         );
     }
 
@@ -178,7 +179,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         return $this->serializer->deserialize(
             $updatedTicketData,
             'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-            null
+            ''
         );
     }
 
@@ -209,7 +210,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         return $this->serializer->deserialize(
             $createdTicketData,
             'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
-            null
+            ''
         );
     }
 
