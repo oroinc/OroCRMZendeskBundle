@@ -19,9 +19,6 @@ class AbstractImportExportJobTestCase extends WebTestCase
      */
     protected $resource;
 
-    /** @var  ZendeskRestTransport */
-    protected $realResource;
-
     /**
      * @var ManagerRegistry
      */
@@ -32,21 +29,10 @@ class AbstractImportExportJobTestCase extends WebTestCase
     {
         $this->initClient();
 
-        $this->stubResources();
-        $this->managerRegistry = $this->getContainer()
-            ->get('doctrine');
-    }
+        $this->resource = $this->createMock(ZendeskRestTransport::class);
+        $this->getContainer()->set('oro_zendesk.transport.rest_transport.test', $this->resource);
 
-    /** {@inheritdoc} */
-    public function tearDown()
-    {
-        $this->getContainer()->set('oro_zendesk.transport.rest_transport', $this->realResource);
-        unset(
-            $this->managerRegistry,
-            $this->realResource,
-            $this->resource
-        );
-        parent::tearDown();
+        $this->managerRegistry = $this->getContainer()->get('doctrine');
     }
 
     /**
@@ -100,16 +86,5 @@ class AbstractImportExportJobTestCase extends WebTestCase
         );
 
         return $output;
-    }
-
-    protected function stubResources()
-    {
-        $this->resource = $this->createMock(ZendeskRestTransport::class);
-
-        $this->realResource = $this->getContainer()
-            ->get('oro_zendesk.transport.rest_transport');
-
-        $this->getContainer()
-            ->set('oro_zendesk.transport.rest_transport', $this->resource);
     }
 }

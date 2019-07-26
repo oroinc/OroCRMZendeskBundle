@@ -219,7 +219,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                     [
                         $createdUserData = ['id' => 1, 'name' => 'Foo'],
                         self::USER_TYPE,
-                        null,
+                        '',
                         [],
                         $createdUser = $this->createUser()->setOriginId(1)->setName('John Doe')
                     ],
@@ -376,14 +376,14 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                             'description' => 'The smoke is very colorful!'
                         ],
                         self::TICKET_TYPE,
-                        null,
+                        '',
                         [],
                         $createdTicket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!')
                     ],
                     [
                         $createdCommentData = ['id' => 2, 'body' => 'The smoke is very colorful!'],
                         self::COMMENT_TYPE,
-                        null,
+                        '',
                         [],
                         $createdComment = $this->createComment()->setOriginId(1)
                             ->setBody('The smoke is very colorful')
@@ -433,7 +433,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                             'description' => 'The smoke is very colorful!'
                         ],
                         self::TICKET_TYPE,
-                        null,
+                        '',
                         [],
                         $createdTicket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!')
                     ]
@@ -595,7 +595,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                             'subject' => 'UPDATED',
                         ],
                         self::TICKET_TYPE,
-                        null,
+                        '',
                         [],
                         $updatedTicket = $this->createTicket()->setOriginId(1)->setSubject('UPDATED')
                     ]
@@ -789,7 +789,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                             'body' => 'UPDATED',
                         ],
                         self::COMMENT_TYPE,
-                        null,
+                        '',
                         [],
                         $updatedComment = $this->createComment()->setOriginId(1)->setBody('UPDATED')
                     ]

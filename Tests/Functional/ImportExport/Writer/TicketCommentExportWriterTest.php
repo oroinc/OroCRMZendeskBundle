@@ -66,6 +66,10 @@ class TicketCommentExportWriterTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
+
+        $this->transport = $this->createMock(ZendeskTransportInterface::class);
+        $this->getContainer()->set('oro_zendesk.transport.rest_transport.test', $this->transport);
+
         $this->loadFixtures([LoadTicketData::class]);
 
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
@@ -76,9 +80,6 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->context->expects($this->any())
             ->method('getOption')
             ->will($this->returnValueMap([['channel', null, $this->channel->getId()]]));
-
-        $this->transport =
-            $this->createMock(ZendeskTransportInterface::class);
 
         $this->logger = $this->createMock(LoggerInterface::class);
 
@@ -92,20 +93,9 @@ class TicketCommentExportWriterTest extends WebTestCase
                 )
             );
 
-        $this->getContainer()->set('oro_zendesk.transport.rest_transport', $this->transport);
-
         $this->writer = $this->getContainer()->get('oro_zendesk.importexport.writer.export_ticket_comment');
         $this->writer->setImportExportContext($this->context);
         $this->writer->setLogger($this->logger);
-    }
-
-    protected function tearDown()
-    {
-        $this->getContainer()->set('oro_zendesk.transport.rest_transport', null);
-        $this->getContainer()->set('oro_zendesk.importexport.writer.export_ticket_comment', null);
-        $this->logOutput = null;
-
-        parent::tearDown();
     }
 
     public function testWriteCreatesTicketWithUserAuthor()

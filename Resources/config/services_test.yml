@@ -1,0 +1,5 @@
+services:
+    oro_zendesk.transport.rest_transport.test:
+        decorates: 'oro_zendesk.transport.rest_transport'
+        parent: 'oro_zendesk.transport.rest_transport'
+        public: true
