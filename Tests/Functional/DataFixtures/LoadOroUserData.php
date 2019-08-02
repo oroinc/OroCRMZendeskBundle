@@ -3,6 +3,8 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Oro\Bundle\UserBundle\Entity\Role;
+use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
 
 class LoadOroUserData extends AbstractZendeskFixture
@@ -43,6 +45,7 @@ class LoadOroUserData extends AbstractZendeskFixture
     public function load(ObjectManager $manager)
     {
         $userManager = $this->container->get('oro_user.manager');
+        $role = $manager->getRepository(Role::class)->findOneBy(['role' => User::ROLE_DEFAULT]);
 
         $admin = $userManager->findUserByEmail(LoadAdminUserData::DEFAULT_ADMIN_EMAIL);
         if ($admin) {
@@ -51,17 +54,14 @@ class LoadOroUserData extends AbstractZendeskFixture
 
         foreach ($this->data as $data) {
             $entity = $userManager->createUser();
-
             if (isset($data['reference'])) {
                 $this->setReference($data['reference'], $entity);
             }
-
-            $this->setEntityPropertyValues($entity, $data, array('reference'));
+            $this->setEntityPropertyValues($entity, $data, ['reference']);
+            $entity->addRole($role);
+            $entity->setOwner($admin->getOwner()); //for case controller test
 
             $userManager->updateUser($entity, false);
-
-            $entity->setOwner($admin->getOwner()); //for case controller test
-            $manager->persist($entity);
         }
 
         $manager->flush();
