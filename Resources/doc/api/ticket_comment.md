@@ -119,7 +119,7 @@ Delete a collection of Zendesk ticket comment records.
 
 {@inheritdoc}
 
-**The required field**
+**The required field.**
 
 ## SUBRESOURCES
 

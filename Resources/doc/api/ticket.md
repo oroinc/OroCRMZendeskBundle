@@ -210,7 +210,7 @@ Delete a collection of Zendesk ticket records.
 
 {@inheritdoc}
 
-**The required field**
+**The required field.**
 
 ## SUBRESOURCES
 
