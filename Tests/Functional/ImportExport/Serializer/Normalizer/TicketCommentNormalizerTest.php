@@ -91,7 +91,7 @@ class TicketCommentNormalizerTest extends WebTestCase
      */
     public function testNormalize($denormalized, $normalized, $context = array())
     {
-        $actual = $this->serializer->serialize($denormalized, '', $context);
+        $actual = $this->serializer->normalize($denormalized, '', $context);
 
         $this->assertEquals($normalized, $actual);
     }
