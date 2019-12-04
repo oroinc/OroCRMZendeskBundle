@@ -58,8 +58,8 @@ class CaseCommentPublicExtension extends AbstractTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function getExtendedType()
+    public static function getExtendedTypes(): iterable
     {
-        return CaseCommentType::class;
+        return [CaseCommentType::class];
     }
 }
