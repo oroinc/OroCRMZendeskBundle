@@ -81,8 +81,8 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function getExtendedType()
+    public static function getExtendedTypes(): iterable
     {
-        return CaseEntityType::class;
+        return [CaseEntityType::class];
     }
 }
