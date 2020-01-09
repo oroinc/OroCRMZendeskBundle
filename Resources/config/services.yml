@@ -71,7 +71,7 @@ services:
         parent: oro_zendesk.listener.doctrine.sync_abstract
         class: Oro\Bundle\ZendeskBundle\EventListener\Doctrine\SyncUpdateCaseListener
         tags:
-            - { name: doctrine.event_subscriber }
+            - { name: doctrine.event_listener, event: onFlush }
 
     oro_zendesk.listener.case_entity:
         class: Oro\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener
