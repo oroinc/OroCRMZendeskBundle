@@ -2,11 +2,9 @@
 
 namespace Oro\Bundle\ZendeskBundle\EventListener\Doctrine;
 
-use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use Doctrine\ORM\Events;
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\SecurityBundle\Authentication\TokenAccessorInterface;
 use Oro\Component\DependencyInjection\ServiceLink;
@@ -14,7 +12,7 @@ use Oro\Component\DependencyInjection\ServiceLink;
 /**
  * This class is responsible for scheduling sync job of integration entity of Zendesk related to Oro entity.
  */
-abstract class AbstractSyncSchedulerListener implements EventSubscriber
+abstract class AbstractSyncSchedulerListener
 {
     /** @var TokenAccessorInterface */
     private $tokenAccessor;
@@ -36,14 +34,6 @@ abstract class AbstractSyncSchedulerListener implements EventSubscriber
     {
         $this->tokenAccessor = $tokenAccessor;
         $this->syncScheduler = $schedulerServiceLink;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSubscribedEvents()
-    {
-        return [Events::onFlush];
     }
 
     /**

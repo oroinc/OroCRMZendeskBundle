@@ -7,3 +7,9 @@ The bundle offers UI for admin users to enable and configure the integration, an
 ## Useful resources
 
 * some string column lengths: https://litmos.zendesk.com/forums/20551728-Developer-API
+
+Resources
+---------
+
+  * [OroCRM Documentation](https://doc.oroinc.com)
+  * [Contributing](https://doc.oroinc.com/community/contribute/)
