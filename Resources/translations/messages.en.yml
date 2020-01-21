@@ -4,6 +4,7 @@ oro:
         ticket:
             entity_label:             Ticket
             entity_plural_label:      Tickets
+            entity_grid_all_view_label: All %entity_plural_label%
             entity_description:       Issues that were reported by customers or found internally and are managed via Zendesk.
             channel:
                 label:                Integration
@@ -73,6 +74,7 @@ oro:
         ticketcomment:
             entity_label:             Ticket comment
             entity_plural_label:      Ticket comments
+            entity_grid_all_view_label: All %entity_plural_label%
             entity_description:       A written remark on a Zendesk ticket.
             channel:
                 label:                Integration
@@ -106,6 +108,7 @@ oro:
         ticketpriority:
             entity_label:             Ticket Priority
             entity_plural_label:      Ticket Priorities
+            entity_grid_all_view_label: All %entity_plural_label%
             entity_description:       A Zendesk ticket priority helps determine the order in which Zendesk tickets must be managed.
             name.label:               Name
             label:
@@ -115,6 +118,7 @@ oro:
         ticketstatus:
             entity_label:             Ticket Status
             entity_plural_label:      Ticket Statuses
+            entity_grid_all_view_label: All %entity_plural_label%
             entity_description:       The phase of work on a Zendesk ticket.
             name.label:               Name
             label:
@@ -124,6 +128,7 @@ oro:
         tickettype:
             entity_label:             Ticket Type
             entity_plural_label:      Ticket Types
+            entity_grid_all_view_label: All %entity_plural_label%
             entity_description:       A Zendesk ticket type helps determine what kind of work the Zendesk ticket requires.
             name.label:               Name
             label:
@@ -133,6 +138,7 @@ oro:
         userrole:
             entity_label:             Zendesk User Role
             entity_plural_label:      Zendesk User Roles
+            entity_grid_all_view_label: All %entity_plural_label%
             entity_description:       A Zendesk user role defines permissions for Zendesk users to perform certain activities.
             name.label:               Name
             label:
@@ -142,6 +148,7 @@ oro:
         user:
             entity_label:                 Zendesk User
             entity_plural_label:          Zendesk Users
+            entity_grid_all_view_label: All %entity_plural_label%
             entity_description:           People who can create tickets in Zendesk, manage these tickets or Zendesk itself.
             channel:
                 label:                    Integration
@@ -214,6 +221,7 @@ oro:
         zendeskresttransport:
             entity_label:             Zendesk Integration
             entity_plural_label:      Zendesk Integrations
+            entity_grid_all_view_label: All %entity_plural_label%
             email.label:              API Email
             url.label:                URL
             token.label:              API Token
