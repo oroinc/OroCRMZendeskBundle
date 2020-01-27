@@ -1,8 +1,3 @@
-parameters:
-    oro_zendesk.entity.user.class:                         Oro\Bundle\ZendeskBundle\Entity\User
-    oro_zendesk.entity.ticket.class:                       Oro\Bundle\ZendeskBundle\Entity\Ticket
-    oro_zendesk.entity.ticket_comment.class:               Oro\Bundle\ZendeskBundle\Entity\TicketComment
-
 services:
     oro_zendesk.entity_mapper:
         class: Oro\Bundle\ZendeskBundle\Model\EntityMapper
@@ -144,7 +139,7 @@ services:
     oro_zendesk.provider.phone.user:
         class: Oro\Bundle\ZendeskBundle\Provider\UserPhoneProvider
         tags:
-            - { name: oro_address.phone_provider, class: '%oro_zendesk.entity.user.class%' }
+            - { name: oro_address.phone_provider, class: 'Oro\Bundle\ZendeskBundle\Entity\User' }
 
     #handler
     oro_zendesk.handler.ticket_comment_exception:
