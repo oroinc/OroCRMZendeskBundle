@@ -115,16 +115,6 @@ Delete a collection of Zendesk user records.
 
 {@inheritdoc}
 
-## FIELDS
-
-### id
-
-#### update
-
-{@inheritdoc}
-
-**The required field.**
-
 ## SUBRESOURCES
 
 ### relatedContact

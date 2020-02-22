@@ -202,16 +202,6 @@ Delete a collection of Zendesk ticket records.
 
 {@inheritdoc}
 
-## FIELDS
-
-### id
-
-#### update
-
-{@inheritdoc}
-
-**The required field.**
-
 ## SUBRESOURCES
 
 ### assignee
