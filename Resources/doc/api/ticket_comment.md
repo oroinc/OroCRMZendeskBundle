@@ -111,16 +111,6 @@ Delete a collection of Zendesk ticket comment records.
 
 {@inheritdoc}
 
-## FIELDS
-
-### id
-
-#### update
-
-{@inheritdoc}
-
-**The required field.**
-
 ## SUBRESOURCES
 
 ### author
