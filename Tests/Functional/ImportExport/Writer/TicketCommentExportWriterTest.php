@@ -282,11 +282,10 @@ class TicketCommentExportWriterTest extends WebTestCase
         }
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testCreateCommentToClosedTicketWithUnexpectedException()
     {
+        $this->expectException(\Exception::class);
+
         $ticketComment = $this->getReference('zendesk_ticket_42_comment_4');
         $author = $ticketComment->getAuthor();
         $author->setRole($this->registry->getRepository('OroZendeskBundle:UserRole')->find(UserRole::ROLE_AGENT));

@@ -133,14 +133,13 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $this->assertEquals($expectedAuthor, $actual->getAuthor());
     }
 
-    // @codingStandardsIgnoreStart
-    /**
-     * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.
-     */
-    // @codingStandardsIgnoreEnd
     public function testProcessReturnExceptionIfInvalidEntityType()
     {
+        $this->expectException(\Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.'
+        );
+
         $ticketComment = new \StdClass();
         $this->processor->process($ticketComment);
     }

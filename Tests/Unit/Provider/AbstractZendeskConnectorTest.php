@@ -87,12 +87,11 @@ class AbstractZendeskConnectorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Option "transport" should implement "ZendeskTransportInterface"
-     */
     public function testValidateConfigurationThrowExceptionIfTransportInvalid()
     {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Option "transport" should implement "ZendeskTransportInterface"');
+
         $transport = $this->createMock('Oro\Bundle\IntegrationBundle\Provider\TransportInterface');
         $this->mediator->expects($this->any())
             ->method('getTransport')
