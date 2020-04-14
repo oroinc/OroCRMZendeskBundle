@@ -34,7 +34,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
      */
     protected $transport;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = $this->createMock('Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface');
 

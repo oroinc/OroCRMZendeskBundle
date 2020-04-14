@@ -16,7 +16,7 @@ class SyncUpdateCaseListenerTest extends AbstractSyncSchedulerTest
     /** @var ManagerRegistry */
     protected $registry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient([], $this->generateBasicAuthHeader());
         $this->registry = $this->getContainer()->get('doctrine');

@@ -41,7 +41,7 @@ class ImportTicketProcessorTest extends WebTestCase
      */
     protected $channel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
 
@@ -57,7 +57,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->processor->setImportExportContext($this->context);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->getSyncStateService()->setTicketIds(array());
 

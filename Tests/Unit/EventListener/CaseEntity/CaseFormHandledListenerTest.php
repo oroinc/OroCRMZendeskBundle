@@ -22,7 +22,7 @@ class CaseFormHandledListenerTest extends \PHPUnit\Framework\TestCase
      */
     protected $oroEntityProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->syncManager = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncManager')
             ->disableOriginalConstructor()

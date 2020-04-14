@@ -66,7 +66,7 @@ class TicketExportWriterTest extends WebTestCase
      */
     protected $logOutput;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
 

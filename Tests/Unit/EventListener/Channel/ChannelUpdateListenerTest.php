@@ -17,7 +17,7 @@ class ChannelUpdateListenerTest extends \PHPUnit\Framework\TestCase
      */
     protected $syncManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->syncManager = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncManager')
             ->disableOriginalConstructor()

@@ -22,7 +22,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit\Framework\TestCase
      */
     protected $mediator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $registry = $this->getMockBuilder('Oro\Bundle\ImportExportBundle\Context\ContextRegistry')
             ->disableOriginalConstructor()
@@ -77,7 +77,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset(
             $this->connector,

@@ -15,7 +15,7 @@ class TicketCommentExceptionHandlerTest extends \PHPUnit\Framework\TestCase
     protected $context;
 
     /** {@inheritdoc} */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->context = $this->createMock(ContextInterface::class);
 
@@ -23,7 +23,7 @@ class TicketCommentExceptionHandlerTest extends \PHPUnit\Framework\TestCase
     }
 
     /** {@inheritdoc} */
-    public function tearDown()
+    protected function tearDown(): void
     {
         unset(
             $this->exceptionHandler,

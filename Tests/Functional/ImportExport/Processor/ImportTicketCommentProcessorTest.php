@@ -37,7 +37,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
      */
     protected $channel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
         $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);

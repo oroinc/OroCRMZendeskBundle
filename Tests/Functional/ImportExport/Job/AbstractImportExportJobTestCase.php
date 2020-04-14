@@ -25,7 +25,7 @@ class AbstractImportExportJobTestCase extends WebTestCase
     protected $managerRegistry;
 
     /** {@inheritdoc} */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
 

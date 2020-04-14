@@ -16,7 +16,7 @@ class TicketTypeTest extends \PHPUnit\Framework\TestCase
      */
     protected $target;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->name = TicketType::TYPE_TASK;
         $this->target = new TicketType($this->name);

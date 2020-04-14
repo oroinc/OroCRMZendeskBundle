@@ -34,7 +34,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
      */
     protected $previousEmail;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
 
@@ -54,7 +54,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $this->processor->setImportExportContext($this->context);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         // @see testNewCommentWithoutAuthor
         $this->channel->getTransport()->setZendeskUserEmail($this->previousEmail);

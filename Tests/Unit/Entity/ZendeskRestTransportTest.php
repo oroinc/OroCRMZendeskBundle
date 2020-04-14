@@ -11,7 +11,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
      */
     protected $target;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->target = new ZendeskRestTransport();
     }

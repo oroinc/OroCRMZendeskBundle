@@ -12,7 +12,7 @@ use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
 class TicketCommentExportJobTest extends AbstractImportExportJobTestCase
 {
     /** {@inheritdoc} */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->loadFixtures([LoadTicketData::class]);

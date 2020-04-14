@@ -34,7 +34,7 @@ class SyncManagerTest extends \PHPUnit\Framework\TestCase
      */
     protected $zendeskEntityProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->scheduler = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Manager\SyncScheduler')
             ->disableOriginalConstructor()->getMock();

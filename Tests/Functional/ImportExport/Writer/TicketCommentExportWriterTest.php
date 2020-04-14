@@ -63,7 +63,7 @@ class TicketCommentExportWriterTest extends WebTestCase
     /** @var  ExceptionHandlerInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $exceptionHandler;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
 

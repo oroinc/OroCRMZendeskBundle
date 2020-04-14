@@ -52,7 +52,7 @@ class TicketCommentConnectorTest extends \PHPUnit\Framework\TestCase
      */
     protected $stepExecutor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->registry = $this->getMockBuilder('Oro\Bundle\ImportExportBundle\Context\ContextRegistry')
             ->disableOriginalConstructor()
@@ -99,7 +99,7 @@ class TicketCommentConnectorTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset(
             $this->connector,
