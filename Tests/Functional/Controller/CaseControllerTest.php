@@ -48,10 +48,13 @@ class CaseControllerTest extends WebTestCase
 
         $result = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
-        $this->assertContains($this->caseWithoutTicket->getSubject() . " - Cases - Activities", $crawler->html());
-        $this->assertNotContains("Zendesk ticket info", $crawler->html());
+        static::assertStringContainsString(
+            $this->caseWithoutTicket->getSubject() . " - Cases - Activities",
+            $crawler->html()
+        );
+        static::assertStringNotContainsString("Zendesk ticket info", $crawler->html());
         $this->assertCount(1, $crawler->filter('.zendesk-integration-btn-group'));
-        $this->assertContains("Publish to Zendesk", $crawler->html());
+        static::assertStringContainsString("Publish to Zendesk", $crawler->html());
     }
 
     public function testViewWithLinkedTicket()
@@ -68,43 +71,46 @@ class CaseControllerTest extends WebTestCase
         $result = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
 
-        $this->assertContains($this->caseWithTicket->getSubject() . " - Cases - Activities", $crawler->html());
-        $this->assertContains("Zendesk ticket info", $crawler->html());
+        static::assertStringContainsString(
+            $this->caseWithTicket->getSubject() . " - Cases - Activities",
+            $crawler->html()
+        );
+        static::assertStringContainsString("Zendesk ticket info", $crawler->html());
         $this->assertCount(0, $crawler->filter('.zendesk-integration-btn-group'));
-        $this->assertNotContains("Publish to Zendesk", $crawler->html());
+        static::assertStringNotContainsString("Publish to Zendesk", $crawler->html());
 
         $crawler = $crawler->filterXPath('//span[text()="Zendesk ticket info"]')->parents();
 
         $externalId = $this->getFieldValue("Ticket Number", $crawler);
-        $this->assertContains($expectedTicket->getOriginId(), $externalId->html());
+        static::assertStringContainsString($expectedTicket->getOriginId(), $externalId->html());
 
         $problem = $this->getFieldValue("Problem", $crawler);
-        $this->assertContains($expectedTicket->getProblem()->getSubject(), $problem->html());
+        static::assertStringContainsString($expectedTicket->getProblem()->getSubject(), $problem->html());
 
         $recipient = $this->getFieldValue("Recipient email", $crawler);
-        $this->assertContains($expectedTicket->getRecipient(), $recipient->html());
+        static::assertStringContainsString($expectedTicket->getRecipient(), $recipient->html());
 
         $collaborators = $this->getFieldValue("Collaborators", $crawler);
-        $this->assertContains('Fred Taylor', $collaborators->html());
-        $this->assertContains('Alex Taylor', $collaborators->html());
+        static::assertStringContainsString('Fred Taylor', $collaborators->html());
+        static::assertStringContainsString('Alex Taylor', $collaborators->html());
 
         $submitter = $this->getFieldValue("Submitter", $crawler);
-        $this->assertContains('Fred Taylor', $submitter->html());
+        static::assertStringContainsString('Fred Taylor', $submitter->html());
 
         $assignee = $this->getFieldValue("Assignee", $crawler);
-        $this->assertContains('Fred Taylor', $assignee->html());
+        static::assertStringContainsString('Fred Taylor', $assignee->html());
 
         $requester = $this->getFieldValue("Requester", $crawler);
-        $this->assertContains('Alex Taylor', $requester->html());
+        static::assertStringContainsString('Alex Taylor', $requester->html());
 
         $status = $this->getFieldValue("Status", $crawler);
-        $this->assertContains($expectedTicket->getStatus()->getLabel(), $status->html());
+        static::assertStringContainsString($expectedTicket->getStatus()->getLabel(), $status->html());
 
         $priority = $this->getFieldValue("Priority", $crawler);
-        $this->assertContains($expectedTicket->getPriority()->getLabel(), $priority->html());
+        static::assertStringContainsString($expectedTicket->getPriority()->getLabel(), $priority->html());
 
         $type = $this->getFieldValue("Type", $crawler);
-        $this->assertContains($expectedTicket->getType()->getLabel(), $type->html());
+        static::assertStringContainsString($expectedTicket->getType()->getLabel(), $type->html());
     }
 
     public function testEditContainSyncControlIfNotSyncedYet()
@@ -117,7 +123,7 @@ class CaseControllerTest extends WebTestCase
         $result = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
 
-        $this->assertContains("Publish to Zendesk", $crawler->html());
+        static::assertStringContainsString("Publish to Zendesk", $crawler->html());
     }
 
     public function testEditDoesNotContainSyncControlIfAlreadySynced()
@@ -130,7 +136,7 @@ class CaseControllerTest extends WebTestCase
         $result = $this->client->getResponse();
         $this->assertHtmlResponseStatusCodeEquals($result, 200);
 
-        $this->assertNotContains("Publish to Zendesk", $crawler->html());
+        static::assertStringNotContainsString("Publish to Zendesk", $crawler->html());
     }
 
     protected function getFieldValue($label, Crawler $crawler)

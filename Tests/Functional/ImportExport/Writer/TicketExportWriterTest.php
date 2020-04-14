@@ -149,11 +149,14 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertEquals('james.cook@example.com', $relatedCase->getAssignedTo()->getEmail());
         $this->assertEquals('james.cook@example.com', $relatedCase->getOwner()->getEmail());
 
-        $this->assertContains('[info] Zendesk Ticket [id=' . $ticket->getId() . ']:', $this->logOutput);
-        $this->assertContains('Create ticket in Zendesk API.', $this->logOutput);
-        $this->assertContains('Created ticket [origin_id=' . $expected->getOriginId() . '].', $this->logOutput);
-        $this->assertContains('Update ticket by response data.', $this->logOutput);
-        $this->assertContains('Update related case.', $this->logOutput);
+        static::assertStringContainsString('[info] Zendesk Ticket [id=' . $ticket->getId() . ']:', $this->logOutput);
+        static::assertStringContainsString('Create ticket in Zendesk API.', $this->logOutput);
+        static::assertStringContainsString(
+            'Created ticket [origin_id=' . $expected->getOriginId() . '].',
+            $this->logOutput
+        );
+        static::assertStringContainsString('Update ticket by response data.', $this->logOutput);
+        static::assertStringContainsString('Update related case.', $this->logOutput);
     }
 
     public function testWriteCreatesComment()
@@ -213,12 +216,12 @@ class TicketExportWriterTest extends WebTestCase
             $relatedComment->getOwner()->getEmail()
         );
 
-        $this->assertContains(
+        static::assertStringContainsString(
             'Created ticket comment [origin_id=' . $expectedComment->getOriginId() . '].',
             $this->logOutput
         );
-        $this->assertContains('Update related case comment.', $this->logOutput);
-        $this->assertNotContains('Schedule job to sync existing ticket comments.', $this->logOutput);
+        static::assertStringContainsString('Update related case comment.', $this->logOutput);
+        static::assertStringNotContainsString('Schedule job to sync existing ticket comments.', $this->logOutput);
     }
 
     public function testWriteCreatesCommentWithExistingContact()
@@ -314,9 +317,9 @@ class TicketExportWriterTest extends WebTestCase
         }
         sort($commentIds);
 
-        $this->assertContains('Create ticket comment for case comment', $this->logOutput);
+        static::assertStringContainsString('Create ticket comment for case comment', $this->logOutput);
 
-        $this->assertContains('Schedule job to sync existing ticket comments', $this->logOutput);
+        static::assertStringContainsString('Schedule job to sync existing ticket comments', $this->logOutput);
         $this->assertTicketCommentIds($this->logOutput, $commentIds);
 
         self::assertMessageSent(
@@ -383,13 +386,13 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertEquals('james.cook@example.com', $relatedCase->getAssignedTo()->getEmail());
         $this->assertEquals('james.cook@example.com', $relatedCase->getOwner()->getEmail());
 
-        $this->assertContains('[info] Zendesk Ticket [id=' . $ticket->getId() . ']:', $this->logOutput);
-        $this->assertContains(
+        static::assertStringContainsString('[info] Zendesk Ticket [id=' . $ticket->getId() . ']:', $this->logOutput);
+        static::assertStringContainsString(
             'Update ticket in Zendesk API [origin_id=' . $ticket->getOriginId() . '].',
             $this->logOutput
         );
-        $this->assertContains('Update ticket by response data.', $this->logOutput);
-        $this->assertContains('Update related case.', $this->logOutput);
+        static::assertStringContainsString('Update ticket by response data.', $this->logOutput);
+        static::assertStringContainsString('Update related case.', $this->logOutput);
     }
 
     public function testWriteCreatesUsers()
@@ -466,10 +469,22 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertNotEmpty($ticket->getAssignee());
         $this->assertEquals($expectedSubmitter->getOriginId(), $ticket->getAssignee()->getOriginId());
 
-        $this->assertContains('Create user in Zendesk API [id=' . $requester->getId() . '].', $this->logOutput);
-        $this->assertContains('Created user [origin_id=' . $expectedRequester->getOriginId() . '].', $this->logOutput);
-        $this->assertContains('Create user in Zendesk API [id=' . $submitter->getId() . '].', $this->logOutput);
-        $this->assertContains('Created user [origin_id=' . $expectedSubmitter->getOriginId() . '].', $this->logOutput);
+        static::assertStringContainsString(
+            'Create user in Zendesk API [id=' . $requester->getId() . '].',
+            $this->logOutput
+        );
+        static::assertStringContainsString(
+            'Created user [origin_id=' . $expectedRequester->getOriginId() . '].',
+            $this->logOutput
+        );
+        static::assertStringContainsString(
+            'Create user in Zendesk API [id=' . $submitter->getId() . '].',
+            $this->logOutput
+        );
+        static::assertStringContainsString(
+            'Created user [origin_id=' . $expectedSubmitter->getOriginId() . '].',
+            $this->logOutput
+        );
     }
 
     protected function createTicket()

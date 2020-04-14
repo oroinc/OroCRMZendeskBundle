@@ -64,7 +64,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
         $params = self::getObjectAttribute($result, 'params');
         $query = isset($params['query']) ? $params['query'] : '';
-        $this->assertContains('type:user created<=', $query);
+        $this->assertStringContainsString('type:user created<=', $query);
         $this->checkThatSearchQueryContainDateInCorrectFormat($query);
     }
 
@@ -100,7 +100,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
         $params = self::getObjectAttribute($result, 'params');
         $query = isset($params['query']) ? $params['query'] : '';
-        $this->assertContains('type:ticket created<=', $query);
+        $this->assertStringContainsString('type:ticket created<=', $query);
         $this->checkThatSearchQueryContainDateInCorrectFormat($query);
 
         $this->assertAttributeEquals($this->serializer, 'serializer', $result);

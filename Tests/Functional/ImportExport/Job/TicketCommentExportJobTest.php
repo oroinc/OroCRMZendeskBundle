@@ -48,7 +48,10 @@ class TicketCommentExportJobTest extends AbstractImportExportJobTestCase
         /** @var Status $status */
         $status = $channel->getStatuses()->first();
 
-        $this->assertContains('Some entities were skipped due to warnings', $status->getMessage());
-        $this->assertContains('Error ticket comment not exported because ticket is closed', $status->getMessage());
+        static::assertStringContainsString('Some entities were skipped due to warnings', $status->getMessage());
+        static::assertStringContainsString(
+            'Error ticket comment not exported because ticket is closed',
+            $status->getMessage()
+        );
     }
 }

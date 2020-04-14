@@ -134,11 +134,17 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->assertEquals('james.cook@example.com', $relatedComment->getOwner()->getEmail());
         $this->assertEmpty($relatedComment->getContact());
 
-        $this->assertContains('[info] Zendesk Ticket Comment [id=' . $comment->getId() . ']:', $this->logOutput);
-        $this->assertContains('Create ticket comment in Zendesk API.', $this->logOutput);
-        $this->assertContains('Created ticket comment [origin_id=' . $expected->getOriginId() . '].', $this->logOutput);
-        $this->assertContains('Update ticket comment by response data.', $this->logOutput);
-        $this->assertContains('Update related comment.', $this->logOutput);
+        static::assertStringContainsString(
+            '[info] Zendesk Ticket Comment [id=' . $comment->getId() . ']:',
+            $this->logOutput
+        );
+        static::assertStringContainsString('Create ticket comment in Zendesk API.', $this->logOutput);
+        static::assertStringContainsString(
+            'Created ticket comment [origin_id=' . $expected->getOriginId() . '].',
+            $this->logOutput
+        );
+        static::assertStringContainsString('Update ticket comment by response data.', $this->logOutput);
+        static::assertStringContainsString('Update related comment.', $this->logOutput);
     }
 
     public function testWriteCreatesTicketWithContactAuthor()
@@ -213,16 +219,28 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->assertEquals('Alex', $relatedComment->getContact()->getFirstName());
         $this->assertEquals('Miller', $relatedComment->getContact()->getLastName());
 
-        $this->assertContains('[info] Zendesk Ticket Comment [id=' . $ticketComment->getId() . ']:', $this->logOutput);
-        $this->assertContains('Create user in Zendesk API [id=' . $author->getId() . '].', $this->logOutput);
-        $this->assertContains('Created user [origin_id=' . $expectedAuthor->getOriginId() . '].', $this->logOutput);
-        $this->assertContains('Create ticket comment in Zendesk API.', $this->logOutput);
-        $this->assertContains(
+        static::assertStringContainsString(
+            '[info] Zendesk Ticket Comment [id=' . $ticketComment->getId() . ']:',
+            $this->logOutput
+        );
+        static::assertStringContainsString(
+            'Create user in Zendesk API [id=' . $author->getId() . '].',
+            $this->logOutput
+        );
+        static::assertStringContainsString(
+            'Created user [origin_id=' . $expectedAuthor->getOriginId() . '].',
+            $this->logOutput
+        );
+        static::assertStringContainsString(
+            'Create ticket comment in Zendesk API.',
+            $this->logOutput
+        );
+        static::assertStringContainsString(
             'Created ticket comment [origin_id=' . $expected->getOriginId() . '].',
             $this->logOutput
         );
-        $this->assertContains('Update ticket comment by response data.', $this->logOutput);
-        $this->assertContains('Update related comment.', $this->logOutput);
+        static::assertStringContainsString('Update ticket comment by response data.', $this->logOutput);
+        static::assertStringContainsString('Update related comment.', $this->logOutput);
     }
 
     public function testWriteProhibitedToCreateEndUser()
@@ -250,9 +268,15 @@ class TicketCommentExportWriterTest extends WebTestCase
         $ticketComment = $this->registry->getRepository(get_class($ticketComment))->find($ticketComment->getId());
         $this->assertEmpty($ticketComment->getAuthor());
 
-        $this->assertContains('[info] Zendesk Ticket Comment [id=' . $ticketComment->getId() . ']:', $this->logOutput);
-        $this->assertContains('Create user in Zendesk API [id=' . $author->getId() . '].', $this->logOutput);
-        $this->assertContains('Not allowed to create user [role=agent] in Zendesk.', $this->logOutput);
+        static::assertStringContainsString(
+            '[info] Zendesk Ticket Comment [id=' . $ticketComment->getId() . ']:',
+            $this->logOutput
+        );
+        static::assertStringContainsString(
+            'Create user in Zendesk API [id=' . $author->getId() . '].',
+            $this->logOutput
+        );
+        static::assertStringContainsString('Not allowed to create user [role=agent] in Zendesk.', $this->logOutput);
     }
 
     public function testCreateCommentToClosedTicketWithExpectedException()
