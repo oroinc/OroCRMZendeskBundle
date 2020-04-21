@@ -52,7 +52,9 @@ class ChannelUpdateListenerTest extends \PHPUnit\Framework\TestCase
         $channel->expects($this->once())
             ->method('getType')
             ->will($this->returnValue($data['type']));
-        $settings = $this->createPartialMock(\ArrayObject::class, array('offsetGetOr'));
+        $settings = $this->getMockBuilder(\ArrayObject::class)
+            ->addMethods(['offsetGetOr'])
+            ->getMock();
         $settings->expects($this->any())
             ->method('offsetGetOr')
             ->will($this->returnValue($data['sync_enable']));
@@ -62,7 +64,9 @@ class ChannelUpdateListenerTest extends \PHPUnit\Framework\TestCase
         $channel->expects($this->any())
             ->method('isEnabled')
             ->will($this->returnValue($data['enable']));
-        $settings = $this->createPartialMock(\ArrayObject::class, array('offsetGetOr'));
+        $settings = $this->getMockBuilder(\ArrayObject::class)
+            ->addMethods(['offsetGetOr'])
+            ->getMock();
         $settings->expects($this->any())
             ->method('offsetGetOr')
             ->will($this->returnValue($data['sync_enable_old']));
