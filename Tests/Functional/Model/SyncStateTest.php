@@ -13,7 +13,7 @@ class SyncStateTest extends WebTestCase
      */
     protected $target;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
         $this->loadFixtures(array(

@@ -25,17 +25,16 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     const ACTION_GET_TICKET_COMMENTS = 'getTicketComments';
     const COMMENT_EVENT_TYPE = 'Comment';
 
-    /**
-     * @var SerializerInterface
-     */
+    /** @var SerializerInterface */
     protected $serializer;
 
-    /**
-     * @param SerializerInterface $serializer
-     */
-    public function __construct(SerializerInterface $serializer)
+    /** @var string */
+    private $resultIteratorClass;
+
+    public function __construct(SerializerInterface $serializer, ?string $resultIteratorClass = null)
     {
         $this->serializer = $serializer;
+        $this->resultIteratorClass = $resultIteratorClass ?? ZendeskRestIterator::class;
     }
 
     /**
@@ -66,7 +65,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             return new \EmptyIterator();
         }
 
-        $result = new ZendeskRestIterator(
+        $result = new $this->resultIteratorClass(
             $this->getClient(),
             sprintf('tickets/%s/comments.json', $ticketId),
             'comments'
@@ -252,7 +251,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             $this->getSortingParams()
         );
 
-        $result = new ZendeskRestIterator(
+        $result = new $this->resultIteratorClass(
             $this->getClient(),
             'search.json',
             'results',

@@ -41,7 +41,7 @@ class ImportTicketProcessorTest extends WebTestCase
      */
     protected $channel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
 
@@ -57,20 +57,20 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->processor->setImportExportContext($this->context);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->getSyncStateService()->setTicketIds(array());
 
         parent::tearDown();
     }
 
-    /**
-     * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\Ticket,
-     * stdClass given.
-     */
     public function testProcessInvalidArgumentFails()
     {
+        $this->expectException(\Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\Ticket, stdClass given.'
+        );
+
         $this->processor->process(new \stdClass());
     }
 

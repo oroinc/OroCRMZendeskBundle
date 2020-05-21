@@ -43,7 +43,7 @@ class SyncStateTest extends \PHPUnit\Framework\TestCase
      */
     protected $status;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->channel = $this->createMock(Channel::class);
         $this->channelRepository = $this->createMock(ChannelRepository::class);
@@ -149,7 +149,7 @@ class SyncStateTest extends \PHPUnit\Framework\TestCase
             ->willReturn($this->status);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset(
             $this->syncState,

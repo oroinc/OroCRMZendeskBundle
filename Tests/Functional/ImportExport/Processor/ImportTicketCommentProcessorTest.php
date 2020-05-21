@@ -37,7 +37,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
      */
     protected $channel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
         $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
@@ -55,12 +55,15 @@ class ImportTicketCommentProcessorTest extends WebTestCase
     }
 
     /**
-     * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment,
-     * stdClass given.
+     *
      */
     public function testProcessFailsWithInvalidArgument()
     {
+        $this->expectException(\Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.'
+        );
+
         $this->processor->process(new \stdClass());
     }
 

@@ -31,7 +31,7 @@ class ImportUserProcessorTest extends WebTestCase
      */
     protected $channel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
         $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData']);
@@ -46,13 +46,13 @@ class ImportUserProcessorTest extends WebTestCase
         $this->processor->setImportExportContext($this->context);
     }
 
-    /**
-     * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\User,
-     * stdClass given.
-     */
     public function testProcessInvalidArgumentFails()
     {
+        $this->expectException(\Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\User, stdClass given.'
+        );
+
         $this->processor->process(new \stdClass());
     }
 

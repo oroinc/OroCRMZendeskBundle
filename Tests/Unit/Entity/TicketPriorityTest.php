@@ -16,7 +16,7 @@ class TicketPriorityTest extends \PHPUnit\Framework\TestCase
      */
     protected $target;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->name = TicketPriority::PRIORITY_HIGH;
         $this->target = new TicketPriority($this->name);

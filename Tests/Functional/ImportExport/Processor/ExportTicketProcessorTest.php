@@ -35,7 +35,7 @@ class ExportTicketProcessorTest extends WebTestCase
      */
     protected $previousEmail;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
 
@@ -52,7 +52,7 @@ class ExportTicketProcessorTest extends WebTestCase
         $this->processor->setImportExportContext($this->context);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         //see testProcessorReturnNullIfRequesterDoesNotFoundAndDefaultUserNotExist
         $this->channel->getTransport()->setZendeskUserEmail($this->previousEmail);

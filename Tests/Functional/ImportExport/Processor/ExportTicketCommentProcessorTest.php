@@ -34,7 +34,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
      */
     protected $previousEmail;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
 
@@ -54,7 +54,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $this->processor->setImportExportContext($this->context);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         // @see testNewCommentWithoutAuthor
         $this->channel->getTransport()->setZendeskUserEmail($this->previousEmail);
@@ -133,14 +133,13 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $this->assertEquals($expectedAuthor, $actual->getAuthor());
     }
 
-    // @codingStandardsIgnoreStart
-    /**
-     * @expectedException \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.
-     */
-    // @codingStandardsIgnoreEnd
     public function testProcessReturnExceptionIfInvalidEntityType()
     {
+        $this->expectException(\Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.'
+        );
+
         $ticketComment = new \StdClass();
         $this->processor->process($ticketComment);
     }

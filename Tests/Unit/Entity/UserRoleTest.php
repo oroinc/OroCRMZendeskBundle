@@ -16,7 +16,7 @@ class UserRoleTest extends \PHPUnit\Framework\TestCase
      */
     protected $target;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->name = UserRole::ROLE_ADMIN;
         $this->target = new UserRole($this->name);

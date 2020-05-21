@@ -22,7 +22,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit\Framework\TestCase
      */
     protected $mediator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $registry = $this->getMockBuilder('Oro\Bundle\ImportExportBundle\Context\ContextRegistry')
             ->disableOriginalConstructor()
@@ -77,7 +77,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset(
             $this->connector,
@@ -87,12 +87,11 @@ class AbstractZendeskConnectorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Option "transport" should implement "ZendeskTransportInterface"
-     */
     public function testValidateConfigurationThrowExceptionIfTransportInvalid()
     {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Option "transport" should implement "ZendeskTransportInterface"');
+
         $transport = $this->createMock('Oro\Bundle\IntegrationBundle\Provider\TransportInterface');
         $this->mediator->expects($this->any())
             ->method('getTransport')

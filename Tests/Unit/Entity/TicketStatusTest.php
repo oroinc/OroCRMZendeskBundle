@@ -16,7 +16,7 @@ class TicketStatusTest extends \PHPUnit\Framework\TestCase
      */
     protected $target;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->name = TicketStatus::STATUS_CLOSED;
         $this->target = new TicketStatus($this->name);

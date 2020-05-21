@@ -20,7 +20,7 @@ class ZendeskExtensionTest extends \PHPUnit\Framework\TestCase
     /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $zendeskProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->oroProvider = $this->getMockBuilder(OroEntityProvider::class)
             ->disableOriginalConstructor()

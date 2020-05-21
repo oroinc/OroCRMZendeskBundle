@@ -15,7 +15,7 @@ class TicketCommentNormalizerTest extends WebTestCase
      */
     protected $serializer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initClient();
         $this->serializer = $this->getContainer()->get('oro_importexport.serializer');

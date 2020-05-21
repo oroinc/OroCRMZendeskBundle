@@ -21,7 +21,7 @@ class PlaceholderFilter extends \PHPUnit\Framework\TestCase
      */
     protected $zendeskProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->oroProvider = $this->getMockBuilder(
             'Oro\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\OroEntityProvider'
