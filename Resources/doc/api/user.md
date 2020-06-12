@@ -26,31 +26,31 @@ The created record is returned in the response.
 Example:
 
 ```JSON
-{  
-   "data":{  
-      "type":"zendeskusers",
-      "attributes":{  
-         "originId":"1000000",
-         "name":"Arthur Figueroa",
-         "email":"arthur.figueroa_7c48c@msn.com"
+{
+   "data": {
+      "type": "zendeskusers",
+      "attributes": {
+         "originId": "1000000",
+         "name": "Arthur Figueroa",
+         "email": "arthur.figueroa_7c48c@msn.com"
       },
-      "relationships":{  
-         "role":{  
-            "data":{  
-               "type":"zendeskuserroles",
-               "id":"agent"
+      "relationships": {
+         "role": {
+            "data": {
+               "type": "zendeskuserroles",
+               "id": "agent"
             }
          },
-         "relatedContact":{  
-            "data":{  
-               "type":"contacts",
-               "id":"1"
+         "relatedContact": {
+            "data": {
+               "type": "contacts",
+               "id": "1"
             }
          },
-         "relatedUser":{  
-            "data":{  
-               "type":"users",
-               "id":"5"
+         "relatedUser": {
+            "data": {
+               "type": "users",
+               "id": "5"
             }
          }
       }
@@ -71,32 +71,32 @@ The updated record is returned in the response.
 Example:
 
 ```JSON
-{  
-   "data":{  
-      "type":"zendeskusers",
-      "id":"52",
-      "attributes":{  
-         "originId":"1000000",
-         "name":"Arthur Figueroa",
-         "email":"arthur.figueroa_7c48c@msn.com"
+{
+   "data": {
+      "type": "zendeskusers",
+      "id": "52",
+      "attributes": {
+         "originId": "1000000",
+         "name": "Arthur Figueroa",
+         "email": "arthur.figueroa_7c48c@msn.com"
       },
-      "relationships":{  
-         "role":{  
-            "data":{  
-               "type":"zendeskuserroles",
-               "id":"agent"
+      "relationships": {
+         "role": {
+            "data": {
+               "type": "zendeskuserroles",
+               "id": "agent"
             }
          },
-         "relatedContact":{  
-            "data":{  
-               "type":"contacts",
-               "id":"1"
+         "relatedContact": {
+            "data": {
+               "type": "contacts",
+               "id": "1"
             }
          },
-         "relatedUser":{  
-            "data":{  
-               "type":"users",
-               "id":"5"
+         "relatedUser": {
+            "data": {
+               "type": "users",
+               "id": "5"
             }
          }
       }

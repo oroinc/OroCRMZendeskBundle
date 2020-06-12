@@ -26,32 +26,32 @@ The created record is returned in the response.
 Example:
 
 ```JSON
-{  
-   "data":{  
-      "type":"zendeskticketcomments",
-      "attributes":{  
-         "originId":"1000054",
-         "body":"Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
-         "htmlBody":"Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
-         "public":true
+{
+   "data": {
+      "type": "zendeskticketcomments",
+      "attributes": {
+         "originId": "1000054",
+         "body": "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+         "htmlBody": "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+         "public": true
       },
-      "relationships":{  
-         "author":{  
-            "data":{  
-               "type":"zendeskusers",
-               "id":"39"
+      "relationships": {
+         "author": {
+            "data": {
+               "type": "zendeskusers",
+               "id": "39"
             }
          },
-         "ticket":{  
-            "data":{  
-               "type":"zendesktickets",
-               "id":"10"
+         "ticket": {
+            "data": {
+               "type": "zendesktickets",
+               "id": "10"
             }
          },
-         "relatedComment":{  
-            "data":{  
-               "type":"casecomments",
-               "id":"82"
+         "relatedComment": {
+            "data": {
+               "type": "casecomments",
+               "id": "82"
             }
          }
       }
@@ -72,27 +72,27 @@ The updated record is returned in the response.
 Example:
 
 ```JSON
-{  
-   "data":{  
-      "type":"zendeskticketcomments",
-      "id":"55",
-      "attributes":{  
-         "originId":"1000054",
-         "body":"Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
-         "htmlBody":"Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
-         "public":true
+{
+   "data": {
+      "type": "zendeskticketcomments",
+      "id": "55",
+      "attributes": {
+         "originId": "1000054",
+         "body": "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+         "htmlBody": "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+         "public": true
       },
-      "relationships":{  
-         "author":{  
-            "data":{  
-               "type":"zendeskusers",
-               "id":"39"
+      "relationships": {
+         "author": {
+            "data": {
+               "type": "zendeskusers",
+               "id": "39"
             }
          },
-         "ticket":{  
-            "data":{  
-               "type":"zendesktickets",
-               "id":"10"
+         "ticket": {
+            "data": {
+               "type": "zendesktickets",
+               "id": "10"
             }
          }
       }
