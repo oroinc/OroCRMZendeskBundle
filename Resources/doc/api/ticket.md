@@ -27,74 +27,74 @@ The created record is returned in the response.
 Example:
 
 ```JSON
-{  
-   "data":{  
-      "type":"zendesktickets",
-      "attributes":{  
-         "originId":"1000017",
-         "url":"https://company.zendesk.com/api/v2/tickets/1000017.json",
-         "subject":"Integer tincidunt",
-         "description":"Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum.",
-         "externalId":"58b008147a5b5",
-         "recipient":"1000010_support@company.com",
-         "hasIncidents":true,
-         "dueAt":"2017-02-01T18:30:52Z"
+{
+   "data": {
+      "type": "zendesktickets",
+      "attributes": {
+         "originId": "1000017",
+         "url": "https://company.zendesk.com/api/v2/tickets/1000017.json",
+         "subject": "Integer tincidunt",
+         "description": "Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum.",
+         "externalId": "58b008147a5b5",
+         "recipient": "1000010_support@company.com",
+         "hasIncidents": true,
+         "dueAt": "2017-02-01T18:30:52Z"
       },
-      "relationships":{  
-         "collaborators":{  
-            "data":[  
-               {  
-                  "type":"zendeskusers",
-                  "id":"13"
+      "relationships": {
+         "collaborators": {
+            "data": [
+               {
+                  "type": "zendeskusers",
+                  "id": "13"
                }
             ]
          },        
-         "status":{  
-            "data":{  
-               "type":"zendeskticketstatuses",
-               "id":"pending"
+         "status": {
+            "data": {
+               "type": "zendeskticketstatuses",
+               "id": "pending"
             }
          },
-         "priority":{  
-            "data":{  
-               "type":"zendeskticketpriorities",
-               "id":"high"
+         "priority": {
+            "data": {
+               "type": "zendeskticketpriorities",
+               "id": "high"
             }
          },
-         "requester":{  
-            "data":{  
-               "type":"zendeskusers",
-               "id":"13"
+         "requester": {
+            "data": {
+               "type": "zendeskusers",
+               "id": "13"
             }
          },
-         "submitter":{  
-            "data":{  
-               "type":"zendeskusers",
-               "id":"13"
+         "submitter": {
+            "data": {
+               "type": "zendeskusers",
+               "id": "13"
             }
          },
-         "assignee":{  
-            "data":{  
-               "type":"zendeskusers",
-               "id":"37"
+         "assignee": {
+            "data": {
+               "type": "zendeskusers",
+               "id": "37"
             }
          },
-         "comments":{  
-            "data":[  
-               {  
-                  "type":"zendeskticketcomments",
-                  "id":"53"
+         "comments": {
+            "data": [
+               {
+                  "type": "zendeskticketcomments",
+                  "id": "53"
                },
-               {  
-                  "type":"zendeskticketcomments",
-                  "id":"54"
+               {
+                  "type": "zendeskticketcomments",
+                  "id": "54"
                }
             ]
          },
-         "relatedCase":{  
-            "data":{  
-               "type":"cases",
-               "id":"12"
+         "relatedCase": {
+            "data": {
+               "type": "cases",
+               "id": "12"
             }
          }
       }
@@ -115,75 +115,75 @@ The updated record is returned in the response.
 Example:
 
 ```JSON
-{  
-   "data":{  
-      "type":"zendesktickets",
-      "id":"15",
-      "attributes":{  
-         "originId":"1000017",
-         "url":"https://company.zendesk.com/api/v2/tickets/1000017.json",
-         "subject":"Integer tincidunt",
-         "description":"Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum.",
-         "externalId":"58b008147a5b5",
-         "recipient":"1000010_support@company.com",
-         "hasIncidents":true,
-         "dueAt":"2017-02-01T18:30:52Z"
+{
+   "data": {
+      "type": "zendesktickets",
+      "id": "15",
+      "attributes": {
+         "originId": "1000017",
+         "url": "https://company.zendesk.com/api/v2/tickets/1000017.json",
+         "subject": "Integer tincidunt",
+         "description": "Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum.",
+         "externalId": "58b008147a5b5",
+         "recipient": "1000010_support@company.com",
+         "hasIncidents": true,
+         "dueAt": "2017-02-01T18:30:52Z"
       },
-      "relationships":{  
-         "collaborators":{  
-            "data":[  
-               {  
-                  "type":"zendeskusers",
-                  "id":"13"
+      "relationships": {
+         "collaborators": {
+            "data": [
+               {
+                  "type": "zendeskusers",
+                  "id": "13"
                }
             ]
          },
-         "status":{  
-            "data":{  
-               "type":"zendeskticketstatuses",
-               "id":"pending"
+         "status": {
+            "data": {
+               "type": "zendeskticketstatuses",
+               "id": "pending"
             }
          },
-         "priority":{  
-            "data":{  
-               "type":"zendeskticketpriorities",
-               "id":"high"
+         "priority": {
+            "data": {
+               "type": "zendeskticketpriorities",
+               "id": "high"
             }
          },
-         "requester":{  
-            "data":{  
-               "type":"zendeskusers",
-               "id":"13"
+         "requester": {
+            "data": {
+               "type": "zendeskusers",
+               "id": "13"
             }
          },
-         "submitter":{  
-            "data":{  
-               "type":"zendeskusers",
-               "id":"13"
+         "submitter": {
+            "data": {
+               "type": "zendeskusers",
+               "id": "13"
             }
          },
-         "assignee":{  
-            "data":{  
-               "type":"zendeskusers",
-               "id":"37"
+         "assignee": {
+            "data": {
+               "type": "zendeskusers",
+               "id": "37"
             }
          },
-         "comments":{  
-            "data":[  
-               {  
-                  "type":"zendeskticketcomments",
-                  "id":"53"
+         "comments": {
+            "data": [
+               {
+                  "type": "zendeskticketcomments",
+                  "id": "53"
                },
-               {  
-                  "type":"zendeskticketcomments",
-                  "id":"54"
+               {
+                  "type": "zendeskticketcomments",
+                  "id": "54"
                }
             ]
          },
-         "relatedCase":{  
-            "data":{  
-               "type":"cases",
-               "id":"12"
+         "relatedCase": {
+            "data": {
+               "type": "cases",
+               "id": "12"
             }
          }
       }
