@@ -5,6 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Migrations\Schema\v1_2_2;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Oro\Bundle\MigrationBundle\Migration\Migration;
 use Oro\Bundle\MigrationBundle\Migration\ParametrizedMigrationQuery;
@@ -56,15 +57,15 @@ SQL;
         ];
 
         $selectStatusTypes = [
-            'channel_type'          => Type::STRING,
-            'completed_status_code' => Type::STRING,
+            'channel_type'          => Types::STRING,
+            'completed_status_code' => Types::STRING,
             'connectors'            => Connection::PARAM_STR_ARRAY
         ];
 
         $this->logQuery($logger, $selectStatusQuery, $selectStatusParams, $selectStatusTypes);
         $result = $this->connection->fetchAll($selectStatusQuery, $selectStatusParams, $selectStatusTypes);
 
-        $jsonArrayType = Type::getType(Type::JSON_ARRAY);
+        $jsonArrayType = Type::getType(Types::JSON_ARRAY);
         $platform = $this->connection->getDatabasePlatform();
 
         try {
@@ -83,7 +84,7 @@ SQL;
                         'oro_integration_channel_status',
                         ['data' => $statusData],
                         ['id' => $id],
-                        [Type::JSON_ARRAY]
+                        [Types::JSON_ARRAY]
                     );
                 }
             }
