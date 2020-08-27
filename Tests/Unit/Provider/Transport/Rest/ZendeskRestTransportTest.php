@@ -18,6 +18,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
 class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 {
     const TICKET_TYPE = Ticket::class;

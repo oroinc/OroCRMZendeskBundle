@@ -10,6 +10,9 @@ use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
 use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 
+/**
+ * Export writer for tickets.
+ */
 class TicketExportWriter extends AbstractExportWriter
 {
     /**
@@ -135,6 +138,7 @@ class TicketExportWriter extends AbstractExportWriter
 
     /**
      * @param Ticket $ticket
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function syncTicketRelations(Ticket $ticket)
     {
@@ -234,7 +238,6 @@ class TicketExportWriter extends AbstractExportWriter
         $this->syncScheduler->schedule(
             $this->getChannel()->getId(),
             TicketCommentConnector::TYPE,
-            // @TODO: change key id to ids more see in ticket CRM-8405
             ['id' => $ids]
         );
     }

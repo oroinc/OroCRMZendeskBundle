@@ -6,6 +6,9 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
 
+/**
+ * Contains user sync logic that is used in both import and export.
+ */
 class UserSyncHelper extends AbstractSyncHelper
 {
     /**
@@ -66,6 +69,7 @@ class UserSyncHelper extends AbstractSyncHelper
 
     /**
      * @param User $entity
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function syncRelatedEntities(User $entity)
     {
