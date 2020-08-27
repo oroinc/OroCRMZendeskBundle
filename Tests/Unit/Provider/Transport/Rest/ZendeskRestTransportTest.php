@@ -8,6 +8,9 @@ use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
 class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 {
     const TICKET_TYPE = 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket';

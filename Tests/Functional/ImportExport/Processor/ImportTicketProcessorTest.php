@@ -18,6 +18,8 @@ use Oro\Bundle\ZendeskBundle\Model\SyncState;
 
 /**
  * @dbIsolationPerTest
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class ImportTicketProcessorTest extends WebTestCase
 {
