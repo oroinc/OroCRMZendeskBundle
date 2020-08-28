@@ -119,6 +119,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
     /**
      * {@inheritdoc}
      * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function load(ObjectManager $manager)
     {
