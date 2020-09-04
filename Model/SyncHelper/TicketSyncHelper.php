@@ -12,6 +12,8 @@ use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
 
 /**
+ * Contains ticket sync logic that is used in both import and export.
+ *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class TicketSyncHelper extends AbstractSyncHelper
@@ -249,6 +251,7 @@ class TicketSyncHelper extends AbstractSyncHelper
      * @param ChangeSet $changeSet
      * @param Ticket $ticket
      * @param Channel $channel
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function addCaseRelatedContactChanges(ChangeSet $changeSet, Ticket $ticket, Channel $channel)
     {

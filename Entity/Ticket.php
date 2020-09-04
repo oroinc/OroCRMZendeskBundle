@@ -11,6 +11,8 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 
 /**
+ * Represents a Zendesk ticket.
+ *
  * @ORM\Entity
  * @ORM\Table(
  *      name="orocrm_zd_ticket",
@@ -28,6 +30,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
  * )
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class Ticket
 {
