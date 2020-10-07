@@ -2,24 +2,28 @@
 
 namespace Oro\Bundle\ZendeskBundle\Exception;
 
-use Guzzle\Common\Exception\GuzzleException;
-use Guzzle\Http\Message\RequestInterface;
-use Guzzle\Http\Message\Response;
+use Exception;
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class RestException extends \Exception implements ZendeskException
+/**
+ * An exception that represents Zendesk integration REST API transport errors
+ */
+class RestException extends Exception implements ZendeskException
 {
     /**
-     * @param string|null $message
-     * @param RequestInterface|null $request
-     * @param Response|null $response
-     * @param \Exception $previous
+     * @param string|null            $message
+     * @param RequestInterface|null  $request
+     * @param ResponseInterface|null $response
+     * @param Exception|null         $previous
      * @return RestException
      */
     public static function create(
         $message = null,
         RequestInterface $request = null,
-        Response $response = null,
-        \Exception $previous = null
+        ResponseInterface $response = null,
+        Exception $previous = null
     ) {
         $messageParts = [];
 
@@ -29,8 +33,8 @@ class RestException extends \Exception implements ZendeskException
 
         if (!$previous instanceof GuzzleException) {
             if ($request) {
-                $messageParts[] = '[url] ' . $request->getUrl();
-                $messageParts[] = '[method] ' . $request->getMethod();
+                $messageParts[] = '[url] '.(string)$request->getUri();
+                $messageParts[] = '[method] '.$request->getMethod();
             }
 
             if ($response) {

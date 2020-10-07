@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Twig;
 
-use Guzzle\Http\Url;
+use GuzzleHttp\Psr7\Uri;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
@@ -108,16 +108,16 @@ class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInt
             $transport = $ticket->getChannel()->getTransport();
 
             $url = $transport->getUrl();
-            $url = Url::factory($url);
-            $scheme = $url->getScheme();
+            $uri = new Uri($url);
+            $scheme = $uri->getScheme();
 
             if (empty($scheme)) {
-                $url->setHost($url->getPath())
-                    ->setPath('')
-                    ->setScheme('https');
+                $uri = $uri->withHost($uri->getPath())
+                    ->withPath('')
+                    ->withScheme('https');
             }
 
-            $url = (string)$url;
+            $url = (string)$uri;
 
             if (empty($url)) {
                 return null;
