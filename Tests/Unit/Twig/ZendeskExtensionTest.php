@@ -64,4 +64,32 @@ class ZendeskExtensionTest extends \PHPUnit\Framework\TestCase
             self::callTwigFunction($this->extension, 'oro_zendesk_ticket_url', [$ticket])
         );
     }
+
+    public function testGetTicketUrlWithoutSchema()
+    {
+        $id = 42;
+        $zendeskUrl = 'test.zendesk.com';
+        $expectedUrl = "https://{$zendeskUrl}/tickets/{$id}";
+
+        $ticket = $this->createMock('Oro\Bundle\ZendeskBundle\Entity\Ticket');
+        $ticket->expects($this->atLeastOnce())
+            ->method('getOriginId')
+            ->will($this->returnValue($id));
+        $channel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $transport = $this->createMock('Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport');
+        $transport->expects($this->once())
+            ->method('getUrl')
+            ->will($this->returnValue($zendeskUrl));
+        $ticket->expects($this->atLeastOnce())
+            ->method('getChannel')
+            ->will($this->returnValue($channel));
+        $channel->expects($this->once())
+            ->method('getTransport')
+            ->will($this->returnValue($transport));
+
+        $this->assertEquals(
+            $expectedUrl,
+            self::callTwigFunction($this->extension, 'oro_zendesk_ticket_url', [$ticket])
+        );
+    }
 }
