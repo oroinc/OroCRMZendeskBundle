@@ -71,7 +71,7 @@ class TicketExportWriterTest extends WebTestCase
         $this->initClient();
 
         $this->transport = $this->createMock(ZendeskTransportInterface::class);
-        $this->getContainer()->set('oro_zendesk.transport.rest_transport.test', $this->transport);
+        $this->getContainer()->set('oro_zendesk.tests.transport.rest_transport', $this->transport);
 
         $this->loadFixtures([LoadTicketData::class]);
 

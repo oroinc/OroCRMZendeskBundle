@@ -30,7 +30,7 @@ class AbstractImportExportJobTestCase extends WebTestCase
         $this->initClient();
 
         $this->resource = $this->createMock(ZendeskRestTransport::class);
-        $this->getContainer()->set('oro_zendesk.transport.rest_transport.test', $this->resource);
+        $this->getContainer()->set('oro_zendesk.tests.transport.rest_transport', $this->resource);
 
         $this->managerRegistry = $this->getContainer()->get('doctrine');
     }
