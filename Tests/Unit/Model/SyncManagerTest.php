@@ -40,7 +40,7 @@ class SyncManagerTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()->getMock();
         $this->entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()->getMock();
-        $this->registry = $this->createMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $this->registry = $this->createMock('Doctrine\Persistence\ManagerRegistry');
         $this->registry->expects($this->any())->method('getManager')
             ->willReturn($this->entityManager);
         $this->zendeskEntityProvider = $this->getMockBuilder(
