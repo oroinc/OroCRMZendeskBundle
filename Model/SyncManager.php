@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Model;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;

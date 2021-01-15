@@ -3,7 +3,7 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 use Oro\Bundle\ZendeskBundle\Provider\UserConnector;

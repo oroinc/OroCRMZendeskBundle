@@ -3,7 +3,7 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 

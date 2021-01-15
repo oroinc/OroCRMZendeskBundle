@@ -6,6 +6,9 @@ use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\AbstractRestIterator;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * Data iterator for the zendesk intergation.
+ */
 class ZendeskRestIterator extends AbstractRestIterator
 {
     /**
@@ -111,7 +114,7 @@ class ZendeskRestIterator extends AbstractRestIterator
         $result = parent::current();
 
         if ($result !== null && $this->serializer) {
-            $result = $this->serializer->deserialize($result, $this->itemType, null, $this->deserializeContext);
+            $result = $this->serializer->deserialize($result, $this->itemType, '', $this->deserializeContext);
         }
 
         return $result;

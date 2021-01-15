@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\IntegrationBundle\Async\Topics;
 use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;

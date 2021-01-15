@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Job;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;

@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\UserBundle\Entity\Role;
 use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;

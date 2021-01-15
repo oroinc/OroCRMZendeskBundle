@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\AbstractZendeskFixture;
 

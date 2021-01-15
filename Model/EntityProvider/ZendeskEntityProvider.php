@@ -2,8 +2,8 @@
 
 namespace Oro\Bundle\ZendeskBundle\Model\EntityProvider;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;

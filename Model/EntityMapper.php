@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Model;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\CaseBundle\Entity\CasePriority;
 use Oro\Bundle\CaseBundle\Entity\CaseStatus;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
