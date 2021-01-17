@@ -11,7 +11,7 @@ use Oro\Bundle\ZendeskBundle\Exception\ConfigurationException;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
