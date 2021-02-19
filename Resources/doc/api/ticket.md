@@ -12,7 +12,6 @@ Retrieve a specific Zendesk ticket record.
 
 Retrieve a collection of Zendesk ticket records.
 
-
 {@inheritdoc}
 
 ### create
