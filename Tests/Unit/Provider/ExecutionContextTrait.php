@@ -40,9 +40,7 @@ trait ExecutionContextTrait
     {
         $isUpdatedLastSyncDate = false;
 
-        /**
-         * @var $this \PHPUnit\Framework\TestCase
-         */
+        /** @var \PHPUnit\Framework\TestCase $this */
         $this->executionContext
             ->expects($this->atLeastOnce())
             ->method('put')
