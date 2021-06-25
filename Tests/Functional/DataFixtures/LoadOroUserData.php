@@ -58,7 +58,7 @@ class LoadOroUserData extends AbstractZendeskFixture
                 $this->setReference($data['reference'], $entity);
             }
             $this->setEntityPropertyValues($entity, $data, ['reference']);
-            $entity->addRole($role);
+            $entity->addUserRole($role);
             $entity->setOwner($admin->getOwner()); //for case controller test
 
             $userManager->updateUser($entity, false);
