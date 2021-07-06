@@ -1,10 +1,10 @@
 {% if is_granted('oro_case_view') %}
-    {% import 'OroUIBundle::macros.html.twig' as UI %}
-    {% import 'OroEmailBundle::macros.html.twig' as email %}
+    {% import '@OroUI/macros.html.twig' as UI %}
+    {% import '@OroEmail/macros.html.twig' as email %}
     {% import _self as caseTicketInfo %}
 
     {% macro render_zendesk_user(label, user) %}
-        {% import 'OroUIBundle::macros.html.twig' as UI %}
+        {% import '@OroUI/macros.html.twig' as UI %}
         {% import _self as caseTicketInfo %}
         {%- set userHtml -%}
             {%- if user -%}
