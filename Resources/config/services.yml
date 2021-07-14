@@ -44,6 +44,7 @@ services:
         parent: oro_integration.transport.rest.abstract_transport
         arguments:
             - '@oro_importexport.serializer'
+            - '@oro_importexport.serializer'
         tags:
             - { name: oro_integration.transport, type: zendesk_rest, channel_type: zendesk }
 

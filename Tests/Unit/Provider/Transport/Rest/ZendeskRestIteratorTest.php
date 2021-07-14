@@ -14,11 +14,9 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
     private const RESOURCE = 'users';
     private const PARAMS = ['foo' => 'bar'];
 
-    /** @var RestClientInterface|\PHPUnit\Framework\MockObject\MockObject */
-    private $client;
+    private RestClientInterface|\PHPUnit\Framework\MockObject\MockObject $client;
 
-    /** @var ZendeskRestIterator */
-    private $iterator;
+    private ZendeskRestIterator $iterator;
 
     protected function setUp(): void
     {
@@ -34,39 +32,42 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
 
     public function testCurrent(): void
     {
-        $this->client->expects($this->once())
+        $this->client->expects(self::once())
             ->method('getJSON')
             ->willReturn(
                 [
                     'rows' => [
                         ['id' => 1],
                         ['id' => 2],
-                    ]
+                    ],
                 ]
             );
 
         $normalizer = $this->createMock(DenormalizerInterface::class);
-        $normalizer->expects($this->any())
+        $normalizer->expects(self::any())
             ->method('supportsDenormalization')
             ->willReturn(true);
-        $normalizer->expects($this->any())
+        $normalizer->expects(self::any())
             ->method('denormalize')
             ->willReturnArgument(0);
 
         $iterator = new ZendeskRestIterator($this->client, 'resource', 'rows', []);
-        $iterator->setupDeserialization(new Serializer([$normalizer], [new DummyEncoder()]), '');
+        $iterator->setupDenormalization(new Serializer([$normalizer], [new DummyEncoder()]), '');
 
         $iterator->next();
-        $this->assertEquals(['id' => 1], $iterator->current());
+        self::assertEquals(['id' => 1], $iterator->current());
 
         $iterator->next();
-        $this->assertEquals(['id' => 2], $iterator->current());
+        self::assertEquals(['id' => 2], $iterator->current());
     }
 
     /**
      * @dataProvider iteratorDataProvider
+     *
+     * @param array $clientExpectations
+     * @param array $expectedItems
      */
-    public function testIteratorForeach(array $clientExpectations, array $expectedItems)
+    public function testIteratorForeach(array $clientExpectations, array $expectedItems): void
     {
         $with = [];
         $will = [];
@@ -74,7 +75,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
             $with[] = $data['request'];
             $will[] = $data['response'];
         }
-        $this->client->expects($this->exactly(count($clientExpectations)))
+        $this->client->expects(self::exactly(count($clientExpectations)))
             ->method('getJSON')
             ->withConsecutive(...$with)
             ->willReturnOnConsecutiveCalls(...$will);
@@ -85,13 +86,16 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
             $actualItems[$key] = $value;
         }
 
-        $this->assertEquals($expectedItems, $actualItems);
+        self::assertEquals($expectedItems, $actualItems);
     }
 
     /**
      * @dataProvider iteratorDataProvider
+     *
+     * @param array $clientExpectations
+     * @param array $expectedItems
      */
-    public function testIteratorWhile(array $clientExpectations, array $expectedItems)
+    public function testIteratorWhile(array $clientExpectations, array $expectedItems): void
     {
         $with = [];
         $will = [];
@@ -99,7 +103,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
             $with[] = $data['request'];
             $will[] = $data['response'];
         }
-        $this->client->expects($this->exactly(count($clientExpectations)))
+        $this->client->expects(self::exactly(count($clientExpectations)))
             ->method('getJSON')
             ->withConsecutive(...$with)
             ->willReturnOnConsecutiveCalls(...$will);
@@ -111,13 +115,16 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
             $this->iterator->next();
         }
 
-        $this->assertEquals($expectedItems, $actualItems);
+        self::assertEquals($expectedItems, $actualItems);
     }
 
     /**
      * @dataProvider iteratorDataProvider
+     *
+     * @param array $clientExpectations
+     * @param array $expectedItems
      */
-    public function testIterateTwice(array $clientExpectations, array $expectedItems)
+    public function testIterateTwice(array $clientExpectations, array $expectedItems): void
     {
         $with = [];
         $will = [];
@@ -129,7 +136,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
             $with[] = $data['request'];
             $will[] = $data['response'];
         }
-        $this->client->expects($this->exactly(count($clientExpectations) * 2))
+        $this->client->expects(self::exactly(count($clientExpectations) * 2))
             ->method('getJSON')
             ->withConsecutive(...$with)
             ->willReturnOnConsecutiveCalls(...$will);
@@ -142,7 +149,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
             $this->iterator->next();
         }
 
-        $this->assertEquals($expectedItems, $actualItems);
+        self::assertEquals($expectedItems, $actualItems);
 
         $actualItems = [];
 
@@ -152,7 +159,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
             $this->iterator->next();
         }
 
-        $this->assertEquals($expectedItems, $actualItems);
+        self::assertEquals($expectedItems, $actualItems);
     }
 
     public function iteratorDataProvider(): array
@@ -171,7 +178,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
                                 ['id' => 2],
                                 ['id' => 3],
                                 ['id' => 4],
-                            ]
+                            ],
                         ],
                     ],
                     [
@@ -184,7 +191,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
                                 ['id' => 5],
                                 ['id' => 6],
                                 ['id' => 7],
-                            ]
+                            ],
                         ],
                     ],
                 ],
@@ -196,7 +203,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
                     ['id' => 5],
                     ['id' => 6],
                     ['id' => 7],
-                ]
+                ],
             ],
             'no total count' => [
                 'clientExpectations' => [
@@ -210,7 +217,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
                                 ['id' => 2],
                                 ['id' => 3],
                                 ['id' => 4],
-                            ]
+                            ],
                         ],
                     ],
                     [
@@ -218,16 +225,16 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
                         'response' => [
                             'next_page' => null,
                             'previous_page' => 'http://test.zendesk.com/api/v2/' . self::RESOURCE . '.json?page=2',
-                            'results' => []
+                            'results' => [],
                         ],
-                    ]
+                    ],
                 ],
                 'expectedItems' => [
                     ['id' => 1],
                     ['id' => 2],
                     ['id' => 3],
                     ['id' => 4],
-                ]
+                ],
             ],
             'empty results' => [
                 'clientExpectations' => [
@@ -236,35 +243,38 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
                         'response' => [
                             'next_page' => null,
                             'previous_page' => null,
-                            'results' => []
+                            'results' => [],
                         ],
-                    ]
+                    ],
                 ],
-                'expectedItems' => []
+                'expectedItems' => [],
             ],
             'empty response' => [
                 'clientExpectations' => [
                     [
                         'request' => [self::RESOURCE, self::PARAMS],
                         'response' => [],
-                    ]
+                    ],
                 ],
-                'expectedItems' => []
+                'expectedItems' => [],
             ],
         ];
     }
 
     /**
      * @dataProvider countDataProvider
+     *
+     * @param array $response
+     * @param int $expectedCount
      */
-    public function testCount(array $response, $expectedCount)
+    public function testCount(array $response, int $expectedCount): void
     {
-        $this->client->expects($this->once())
+        $this->client->expects(self::once())
             ->method('getJSON')
             ->with(self::RESOURCE, self::PARAMS)
             ->willReturn($response);
 
-        $this->assertEquals($expectedCount, $this->iterator->count());
+        self::assertEquals($expectedCount, $this->iterator->count());
     }
 
     public function countDataProvider(): array
@@ -279,9 +289,9 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
                         ['id' => 1],
                         ['id' => 2],
                         ['id' => 3],
-                    ]
+                    ],
                 ],
-                'expectedCount' => 1777
+                'expectedCount' => 1777,
             ],
             'empty count' => [
                 'response' => [
@@ -291,17 +301,17 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
                         ['id' => 1],
                         ['id' => 2],
                         ['id' => 3],
-                    ]
+                    ],
                 ],
-                'expectedCount' => 3
+                'expectedCount' => 3,
             ],
             'empty response' => [
                 'response' => [
                     'next_page' => null,
                     'previous_page' => 'http://test.zendesk.com/api/v2/' . self::RESOURCE . '.json?page=1',
-                    'results' => []
+                    'results' => [],
                 ],
-                'expectedCount' => 0
+                'expectedCount' => 0,
             ],
         ];
     }
