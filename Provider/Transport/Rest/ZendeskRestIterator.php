@@ -4,57 +4,31 @@ namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\AbstractRestIterator;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
 
 /**
- * Data iterator for the zendesk intergation.
+ * Data iterator for the zendesk integration.
  */
 class ZendeskRestIterator extends AbstractRestIterator
 {
-    /**
-     * @var string
-     */
-    protected $resource;
+    protected string $resource;
 
-    /**
-     * @var array
-     */
-    protected $params;
+    protected array $params;
 
-    /**
-     * @var string
-     */
-    protected $dataKeyName;
+    protected string $dataKeyName;
 
-    /**
-     * @var string|null
-     */
-    protected $nextPageUrl;
+    protected ?string $nextPageUrl = null;
 
-    /**
-     * @var SerializerInterface
-     */
-    protected $serializer;
+    protected ?ContextAwareDenormalizerInterface $denormalizer = null;
 
-    /**
-     * @var string
-     */
-    protected $itemType;
+    protected string $itemType = '';
 
-    /**
-     * @var array
-     */
-    protected $deserializeContext;
+    protected array $denormalizeContext = [];
 
-    /**
-     * @param RestClientInterface $client
-     * @param string $resource
-     * @param string $dataKeyName
-     * @param array $params
-     */
-    public function __construct(RestClientInterface $client, $resource, $dataKeyName, array $params = [])
+    public function __construct(RestClientInterface $client, string $resource, string $dataKeyName, array $params = [])
     {
         parent::__construct($client);
+
         $this->resource = $resource;
         $this->dataKeyName = $dataKeyName;
         $this->params = $params;
@@ -89,9 +63,9 @@ class ZendeskRestIterator extends AbstractRestIterator
     {
         if (isset($data[$this->dataKeyName]) && is_array($data[$this->dataKeyName])) {
             return $data[$this->dataKeyName];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -101,9 +75,9 @@ class ZendeskRestIterator extends AbstractRestIterator
     {
         if (isset($data['count'])) {
             return (int)$data['count'];
-        } else {
-            return $previousValue;
         }
+
+        return $previousValue;
     }
 
     /**
@@ -113,22 +87,20 @@ class ZendeskRestIterator extends AbstractRestIterator
     {
         $result = parent::current();
 
-        if ($result !== null && $this->serializer) {
-            $result = $this->serializer->deserialize($result, $this->itemType, '', $this->deserializeContext);
+        if ($result !== null && $this->denormalizer) {
+            $result = $this->denormalizer->denormalize($result, $this->itemType, '', $this->denormalizeContext);
         }
 
         return $result;
     }
 
-    /**
-     * @param SerializerInterface $serializer
-     * @param string $type
-     * @param array $context
-     */
-    public function setupDeserialization(SerializerInterface $serializer, $type, array $context = [])
-    {
-        $this->serializer = $serializer;
+    public function setupDenormalization(
+        ContextAwareDenormalizerInterface $denormalizer,
+        string $type,
+        array $context = []
+    ): void {
+        $this->denormalizer = $denormalizer;
         $this->itemType = $type;
-        $this->deserializeContext = $context;
+        $this->denormalizeContext = $context;
     }
 }

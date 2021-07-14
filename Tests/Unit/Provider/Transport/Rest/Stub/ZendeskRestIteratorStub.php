@@ -5,7 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest\Stub;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestIterator;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
 
 class ZendeskRestIteratorStub extends ZendeskRestIterator
 {
@@ -29,9 +29,9 @@ class ZendeskRestIteratorStub extends ZendeskRestIterator
         return $this->dataKeyName;
     }
 
-    public function xgetSerializer(): SerializerInterface
+    public function xgetDenormalizer(): ContextAwareDenormalizerInterface
     {
-        return $this->serializer;
+        return $this->denormalizer;
     }
 
     public function xgetItemType(): string
@@ -39,8 +39,8 @@ class ZendeskRestIteratorStub extends ZendeskRestIterator
         return $this->itemType;
     }
 
-    public function xgetDeserializeContext(): array
+    public function xgetDenormalizeContext(): array
     {
-        return $this->deserializeContext;
+        return $this->denormalizeContext;
     }
 }

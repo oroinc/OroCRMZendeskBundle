@@ -9,46 +9,55 @@ use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestResponseInterface;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport as ZendeskTransportSettingsEntity;
+use Oro\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\RestException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestIterator;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport;
 use Oro\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest\Stub\ZendeskRestIteratorStub;
-use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 {
-    const TICKET_TYPE = Ticket::class;
-    const COMMENT_TYPE = TicketComment::class;
-    const USER_TYPE = User::class;
+    private const API_URL_PREFIX = 'api/v2';
+    private const COMMENT_EVENT_TYPE = 'Comment';
 
-    /** @var MockObject */
-    protected $clientFactory;
+    private const TICKET_TYPE = Ticket::class;
+    private const COMMENT_TYPE = TicketComment::class;
+    private const USER_TYPE = User::class;
 
-    /** @var MockObject */
-    protected $client;
+    private RestClientFactoryInterface|\PHPUnit\Framework\MockObject\MockObject $clientFactory;
 
-    /** @var MockObject */
-    protected $serializer;
+    private RestClientInterface|\PHPUnit\Framework\MockObject\MockObject $client;
 
-    /** @var ZendeskRestTransport */
-    protected $transport;
+    private ContextAwareNormalizerInterface|\PHPUnit\Framework\MockObject\MockObject $normalizer;
+
+    private ContextAwareDenormalizerInterface|\PHPUnit\Framework\MockObject\MockObject $denormalizer;
+
+    private ZendeskRestTransport $transport;
 
     protected function setUp(): void
     {
         $this->client = $this->createMock(RestClientInterface::class);
         $this->clientFactory = $this->createMock(RestClientFactoryInterface::class);
-        $this->serializer = $this->createMock(SerializerInterface::class);
-        $this->transport = new ZendeskRestTransport($this->serializer, ZendeskRestIteratorStub::class);
+        $this->normalizer = $this->createMock(ContextAwareNormalizerInterface::class);
+        $this->denormalizer = $this->createMock(ContextAwareDenormalizerInterface::class);
+
+        $this->transport = new ZendeskRestTransport(
+            $this->normalizer,
+            $this->denormalizer,
+            ZendeskRestIteratorStub::class
+        );
         $this->transport->setRestClientFactory($this->clientFactory);
     }
 
-    public function testGetUsersWorks()
+    public function testGetUsersWorks(): void
     {
         $this->initTransport();
 
@@ -62,12 +71,12 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         static::assertEquals('results', $result->xgetDataKeyName());
 
         $params = $result->xgetParams();
-        $query = isset($params['query']) ? $params['query'] : '';
+        $query = $params['query'] ?? '';
         static::assertStringContainsString('type:user created<=', $query);
         $this->checkThatSearchQueryContainDateInCorrectFormat($query);
     }
 
-    public function testGetUsersWorksWithLastUpdatedAt()
+    public function testGetUsersWorksWithLastUpdatedAt(): void
     {
         $this->initTransport();
         $datetime = '2017-07-05T21:35:36+000';
@@ -79,13 +88,13 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
             [
                 'query' => 'type:user updated>=2017-07-05T21:35:36+0000',
                 'sort_by' => 'created_at',
-                'sort_order' => 'asc'
+                'sort_order' => 'asc',
             ],
             $result->xgetParams()
         );
     }
 
-    public function testGetTicketsWorks()
+    public function testGetTicketsWorks(): void
     {
         $this->initTransport();
 
@@ -99,32 +108,32 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         static::assertEquals('results', $result->xgetDataKeyName());
 
         $params = $result->xgetParams();
-        $query = isset($params['query']) ? $params['query'] : '';
+        $query = $params['query'] ?? '';
         static::assertStringContainsString('type:ticket created<=', $query);
         $this->checkThatSearchQueryContainDateInCorrectFormat($query);
 
-        static::assertEquals($this->serializer, $result->xgetSerializer());
+        static::assertEquals($this->denormalizer, $result->xgetDenormalizer());
         static::assertEquals(Ticket::class, $result->xgetItemType());
     }
 
-    public function testGetTicketsWorksWithLastUpdatedAt()
+    public function testGetTicketsWorksWithLastUpdatedAt(): void
     {
         $this->initTransport();
         $datetime = '2014-06-27T01:08:00+0000';
 
         /** @var ZendeskRestIteratorStub $result */
-        $result = $this->transport->getTickets(new \DateTime($datetime), new \DateTimeZone('UTC'));
+        $result = $this->transport->getTickets(new \DateTime($datetime, new \DateTimeZone('UTC')));
         static::assertEquals(
             [
                 'query' => 'type:ticket updated>=2014-06-27T01:08:00+0000',
                 'sort_by' => 'created_at',
-                'sort_order' => 'asc'
+                'sort_order' => 'asc',
             ],
             $result->xgetParams()
         );
     }
 
-    public function testGetTicketCommentsWorks()
+    public function testGetTicketCommentsWorks(): void
     {
         $ticketId = 1;
         $this->initTransport();
@@ -138,12 +147,12 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         static::assertEquals('tickets/1/comments.json', $result->xgetResource());
         static::assertEquals('comments', $result->xgetDataKeyName());
         static::assertEquals([], $result->xgetParams());
-        static::assertEquals($this->serializer, $result->xgetSerializer());
+        static::assertEquals($this->denormalizer, $result->xgetDenormalizer());
         static::assertEquals(TicketComment::class, $result->xgetItemType());
-        static::assertEquals(['ticket_id' => $ticketId], $result->xgetDeserializeContext());
+        static::assertEquals(['ticket_id' => $ticketId], $result->xgetDenormalizeContext());
     }
 
-    public function testGetTicketCommentsHandlesEmptyTicketId()
+    public function testGetTicketCommentsHandlesEmptyTicketId(): void
     {
         $ticketId = null;
         $this->initTransport();
@@ -153,33 +162,34 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider createUserProvider
+     *
+     * @param object $data
+     * @param array $expectedNormalizeValueMap
+     * @param array $expectedDenormalizeValueMap
+     * @param array $expectedRequest
+     * @param array $expectedResponse
+     * @param array|null $expectedException
+     * @param User|null $expectedResult
+     *
+     * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */
     public function testCreateUserWorks(
-        $data,
-        $expectedSerializeValueMap,
-        $expectedDeserializeValueMap,
-        $expectedRequest,
-        $expectedResponse,
-        $expectedException,
-        $expectedResult = null
-    ) {
+        object $data,
+        array $expectedNormalizeValueMap,
+        array $expectedDenormalizeValueMap,
+        array $expectedRequest,
+        array $expectedResponse,
+        ?array $expectedException,
+        ?User $expectedResult = null
+    ): void {
         $this->initTransport();
 
-        if ($expectedSerializeValueMap) {
-            $this->serializer->expects($this->exactly(count($expectedSerializeValueMap)))
-                ->method('serialize')
-                ->willReturnMap($expectedSerializeValueMap);
-        }
-
-        if ($expectedDeserializeValueMap) {
-            $this->serializer->expects($this->exactly(count($expectedDeserializeValueMap)))
-                ->method('deserialize')
-                ->willReturnMap($expectedDeserializeValueMap);
-        }
+        $this->mockNormalizer($expectedNormalizeValueMap);
+        $this->mockDenormalizer($expectedDenormalizeValueMap);
 
         $response = $this->getMockResponse($expectedResponse);
 
-        $this->client->expects($this->once())
+        $this->client->expects(self::once())
             ->method('post')
             ->with($expectedRequest['resource'], $expectedRequest['data'])
             ->willReturn($response);
@@ -195,21 +205,21 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function createUserProvider()
+    public function createUserProvider(): array
     {
         return [
             'Create user OK' => [
                 'data' => $user = $this->createUser()->setName('John Doe'),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [$user, null, [], $userData = ['name' => 'John Doe']],
                 ],
-                'expectedDeserializeValueMap' => [
+                'expectedDenormalizeValueMap' => [
                     [
                         $createdUserData = ['id' => 1, 'name' => 'Foo'],
                         self::USER_TYPE,
-                        '',
+                        null,
                         [],
-                        $createdUser = $this->createUser()->setOriginId(1)->setName('John Doe')
+                        $createdUser = $this->createUser()->setOriginId(1)->setName('John Doe'),
                     ],
                 ],
                 'expectedRequest' => [
@@ -225,10 +235,10 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
             ],
             "Can't get user data from response" => [
                 'data' => $user = $this->createUser()->setName('John Doe'),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [$user, null, [], $userData = ['name' => 'John Doe']],
                 ],
-                'expectedDeserializeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'users.json',
                     'data' => ['user' => $userData],
@@ -239,15 +249,15 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                 ],
                 'expectedException' => [
                     'class' => RestException::class,
-                    'message' => "Unsuccessful response: Can't get user data from response."
-                ]
+                    'message' => "Unsuccessful response: Can't get user data from response.",
+                ],
             ],
             "Can't parse create user response" => [
                 'data' => $user = $this->createUser()->setName('John Doe'),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [$user, null, [], $userData = ['name' => 'John Doe']],
                 ],
-                'expectedDeserializeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'users.json',
                     'data' => ['user' => $userData],
@@ -258,15 +268,15 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                 ],
                 'expectedException' => [
                     'class' => RestException::class,
-                    'message' => "Unsuccessful response: Can't parse create user response."
-                ]
+                    'message' => "Unsuccessful response: Can't parse create user response.",
+                ],
             ],
             'Validation errors' => [
                 'data' => $user = $this->createUser()->setName('John Doe'),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [$user, null, [], $userData = ['name' => 'John Doe']],
                 ],
-                'expectedDeserializeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'users.json',
                     'data' => ['user' => $userData],
@@ -277,51 +287,52 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                     'jsonData' => [
                         'details' => [
                             'email' => [
-                                ['description' => "Email: can't be empty"]
-                            ]
+                                ['description' => "Email: can't be empty"],
+                            ],
                         ],
-                        'description' => 'Validation errors'
+                        'description' => 'Validation errors',
                     ],
                 ],
                 'expectedException' => [
                     'class' =>
                         InvalidRecordException::class,
                     'message' => "Can't create user." . PHP_EOL . 'Validation errors:' . PHP_EOL
-                        . "[email] Email: can't be empty"
-                ]
+                        . "[email] Email: can't be empty",
+                ],
             ],
         ];
     }
 
     /**
      * @dataProvider createTicketProvider
+     *
+     * @param object $data
+     * @param array $expectedNormalizeValueMap
+     * @param array $expectedDenormalizeValueMap
+     * @param array $expectedRequest
+     * @param array $expectedResponse
+     * @param array|null $expectedException
+     * @param array|null $expectedResult
+     *
+     * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */
     public function testCreateTicketWorks(
-        $data,
-        $expectedSerializeValueMap,
-        $expectedDeserializeValueMap,
-        $expectedRequest,
-        $expectedResponse,
-        $expectedException,
-        $expectedResult = null
-    ) {
+        object $data,
+        array $expectedNormalizeValueMap,
+        array $expectedDenormalizeValueMap,
+        array $expectedRequest,
+        array $expectedResponse,
+        ?array $expectedException,
+        ?array $expectedResult = null
+    ): void {
         $this->initTransport();
 
-        if ($expectedSerializeValueMap) {
-            $this->serializer->expects($this->exactly(count($expectedSerializeValueMap)))
-                ->method('serialize')
-                ->willReturnMap($expectedSerializeValueMap);
-        }
-
-        if ($expectedDeserializeValueMap) {
-            $this->serializer->expects($this->exactly(count($expectedDeserializeValueMap)))
-                ->method('deserialize')
-                ->willReturnMap($expectedDeserializeValueMap);
-        }
+        $this->mockNormalizer($expectedNormalizeValueMap);
+        $this->mockDenormalizer($expectedDenormalizeValueMap);
 
         $response = $this->getMockResponse($expectedResponse);
 
-        $this->client->expects($this->once())
+        $this->client->expects(self::once())
             ->method('post')
             ->with($expectedRequest['resource'], $expectedRequest['data'])
             ->willReturn($response);
@@ -340,47 +351,47 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function createTicketProvider()
+    public function createTicketProvider(): array
     {
         return [
             'Create ticket with comment OK' => [
                 'data' => $ticket = $this->createTicket()->setSubject('My printer is on fire!'),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [
                         $ticket,
                         null,
                         [],
                         $ticketData = [
                             'subject' => 'My printer is on fire!',
-                            'comment' => ['body' => 'The smoke is very colorful!']
-                        ]
-                    ]
+                            'comment' => ['body' => 'The smoke is very colorful!'],
+                        ],
+                    ],
                 ],
-                'expectedDeserializeValueMap' => [
+                'expectedDenormalizeValueMap' => [
                     [
                         $createdTicketData = [
                             'id' => 1,
                             'subject' => 'My printer is on fire!',
-                            'description' => 'The smoke is very colorful!'
+                            'description' => 'The smoke is very colorful!',
                         ],
                         self::TICKET_TYPE,
-                        '',
+                        null,
                         [],
-                        $createdTicket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!')
+                        $createdTicket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!'),
                     ],
                     [
                         $createdCommentData = ['id' => 2, 'body' => 'The smoke is very colorful!'],
                         self::COMMENT_TYPE,
-                        '',
+                        null,
                         [],
                         $createdComment = $this->createComment()->setOriginId(1)
-                            ->setBody('The smoke is very colorful')
-                    ]
+                            ->setBody('The smoke is very colorful'),
+                    ],
                 ],
                 'expectedRequest' => [
                     'resource' => 'tickets.json',
                     'data' => [
-                        'ticket' => $ticketData
+                        'ticket' => $ticketData,
                     ],
                 ],
                 'expectedResponse' => [
@@ -389,42 +400,42 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                         'ticket' => $createdTicketData,
                         'audit' => [
                             'events' => [
-                                array_merge($createdCommentData, ['type' => ZendeskRestTransport::COMMENT_EVENT_TYPE])
-                            ]
-                        ]
-                    ]
+                                array_merge($createdCommentData, ['type' => self::COMMENT_EVENT_TYPE]),
+                            ],
+                        ],
+                    ],
                 ],
                 'expectedException' => null,
                 'expectedResult' => [
                     'ticket' => $createdTicket,
                     'comment' => $createdComment,
-                ]
+                ],
             ],
             'Create ticket with empty comment OK' => [
                 'data' => $ticket = $this->createTicket()->setSubject('My printer is on fire!'),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [
                         $ticket,
                         null,
                         [],
                         $ticketData = [
                             'subject' => 'My printer is on fire!',
-                            'comment' => ['body' => 'The smoke is very colorful!']
-                        ]
-                    ]
+                            'comment' => ['body' => 'The smoke is very colorful!'],
+                        ],
+                    ],
                 ],
-                'expectedDeserializeValueMap' => [
+                'expectedDenormalizeValueMap' => [
                     [
                         $createdTicketData = [
                             'id' => 1,
                             'subject' => 'My printer is on fire!',
-                            'description' => 'The smoke is very colorful!'
+                            'description' => 'The smoke is very colorful!',
                         ],
                         self::TICKET_TYPE,
-                        '',
+                        null,
                         [],
-                        $createdTicket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!')
-                    ]
+                        $createdTicket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!'),
+                    ],
                 ],
                 'expectedRequest' => [
                     'resource' => 'tickets.json',
@@ -438,14 +449,14 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                 'expectedResult' => [
                     'ticket' => $createdTicket,
                     'comment' => null,
-                ]
+                ],
             ],
             "Can't get ticket data from response" => [
                 'data' => $ticket = $this->createTicket()->setSubject('My printer is on fire!'),
-                'expectedSerializeValueMap' => [
-                    [$ticket, null, [], $ticketData = ['subject' => 'My printer is on fire!']]
+                'expectedNormalizeValueMap' => [
+                    [$ticket, null, [], $ticketData = ['subject' => 'My printer is on fire!']],
                 ],
-                'expectedDeserializeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'tickets.json',
                     'data' => ['ticket' => $ticketData],
@@ -456,15 +467,15 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                 ],
                 'expectedException' => [
                     'class' => RestException::class,
-                    'message' => "Unsuccessful response: Can't get ticket data from response."
-                ]
+                    'message' => "Unsuccessful response: Can't get ticket data from response.",
+                ],
             ],
             "Can't parse create ticket response" => [
                 'data' => $ticket = $this->createTicket()->setSubject('My printer is on fire!'),
-                'expectedSerializeValueMap' => [
-                    [$ticket, null, [], $ticketData = ['subject' => 'My printer is on fire!']]
+                'expectedNormalizeValueMap' => [
+                    [$ticket, null, [], $ticketData = ['subject' => 'My printer is on fire!']],
                 ],
-                'expectedDeserializeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'tickets.json',
                     'data' => ['ticket' => $ticketData],
@@ -475,15 +486,15 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                 ],
                 'expectedException' => [
                     'class' => RestException::class,
-                    'message' => "Unsuccessful response: Can't parse create ticket response."
-                ]
+                    'message' => "Unsuccessful response: Can't parse create ticket response.",
+                ],
             ],
             'Validation errors' => [
                 'data' => $ticket = $this->createTicket()->setSubject('My printer is on fire!'),
-                'expectedSerializeValueMap' => [
-                    [$ticket, null, [], $ticketData = ['subject' => 'My printer is on fire!']]
+                'expectedNormalizeValueMap' => [
+                    [$ticket, null, [], $ticketData = ['subject' => 'My printer is on fire!']],
                 ],
-                'expectedDeserializeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'tickets.json',
                     'data' => ['ticket' => $ticketData],
@@ -494,56 +505,57 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                     'jsonData' => [
                         'details' => [
                             'author_id' => [
-                                ['description' => "Author: can't be empty"]
-                            ]
+                                ['description' => "Author: can't be empty"],
+                            ],
                         ],
-                        'description' => 'Validation errors'
+                        'description' => 'Validation errors',
                     ],
                 ],
                 'expectedException' => [
                     'class' =>
                         InvalidRecordException::class,
                     'message' => "Can't create ticket." . PHP_EOL . 'Validation errors:' . PHP_EOL
-                        . "[author_id] Author: can't be empty"
-                ]
+                        . "[author_id] Author: can't be empty",
+                ],
             ],
         ];
     }
 
     /**
      * @dataProvider updateTicketProvider
+     *
+     * @param object $data
+     * @param array $expectedNormalizeValueMap
+     * @param array $expectedDenormalizeValueMap
+     * @param array|null $expectedRequest
+     * @param array|null $expectedResponse
+     * @param array|null $expectedException
+     * @param Ticket|null $expectedResult
+     *
+     * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */
     public function testUpdateTicketWorks(
-        $data,
-        $expectedSerializeValueMap,
-        $expectedDeserializeValueMap,
-        $expectedRequest,
-        $expectedResponse,
-        $expectedException,
-        $expectedResult = null
-    ) {
+        object $data,
+        array $expectedNormalizeValueMap,
+        array $expectedDenormalizeValueMap,
+        ?array $expectedRequest,
+        ?array $expectedResponse,
+        ?array $expectedException,
+        ?Ticket $expectedResult = null
+    ): void {
         $this->initTransport();
 
         $response = null;
 
-        if ($expectedSerializeValueMap) {
-            $this->serializer->expects($this->exactly(count($expectedSerializeValueMap)))
-                ->method('serialize')
-                ->willReturnMap($expectedSerializeValueMap);
-        }
-
-        if ($expectedDeserializeValueMap) {
-            $this->serializer->expects($this->exactly(count($expectedDeserializeValueMap)))
-                ->method('deserialize')
-                ->willReturnMap($expectedDeserializeValueMap);
-        }
+        $this->mockNormalizer($expectedNormalizeValueMap);
+        $this->mockDenormalizer($expectedDenormalizeValueMap);
 
         if ($expectedResponse) {
             $response = $this->getMockResponse($expectedResponse);
         }
 
         if ($expectedRequest && $response) {
-            $this->client->expects($this->once())
+            $this->client->expects(self::once())
                 ->method('put')
                 ->with($expectedRequest['resource'], $expectedRequest['data'])
                 ->willReturn($response);
@@ -563,30 +575,30 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function updateTicketProvider()
+    public function updateTicketProvider(): array
     {
         return [
             'Update ticket OK' => [
                 'data' => $ticket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!'),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [
                         $ticket,
                         null,
                         [],
-                        $ticketData = ['subject' => 'My printer is on fire!']
-                    ]
+                        $ticketData = ['subject' => 'My printer is on fire!'],
+                    ],
                 ],
-                'expectedDeserializeValueMap' => [
+                'expectedDenormalizeValueMap' => [
                     [
                         $updatedTicketData = [
                             'id' => 1,
                             'subject' => 'UPDATED',
                         ],
                         self::TICKET_TYPE,
-                        '',
+                        null,
                         [],
-                        $updatedTicket = $this->createTicket()->setOriginId(1)->setSubject('UPDATED')
-                    ]
+                        $updatedTicket = $this->createTicket()->setOriginId(1)->setSubject('UPDATED'),
+                    ],
                 ],
                 'expectedRequest' => [
                     'resource' => 'tickets/1.json',
@@ -595,34 +607,34 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                 'expectedResponse' => [
                     'statusCode' => 200,
                     'jsonData' => [
-                        'ticket' => $updatedTicketData
+                        'ticket' => $updatedTicketData,
                     ],
                 ],
                 'expectedException' => null,
-                'expectedResult' => $updatedTicket
+                'expectedResult' => $updatedTicket,
             ],
             'Data missing id' => [
-                'data' => $ticket = $this->createTicket()->setSubject('My printer is on fire!'),
-                'expectedSerializeValueMap' => [],
-                'expectedDeserializeValueMap' => [],
+                'data' => $this->createTicket()->setSubject('My printer is on fire!'),
+                'expectedNormalizeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => null,
                 'expectedResponse' => null,
                 'expectedException' => [
                     'class' => 'InvalidArgumentException',
-                    'message' => 'Ticket must have "originId" value.'
-                ]
+                    'message' => 'Ticket must have "originId" value.',
+                ],
             ],
             "Can't get ticket data from response" => [
                 'data' => $ticket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!'),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [
                         $ticket,
                         null,
                         [],
-                        $ticketData = ['subject' => 'My printer is on fire!']
-                    ]
+                        $ticketData = ['subject' => 'My printer is on fire!'],
+                    ],
                 ],
-                'expectedDeserializeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'tickets/1.json',
                     'data' => ['ticket' => $ticketData],
@@ -633,20 +645,20 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                 ],
                 'expectedException' => [
                     'class' => RestException::class,
-                    'message' => "Unsuccessful response: Can't get ticket data from response."
-                ]
+                    'message' => "Unsuccessful response: Can't get ticket data from response.",
+                ],
             ],
             "Can't parse update ticket response" => [
                 'data' => $ticket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!'),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [
                         $ticket,
                         null,
                         [],
-                        $ticketData = ['subject' => 'My printer is on fire!']
-                    ]
+                        $ticketData = ['subject' => 'My printer is on fire!'],
+                    ],
                 ],
-                'expectedDeserializeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'tickets/1.json',
                     'data' => ['ticket' => $ticketData],
@@ -657,20 +669,20 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                 ],
                 'expectedException' => [
                     'class' => RestException::class,
-                    'message' => "Unsuccessful response: Can't parse update ticket response."
-                ]
+                    'message' => "Unsuccessful response: Can't parse update ticket response.",
+                ],
             ],
             'Validation errors' => [
                 'data' => $ticket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!'),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [
                         $ticket,
                         null,
                         [],
-                        $ticketData = ['subject' => 'My printer is on fire!']
-                    ]
+                        $ticketData = ['subject' => 'My printer is on fire!'],
+                    ],
                 ],
-                'expectedDeserializeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'tickets/1.json',
                     'data' => ['ticket' => $ticketData],
@@ -681,61 +693,62 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                     'jsonData' => [
                         'details' => [
                             'author_id' => [
-                                ['description' => "Author: can't be empty"]
-                            ]
+                                ['description' => "Author: can't be empty"],
+                            ],
                         ],
-                        'description' => 'Validation errors'
+                        'description' => 'Validation errors',
                     ],
                 ],
                 'expectedException' => [
                     'class' =>
                         InvalidRecordException::class,
                     'message' => "Can't update ticket." . PHP_EOL . 'Validation errors:' . PHP_EOL
-                        . "[author_id] Author: can't be empty"
-                ]
+                        . "[author_id] Author: can't be empty",
+                ],
             ],
         ];
     }
 
     /**
      * @dataProvider addTicketCommentProvider
+     *
+     * @param object $data
+     * @param array $expectedNormalizeValueMap
+     * @param array $expectedDenormalizeValueMap
+     * @param array|null $expectedRequest
+     * @param array|null $expectedResponse
+     * @param array|null $expectedException
+     * @param TicketComment|array|null $expectedResult
+     *
+     * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */
     public function testAddTicketCommentWorks(
-        $data,
-        $expectedSerializeValueMap,
-        $expectedDeserializeValueMap,
-        $expectedRequest,
-        $expectedResponse,
-        $expectedException,
-        $expectedResult = null
-    ) {
+        object $data,
+        array $expectedNormalizeValueMap,
+        array $expectedDenormalizeValueMap,
+        ?array $expectedRequest,
+        ?array $expectedResponse,
+        ?array $expectedException,
+        TicketComment|array|null $expectedResult = null
+    ): void {
         $this->initTransport();
 
         $response = null;
 
-        if ($expectedSerializeValueMap) {
-            $this->serializer->expects($this->exactly(count($expectedSerializeValueMap)))
-                ->method('serialize')
-                ->willReturnMap($expectedSerializeValueMap);
-        }
-
-        if ($expectedDeserializeValueMap) {
-            $this->serializer->expects($this->exactly(count($expectedDeserializeValueMap)))
-                ->method('deserialize')
-                ->willReturnMap($expectedDeserializeValueMap);
-        }
+        $this->mockNormalizer($expectedNormalizeValueMap);
+        $this->mockDenormalizer($expectedDenormalizeValueMap);
 
         if ($expectedResponse) {
             $response = $this->getMockResponse($expectedResponse);
         }
 
         if ($expectedRequest && $response) {
-            $this->client->expects($this->once())
+            $this->client->expects(self::once())
                 ->method('put')
                 ->with($expectedRequest['resource'], $expectedRequest['data'])
                 ->willReturn($response);
 
-            $this->client->expects($this->any())
+            $this->client->expects(self::any())
                 ->method('getLastResponse')
                 ->willReturn($response);
         }
@@ -754,7 +767,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function addTicketCommentProvider()
+    public function addTicketCommentProvider(): array
     {
         return [
             'Add ticket comment OK' => [
@@ -762,25 +775,25 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                     ->setOriginId(2)
                     ->setBody('The smoke is very colorful!')
                     ->setTicket($this->createTicket()->setOriginId(1)),
-                'expectedSerializeValueMap' => [
+                'expectedNormalizeValueMap' => [
                     [
                         $comment,
                         null,
                         [],
-                        $commentData = ['body' => 'The smoke is very colorful!']
-                    ]
+                        $commentData = ['body' => 'The smoke is very colorful!'],
+                    ],
                 ],
-                'expectedDeserializeValueMap' => [
+                'expectedDenormalizeValueMap' => [
                     [
                         $updatedCommentData = [
                             'id' => 1,
                             'body' => 'UPDATED',
                         ],
                         self::COMMENT_TYPE,
-                        '',
+                        null,
                         [],
-                        $updatedComment = $this->createComment()->setOriginId(1)->setBody('UPDATED')
-                    ]
+                        $updatedComment = $this->createComment()->setOriginId(1)->setBody('UPDATED'),
+                    ],
                 ],
                 'expectedRequest' => [
                     'resource' => 'tickets/1.json',
@@ -794,39 +807,39 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                         ],
                         'audit' => [
                             'events' => [
-                                array_merge($updatedCommentData, ['type' => ZendeskRestTransport::COMMENT_EVENT_TYPE])
-                            ]
-                        ]
+                                array_merge($updatedCommentData, ['type' => self::COMMENT_EVENT_TYPE]),
+                            ],
+                        ],
                     ],
                 ],
                 'expectedException' => null,
-                'expectedResult' => $updatedComment
+                'expectedResult' => $updatedComment,
             ],
             'Data missing ticket id' => [
-                'data' => $comment = $this->createComment(),
-                'expectedSerializeValueMap' => [],
-                'expectedDeserializeValueMap' => [],
+                'data' => $this->createComment(),
+                'expectedNormalizeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => null,
                 'expectedResponse' => null,
                 'expectedException' => [
                     'class' => 'InvalidArgumentException',
-                    'message' => 'Ticket comment data must have "ticket" with "originId" value'
-                ]
+                    'message' => 'Ticket comment data must have "ticket" with "originId" value',
+                ],
             ],
             "Can't get comment data from response" => [
                 'data' => $comment = $this->createComment()
-                        ->setOriginId(2)
-                        ->setBody('The smoke is very colorful!')
-                        ->setTicket($this->createTicket()->setOriginId(1)),
-                'expectedSerializeValueMap' => [
+                    ->setOriginId(2)
+                    ->setBody('The smoke is very colorful!')
+                    ->setTicket($this->createTicket()->setOriginId(1)),
+                'expectedNormalizeValueMap' => [
                     [
                         $comment,
                         null,
                         [],
-                        $commentData = ['body' => 'The smoke is very colorful!']
-                    ]
+                        $commentData = ['body' => 'The smoke is very colorful!'],
+                    ],
                 ],
-                'expectedDeserializeValueMap' => [],
+                'expectedDenormalizeValueMap' => [],
                 'expectedRequest' => [
                     'resource' => 'tickets/1.json',
                     'data' => ['ticket' => ['comment' => $commentData]],
@@ -845,12 +858,24 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @param string $query
-     */
-    protected function checkThatSearchQueryContainDateInCorrectFormat($query)
+    public function testGetSettingsFormType(): void
     {
-        list(, $rawDateTime) = explode('=', $query);
+        self::assertSame(RestTransportSettingsFormType::class, $this->transport->getSettingsFormType());
+    }
+
+    public function testGetSettingsEntityFQCN(): void
+    {
+        self::assertSame(ZendeskTransportSettingsEntity::class, $this->transport->getSettingsEntityFQCN());
+    }
+
+    public function testGetLabel(): void
+    {
+        self::assertSame('oro.zendesk.transport.rest.label', $this->transport->getLabel());
+    }
+
+    private function checkThatSearchQueryContainDateInCorrectFormat(string $query): void
+    {
+        [, $rawDateTime] = explode('=', $query);
 
         /**
          * Check if string contains correct datetime format
@@ -859,55 +884,58 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         new \DateTime($rawDateTime);
     }
 
-    protected function initTransport()
+    private function initTransport(): void
     {
         $url = 'https://test.zendesk.com';
-        $expectedUrl = $url . '/' . ZendeskRestTransport::API_URL_PREFIX;
+        $expectedUrl = $url . '/' . self::API_URL_PREFIX;
         $email = 'admin@example.com';
         $token = 'ZsOcahXwCc6rcwLRsqQH27CPCTdpwM2FTfWHDpTBDZi4kBI5';
         $clientOptions = ['auth' => [$email . '/token', $token]];
 
-        $settings = new ParameterBag([
-            'url' => $url,
-            'email' => $email,
-            'token' => $token,
-        ]);
+        $settings = new ParameterBag(
+            [
+                'url' => $url,
+                'email' => $email,
+                'token' => $token,
+            ]
+        );
 
         $entity = $this->createMock(Transport::class);
-        $entity->expects($this->atLeastOnce())
+        $entity->expects(self::atLeastOnce())
             ->method('getSettingsBag')
             ->willReturn($settings);
-        $this->clientFactory->expects($this->once())
+        $this->clientFactory->expects(self::once())
             ->method('createRestClient')
             ->with($expectedUrl, $clientOptions)
             ->willReturn($this->client);
         $this->transport->init($entity);
     }
 
-    protected function getMockResponse(array $expectedResponseData)
-    {
+    private function getMockResponse(
+        array $expectedResponseData
+    ): RestResponseInterface|\PHPUnit\Framework\MockObject\MockObject {
         $response = $this->createMock(RestResponseInterface::class);
 
         if (isset($expectedResponseData['statusCode'])) {
-            $response->expects($this->atLeastOnce())
+            $response->expects(self::atLeastOnce())
                 ->method('getStatusCode')
                 ->willReturn($expectedResponseData['statusCode']);
         }
 
         if (isset($expectedResponseData['jsonData'])) {
-            $response->expects($this->once())
+            $response->expects(self::once())
                 ->method('json')
                 ->willReturn($expectedResponseData['jsonData']);
         }
 
         if (isset($expectedResponseData['jsonException'])) {
-            $response->expects($this->once())
+            $response->expects(self::once())
                 ->method('json')
                 ->willThrowException($expectedResponseData['jsonException']);
         }
 
         if (isset($expectedResponseData['isClientError'])) {
-            $response->expects($this->once())
+            $response->expects(self::once())
                 ->method('isClientError')
                 ->willReturn($expectedResponseData['isClientError']);
         }
@@ -915,17 +943,35 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         return $response;
     }
 
-    protected function createTicket()
+    private function mockNormalizer(array $expectedNormalizeValueMap): void
+    {
+        if ($expectedNormalizeValueMap) {
+            $this->normalizer->expects(self::exactly(count($expectedNormalizeValueMap)))
+                ->method('normalize')
+                ->willReturnMap($expectedNormalizeValueMap);
+        }
+    }
+
+    private function mockDenormalizer(array $expectedDenormalizeValueMap): void
+    {
+        if ($expectedDenormalizeValueMap) {
+            $this->denormalizer->expects(self::exactly(count($expectedDenormalizeValueMap)))
+                ->method('denormalize')
+                ->willReturnMap($expectedDenormalizeValueMap);
+        }
+    }
+
+    private function createTicket(): Ticket
     {
         return new Ticket();
     }
 
-    protected function createComment()
+    private function createComment(): TicketComment
     {
         return new TicketComment();
     }
 
-    protected function createUser()
+    private function createUser(): User
     {
         return new User();
     }
