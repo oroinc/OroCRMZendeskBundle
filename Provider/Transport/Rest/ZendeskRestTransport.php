@@ -7,6 +7,7 @@ use Oro\Bundle\IntegrationBundle\Provider\Rest\Transport\AbstractRestTransport;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport as ZendeskTransportSettingsEntity;
 use Oro\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\RestException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
@@ -15,6 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Contains methods for getting and creating tickets, users, ticket comments
+ *
  * @link http://developer.zendesk.com/documentation/rest_api/introduction.html
  */
 class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTransportInterface
@@ -71,11 +73,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             'comments'
         );
 
-        $result->setupDeserialization(
-            $this->serializer,
-            'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
-            ['ticket_id' => $ticketId]
-        );
+        $result->setupDeserialization($this->serializer, TicketComment::class, ['ticket_id' => $ticketId]);
 
         return $result;
     }
@@ -86,13 +84,9 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      */
     public function createUser(User $user)
     {
-        $userData = $this->serializer->serialize($user, null);
+        $userData = $this->normalize($user);
 
-        return $this->serializer->deserialize(
-            $this->createEntity('users.json', 'user', $userData),
-            'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
-            ''
-        );
+        return $this->denormalize($this->createEntity('users.json', 'user', $userData), User::class);
     }
 
     /**
@@ -101,27 +95,18 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      */
     public function createTicket(Ticket $ticket)
     {
-        $ticketData = $this->serializer->serialize($ticket, null);
+        $ticketData = $this->normalize($ticket);
 
         $responseData = [];
         $ticketData = $this->createEntity('tickets.json', 'ticket', $ticketData, $responseData);
         $commentData = $this->getCommentFromTicketResponse($responseData);
 
-        $resultTicket = $this->serializer->deserialize(
-            $ticketData,
-            'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-            ''
-        );
+        $resultTicket = $this->denormalize($ticketData, Ticket::class);
 
-        $resultComment  = null;
+        $resultComment = null;
         if ($commentData) {
-            $resultComment = $this->serializer->deserialize(
-                $commentData,
-                'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
-                ''
-            );
+            $resultComment = $this->denormalize($commentData, TicketComment::class);
         }
-
 
         return [
             'ticket' => $resultTicket,
@@ -152,13 +137,9 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             throw RestException::createFromResponse($response, 'Can\'t parse get ticket response.', $exception);
         }
 
-        $ticketData = isset($responseData['ticket']) ? $responseData['ticket'] : null;
+        $ticketData = $responseData['ticket'] ?? null;
 
-        return $this->serializer->deserialize(
-            $ticketData,
-            'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-            ''
-        );
+        return $this->denormalize($ticketData, Ticket::class);
     }
 
     /**
@@ -170,16 +151,12 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         if (!$ticket->getOriginId()) {
             throw new \InvalidArgumentException('Ticket must have "originId" value.');
         }
-        $id = $ticket->getOriginId();
 
-        $ticketData = $this->serializer->serialize($ticket, null);
+        $id = $ticket->getOriginId();
+        $ticketData = $this->normalize($ticket);
         $updatedTicketData = $this->updateEntity(sprintf('tickets/%d.json', $id), 'ticket', $ticketData);
 
-        return $this->serializer->deserialize(
-            $updatedTicketData,
-            'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-            ''
-        );
+        return $this->denormalize($updatedTicketData, Ticket::class);
     }
 
     /**
@@ -193,8 +170,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         }
         $ticketId = $comment->getTicket()->getOriginId();
 
-        $commentData = $this->serializer->serialize($comment, null);
-
+        $commentData = $this->normalize($comment);
         $ticketData = ['comment' => $commentData];
         $this->updateEntity(sprintf('tickets/%d.json', $ticketId), 'ticket', $ticketData, $responseData);
         $createdTicketData = $this->getCommentFromTicketResponse($responseData);
@@ -206,15 +182,11 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             );
         }
 
-        return $this->serializer->deserialize(
-            $createdTicketData,
-            'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment',
-            ''
-        );
+        return $this->denormalize($createdTicketData, TicketComment::class);
     }
 
     /**
-     * @param string         $classType
+     * @param string $classType
      * @param \DateTime|null $lastUpdatedAt
      *
      * @return ZendeskRestIterator
@@ -244,12 +216,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             );
         }
 
-        $requestParams = array_merge(
-            [
-                'query' => $query
-            ],
-            $this->getSortingParams()
-        );
+        $requestParams = array_merge(['query' => $query], $this->getSortingParams());
 
         $result = new $this->resultIteratorClass(
             $this->getClient(),
@@ -271,7 +238,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     protected function getSortingParams()
     {
         return [
-            'sort_by'    => 'created_at',
+            'sort_by' => 'created_at',
             'sort_order' => 'asc',
         ];
     }
@@ -291,6 +258,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         }
 
         $todayDateTime = new \DateTime('now', new \DateTimeZone('UTC'));
+
         return sprintf('created<=%s', $todayDateTime->format(\DateTime::ISO8601));
     }
 
@@ -304,7 +272,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
 
         if (isset($responseData['audit']['events']) && is_array($responseData['audit']['events'])) {
             foreach ($responseData['audit']['events'] as $event) {
-                if (isset($event['type']) && $event['type'] == static::COMMENT_EVENT_TYPE) {
+                if (isset($event['type']) && $event['type'] === static::COMMENT_EVENT_TYPE) {
                     $result = $event;
                     unset($result['type']);
                     break;
@@ -319,7 +287,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      * @param string $resource
      * @param string $name "ticket" or "user"
      * @param array $entityData
-     * @param array $responseData
+     * @param array|null $responseData
      * @return array
      * @throws RestException
      */
@@ -362,7 +330,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      * @param string $resource
      * @param string $name "ticket" or "user"
      * @param array $entityData
-     * @param array $responseData
+     * @param array|null $responseData
      * @return array
      * @throws RestException
      */
@@ -424,7 +392,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      */
     public function getSettingsEntityFQCN()
     {
-        return 'Oro\\Bundle\\ZendeskBundle\\Entity\\ZendeskRestTransport';
+        return ZendeskTransportSettingsEntity::class;
     }
 
     /**
@@ -442,8 +410,26 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     {
         $email = $parameterBag->get('email');
         $token = $parameterBag->get('token');
-        return array(
-            'auth' => array("{$email}/token", $token)
-        );
+
+        return [
+            'auth' => ["{$email}/token", $token],
+        ];
+    }
+
+    private function normalize(object $object): array
+    {
+        $json = $this->serializer->serialize($object, 'json');
+
+        return $json ? json_decode($json, true, 512, JSON_THROW_ON_ERROR) : [];
+    }
+
+    /**
+     * @param array $data
+     * @param string $className
+     * @return array|object
+     */
+    private function denormalize(array $data, string $className)
+    {
+        return $this->serializer->deserialize($data, $className, '');
     }
 }
