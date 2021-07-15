@@ -26,7 +26,7 @@ class UserRoleNormalizerTest extends WebTestCase
     {
         $this->markTestSkipped('CRM-8206');
 
-        $actual = $this->serializer->deserialize($data, 'Oro\\Bundle\\ZendeskBundle\\Entity\\UserRole', null);
+        $actual = $this->serializer->deserialize($data, UserRole::class, '');
 
         $this->assertEquals($expected, $actual);
     }

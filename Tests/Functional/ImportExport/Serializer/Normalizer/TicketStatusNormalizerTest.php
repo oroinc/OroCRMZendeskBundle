@@ -26,7 +26,7 @@ class TicketStatusNormalizerTest extends WebTestCase
     {
         $this->markTestSkipped('CRM-8206');
 
-        $actual = $this->serializer->deserialize($data, 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketStatus', null);
+        $actual = $this->serializer->deserialize($data, TicketStatus::class, '');
 
         $this->assertEquals($expected, $actual);
     }
