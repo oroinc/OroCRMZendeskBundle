@@ -16,9 +16,6 @@ class TicketCommentExportWriter extends AbstractExportWriter
     /** @var ExceptionHandlerInterface */
     protected $exceptionHandler;
 
-    /**
-     * @param TicketCommentSyncHelper $ticketCommentHelper
-     */
     public function __construct(
         TicketCommentSyncHelper $ticketCommentHelper,
         ExceptionHandlerInterface $exceptionHandler
@@ -52,9 +49,6 @@ class TicketCommentExportWriter extends AbstractExportWriter
         $this->getLogger()->setMessagePrefix('');
     }
 
-    /**
-     * @param TicketComment $ticketComment
-     */
     protected function syncTicketCommentRelations(TicketComment $ticketComment)
     {
         if ($ticketComment->getAuthor() && !$ticketComment->getAuthor()->getOriginId()) {
@@ -68,7 +62,6 @@ class TicketCommentExportWriter extends AbstractExportWriter
     }
 
     /**
-     * @param TicketComment $ticketComment
      * @throws \Exception
      */
     protected function createTicketComment(TicketComment $ticketComment)

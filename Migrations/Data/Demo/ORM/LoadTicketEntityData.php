@@ -51,7 +51,6 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
      */
     protected $ticketOriginId = 1000000;
 
-
     /**
      * @var int
      */

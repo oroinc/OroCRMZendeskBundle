@@ -54,9 +54,6 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         self::$ticketId = $this->getReference('oro_zendesk:ticket_42')->getOriginId();
     }
 
-    /**
-     *
-     */
     public function testProcessFailsWithInvalidArgument()
     {
         $this->expectException(\Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException::class);
@@ -214,9 +211,6 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         return (new Ticket())->setOriginId($originId);
     }
 
-    /**
-     * @param array $options
-     */
     protected function setExpectedContextOptions(array $options)
     {
         $this->context->expects($this->any())

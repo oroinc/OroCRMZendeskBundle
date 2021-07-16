@@ -41,7 +41,6 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
         $this->context = $this->createMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
 
-
         $this->processor = $this->getContainer()
             ->get('oro_zendesk.importexport.processor.export_ticket_comment');
 

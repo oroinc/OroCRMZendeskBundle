@@ -21,10 +21,6 @@ class EntityMapper
     /** @var ManagerRegistry */
     protected $registry;
 
-    /**
-     * @param ManagerRegistry $registry
-     * @param array           $map
-     */
     public function __construct(ManagerRegistry $registry, array $map)
     {
         $this->registry = $registry;

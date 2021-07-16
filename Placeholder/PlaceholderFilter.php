@@ -18,10 +18,6 @@ class PlaceholderFilter
      */
     protected $zendeskProvider;
 
-    /**
-     * @param OroEntityProvider $oroProvider
-     * @param ZendeskEntityProvider $zendeskProvider
-     */
     public function __construct(OroEntityProvider $oroProvider, ZendeskEntityProvider $zendeskProvider)
     {
         $this->oroProvider = $oroProvider;

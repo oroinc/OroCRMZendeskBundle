@@ -33,9 +33,6 @@ class OroZendeskBundle implements Migration
         $table->addColumn('orocrm_zd_default_user_email', 'string', array('notnull' => false, 'length' => 100));
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createTicketCollaboratorTable(Schema $schema)
     {
         /** Generate table orocrm_zd_ticket_collaborators **/
@@ -64,9 +61,6 @@ class OroZendeskBundle implements Migration
         /** End of generate foreign keys for table orocrm_zd_ticket_collaborators **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createTicketTable(Schema $schema)
     {
         /** Generate table orocrm_zd_ticket **/
@@ -165,9 +159,6 @@ class OroZendeskBundle implements Migration
         /** End of generate foreign keys for table orocrm_zd_ticket **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createUserTable(Schema $schema)
     {
         /** Generate table orocrm_zd_user **/
@@ -234,9 +225,6 @@ class OroZendeskBundle implements Migration
         /** End of generate foreign keys for table orocrm_zd_user **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createRoleTable(Schema $schema)
     {
         /** Generate table orocrm_zd_user_role **/
@@ -263,9 +251,6 @@ class OroZendeskBundle implements Migration
         /** End of generate table orocrm_zd_user_role_trans **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createPriorityTable(Schema $schema)
     {
         /** Generate table orocrm_zd_ticket_priority **/
@@ -292,9 +277,6 @@ class OroZendeskBundle implements Migration
         /** End of generate table orocrm_zd_ticket_priority_tran **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createStatusTable(Schema $schema)
     {
         /** Generate table orocrm_zd_ticket_status **/
@@ -321,9 +303,6 @@ class OroZendeskBundle implements Migration
         /** End of generate table orocrm_zd_ticket_status_trans **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createCommentTable(Schema $schema)
     {
         /** Generate table orocrm_zd_comment **/
@@ -377,9 +356,6 @@ class OroZendeskBundle implements Migration
         /** End of generate foreign keys for table orocrm_zd_comment **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createTypeTable(Schema $schema)
     {
         /** Generate table orocrm_zd_ticket_type **/

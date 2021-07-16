@@ -22,12 +22,6 @@ abstract class AbstractZendeskConnector extends AbstractConnector
      */
     protected $transport;
 
-    /**
-     * @param SyncState                $syncState
-     * @param ContextRegistry          $contextRegistry
-     * @param LoggerStrategy           $logger
-     * @param ConnectorContextMediator $contextMediator
-     */
     public function __construct(
         SyncState $syncState,
         ContextRegistry $contextRegistry,
