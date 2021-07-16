@@ -50,14 +50,10 @@ abstract class AbstractExportProcessor implements
      */
     private $channel = null;
 
-    /**
-     * @param ContextRegistry $contextRegistry
-     */
     public function setContextRegistry(ContextRegistry $contextRegistry)
     {
         $this->contextRegistry = $contextRegistry;
     }
-
 
     /**
      * @param LoggerInterface $logger
@@ -80,17 +76,11 @@ abstract class AbstractExportProcessor implements
         return $this->logger;
     }
 
-    /**
-     * @param ZendeskEntityProvider $zendeskProvider
-     */
     public function setZendeskProvider(ZendeskEntityProvider $zendeskProvider)
     {
         $this->zendeskProvider = $zendeskProvider;
     }
 
-    /**
-     * @param ConnectorContextMediator $connectorContextMediator
-     */
     public function setConnectorContextMediator(ConnectorContextMediator $connectorContextMediator)
     {
         $this->connectorContextMediator = $connectorContextMediator;
@@ -116,9 +106,6 @@ abstract class AbstractExportProcessor implements
         $this->setImportExportContext($this->contextRegistry->getByStepExecution($stepExecution));
     }
 
-    /**
-     * @param ContextInterface $context
-     */
     public function setImportExportContext(ContextInterface $context)
     {
         $this->context = $context;

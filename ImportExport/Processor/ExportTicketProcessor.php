@@ -29,11 +29,6 @@ class ExportTicketProcessor extends AbstractExportProcessor
      */
     protected $entityMapper;
 
-    /**
-     * @param ZendeskTransportInterface $transport
-     * @param TicketSyncHelper $ticketHelper
-     * @param EntityMapper $entityMapper
-     */
     public function __construct(
         ZendeskTransportInterface $transport,
         TicketSyncHelper $ticketHelper,
@@ -135,10 +130,6 @@ class ExportTicketProcessor extends AbstractExportProcessor
         return $changeSet;
     }
 
-    /**
-     * @param ChangeSet $changeSet
-     * @param CaseEntity $case
-     */
     protected function addStatusChanges(ChangeSet $changeSet, CaseEntity $case)
     {
         $statusName = $case->getStatus()->getName();
@@ -152,10 +143,6 @@ class ExportTicketProcessor extends AbstractExportProcessor
         }
     }
 
-    /**
-     * @param ChangeSet $changeSet
-     * @param CaseEntity $case
-     */
     protected function addPriorityChanges(ChangeSet $changeSet, CaseEntity $case)
     {
         $priority = $case->getPriority();
@@ -195,10 +182,6 @@ class ExportTicketProcessor extends AbstractExportProcessor
         }
     }
 
-    /**
-     * @param ChangeSet $changeSet
-     * @param CaseEntity $case
-     */
     protected function addAssignedToChanges(ChangeSet $changeSet, CaseEntity $case)
     {
         $assignedTo = $case->getAssignedTo();
@@ -211,11 +194,6 @@ class ExportTicketProcessor extends AbstractExportProcessor
         $changeSet->add('assignee', ['value' => $assignee]);
     }
 
-    /**
-     * @param ChangeSet $changeSet
-     * @param CaseEntity $case
-     * @param Ticket $ticket
-     */
     protected function addRequesterChanges(ChangeSet $changeSet, CaseEntity $case, Ticket $ticket)
     {
         if (!$ticket->getRequester() && $case->getOwner()) {

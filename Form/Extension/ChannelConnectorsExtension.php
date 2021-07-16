@@ -23,8 +23,6 @@ class ChannelConnectorsExtension extends AbstractTypeExtension
 
     /**
      * Set all connectors to Zendesk channel
-     *
-     * @param FormEvent $event
      */
     public function onPostSubmit(FormEvent $event)
     {
@@ -39,10 +37,6 @@ class ChannelConnectorsExtension extends AbstractTypeExtension
 
     /**
      * Set all connectors disabled and checked on view
-     *
-     * @param FormView $view
-     * @param FormInterface $form
-     * @param array $options
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {

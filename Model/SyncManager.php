@@ -30,11 +30,6 @@ class SyncManager
      */
     protected $zendeskEntityProvider;
 
-    /**
-     * @param SyncScheduler         $syncScheduler
-     * @param ManagerRegistry       $registry
-     * @param ZendeskEntityProvider $zendeskEntityProvider
-     */
     public function __construct(
         SyncScheduler $syncScheduler,
         ManagerRegistry $registry,

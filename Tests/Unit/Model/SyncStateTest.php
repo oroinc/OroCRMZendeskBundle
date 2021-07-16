@@ -74,10 +74,6 @@ class SyncStateTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param array $data
-     * @param $error
-     * @param $result
-     *
      * @dataProvider getLastSyncDateProvider
      */
     public function testGetLastSyncDate(array $data, $error, $result)
@@ -125,9 +121,6 @@ class SyncStateTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @param array $data
-     */
     protected function getMockForStatusEntity(array $data)
     {
         $this->status = $this->createMock(Status::class);

@@ -23,12 +23,6 @@ class TicketSyncHelper extends AbstractSyncHelper
      */
     protected $syncStrategy = null;
 
-    /**
-     * @param ZendeskEntityProvider $zendeskProvider
-     * @param OroEntityProvider $oroEntityProvider
-     * @param CaseEntityManager $caseEntityManager
-     * @param EntityMapper $entityMapper
-     */
     public function __construct(
         ZendeskEntityProvider $zendeskProvider,
         OroEntityProvider $oroEntityProvider,
@@ -107,10 +101,6 @@ class TicketSyncHelper extends AbstractSyncHelper
         $this->refreshAssignee($ticket, $channel);
     }
 
-    /**
-     * @param Ticket $entity
-     * @param Channel $channel
-     */
     protected function refreshProblem(Ticket $entity, Channel $channel)
     {
         if ($entity->getProblem()) {
@@ -118,10 +108,6 @@ class TicketSyncHelper extends AbstractSyncHelper
         }
     }
 
-    /**
-     * @param Ticket $entity
-     * @param Channel $channel
-     */
     protected function refreshCollaborators(Ticket $entity, Channel $channel)
     {
         $collaborators = $entity->getCollaborators()->getValues();
@@ -134,10 +120,6 @@ class TicketSyncHelper extends AbstractSyncHelper
         }
     }
 
-    /**
-     * @param Ticket $entity
-     * @param Channel $channel
-     */
     protected function refreshRequester(Ticket $entity, Channel $channel)
     {
         if ($entity->getRequester()) {
@@ -145,10 +127,6 @@ class TicketSyncHelper extends AbstractSyncHelper
         }
     }
 
-    /**
-     * @param Ticket $entity
-     * @param Channel $channel
-     */
     protected function refreshSubmitter(Ticket $entity, Channel $channel)
     {
         if ($entity->getSubmitter()) {
@@ -156,10 +134,6 @@ class TicketSyncHelper extends AbstractSyncHelper
         }
     }
 
-    /**
-     * @param Ticket $entity
-     * @param Channel $channel
-     */
     protected function refreshAssignee(Ticket $entity, Channel $channel)
     {
         if ($entity->getAssignee()) {
@@ -206,11 +180,6 @@ class TicketSyncHelper extends AbstractSyncHelper
         return $changeSet;
     }
 
-    /**
-     * @param ChangeSet $changeSet
-     * @param Ticket $ticket
-     * @param Channel $channel
-     */
     protected function addCaseOwnerChanges(ChangeSet $changeSet, Ticket $ticket, Channel $channel)
     {
         if ($ticket->getSubmitter() && $ticket->getSubmitter()->getRelatedUser()) {
@@ -228,11 +197,6 @@ class TicketSyncHelper extends AbstractSyncHelper
         $changeSet->add('organization', ['value' => $this->getRefreshedChannelOrganization($channel)], 'id');
     }
 
-    /**
-     * @param ChangeSet $changeSet
-     * @param Ticket $ticket
-     * @param Channel $channel
-     */
     protected function addCaseAssignedToChanges(ChangeSet $changeSet, Ticket $ticket, Channel $channel)
     {
         if ($ticket->getAssignee() && $ticket->getAssignee()->getRelatedUser()) {
@@ -248,9 +212,6 @@ class TicketSyncHelper extends AbstractSyncHelper
     }
 
     /**
-     * @param ChangeSet $changeSet
-     * @param Ticket $ticket
-     * @param Channel $channel
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function addCaseRelatedContactChanges(ChangeSet $changeSet, Ticket $ticket, Channel $channel)
@@ -287,10 +248,6 @@ class TicketSyncHelper extends AbstractSyncHelper
             && $object->getOrganization()->getId() == $channelOrganizationId;
     }
 
-    /**
-     * @param ChangeSet $changeSet
-     * @param Ticket $ticket
-     */
     protected function addCaseStatusChanges(ChangeSet $changeSet, Ticket $ticket)
     {
         if ($ticket->getStatus()) {
@@ -308,10 +265,6 @@ class TicketSyncHelper extends AbstractSyncHelper
         }
     }
 
-    /**
-     * @param ChangeSet $changeSet
-     * @param Ticket $ticket
-     */
     protected function addCasePriorityChanges(ChangeSet $changeSet, Ticket $ticket)
     {
         if ($ticket->getPriority()) {

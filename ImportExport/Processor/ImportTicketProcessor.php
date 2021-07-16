@@ -29,11 +29,6 @@ class ImportTicketProcessor extends AbstractImportProcessor
      */
     protected $oroProvider;
 
-    /**
-     * @param TicketSyncHelper  $helper
-     * @param SyncState         $syncState
-     * @param OroEntityProvider $oroEntityProvider
-     */
     public function __construct(TicketSyncHelper $helper, SyncState $syncState, OroEntityProvider $oroEntityProvider)
     {
         $this->helper = $helper;
@@ -84,7 +79,6 @@ class ImportTicketProcessor extends AbstractImportProcessor
 
             $relatedCaseRemoteChanges = $this->helper->calculateRelatedCaseChanges($entity, $this->getChannel());
 
-
             $this->applyRemoteChanges($relatedCaseLocalChanges, $relatedCaseRemoteChanges);
 
             $this->getContext()->incrementUpdateCount();
@@ -103,9 +97,6 @@ class ImportTicketProcessor extends AbstractImportProcessor
         return $entity;
     }
 
-    /**
-     * @param CaseEntity $caseEntity
-     */
     public function updateCaseRelatedAccount(CaseEntity $caseEntity)
     {
         $contact = $caseEntity->getRelatedContact();
@@ -123,9 +114,6 @@ class ImportTicketProcessor extends AbstractImportProcessor
 
     /**
      * Apply changes depending on sync strategy.
-     *
-     * @param ChangeSet $localChanges
-     * @param ChangeSet $remoteChanges
      */
     protected function applyRemoteChanges(ChangeSet $localChanges, ChangeSet $remoteChanges)
     {

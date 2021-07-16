@@ -41,9 +41,6 @@ class OroZendeskBundleInstaller implements Installation
         $table->addColumn('orocrm_zd_default_user_email', 'string', ['notnull' => false, 'length' => 100]);
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createTicketCollaboratorTable(Schema $schema)
     {
         /** Generate table orocrm_zd_ticket_collaborators **/
@@ -72,9 +69,6 @@ class OroZendeskBundleInstaller implements Installation
         /** End of generate foreign keys for table orocrm_zd_ticket_collaborators **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createTicketTable(Schema $schema)
     {
         /** Generate table orocrm_zd_ticket **/
@@ -173,9 +167,6 @@ class OroZendeskBundleInstaller implements Installation
         /** End of generate foreign keys for table orocrm_zd_ticket **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createUserTable(Schema $schema)
     {
         /** Generate table orocrm_zd_user **/
@@ -242,9 +233,6 @@ class OroZendeskBundleInstaller implements Installation
         /** End of generate foreign keys for table orocrm_zd_user **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createRoleTable(Schema $schema)
     {
         /** Generate table orocrm_zd_user_role **/
@@ -271,9 +259,6 @@ class OroZendeskBundleInstaller implements Installation
         /** End of generate table orocrm_zd_user_role_trans **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createPriorityTable(Schema $schema)
     {
         /** Generate table orocrm_zd_ticket_priority **/
@@ -300,9 +285,6 @@ class OroZendeskBundleInstaller implements Installation
         /** End of generate table orocrm_zd_ticket_priority_tran **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createStatusTable(Schema $schema)
     {
         /** Generate table orocrm_zd_ticket_status **/
@@ -329,9 +311,6 @@ class OroZendeskBundleInstaller implements Installation
         /** End of generate table orocrm_zd_ticket_status_trans **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createCommentTable(Schema $schema)
     {
         /** Generate table orocrm_zd_comment **/
@@ -385,9 +364,6 @@ class OroZendeskBundleInstaller implements Installation
         /** End of generate foreign keys for table orocrm_zd_comment **/
     }
 
-    /**
-     * @param Schema $schema
-     */
     protected function createTypeTable(Schema $schema)
     {
         /** Generate table orocrm_zd_ticket_type **/

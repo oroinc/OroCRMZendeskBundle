@@ -23,10 +23,6 @@ class CaseEntityListener implements EventSubscriberInterface
      */
     protected $oroEntityProvider;
 
-    /**
-     * @param SyncManager       $syncManager
-     * @param OroEntityProvider $oroEntityProvider
-     */
     public function __construct(SyncManager $syncManager, OroEntityProvider $oroEntityProvider)
     {
         $this->syncManager = $syncManager;
@@ -43,9 +39,6 @@ class CaseEntityListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param FormHandlerEvent $formHandlerEvent
-     */
     public function beforeSave(FormHandlerEvent $formHandlerEvent)
     {
         $entity = $formHandlerEvent->getEntity();

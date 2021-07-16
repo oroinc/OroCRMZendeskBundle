@@ -26,10 +26,6 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
      */
     private $oroProvider;
 
-    /**
-     * @param ZendeskEntityProvider $zendeskProvider
-     * @param OroEntityProvider $oroProvider
-     */
     public function __construct(ZendeskEntityProvider $zendeskProvider, OroEntityProvider $oroProvider)
     {
         $this->zendeskProvider = $zendeskProvider;

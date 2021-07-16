@@ -221,7 +221,6 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
     }
 
     /**
-     * @param SerializerInterface $serializer
      * @throws InvalidArgumentException
      */
     public function setSerializer(SerializerInterface $serializer)

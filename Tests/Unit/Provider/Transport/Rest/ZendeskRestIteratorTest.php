@@ -63,9 +63,6 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider iteratorDataProvider
-     *
-     * @param array $clientExpectations
-     * @param array $expectedItems
      */
     public function testIteratorForeach(array $clientExpectations, array $expectedItems): void
     {
@@ -91,9 +88,6 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider iteratorDataProvider
-     *
-     * @param array $clientExpectations
-     * @param array $expectedItems
      */
     public function testIteratorWhile(array $clientExpectations, array $expectedItems): void
     {
@@ -120,9 +114,6 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider iteratorDataProvider
-     *
-     * @param array $clientExpectations
-     * @param array $expectedItems
      */
     public function testIterateTwice(array $clientExpectations, array $expectedItems): void
     {
@@ -263,9 +254,6 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider countDataProvider
-     *
-     * @param array $response
-     * @param int $expectedCount
      */
     public function testCount(array $response, int $expectedCount): void
     {

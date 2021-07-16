@@ -26,10 +26,6 @@ abstract class AbstractSyncSchedulerListener
     /** @var EntityManager */
     protected $entityManager;
 
-    /**
-     * @param TokenAccessorInterface $tokenAccessor
-     * @param ServiceLink            $schedulerServiceLink
-     */
     public function __construct(TokenAccessorInterface $tokenAccessor, ServiceLink $schedulerServiceLink)
     {
         $this->tokenAccessor = $tokenAccessor;
@@ -64,8 +60,6 @@ abstract class AbstractSyncSchedulerListener
 
     /**
      * Schedule sync for entities
-     *
-     * @param array $entities
      */
     protected function scheduleEntitiesSync(array $entities)
     {

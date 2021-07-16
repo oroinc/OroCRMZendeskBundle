@@ -13,9 +13,6 @@ class ImportTicketCommentProcessor extends AbstractImportProcessor
      */
     protected $helper;
 
-    /**
-     * @param TicketCommentSyncHelper $helper
-     */
     public function __construct(TicketCommentSyncHelper $helper)
     {
         $this->helper = $helper;

@@ -15,9 +15,6 @@ class ChannelUpdateListener implements EventSubscriberInterface
      */
     protected $syncManager;
 
-    /**
-     * @param SyncManager $syncManager
-     */
     public function __construct(SyncManager $syncManager)
     {
         $this->syncManager = $syncManager;
@@ -33,9 +30,6 @@ class ChannelUpdateListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param IntegrationUpdateEvent $event
-     */
     public function onUpdate(IntegrationUpdateEvent $event)
     {
         $channel = $event->getIntegration();
