@@ -11,10 +11,6 @@ use Oro\Bundle\ZendeskBundle\Entity\UserRole as ZendeskUserRole;
  */
 class UserSyncHelper extends AbstractSyncHelper
 {
-    /**
-     * @param User $user
-     * @param Channel $channel
-     */
     public function rememberUser(User $user, Channel $channel)
     {
         $this->zendeskProvider->rememberUser($user, $channel);
@@ -31,7 +27,6 @@ class UserSyncHelper extends AbstractSyncHelper
     {
         return $this->zendeskProvider->getUser($user, $channel);
     }
-
 
     /**
      * Finds default user
@@ -56,11 +51,6 @@ class UserSyncHelper extends AbstractSyncHelper
         );
     }
 
-
-    /**
-     * @param User $user
-     * @param Channel $channel
-     */
     public function refreshTicket(User $user, Channel $channel)
     {
         $this->refreshChannel($user, $channel);
@@ -68,7 +58,6 @@ class UserSyncHelper extends AbstractSyncHelper
     }
 
     /**
-     * @param User $entity
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function syncRelatedEntities(User $entity)

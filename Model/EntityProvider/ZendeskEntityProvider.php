@@ -28,18 +28,12 @@ class ZendeskEntityProvider
     /** @var User[] */
     private $rememberedUsers = [];
 
-    /**
-     * @param ManagerRegistry $registry
-     */
     public function __construct(ManagerRegistry $registry)
     {
         $this->registry = $registry;
     }
 
     /**
-     * @param User    $user
-     * @param Channel $channel
-     *
      * @throws \InvalidArgumentException
      */
     public function rememberUser(User $user, Channel $channel)
@@ -203,7 +197,6 @@ class ZendeskEntityProvider
             ->setName($name)
             ->setRelatedContact($contact)
             ->setRole($role);
-
 
         $user->setOriginId($rememberUserId);
         $this->rememberUser($user, $channel);

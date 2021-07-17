@@ -102,9 +102,6 @@ class InvalidRecordException extends RestException
         }
     }
 
-    /**
-     * @param array $errors
-     */
     public function setValidationErrors(array $errors)
     {
         $this->validationErrors = $errors;

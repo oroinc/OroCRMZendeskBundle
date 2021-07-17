@@ -21,8 +21,6 @@ class LoadTicketTypeData extends AbstractTranslatableEntityFixture
     );
     /**
      * Load entities to DB
-     *
-     * @param ObjectManager $manager
      */
     protected function loadEntities(ObjectManager $manager)
     {

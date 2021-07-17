@@ -16,9 +16,6 @@ class CaseCommentPublicExtension extends AbstractTypeExtension
      */
     protected $zendeskProvider;
 
-    /**
-     * @param ZendeskEntityProvider $zendeskProvider
-     */
     public function __construct(ZendeskEntityProvider $zendeskProvider)
     {
         $this->zendeskProvider = $zendeskProvider;
@@ -26,10 +23,6 @@ class CaseCommentPublicExtension extends AbstractTypeExtension
 
     /**
      * Enable public field for case comment if it's connected to Zendesk
-     *
-     * @param FormView $view
-     * @param FormInterface $form
-     * @param array $options
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {

@@ -31,11 +31,6 @@ class OroEntityProvider
      */
     protected $nameSuffixes;
 
-    /**
-     * @param ManagerRegistry $registry
-     * @param array           $namePrefixes
-     * @param array           $nameSuffixes
-     */
     public function __construct(ManagerRegistry $registry, array $namePrefixes, array $nameSuffixes)
     {
         $this->registry     = $registry;

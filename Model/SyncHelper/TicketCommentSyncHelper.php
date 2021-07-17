@@ -50,10 +50,6 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
         $this->refreshTicket($ticketComment, $channel);
     }
 
-    /**
-     * @param TicketComment $entity
-     * @param Channel $channel
-     */
     protected function refreshTicket(TicketComment $entity, Channel $channel)
     {
         if ($entity->getTicket()) {
@@ -74,9 +70,6 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
         $this->channel = null;
     }
 
-    /**
-     * @param TicketComment $entity
-     */
     protected function syncAuthor(TicketComment $entity)
     {
         if ($entity->getAuthor()) {
@@ -86,9 +79,6 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
         }
     }
 
-    /**
-     * @param TicketComment $entity
-     */
     protected function syncRelatedComment(TicketComment $entity)
     {
         $relatedComment = $entity->getRelatedComment();
@@ -99,10 +89,6 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
         $this->syncCaseCommentFields($relatedComment, $entity);
     }
 
-    /**
-     * @param CaseComment $caseComment
-     * @param TicketComment $ticketComment
-     */
     protected function syncCaseCommentFields(CaseComment $caseComment, TicketComment $ticketComment)
     {
         $caseComment->setPublic($ticketComment->getPublic());
@@ -113,10 +99,6 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
         $this->syncCaseCommentOwnerAndUser($caseComment, $ticketComment);
     }
 
-    /**
-     * @param CaseComment $caseComment
-     * @param TicketComment $ticketComment
-     */
     protected function syncCaseCommentOwnerAndUser(CaseComment $caseComment, TicketComment $ticketComment)
     {
         if ($ticketComment->getAuthor()) {

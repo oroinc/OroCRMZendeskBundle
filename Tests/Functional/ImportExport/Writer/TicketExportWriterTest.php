@@ -539,10 +539,6 @@ class TicketExportWriterTest extends WebTestCase
         $this->assertEquals($expectedIds, $actualIds);
     }
 
-    /**
-     * @param array $arguments
-     * @param array $expectedIds
-     */
     protected function assertTicketJobParameters(array $arguments, array $expectedIds)
     {
         $hasParameters = false;

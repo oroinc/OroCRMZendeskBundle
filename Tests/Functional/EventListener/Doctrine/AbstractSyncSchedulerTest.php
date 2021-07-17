@@ -9,9 +9,6 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 abstract class AbstractSyncSchedulerTest extends WebTestCase
 {
-    /**
-     * @param User $user
-     */
     protected function setSecurityContextTokenByUser(User $user)
     {
         $tokenStorage = $this->getContainer()->get('security.token_storage');

@@ -79,17 +79,11 @@ abstract class AbstractImportProcessor implements
         return $this->channel;
     }
 
-    /**
-     * @param ContextRegistry $contextRegistry
-     */
     public function setContextRegistry(ContextRegistry $contextRegistry)
     {
         $this->contextRegistry = $contextRegistry;
     }
 
-    /**
-     * @param ConnectorContextMediator $connectorContextMediator
-     */
     public function setConnectorContextMediator(ConnectorContextMediator $connectorContextMediator)
     {
         $this->connectorContextMediator = $connectorContextMediator;
@@ -103,9 +97,6 @@ abstract class AbstractImportProcessor implements
         $this->setImportExportContext($this->contextRegistry->getByStepExecution($stepExecution));
     }
 
-    /**
-     * @param ContextInterface $context
-     */
     public function setImportExportContext(ContextInterface $context)
     {
         $this->context = $context;

@@ -48,11 +48,6 @@ abstract class AbstractSyncHelper implements LoggerAwareInterface
      */
     protected $caseEntityManager;
 
-    /**
-     * @param ZendeskEntityProvider $zendeskProvider
-     * @param OroEntityProvider $oroProvider
-     * @param CaseEntityManager $caseEntityManager
-     */
     public function __construct(
         ZendeskEntityProvider $zendeskProvider,
         OroEntityProvider $oroProvider,

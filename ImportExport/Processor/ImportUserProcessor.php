@@ -13,9 +13,6 @@ class ImportUserProcessor extends AbstractImportProcessor
      */
     protected $helper;
 
-    /**
-     * @param UserSyncHelper $helper
-     */
     public function __construct(UserSyncHelper $helper)
     {
         $this->helper = $helper;

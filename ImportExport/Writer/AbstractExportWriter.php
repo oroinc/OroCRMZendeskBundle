@@ -67,40 +67,27 @@ abstract class AbstractExportWriter implements
      */
     private $context;
 
-    /**
-     * @param ManagerRegistry $registry
-     */
     public function setRegistry(ManagerRegistry $registry)
     {
         $this->registry = $registry;
     }
 
-    /**
-     * @param ZendeskTransportInterface $transport
-     */
     public function setTransport(ZendeskTransportInterface $transport)
     {
         $this->transport = $transport;
     }
 
-    /**
-     * @param UserSyncHelper $userSyncHelper
-     */
     public function setUserHelper(UserSyncHelper $userSyncHelper)
     {
         $this->userHelper = $userSyncHelper;
     }
 
-    /**
-     * @param ContextRegistry $contextRegistry
-     */
     public function setContextRegistry(ContextRegistry $contextRegistry)
     {
         $this->contextRegistry = $contextRegistry;
     }
 
     /**
-     * @param array $entities
      * @throws \Exception
      */
     public function write(array $entities)
@@ -146,9 +133,6 @@ abstract class AbstractExportWriter implements
         return $this->context;
     }
 
-    /**
-     * @param ConnectorContextMediator $connectorContextMediator
-     */
     public function setConnectorContextMediator(ConnectorContextMediator $connectorContextMediator)
     {
         $this->connectorContextMediator = $connectorContextMediator;
@@ -203,9 +187,6 @@ abstract class AbstractExportWriter implements
         $this->logger = new ImportExportLogger($logger);
     }
 
-    /**
-     * @param User $user
-     */
     protected function createUser(User $user)
     {
         $this->getLogger()->info(sprintf('Create user in Zendesk API [id=%d].', $user->getId()));

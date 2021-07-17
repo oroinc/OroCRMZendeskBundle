@@ -154,14 +154,6 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createUserProvider
      *
-     * @param object $data
-     * @param array $expectedSerializeValueMap
-     * @param array $expectedDeserializeValueMap
-     * @param array $expectedRequest
-     * @param array $expectedResponse
-     * @param array|null $expectedException
-     * @param User|null $expectedResult
-     *
      * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */
     public function testCreateUserWorks(
@@ -295,14 +287,6 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider createTicketProvider
-     *
-     * @param object $data
-     * @param array $expectedSerializeValueMap
-     * @param array $expectedDeserializeValueMap
-     * @param array $expectedRequest
-     * @param array $expectedResponse
-     * @param array|null $expectedException
-     * @param array|null $expectedResult
      *
      * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */
@@ -516,14 +500,6 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider updateTicketProvider
-     *
-     * @param object $data
-     * @param array $expectedSerializeValueMap
-     * @param array $expectedDeserializeValueMap
-     * @param array|null $expectedRequest
-     * @param array|null $expectedResponse
-     * @param array|null $expectedException
-     * @param Ticket|null $expectedResult
      *
      * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */

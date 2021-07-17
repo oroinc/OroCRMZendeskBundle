@@ -35,11 +35,6 @@ class TicketExportWriter extends AbstractExportWriter
      */
     protected $newTickets = [];
 
-    /**
-     * @param SyncScheduler $syncScheduler
-     * @param TicketSyncHelper $ticketHelper
-     * @param TicketCommentSyncHelper $ticketCommentHelper
-     */
     public function __construct(
         SyncScheduler $syncScheduler,
         TicketSyncHelper $ticketHelper,
@@ -137,7 +132,6 @@ class TicketExportWriter extends AbstractExportWriter
     }
 
     /**
-     * @param Ticket $ticket
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function syncTicketRelations(Ticket $ticket)
