@@ -2,11 +2,21 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider;
 
+use Oro\Bundle\BatchBundle\Entity\StepExecution;
+use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
+use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Entity\Transport;
+use Oro\Bundle\IntegrationBundle\Logger\LoggerStrategy;
+use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
+use Oro\Bundle\ZendeskBundle\Model\SyncState;
 use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
+use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
 class TicketCommentConnectorTest extends \PHPUnit\Framework\TestCase
 {
     use ExecutionContextTrait;
+
     /**
      * @var TicketCommentConnector
      */
@@ -54,32 +64,32 @@ class TicketCommentConnectorTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp(): void
     {
-        $this->registry = $this->getMockBuilder('Oro\Bundle\ImportExportBundle\Context\ContextRegistry')
+        $this->registry = $this->getMockBuilder(ContextRegistry::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->logger = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Logger\LoggerStrategy')
+        $this->logger = $this->getMockBuilder(LoggerStrategy::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->mediator = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator')
+        $this->mediator = $this->getMockBuilder(ConnectorContextMediator::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->syncState = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncState')
+        $this->syncState = $this->getMockBuilder(SyncState::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->transport = $this->createMock('Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface');
-        $this->context = $this->createMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
+        $this->transport = $this->createMock(ZendeskTransportInterface::class);
+        $this->context = $this->createMock(ContextInterface::class);
         $this->mediator->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($this->transport));
-        $this->channel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $transportEntity = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Transport');
+        $this->channel = $this->createMock(Channel::class);
+        $transportEntity = $this->createMock(Transport::class);
         $this->channel->expects($this->any())
             ->method('getTransport')
             ->will($this->returnValue($transportEntity));
         $this->mediator->expects($this->any())
             ->method('getChannel')
             ->will($this->returnValue($this->channel));
-        $this->stepExecutor = $this->getMockBuilder('Akeneo\Bundle\BatchBundle\Entity\StepExecution')
+        $this->stepExecutor = $this->getMockBuilder(StepExecution::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -120,34 +130,34 @@ class TicketCommentConnectorTest extends \PHPUnit\Framework\TestCase
         $secondTicketId = 20;
         $thirdTicketId = 30;
 
-        $firstComment = array(
-            'id' => 1
-        );
+        $firstComment = [
+            'id' => 1,
+        ];
 
-        $secondComment = array(
-            'id' => 2
-        );
+        $secondComment = [
+            'id' => 2,
+        ];
 
-        $thirdComment = array(
-            'id' => 3
-        );
+        $thirdComment = [
+            'id' => 3,
+        ];
 
-        $fourthComment = array(
-            'id' => 4
-        );
+        $fourthComment = [
+            'id' => 4,
+        ];
 
-        $expectedResults = array(
+        $expectedResults = [
             $firstComment,
             $secondComment,
             $thirdComment,
-            $fourthComment
-        );
+            $fourthComment,
+        ];
 
-        $map = array(
-            array($firstTicketId, new \ArrayIterator(array($firstComment))),
-            array($secondTicketId, new \ArrayIterator(array($secondComment, $thirdComment))),
-            array($thirdTicketId, new \ArrayIterator(array($fourthComment)))
-        );
+        $map = [
+            [$firstTicketId, new \ArrayIterator([$firstComment])],
+            [$secondTicketId, new \ArrayIterator([$secondComment, $thirdComment])],
+            [$thirdTicketId, new \ArrayIterator([$fourthComment])],
+        ];
 
         $this->transport->expects($this->exactly(3))
             ->method('getTicketComments')
@@ -162,11 +172,11 @@ class TicketCommentConnectorTest extends \PHPUnit\Framework\TestCase
             ->method('getTicketIds')
             ->will(
                 $this->returnValue(
-                    array(
+                    [
                         $firstTicketId,
                         $secondTicketId,
-                        $thirdTicketId
-                    )
+                        $thirdTicketId,
+                    ]
                 )
             );
 
