@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider;
 
-use Akeneo\Bundle\BatchBundle\Item\ExecutionContext;
+use Oro\Bundle\BatchBundle\Item\ExecutionContext;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
 use Oro\Bundle\ZendeskBundle\Model\SyncState;
 
@@ -40,7 +40,6 @@ trait ExecutionContextTrait
     {
         $isUpdatedLastSyncDate = false;
 
-        /** @var \PHPUnit\Framework\TestCase $this */
         $this->executionContext
             ->expects($this->atLeastOnce())
             ->method('put')
@@ -57,6 +56,8 @@ trait ExecutionContextTrait
                             $value[SyncState::LAST_SYNC_DATE_KEY]
                         );
                     }
+
+                    return $this->executionContext;
                 }
             );
 
