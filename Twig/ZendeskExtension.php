@@ -65,14 +65,6 @@ class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInt
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'oro_zendesk';
-    }
-
-    /**
      * @return Channel[]
      */
     public function getEnabledTwoWaySyncChannels()
