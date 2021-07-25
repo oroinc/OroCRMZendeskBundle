@@ -57,17 +57,14 @@ services:
             - '@oro_zendesk.entity_provider.zendesk'
 
     # Listeners
-    oro_zendesk.listener.doctrine.sync_abstract:
-        abstract: true
-        arguments:
-            - '@oro_security.token_accessor'
-            - '@oro_integration.sync_scheduler.link'
-
     oro_zendesk.listener.doctrine.sync_update_case:
-        parent: oro_zendesk.listener.doctrine.sync_abstract
         class: Oro\Bundle\ZendeskBundle\EventListener\Doctrine\SyncUpdateCaseListener
+        arguments:
+            - '@Psr\Container\ContainerInterface'
+            - '@oro_security.token_accessor'
         tags:
             - { name: doctrine.event_listener, event: onFlush }
+            - { name: container.service_subscriber, id: oro_integration.sync_scheduler }
 
     oro_zendesk.listener.case_entity:
         class: Oro\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener

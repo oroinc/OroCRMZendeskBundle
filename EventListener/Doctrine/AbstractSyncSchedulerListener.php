@@ -7,18 +7,19 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\SecurityBundle\Authentication\TokenAccessorInterface;
-use Oro\Component\DependencyInjection\ServiceLink;
+use Psr\Container\ContainerInterface;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 /**
  * This class is responsible for scheduling sync job of integration entity of Zendesk related to Oro entity.
  */
-abstract class AbstractSyncSchedulerListener
+abstract class AbstractSyncSchedulerListener implements ServiceSubscriberInterface
 {
+    /** @var ContainerInterface */
+    private $container;
+
     /** @var TokenAccessorInterface */
     private $tokenAccessor;
-
-    /** @var ServiceLink */
-    private $syncScheduler;
 
     /** @var array */
     private $scheduledSyncMap;
@@ -26,10 +27,10 @@ abstract class AbstractSyncSchedulerListener
     /** @var EntityManager */
     protected $entityManager;
 
-    public function __construct(TokenAccessorInterface $tokenAccessor, ServiceLink $schedulerServiceLink)
+    public function __construct(ContainerInterface $container, TokenAccessorInterface $tokenAccessor)
     {
+        $this->container = $container;
         $this->tokenAccessor = $tokenAccessor;
-        $this->syncScheduler = $schedulerServiceLink;
     }
 
     /**
@@ -154,10 +155,20 @@ abstract class AbstractSyncSchedulerListener
     abstract protected function scheduleSync($entity);
 
     /**
+     * {@inheritDoc}
+     */
+    public static function getSubscribedServices()
+    {
+        return [
+            'oro_integration.sync_scheduler' => SyncScheduler::class
+        ];
+    }
+
+    /**
      * @return SyncScheduler
      */
     protected function getSyncScheduler()
     {
-        return $this->syncScheduler->getService();
+        return $this->container->get('oro_integration.sync_scheduler');
     }
 }

@@ -2,6 +2,11 @@ The upgrade instructions are available at [Oro documentation website](https://do
 
 The current file describes significant changes in the code that may affect the upgrade of your customizations.
 
+## 5.0.0
+
+### Removed
+* The service `oro_zendesk.listener.doctrine.sync_abstract` was removed.
+
 ## 5.0.0-alpha.1 (2021-03-31)
 [Show detailed list of changes](incompatibilities-5-0-alpha-1.md)
 
