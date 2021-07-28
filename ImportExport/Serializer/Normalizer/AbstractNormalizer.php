@@ -3,14 +3,20 @@
 namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
-use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\DenormalizerInterface;
-use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
+/**
+ * Base normalizer for zendesk entities.
+ */
+abstract class AbstractNormalizer implements
+    SerializerAwareInterface,
+    ContextAwareNormalizerInterface,
+    ContextAwareDenormalizerInterface
 {
     const SHORT_MODE = 'short';
 
@@ -20,7 +26,7 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
     private static $propertyAccessor;
 
     /**
-     * @var SerializerInterface|NormalizerInterface|DenormalizerInterface
+     * @var SerializerInterface|ContextAwareNormalizerInterface|ContextAwareDenormalizerInterface
      */
     protected $serializer;
 
@@ -63,7 +69,7 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, string $format = null, array $context = [])
     {
         $targetClass = $this->getTargetClassName();
         if (!$object instanceof $targetClass) {
@@ -76,7 +82,7 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
             return $this->getPropertyAccessor()->getValue($object, $this->primaryField['denormalizeName']);
         }
 
-        $result = array();
+        $result = [];
         foreach ($fieldRules as $field) {
             if (!$field['normalize']) {
                 continue;
@@ -98,19 +104,15 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
     }
 
     /**
-     * @param mixed $data
-     * @param string $class
-     * @param mixed $format
-     * @param array $context
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function denormalize($data, $class, $format = null, array $context = array())
+    public function denormalize($data, string $type, string $format = null, array $context = [])
     {
         $fieldRules = $this->getProcessedFieldRules();
 
         if (!is_array($data)) {
             if ($this->primaryField) {
-                $data = array($this->primaryField['normalizeName'] => $data);
+                $data = [$this->primaryField['normalizeName'] => $data];
             } else {
                 return $this->createNewObject();
             }
@@ -147,6 +149,7 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
     protected function createNewObject()
     {
         $className = $this->getTargetClassName();
+
         return new $className;
     }
 
@@ -157,27 +160,27 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
      */
     protected function getProcessedFieldRules()
     {
-        if (null == $this->fieldRules) {
-            $this->fieldRules = array();
+        if (null === $this->fieldRules) {
+            $this->fieldRules = [];
             foreach ($this->getFieldRules() as $key => $field) {
                 if (is_string($field)) {
                     $fieldName = $field;
-                    $field = array();
+                    $field = [];
                 } elseif (isset($field['name'])) {
                     $fieldName = $field['name'];
                 } else {
                     $fieldName = $key;
                 }
 
-                $defaultValues = array(
+                $defaultValues = [
                     'name' => $fieldName,
                     'normalize' => true,
                     'denormalize' => true,
-                    'context' => array(),
+                    'context' => [],
                     'primary' => false,
                     'normalizeName' => $fieldName,
                     'denormalizeName' => $fieldName,
-                );
+                ];
 
                 $field = array_merge($defaultValues, (array)$field);
 
@@ -195,42 +198,45 @@ abstract class AbstractNormalizer implements NormalizerInterface, DenormalizerIn
     /**
      * @return PropertyAccessor
      */
-    protected function getPropertyAccessor()
+    protected function getPropertyAccessor(): PropertyAccessor
     {
         if (!self::$propertyAccessor) {
             self::$propertyAccessor = PropertyAccess::createPropertyAccessor();
         }
+
         return self::$propertyAccessor;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supportsNormalization($data, $format = null, array $context = array())
+    public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         $className = $this->getTargetClassName();
+
         return $data instanceof $className;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supportsDenormalization($data, $type, $format = null, array $context = array())
+    public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool
     {
-        return $type == $this->getTargetClassName();
+        return $type === $this->getTargetClassName();
     }
 
     /**
      * @throws InvalidArgumentException
      */
-    public function setSerializer(SerializerInterface $serializer)
+    public function setSerializer(SerializerInterface $serializer): void
     {
-        if (!$serializer instanceof NormalizerInterface || !$serializer instanceof DenormalizerInterface) {
+        if (!$serializer instanceof ContextAwareNormalizerInterface
+            || !$serializer instanceof ContextAwareDenormalizerInterface) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Serializer must implement "%s" and "%s"',
-                    'Symfony\\Component\\Serializer\\Normalizer\\NormalizerInterface',
-                    'Symfony\\Component\\Serializer\\Normalizer\\DenormalizerInterface'
+                    ContextAwareNormalizerInterface::class,
+                    ContextAwareDenormalizerInterface::class
                 )
             );
         }
