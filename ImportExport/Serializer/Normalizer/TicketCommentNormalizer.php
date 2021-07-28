@@ -2,59 +2,67 @@
 
 namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+
+/**
+ * Normalizes/denormalizes a ticket comment.
+ */
 class TicketCommentNormalizer extends AbstractNormalizer
 {
     /**
      * {@inheritdoc}
      */
-    protected function getFieldRules()
+    protected function getFieldRules(): array
     {
-        return array(
-            'originId' => array(
+        return [
+            'originId' => [
                 'normalizeName' => 'id',
                 'primary' => true,
-            ),
-            'author' => array(
+            ],
+            'author' => [
                 'normalizeName' => 'author_id',
-                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
-                'context' => array('mode' => self::SHORT_MODE),
-            ),
+                'type' => User::class,
+                'context' => ['mode' => self::SHORT_MODE],
+            ],
             'body',
-            'htmlBody' => array(
+            'htmlBody' => [
                 'normalizeName' => 'html_body',
                 'normalize' => false,
-            ),
+            ],
             'public',
-            'originCreatedAt' => array(
+            'originCreatedAt' => [
                 'type' => 'DateTime',
                 'normalizeName' => 'created_at',
                 'normalize' => false,
-                'context' => array('type' => 'datetime'),
-            ),
-            'ticket' => array(
+                'context' => ['type' => 'datetime'],
+            ],
+            'ticket' => [
                 'normalizeName' => 'ticket_id',
-                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket',
-                'context' => array('mode' => self::SHORT_MODE),
-            )
-        );
+                'type' => Ticket::class,
+                'context' => ['mode' => self::SHORT_MODE],
+            ],
+        ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function denormalize($data, $class, $format = null, array $context = array())
+    public function denormalize($data, string $type, string $format = null, array $context = [])
     {
         if (is_array($data) && isset($context['ticket_id'])) {
             $data['ticket_id'] = $context['ticket_id'];
         }
-        return parent::denormalize($data, $class, $format, $context);
+
+        return parent::denormalize($data, $type, $format, $context);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function getTargetClassName()
+    protected function getTargetClassName(): string
     {
-        return 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment';
+        return TicketComment::class;
     }
 }

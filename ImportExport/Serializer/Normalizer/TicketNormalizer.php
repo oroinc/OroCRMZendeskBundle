@@ -2,6 +2,15 @@
 
 namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
+use Oro\Bundle\ZendeskBundle\Entity\TicketType;
+use Oro\Bundle\ZendeskBundle\Entity\User;
+
+/**
+ * Normalizes/denormalizes a ticket.
+ */
 class TicketNormalizer extends AbstractNormalizer
 {
     /**
@@ -9,85 +18,85 @@ class TicketNormalizer extends AbstractNormalizer
      */
     protected function getFieldRules()
     {
-        return array(
-            'originId' => array(
+        return [
+            'originId' => [
                 'normalizeName' => 'id',
                 'primary' => true,
-            ),
-            'url' => array(
+            ],
+            'url' => [
                 'normalize' => false,
-            ),
+            ],
             'external_id',
             'subject',
-            'description' => array(
+            'description' => [
                 'normalize' => false,
-            ),
-            'recipient' => array(
+            ],
+            'recipient' => [
                 'normalize' => false,
-            ),
-            'has_incidents' => array(
+            ],
+            'has_incidents' => [
                 'normalize' => false,
-            ),
-            'problem' => array(
+            ],
+            'problem' => [
                 'normalize' => false,
                 'normalizeName' => 'problem_id',
-                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket'
-            ),
-            'collaborators' => array(
+                'type' => Ticket::class,
+            ],
+            'collaborators' => [
                 'normalizeName' => 'collaborator_ids',
                 'type' => 'ArrayCollection<Oro\\Bundle\\ZendeskBundle\\Entity\\User>',
-                'context' => array('mode' => self::SHORT_MODE),
-            ),
-            'type' => array(
-                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketType',
-                'context' => array('mode' => self::SHORT_MODE),
-            ),
-            'status' => array(
-                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketStatus',
-                'context' => array('mode' => self::SHORT_MODE),
-            ),
-            'priority' => array(
-                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\TicketPriority',
-                'context' => array('mode' => self::SHORT_MODE),
-            ),
-            'requester' => array(
+                'context' => ['mode' => self::SHORT_MODE],
+            ],
+            'type' => [
+                'type' => TicketType::class,
+                'context' => ['mode' => self::SHORT_MODE],
+            ],
+            'status' => [
+                'type' => TicketStatus::class,
+                'context' => ['mode' => self::SHORT_MODE],
+            ],
+            'priority' => [
+                'type' => TicketPriority::class,
+                'context' => ['mode' => self::SHORT_MODE],
+            ],
+            'requester' => [
                 'normalizeName' => 'requester_id',
-                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
-                'context' => array('mode' => self::SHORT_MODE),
-            ),
-            'submitter' => array(
+                'type' => User::class,
+                'context' => ['mode' => self::SHORT_MODE],
+            ],
+            'submitter' => [
                 'normalizeName' => 'submitter_id',
-                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
-                'context' => array('mode' => self::SHORT_MODE),
-            ),
-            'assignee' => array(
+                'type' => User::class,
+                'context' => ['mode' => self::SHORT_MODE],
+            ],
+            'assignee' => [
                 'normalizeName' => 'assignee_id',
-                'type' => 'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
-                'context' => array('mode' => self::SHORT_MODE),
-            ),
-            'due_at' => array(
+                'type' => User::class,
+                'context' => ['mode' => self::SHORT_MODE],
+            ],
+            'due_at' => [
                 'type' => 'DateTime',
-                'context' => array('type' => 'datetime'),
-            ),
-            'originCreatedAt' => array(
+                'context' => ['type' => 'datetime'],
+            ],
+            'originCreatedAt' => [
                 'type' => 'DateTime',
                 'normalize' => false,
                 'normalizeName' => 'created_at',
-                'context' => array('type' => 'datetime'),
-            ),
-            'originUpdatedAt' => array(
+                'context' => ['type' => 'datetime'],
+            ],
+            'originUpdatedAt' => [
                 'type' => 'DateTime',
                 'normalize' => false,
                 'normalizeName' => 'updated_at',
-                'context' => array('type' => 'datetime'),
-            ),
-        );
+                'context' => ['type' => 'datetime'],
+            ],
+        ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, string $format = null, array $context = [])
     {
         $result = parent::normalize($object, $format, $context);
 
@@ -98,9 +107,9 @@ class TicketNormalizer extends AbstractNormalizer
         // Comment is required by Zendesk API when create ticket
         // @see http://developer.zendesk.com/documentation/rest_api/tickets.html#creating-tickets
         unset($result['id']);
-        $result['comment'] = array(
+        $result['comment'] = [
             'body' => $object->getDescription(),
-        );
+        ];
 
         return $result;
     }
@@ -110,6 +119,6 @@ class TicketNormalizer extends AbstractNormalizer
      */
     protected function getTargetClassName()
     {
-        return 'Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket';
+        return Ticket::class;
     }
 }
