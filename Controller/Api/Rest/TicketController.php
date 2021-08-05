@@ -2,8 +2,8 @@
 
 namespace Oro\Bundle\ZendeskBundle\Controller\Api\Rest;
 
-use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -13,25 +13,20 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @Rest\RouteResource("ticket")
- * @Rest\NamePrefix("oro_api_")
+ * REST API controller to sync cases with Zendesk.
  */
-class TicketController extends FOSRestController
+class TicketController extends AbstractFOSRestController
 {
     /**
-     * @Rest\Post(
-     *      "/ticket/sync/case/{id}/channel/{channelId}",
-     *      requirements={"id"="\d+", "channelId"="\d+"}
-     * )
      * @ParamConverter("caseEntity", options={"id"="id"})
      * @ParamConverter("channel", options={"id"="channelId"})
-     * @Rest\QueryParam(
+     * @QueryParam(
      *      name="id",
      *      requirements="\d+",
      *      nullable=false,
      *      description="Case Id"
      * )
-     * @Rest\QueryParam(
+     * @QueryParam(
      *      name="channelId",
      *      requirements="\d+",
      *      nullable=false,
