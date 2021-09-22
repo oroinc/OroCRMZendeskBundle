@@ -2,6 +2,9 @@
 
 namespace Oro\Bundle\ZendeskBundle\Provider;
 
+/**
+ * Users connector
+ */
 class UserConnector extends AbstractZendeskConnector
 {
     const IMPORT_ENTITY = 'Oro\Bundle\ZendeskBundle\Entity\User';
@@ -19,7 +22,7 @@ class UserConnector extends AbstractZendeskConnector
     /**
      * {@inheritdoc}
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'oro.zendesk.connector.user.label';
     }

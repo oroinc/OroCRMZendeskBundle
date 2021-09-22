@@ -4,6 +4,9 @@ namespace Oro\Bundle\ZendeskBundle\Provider;
 
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 
+/**
+ * Comments connector
+ */
 class TicketCommentConnector extends AbstractZendeskConnector implements TwoWaySyncConnectorInterface
 {
     const IMPORT_ENTITY = 'Oro\Bundle\ZendeskBundle\Entity\TicketComment';
@@ -27,7 +30,7 @@ class TicketCommentConnector extends AbstractZendeskConnector implements TwoWayS
     /**
      * {@inheritdoc}
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'oro.zendesk.connector.ticket_comment.label';
     }

@@ -4,6 +4,9 @@ namespace Oro\Bundle\ZendeskBundle\Provider;
 
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 
+/**
+ * Tickets connector
+ */
 class TicketConnector extends AbstractZendeskConnector implements TwoWaySyncConnectorInterface
 {
     const IMPORT_ENTITY = 'Oro\Bundle\ZendeskBundle\Entity\Ticket';
@@ -22,7 +25,7 @@ class TicketConnector extends AbstractZendeskConnector implements TwoWaySyncConn
     /**
      * {@inheritdoc}
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'oro.zendesk.connector.ticket.label';
     }
