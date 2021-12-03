@@ -7,6 +7,9 @@ The current file describes significant changes in the code that may affect the u
 ### Removed
 * The service `oro_zendesk.listener.doctrine.sync_abstract` was removed.
 
+## 5.0.0-beta.1 (2021-07-30)
+[Show detailed list of changes](incompatibilities-5-0-beta-1.md)
+
 ## 5.0.0-alpha.1 (2021-03-31)
 [Show detailed list of changes](incompatibilities-5-0-alpha-1.md)
 
