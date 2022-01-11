@@ -292,6 +292,21 @@ Example:
 
 Remove Zendesk users from being included in a specific  Zendesk ticket communications.
 
+{@request:json_api}
+Example:
+
+```JSON
+{
+  "data": [
+    {
+      "type": "zendeskusers",
+      "id": "1"
+    }
+  ]
+}
+```
+{@/request}
+
 ### comments
 
 #### get_subresource
@@ -350,7 +365,22 @@ Example:
 
 #### delete_relationship
 
-Remove comments made on a specidic Zendesk ticket.
+Remove comments made on a specific Zendesk ticket.
+
+{@request:json_api}
+Example:
+
+```JSON
+{
+  "data": [
+    {
+      "type": "zendeskticketcomments",
+      "id": "1"
+    }
+  ]
+}
+```
+{@/request}
 
 ### priority
 
