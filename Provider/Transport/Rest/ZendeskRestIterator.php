@@ -83,7 +83,7 @@ class ZendeskRestIterator extends AbstractRestIterator
     /**
      * {@inheritdoc}
      */
-    public function current()
+    public function current(): mixed
     {
         $result = parent::current();
 
