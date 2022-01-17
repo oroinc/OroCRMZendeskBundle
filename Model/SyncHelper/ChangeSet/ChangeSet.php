@@ -5,6 +5,9 @@ namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
+/**
+ * Zendesk integration change set
+ */
 class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
 {
     /**
@@ -115,7 +118,7 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->values);
     }
@@ -123,7 +126,7 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->values[$offset]) || array_key_exists($offset, $this->values);
     }
@@ -131,7 +134,7 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): ?ChangeValue
     {
         if (isset($this->values[$offset])) {
             return $this->values[$offset];
@@ -142,7 +145,7 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (!$value instanceof ChangeValue) {
             throw new \InvalidArgumentException(
@@ -159,7 +162,7 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->values[$offset]);
     }
@@ -167,7 +170,7 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function count()
+    public function count(): int
     {
         return count($this->values);
     }

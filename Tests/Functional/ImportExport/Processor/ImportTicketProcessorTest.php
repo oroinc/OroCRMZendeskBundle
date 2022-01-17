@@ -461,9 +461,9 @@ class ImportTicketProcessorTest extends WebTestCase
         $relatedCase->setStatus($this->getCaseStatus(CaseStatus::STATUS_IN_PROGRESS));
         $relatedCase->setPriority($this->getCasePriority(CasePriority::PRIORITY_HIGH));
 
-        $this->channel->getSynchronizationSettingsReference()
-            ->offsetSet('isTwoWaySyncEnabled', true)
-            ->offsetSet('syncPriority', TwoWaySyncConnectorInterface::LOCAL_WINS);
+        $synchronizationSettingsReference = $this->channel->getSynchronizationSettingsReference();
+        $synchronizationSettingsReference->offsetSet('isTwoWaySyncEnabled', true);
+        $synchronizationSettingsReference->offsetSet('syncPriority', TwoWaySyncConnectorInterface::LOCAL_WINS);
 
         $processZendeskTicket = $this->createZendeskTicket()
             ->setOriginId($expectedOriginId = $zendeskTicket->getOriginId())
@@ -531,9 +531,9 @@ class ImportTicketProcessorTest extends WebTestCase
         $relatedCase->setStatus($expectedStatus = $this->getCaseStatus(CaseStatus::STATUS_IN_PROGRESS));
         $relatedCase->setPriority($expectedPriority = $this->getCasePriority(CasePriority::PRIORITY_HIGH));
 
-        $this->channel->getSynchronizationSettingsReference()
-            ->offsetSet('isTwoWaySyncEnabled', true)
-            ->offsetSet('syncPriority', TwoWaySyncConnectorInterface::LOCAL_WINS);
+        $synchronizationSettingsReference = $this->channel->getSynchronizationSettingsReference();
+        $synchronizationSettingsReference->offsetSet('isTwoWaySyncEnabled', true);
+        $synchronizationSettingsReference->offsetSet('syncPriority', TwoWaySyncConnectorInterface::LOCAL_WINS);
 
         $processZendeskTicket = $this->createZendeskTicket()
             ->setOriginId($zendeskTicket->getOriginId())
@@ -596,9 +596,9 @@ class ImportTicketProcessorTest extends WebTestCase
         $zendeskTicket = $this->getReference('oro_zendesk:ticket_44_case_6');
         $relatedCase = $this->getReference('oro_zendesk:case_6');
 
-        $this->channel->getSynchronizationSettingsReference()
-            ->offsetSet('isTwoWaySyncEnabled', true)
-            ->offsetSet('syncPriority', TwoWaySyncConnectorInterface::LOCAL_WINS);
+        $synchronizationSettingsReference = $this->channel->getSynchronizationSettingsReference();
+        $synchronizationSettingsReference->offsetSet('isTwoWaySyncEnabled', true);
+        $synchronizationSettingsReference->offsetSet('syncPriority', TwoWaySyncConnectorInterface::LOCAL_WINS);
 
         $expectedContactId = $this->getReference('contact:jim.smith@example.com')->getId();
         $expectedAssignedToId = $this->getReference('user:anna.lee@example.com')->getId();
