@@ -5,6 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\ContactBundle\Entity\Contact;
 use Oro\Bundle\ContactBundle\Entity\ContactEmail;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
 
 class LoadContactData extends AbstractZendeskFixture
 {
@@ -43,7 +44,7 @@ class LoadContactData extends AbstractZendeskFixture
      */
     public function load(ObjectManager $manager)
     {
-        $organization = $manager->getRepository('OroOrganizationBundle:Organization')->getFirst();
+        $organization = $manager->getRepository(Organization::class)->getFirst();
         foreach ($this->data as $data) {
             $entity = new Contact();
 

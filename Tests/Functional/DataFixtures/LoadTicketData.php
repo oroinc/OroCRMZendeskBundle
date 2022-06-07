@@ -237,9 +237,9 @@ class LoadTicketData extends AbstractZendeskFixture implements ContainerAwareInt
                 $data['collaborators'] = $collaborators;
             }
 
-            $data['priority'] = $manager->find('OroZendeskBundle:TicketPriority', $data['priority']);
-            $data['status'] = $manager->find('OroZendeskBundle:TicketStatus', $data['status']);
-            $data['type'] = $manager->find('OroZendeskBundle:TicketType', $data['type']);
+            $data['priority'] = $manager->find(TicketPriority::class, $data['priority']);
+            $data['status'] = $manager->find(TicketStatus::class, $data['status']);
+            $data['type'] = $manager->find(TicketType::class, $data['type']);
 
             if (isset($data['channel'])) {
                 $data['channel'] = $this->getReference($data['channel']);

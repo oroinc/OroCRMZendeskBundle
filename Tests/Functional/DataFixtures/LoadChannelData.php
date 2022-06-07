@@ -5,6 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
 
 class LoadChannelData extends AbstractZendeskFixture implements DependentFixtureInterface
@@ -38,7 +39,7 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
     {
         $userManager = $this->container->get('oro_user.manager');
         $admin = $userManager->findUserByEmail(LoadAdminUserData::DEFAULT_ADMIN_EMAIL);
-        $organization = $manager->getRepository('OroOrganizationBundle:Organization')->getFirst();
+        $organization = $manager->getRepository(Organization::class)->getFirst();
         foreach ($this->channelData as $data) {
             $entity = new Channel();
 

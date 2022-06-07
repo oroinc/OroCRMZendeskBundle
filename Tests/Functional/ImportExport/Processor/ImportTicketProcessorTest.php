@@ -3,8 +3,10 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Doctrine\Persistence\ManagerRegistry;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\CaseBundle\Entity\CasePriority;
 use Oro\Bundle\CaseBundle\Entity\CaseStatus;
+use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
@@ -15,6 +17,7 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketProcessor;
 use Oro\Bundle\ZendeskBundle\Model\SyncState;
+use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
 
 /**
  * @dbIsolationPerTest
@@ -23,46 +26,35 @@ use Oro\Bundle\ZendeskBundle\Model\SyncState;
  */
 class ImportTicketProcessorTest extends WebTestCase
 {
-    /**
-     * @var ImportTicketProcessor
-     */
-    protected $processor;
+    /** @var ImportTicketProcessor */
+    private $processor;
 
-    /**
-     * @var ManagerRegistry
-     */
-    protected $registry;
+    /** @var ManagerRegistry */
+    private $registry;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $context;
-
-    /**
-     * @var Channel
-     */
-    protected $channel;
+    /** @var Channel */
+    private $channel;
 
     protected function setUp(): void
     {
         $this->initClient();
 
-        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->loadFixtures([LoadTicketData::class]);
 
-        $this->registry  = $this->getContainer()->get('doctrine');
+        $this->registry = $this->getContainer()->get('doctrine');
         $this->processor = $this->getContainer()->get('oro_zendesk.importexport.processor.import_ticket');
-        $this->context   = $this->createMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
-        $this->channel   = $this->getReference('zendesk_channel:first_test_channel');
-        $this->context->expects($this->any())
+        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
+
+        $context = $this->createMock(ContextInterface::class);
+        $context->expects($this->any())
             ->method('getOption')
-            ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
-        $this->processor->setImportExportContext($this->context);
+            ->willReturnMap([['channel', null, $this->channel->getId()]]);
+        $this->processor->setImportExportContext($context);
     }
 
     protected function tearDown(): void
     {
-        $this->getSyncStateService()->setTicketIds(array());
-
+        $this->getSyncStateService()->setTicketIds([]);
         parent::tearDown();
     }
 
@@ -80,7 +72,7 @@ class ImportTicketProcessorTest extends WebTestCase
     {
         $originId = 1;
         $zendeskTicket = $this->createZendeskTicket()->setOriginId($originId);
-        $expected = array($originId);
+        $expected = [$originId];
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
         $actual = $this->getSyncStateService()->getTicketIds();
         $this->assertEquals($expected, $actual);
@@ -90,7 +82,7 @@ class ImportTicketProcessorTest extends WebTestCase
     public function testProcessExistingZendeskTicket()
     {
         $originId = 42;
-        $expected = array($originId);
+        $expected = [$originId];
         $zendeskTicket = $this->createZendeskTicket()
             ->setOriginId($originId)
             ->setUrl('https://foo.zendesk.com/api/v2/tickets/42.json?1')
@@ -156,7 +148,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
-        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket', $zendeskTicket->getProblem());
+        $this->assertInstanceOf(Ticket::class, $zendeskTicket->getProblem());
         $this->assertEquals($originId, $zendeskTicket->getProblem()->getOriginId());
         $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getProblem()));
     }
@@ -170,7 +162,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
-        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\TicketType', $zendeskTicket->getType());
+        $this->assertInstanceOf(TicketType::class, $zendeskTicket->getType());
         $this->assertEquals($name, $zendeskTicket->getType()->getName());
         $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getType()));
     }
@@ -184,7 +176,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
-        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\TicketStatus', $zendeskTicket->getStatus());
+        $this->assertInstanceOf(TicketStatus::class, $zendeskTicket->getStatus());
         $this->assertEquals($name, $zendeskTicket->getStatus()->getName());
         $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getStatus()));
     }
@@ -198,7 +190,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
-        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\TicketPriority', $zendeskTicket->getPriority());
+        $this->assertInstanceOf(TicketPriority::class, $zendeskTicket->getPriority());
         $this->assertEquals($name, $zendeskTicket->getPriority()->getName());
         $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getPriority()));
     }
@@ -213,7 +205,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $this->assertInstanceOf(
-            'Oro\\Bundle\\ZendeskBundle\\Entity\\User',
+            ZendeskUser::class,
             $zendeskTicket->getCollaborators()->first()
         );
         $this->assertEquals($originId, $zendeskTicket->getCollaborators()->first()->getOriginId());
@@ -229,7 +221,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
-        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\User', $zendeskTicket->getRequester());
+        $this->assertInstanceOf(ZendeskUser::class, $zendeskTicket->getRequester());
         $this->assertEquals($originId, $zendeskTicket->getRequester()->getOriginId());
         $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getRequester()));
     }
@@ -243,7 +235,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
-        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\User', $zendeskTicket->getSubmitter());
+        $this->assertInstanceOf(ZendeskUser::class, $zendeskTicket->getSubmitter());
         $this->assertEquals($originId, $zendeskTicket->getSubmitter()->getOriginId());
         $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getSubmitter()));
     }
@@ -257,7 +249,7 @@ class ImportTicketProcessorTest extends WebTestCase
 
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
-        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\User', $zendeskTicket->getAssignee());
+        $this->assertInstanceOf(ZendeskUser::class, $zendeskTicket->getAssignee());
         $this->assertEquals($originId, $zendeskTicket->getAssignee()->getOriginId());
         $this->assertTrue($this->registry->getManager()->contains($zendeskTicket->getAssignee()));
     }
@@ -272,7 +264,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->assertEquals($zendeskTicket, $this->processor->process($zendeskTicket));
 
         $case = $zendeskTicket->getRelatedCase();
-        $this->assertInstanceOf('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity', $case);
+        $this->assertInstanceOf(CaseEntity::class, $case);
         $this->assertFalse($this->registry->getManager()->contains($case));
 
         $this->assertEquals($zendeskTicket->getSubject(), $case->getSubject());
@@ -294,34 +286,34 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->assertEquals($caseStatus, $case->getStatus()->getName());
     }
 
-    public function statusMappingDataProvider()
+    public function statusMappingDataProvider(): array
     {
-        return array(
-            array(
+        return [
+            [
                 TicketStatus::STATUS_NEW,
                 CaseStatus::STATUS_OPEN,
-            ),
-            array(
+            ],
+            [
                 TicketStatus::STATUS_OPEN,
                 CaseStatus::STATUS_OPEN,
-            ),
-            array(
+            ],
+            [
                 TicketStatus::STATUS_PENDING,
                 CaseStatus::STATUS_IN_PROGRESS,
-            ),
-            array(
+            ],
+            [
                 TicketStatus::STATUS_HOLD,
                 CaseStatus::STATUS_OPEN,
-            ),
-            array(
+            ],
+            [
                 TicketStatus::STATUS_SOLVED,
                 CaseStatus::STATUS_RESOLVED,
-            ),
-            array(
+            ],
+            [
                 TicketStatus::STATUS_CLOSED,
                 CaseStatus::STATUS_CLOSED,
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -339,26 +331,26 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->assertEquals($casePriority, $case->getPriority()->getName());
     }
 
-    public function priorityMappingDataProvider()
+    public function priorityMappingDataProvider(): array
     {
-        return array(
-            array(
+        return [
+            [
                 TicketPriority::PRIORITY_LOW,
                 CasePriority::PRIORITY_LOW,
-            ),
-            array(
+            ],
+            [
                 TicketPriority::PRIORITY_NORMAL,
                 CasePriority::PRIORITY_NORMAL,
-            ),
-            array(
+            ],
+            [
                 TicketPriority::PRIORITY_HIGH,
                 CasePriority::PRIORITY_HIGH,
-            ),
-            array(
+            ],
+            [
                 TicketPriority::PRIORITY_URGENT,
                 CasePriority::PRIORITY_HIGH,
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -384,13 +376,13 @@ class ImportTicketProcessorTest extends WebTestCase
         );
     }
 
-    public function caseOwnerTicketFieldsDataProvider()
+    public function caseOwnerTicketFieldsDataProvider(): array
     {
-        return array(
-            'submitter' => array('submitter'),
-            'requester' => array('requester'),
-            'assignee' => array('assignee'),
-        );
+        return [
+            'submitter' => ['submitter'],
+            'requester' => ['requester'],
+            'assignee' => ['assignee'],
+        ];
     }
 
     /**
@@ -416,13 +408,13 @@ class ImportTicketProcessorTest extends WebTestCase
         );
     }
 
-    public function caseAssignedToTicketFieldsDataProvider()
+    public function caseAssignedToTicketFieldsDataProvider(): array
     {
-        return array(
-            'submitter' => array('submitter'),
-            'requester' => array('requester'),
-            'assignee' => array('assignee'),
-        );
+        return [
+            'submitter' => ['submitter'],
+            'requester' => ['requester'],
+            'assignee' => ['assignee'],
+        ];
     }
 
     /**
@@ -604,7 +596,7 @@ class ImportTicketProcessorTest extends WebTestCase
         $expectedAssignedToId = $this->getReference('user:anna.lee@example.com')->getId();
         $expectedOwnerId = $this->getReference('user:anna.lee@example.com')->getId();
         $expectedStatusName = CaseStatus::STATUS_CLOSED;
-        $expectedPriorirtyName = CasePriority::PRIORITY_NORMAL;
+        $expectedPriorityName = CasePriority::PRIORITY_NORMAL;
 
         $processZendeskTicket = $this->createZendeskTicket()
             ->setOriginId($zendeskTicket->getOriginId())
@@ -659,55 +651,42 @@ class ImportTicketProcessorTest extends WebTestCase
         $this->assertEquals($expectedStatusName, $relatedCase->getStatus()->getName());
 
         $this->assertNotEmpty($relatedCase->getPriority());
-        $this->assertEquals($expectedPriorirtyName, $relatedCase->getPriority()->getName());
+        $this->assertEquals($expectedPriorityName, $relatedCase->getPriority()->getName());
     }
 
-    public function caseRelatedContactTicketFieldsDataProvider()
+    public function caseRelatedContactTicketFieldsDataProvider(): array
     {
-        return array(
-            'submitter' => array('submitter'),
-            'requester' => array('requester'),
-            'assignee' => array('assignee'),
-        );
+        return [
+            'submitter' => ['submitter'],
+            'requester' => ['requester'],
+            'assignee' => ['assignee'],
+        ];
     }
 
-    protected function createZendeskTicket()
+    private function createZendeskTicket(): Ticket
     {
         return new Ticket();
     }
 
-    protected function createZendeskUser()
+    private function createZendeskUser(): ZendeskUser
     {
         return new ZendeskUser();
     }
 
-    /**
-     * @return SyncState
-     */
-    protected function getSyncStateService()
+    private function getSyncStateService(): SyncState
     {
         return $this->getContainer()->get('oro_zendesk.sync_state');
     }
 
-    /**
-     * @param string $name
-     * @return CaseStatus|null
-     */
-    protected function getCaseStatus($name)
+    private function getCaseStatus(string $name): ?CaseStatus
     {
-        return $this->registry
-            ->getRepository('OroCaseBundle:CaseStatus')
+        return $this->registry->getRepository(CaseStatus::class)
             ->find($name);
     }
 
-    /**
-     * @param string $name
-     * @return CasePriority|null
-     */
-    protected function getCasePriority($name)
+    private function getCasePriority(string $name): ?CasePriority
     {
-        return $this->registry
-            ->getRepository('OroCaseBundle:CasePriority')
+        return $this->registry->getRepository(CasePriority::class)
             ->find($name);
     }
 }

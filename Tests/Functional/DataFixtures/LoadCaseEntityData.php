@@ -141,10 +141,10 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
                 $data['relatedContact'] = $this->getReference($data['relatedContact']);
             }
             if (isset($data['status'])) {
-                $data['status'] = $manager->find('OroCaseBundle:CaseStatus', $data['status']);
+                $data['status'] = $manager->find(CaseStatus::class, $data['status']);
             }
             if (isset($data['priority'])) {
-                $data['priority'] = $manager->find('OroCaseBundle:CasePriority', $data['priority']);
+                $data['priority'] = $manager->find(CasePriority::class, $data['priority']);
             }
             $this->setEntityPropertyValues($entity, $data, array('reference', 'comments'));
 
