@@ -3,6 +3,7 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\UserBundle\Entity\User;
@@ -11,35 +12,28 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ExportTicketCommentProcessor;
+use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
 
 class ExportTicketCommentProcessorTest extends WebTestCase
 {
-    /**
-     * @var ExportTicketCommentProcessor
-     */
-    protected $processor;
+    /** @var ExportTicketCommentProcessor */
+    private $processor;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $context;
+    /** @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $context;
 
-    /**
-     * @var Channel
-     */
-    protected $channel;
+    /** @var Channel */
+    private $channel;
 
-    /**
-     * @var string
-     */
-    protected $previousEmail;
+    /** @var string */
+    private $previousEmail;
 
     protected function setUp(): void
     {
         $this->initClient();
 
-        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
-        $this->context = $this->createMock('Oro\Bundle\ImportExportBundle\Context\ContextInterface');
+        $this->loadFixtures([LoadTicketData::class]);
+        $this->context = $this->createMock(ContextInterface::class);
 
         $this->processor = $this->getContainer()
             ->get('oro_zendesk.importexport.processor.export_ticket_comment');
@@ -48,7 +42,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $this->previousEmail = $this->channel->getTransport()->getZendeskUserEmail();
         $this->context->expects($this->any())
             ->method('getOption')
-            ->will($this->returnValueMap(array(array('channel', null, $this->channel->getId()))));
+            ->willReturnMap([['channel', null, $this->channel->getId()]]);
 
         $this->processor->setImportExportContext($this->context);
     }
@@ -57,7 +51,6 @@ class ExportTicketCommentProcessorTest extends WebTestCase
     {
         // @see testNewCommentWithoutAuthor
         $this->channel->getTransport()->setZendeskUserEmail($this->previousEmail);
-
         parent::tearDown();
     }
 
@@ -88,7 +81,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $ticketComment = $this->createTicketComment($expectedMessage, $userWithoutZendeskUser);
         $actual = $this->processor->process($ticketComment);
 
-        $this->assertInstanceOf('Oro\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
+        $this->assertInstanceOf(TicketComment::class, $actual);
         $this->assertEquals($expectedMessage, $actual->getBody());
         $this->assertTrue($actual->getPublic());
         $this->assertEquals($expectedAuthor, $actual->getAuthor());
@@ -103,7 +96,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $ticketComment = $this->createTicketComment($expectedMessage, $owner);
         $actual = $this->processor->process($ticketComment);
 
-        $this->assertInstanceOf('Oro\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
+        $this->assertInstanceOf(TicketComment::class, $actual);
         $this->assertEquals($expectedMessage, $actual->getBody());
         $this->assertTrue($actual->getPublic());
         $this->assertEquals($expectedAuthor, $actual->getAuthor());
@@ -115,9 +108,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
 
         $userWithoutZendeskUser = $this->getReference('user:john.smith@example.com');
         $expectedAuthor = $this->getReference('zendesk_user:jim.smith@example.com');
-        /**
-         * @var ZendeskRestTransport $transport
-         */
+        /** @var ZendeskRestTransport $transport */
         $transport = $this->channel->getTransport();
         $transport->setZendeskUserEmail('john.smith@example.com');
 
@@ -126,7 +117,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
             ->setContact($this->getReference('contact:jim.smith@example.com'));
         $actual = $this->processor->process($ticketComment);
 
-        $this->assertInstanceOf('Oro\Bundle\ZendeskBundle\Entity\TicketComment', $actual);
+        $this->assertInstanceOf(TicketComment::class, $actual);
         $this->assertEquals($expectedMessage, $actual->getBody());
         $this->assertTrue($actual->getPublic());
         $this->assertEquals($expectedAuthor, $actual->getAuthor());
@@ -139,7 +130,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
             'Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.'
         );
 
-        $ticketComment = new \StdClass();
+        $ticketComment = new \stdClass();
         $this->processor->process($ticketComment);
     }
 
@@ -162,14 +153,12 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $this->assertNull($actual);
     }
 
-    /**
-     * @param string $expectedMessage
-     * @param User   $owner
-     * @param bool   $isPublic
-     * @return TicketComment
-     */
-    protected function createTicketComment($expectedMessage, User $owner, $isPublic = true, $tickedStatus = null)
-    {
+    private function createTicketComment(
+        string $expectedMessage,
+        User $owner,
+        bool $isPublic = true,
+        string $tickedStatus = null
+    ): TicketComment {
         if (null === $tickedStatus) {
             $tickedStatus = TicketStatus::STATUS_OPEN;
         }
@@ -187,16 +176,12 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         return $ticketComment;
     }
 
-    /**
-     * @param string $status
-     * @return Ticket
-     */
-    protected function createTicketWithStatus($status)
+    private function createTicketWithStatus(string $status): Ticket
     {
         $em = $this->getContainer()->get('doctrine')->getManager();
 
         $ticket = new Ticket();
-        $ticket->setStatus($em->find('OroZendeskBundle:TicketStatus', $status));
+        $ticket->setStatus($em->find(TicketStatus::class, $status));
 
         return $ticket;
     }

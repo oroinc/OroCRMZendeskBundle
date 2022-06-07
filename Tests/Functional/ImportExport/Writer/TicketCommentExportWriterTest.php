@@ -4,16 +4,10 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Writer;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
-use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
-use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
-use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
-use Oro\Bundle\ZendeskBundle\Handler\ExceptionHandlerInterface;
 use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketCommentExportWriter;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
@@ -25,43 +19,17 @@ use Psr\Log\LoggerInterface;
  */
 class TicketCommentExportWriterTest extends WebTestCase
 {
-    /**
-     * @var TicketCommentExportWriter
-     */
-    protected $writer;
+    /** @var TicketCommentExportWriter */
+    private $writer;
 
-    /**
-     * @var ManagerRegistry
-     */
-    protected $registry;
+    /** @var ManagerRegistry */
+    private $registry;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $logger;
+    /** @var ZendeskTransportInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $transport;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $context;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $transport;
-
-    /**
-     * @var Channel
-     */
-    protected $channel;
-
-    /**
-     * @var string
-     */
-    protected $logOutput;
-
-    /** @var  ExceptionHandlerInterface|\PHPUnit\Framework\MockObject\MockObject */
-    protected $exceptionHandler;
+    /** @var string */
+    private $logOutput;
 
     protected function setUp(): void
     {
@@ -72,37 +40,38 @@ class TicketCommentExportWriterTest extends WebTestCase
 
         $this->loadFixtures([LoadTicketData::class]);
 
-        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
-
         $this->registry = $this->getContainer()->get('doctrine');
-        $this->context  = $this->createMock(ContextInterface::class);
 
-        $this->context->expects($this->any())
+        $context = $this->createMock(ContextInterface::class);
+        $context->expects($this->any())
             ->method('getOption')
-            ->will($this->returnValueMap([['channel', null, $this->channel->getId()]]));
+            ->willReturnMap([['channel', null, $this->getReference('zendesk_channel:first_test_channel')->getId()]]);
 
-        $this->logger = $this->createMock(LoggerInterface::class);
-
-        $this->logger->expects($this->any(0))
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->any())
             ->method('log')
-            ->will(
-                $this->returnCallback(
-                    function ($level, $message) {
-                        $this->logOutput .= '[' . $level . '] ' . $message . PHP_EOL;
-                    }
-                )
-            );
+            ->willReturnCallback(function ($level, $message) {
+                $this->logOutput .= '[' . $level . '] ' . $message . PHP_EOL;
+            });
 
         $this->writer = $this->getContainer()->get('oro_zendesk.importexport.writer.export_ticket_comment');
-        $this->writer->setImportExportContext($this->context);
-        $this->writer->setLogger($this->logger);
+        $this->writer->setImportExportContext($context);
+        $this->writer->setLogger($logger);
+    }
+
+    private function createUser($originId): User
+    {
+        $result = new User();
+        $result->setOriginId($originId);
+
+        return $result;
     }
 
     public function testWriteCreatesTicketWithUserAuthor()
     {
         $comment = $this->getReference('zendesk_ticket_42_comment_3');
 
-        $expected = $this->createTicketComment()
+        $expected = (new TicketComment())
             ->setOriginId(20001)
             ->setBody('Updated ticket')
             ->setHtmlBody('<p>Updated Ticket</p>')
@@ -113,7 +82,7 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->transport->expects($this->once())
             ->method('addTicketComment')
             ->with($comment)
-            ->will($this->returnValue($expected));
+            ->willReturn($expected);
 
         $this->writer->write([$comment]);
 
@@ -134,24 +103,24 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->assertEquals('james.cook@example.com', $relatedComment->getOwner()->getEmail());
         $this->assertEmpty($relatedComment->getContact());
 
-        static::assertStringContainsString(
+        self::assertStringContainsString(
             '[info] Zendesk Ticket Comment [id=' . $comment->getId() . ']:',
             $this->logOutput
         );
-        static::assertStringContainsString('Create ticket comment in Zendesk API.', $this->logOutput);
-        static::assertStringContainsString(
+        self::assertStringContainsString('Create ticket comment in Zendesk API.', $this->logOutput);
+        self::assertStringContainsString(
             'Created ticket comment [origin_id=' . $expected->getOriginId() . '].',
             $this->logOutput
         );
-        static::assertStringContainsString('Update ticket comment by response data.', $this->logOutput);
-        static::assertStringContainsString('Update related comment.', $this->logOutput);
+        self::assertStringContainsString('Update ticket comment by response data.', $this->logOutput);
+        self::assertStringContainsString('Update related comment.', $this->logOutput);
     }
 
     public function testWriteCreatesTicketWithContactAuthor()
     {
         $comment = $this->getReference('zendesk_ticket_42_comment_3');
 
-        $expected = $this->createTicketComment()
+        $expected = (new TicketComment())
             ->setOriginId(20001)
             ->setBody('Updated ticket')
             ->setHtmlBody('<p>Updated Ticket</p>')
@@ -162,7 +131,7 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->transport->expects($this->once())
             ->method('addTicketComment')
             ->with($comment)
-            ->will($this->returnValue($expected));
+            ->willReturn($expected);
 
         $this->writer->write([$comment]);
 
@@ -181,14 +150,14 @@ class TicketCommentExportWriterTest extends WebTestCase
             ->setUrl('https://foo.zendesk.com/api/v2/users/10001.json')
             ->setName($author->getName())
             ->setEmail($author->getEmail())
-            ->setRole($this->createUserRole($author->getRole()->getName()));
+            ->setRole(new UserRole($author->getRole()->getName()));
 
         $this->transport->expects($this->once())
             ->method('createUser')
             ->with($author)
-            ->will($this->returnValue($expectedAuthor));
+            ->willReturn($expectedAuthor);
 
-        $expected = $this->createTicketComment()
+        $expected = (new TicketComment())
             ->setOriginId(20001)
             ->setBody('Updated ticket')
             ->setHtmlBody('<p>Updated Ticket</p>')
@@ -199,7 +168,7 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->transport->expects($this->once())
             ->method('addTicketComment')
             ->with($ticketComment)
-            ->will($this->returnValue($expected));
+            ->willReturn($expected);
 
         $this->writer->write([$ticketComment]);
 
@@ -219,39 +188,39 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->assertEquals('Alex', $relatedComment->getContact()->getFirstName());
         $this->assertEquals('Miller', $relatedComment->getContact()->getLastName());
 
-        static::assertStringContainsString(
+        self::assertStringContainsString(
             '[info] Zendesk Ticket Comment [id=' . $ticketComment->getId() . ']:',
             $this->logOutput
         );
-        static::assertStringContainsString(
+        self::assertStringContainsString(
             'Create user in Zendesk API [id=' . $author->getId() . '].',
             $this->logOutput
         );
-        static::assertStringContainsString(
+        self::assertStringContainsString(
             'Created user [origin_id=' . $expectedAuthor->getOriginId() . '].',
             $this->logOutput
         );
-        static::assertStringContainsString(
+        self::assertStringContainsString(
             'Create ticket comment in Zendesk API.',
             $this->logOutput
         );
-        static::assertStringContainsString(
+        self::assertStringContainsString(
             'Created ticket comment [origin_id=' . $expected->getOriginId() . '].',
             $this->logOutput
         );
-        static::assertStringContainsString('Update ticket comment by response data.', $this->logOutput);
-        static::assertStringContainsString('Update related comment.', $this->logOutput);
+        self::assertStringContainsString('Update ticket comment by response data.', $this->logOutput);
+        self::assertStringContainsString('Update related comment.', $this->logOutput);
     }
 
     public function testWriteProhibitedToCreateEndUser()
     {
         $ticketComment = $this->getReference('zendesk_ticket_42_comment_4');
         $author = $ticketComment->getAuthor();
-        $author->setRole($this->registry->getRepository('OroZendeskBundle:UserRole')->find(UserRole::ROLE_AGENT));
+        $author->setRole($this->registry->getRepository(UserRole::class)->find(UserRole::ROLE_AGENT));
 
         $this->transport->expects($this->never())->method('createUser');
 
-        $expected = $this->createTicketComment()
+        $expected = (new TicketComment())
             ->setOriginId(20001)
             ->setBody('Updated ticket')
             ->setHtmlBody('<p>Updated Ticket</p>')
@@ -261,29 +230,29 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->transport->expects($this->once())
             ->method('addTicketComment')
             ->with($ticketComment)
-            ->will($this->returnValue($expected));
+            ->willReturn($expected);
 
         $this->writer->write([$ticketComment]);
 
         $ticketComment = $this->registry->getRepository(get_class($ticketComment))->find($ticketComment->getId());
         $this->assertEmpty($ticketComment->getAuthor());
 
-        static::assertStringContainsString(
+        self::assertStringContainsString(
             '[info] Zendesk Ticket Comment [id=' . $ticketComment->getId() . ']:',
             $this->logOutput
         );
-        static::assertStringContainsString(
+        self::assertStringContainsString(
             'Create user in Zendesk API [id=' . $author->getId() . '].',
             $this->logOutput
         );
-        static::assertStringContainsString('Not allowed to create user [role=agent] in Zendesk.', $this->logOutput);
+        self::assertStringContainsString('Not allowed to create user [role=agent] in Zendesk.', $this->logOutput);
     }
 
     public function testCreateCommentToClosedTicketWithExpectedException()
     {
         $ticketComment = $this->getReference('zendesk_ticket_42_comment_4');
         $author = $ticketComment->getAuthor();
-        $author->setRole($this->registry->getRepository('OroZendeskBundle:UserRole')->find(UserRole::ROLE_AGENT));
+        $author->setRole($this->registry->getRepository(UserRole::class)->find(UserRole::ROLE_AGENT));
 
         $this->transport->expects($this->never())->method('createUser');
 
@@ -299,7 +268,7 @@ class TicketCommentExportWriterTest extends WebTestCase
         } catch (\Exception $e) {
             $this->fail(
                 sprintf(
-                    "Unexpected exception. Please check %s:createTicketComment",
+                    'Unexpected exception. Please check %s:createTicketComment',
                     TicketCommentExportWriter::class
                 )
             );
@@ -312,7 +281,7 @@ class TicketCommentExportWriterTest extends WebTestCase
 
         $ticketComment = $this->getReference('zendesk_ticket_42_comment_4');
         $author = $ticketComment->getAuthor();
-        $author->setRole($this->registry->getRepository('OroZendeskBundle:UserRole')->find(UserRole::ROLE_AGENT));
+        $author->setRole($this->registry->getRepository(UserRole::class)->find(UserRole::ROLE_AGENT));
 
         $this->transport->expects($this->never())->method('createUser');
 
@@ -324,44 +293,5 @@ class TicketCommentExportWriterTest extends WebTestCase
             ->willThrowException($exception);
 
         $this->writer->write([$ticketComment]);
-    }
-
-    protected function createTicket()
-    {
-        return new Ticket();
-    }
-
-    protected function createTicketComment()
-    {
-        return new TicketComment();
-    }
-
-    protected function createTicketType($name)
-    {
-        return new TicketType($name);
-    }
-
-    protected function createTicketStatus($name)
-    {
-        return new TicketStatus($name);
-    }
-
-    protected function createTicketPriority($name)
-    {
-        return new TicketPriority($name);
-    }
-
-    protected function createUser($originId)
-    {
-        $result = new User();
-
-        $result->setOriginId($originId);
-
-        return $result;
-    }
-
-    protected function createUserRole($name)
-    {
-        return new UserRole($name);
     }
 }

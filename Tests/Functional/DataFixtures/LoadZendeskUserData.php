@@ -97,7 +97,7 @@ class LoadZendeskUserData extends AbstractZendeskFixture implements DependentFix
                 $this->addReference($data['reference'], $entity);
             }
             if (isset($data['role'])) {
-                $data['role'] = $manager->find('OroZendeskBundle:UserRole', $data['role']);
+                $data['role'] = $manager->find(UserRole::class, $data['role']);
             }
             if (isset($data['relatedUser'])) {
                 $data['relatedUser'] = $this->getReference($data['relatedUser']);
