@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM;
 
+use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -9,34 +10,33 @@ use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 use Oro\Bundle\ZendeskBundle\Provider\UserConnector;
-use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\AbstractZendeskFixture;
 
-class LoadChannelData extends AbstractZendeskFixture implements DependentFixtureInterface
+/**
+ * Load demo data settings for zendesk channel.
+ */
+class LoadChannelData extends AbstractFixture implements DependentFixtureInterface
 {
-    protected $channelData = array(
-        array(
+    protected $channelData = [
+        [
             'name'         => 'Demo Zendesk integration',
             'type'         => ChannelType::TYPE,
-            'connectors'   => array(
+            'connectors'   => [
                 TicketConnector::TYPE,
                 UserConnector::TYPE,
                 TicketCommentConnector::TYPE
-            ),
+            ],
             'enabled'      => 0,
             'transport'    => 'oro_zendesk:zendesk_demo_transport',
             'reference'    => 'oro_zendesk:zendesk_demo_channel',
-            'organization' => null
-        )
-    );
+            'organization' => 'default_organization'
+        ]
+    ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDependencies()
     {
-        return array(
-            'Oro\Bundle\ZendeskBundle\Migrations\Data\Demo\ORM\LoadTransportData'
-        );
+        return [
+            LoadTransportData::class,
+        ];
     }
 
     /**
@@ -44,18 +44,18 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
      */
     public function load(ObjectManager $manager)
     {
-        foreach ($this->channelData as $data) {
-            $channel = new Channel();
+        $channel = new Channel();
 
-            $data['transport']    = $this->getReference($data['transport']);
-            $data['organization'] = $this->getReference('default_organization');
+        $data = reset($this->channelData);
+        $channel->setTransport($this->getReference($data['transport']));
+        $channel->setOrganization($this->getReference($data['organization']));
+        $channel->setConnectors($data['connectors']);
+        $channel->setEnabled($data['enabled']);
+        $channel->setName($data['name']);
+        $channel->setType($data['type']);
 
-            $this->setEntityPropertyValues($channel, $data, array('reference'));
-            $manager->persist($channel);
-
-            $this->setReference($data['reference'], $channel);
-        }
-
+        $manager->persist($channel);
+        $this->setReference('oro_zendesk:zendesk_demo_channel', $channel);
         $manager->flush();
     }
 }
