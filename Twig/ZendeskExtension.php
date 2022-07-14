@@ -101,9 +101,7 @@ class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInt
             $scheme = $uri->getScheme();
 
             if (empty($scheme)) {
-                $uri = $uri->withHost($uri->getPath())
-                    ->withPath('')
-                    ->withScheme('https');
+                $uri = Uri::fromParts(['scheme' => 'https', 'host' => $uri->getPath()]);
             }
 
             $url = (string)$uri;
