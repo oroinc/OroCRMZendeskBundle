@@ -231,7 +231,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     }
 
     /**
-     * Sorting params that help to stabilize page result to prevent duplication within batch items
+     * Sorting params that help stabilize page result to prevent duplication within batch items
      *
      * @return array
      */
