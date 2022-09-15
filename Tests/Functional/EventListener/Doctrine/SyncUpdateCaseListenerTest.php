@@ -9,7 +9,6 @@ use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
-use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
@@ -25,7 +24,8 @@ class SyncUpdateCaseListenerTest extends WebTestCase
         $user = self::getContainer()->get('doctrine')
             ->getRepository(User::class)
             ->findOneBy(['username' => LoadAdminUserData::DEFAULT_ADMIN_USERNAME]);
-        $this->assertNotNull($user, 'Cannot get admin user');
+
+        self::assertNotNull($user, 'Cannot get admin user');
         $token = new UsernamePasswordToken($user, $user->getUsername(), 'main');
         self::getContainer()->get('security.token_storage')->setToken($token);
     }
@@ -41,15 +41,14 @@ class SyncUpdateCaseListenerTest extends WebTestCase
 
         self::assertMessageSent(
             ReverseSyncIntegrationTopic::getName(),
-            new Message(
-                [
-                    'integration_id' => $ticket->getChannel()->getId(),
-                    'connector_parameters' => ['id' => $ticket->getId()],
-                    'connector' => TicketConnector::TYPE,
-                ],
-                MessagePriority::VERY_LOW
-            )
+            [
+                'integration_id' => $ticket->getChannel()->getId(),
+                'connector_parameters' => ['id' => $ticket->getId()],
+                'connector' => TicketConnector::TYPE,
+
+            ]
         );
+        self::assertMessageSentWithPriority(ReverseSyncIntegrationTopic::getName(), MessagePriority::VERY_LOW);
     }
 
     public function testListenerSkipsCaseWithoutRelatedTicket(): void
