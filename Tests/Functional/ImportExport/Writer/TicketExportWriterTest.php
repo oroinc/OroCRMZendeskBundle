@@ -20,7 +20,6 @@ use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
-use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
 use Psr\Log\LoggerInterface;
 
@@ -64,12 +63,12 @@ class TicketExportWriterTest extends WebTestCase
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
         $this->registry = self::getContainer()->get('doctrine');
-        $this->context  = $this->createMock(ContextInterface::class);
+        $this->context = $this->createMock(ContextInterface::class);
 
         $this->context->expects(self::any())
             ->method('getOption')
             ->willReturnMap([
-                ['channel', null, $this->channel->getId()]
+                ['channel', null, $this->channel->getId()],
             ]);
 
         $this->logger = $this->createMock(LoggerInterface::class);
@@ -244,7 +243,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticket]);
 
-        $ticket  = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
+        $ticket = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
         $comment = $ticket->getComments()->first();
 
         $relatedComment = $comment->getRelatedComment();
@@ -310,17 +309,16 @@ class TicketExportWriterTest extends WebTestCase
 
         self::assertMessageSent(
             ReverseSyncIntegrationTopic::getName(),
-            new Message(
-                [
-                    'integration_id' => $this->channel->getId(),
-                    'connector_parameters' => [
-                        'id' => $commentIds,
-                    ],
-                    'connector' => 'ticket_comment',
+            [
+                'integration_id' => $this->channel->getId(),
+                'connector_parameters' => [
+                    'id' => $commentIds,
                 ],
-                MessagePriority::VERY_LOW
-            )
+                'connector' => 'ticket_comment',
+
+            ]
         );
+        self::assertMessageSentWithPriority(ReverseSyncIntegrationTopic::getName(), MessagePriority::VERY_LOW);
     }
 
     public function testWriteUpdatesTicket(): void
@@ -442,7 +440,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticket]);
 
-        $ticket  = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
+        $ticket = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
         self::assertNotEmpty($ticket->getRequester());
         self::assertEquals($expectedRequester->getOriginId(), $ticket->getRequester()->getOriginId());
 
