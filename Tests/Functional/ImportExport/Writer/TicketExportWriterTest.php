@@ -6,7 +6,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\CaseBundle\Entity\CasePriority;
 use Oro\Bundle\CaseBundle\Entity\CaseStatus;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
-use Oro\Bundle\IntegrationBundle\Async\Topics;
+use Oro\Bundle\IntegrationBundle\Async\Topic\ReverseSyncIntegrationTopic;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
@@ -20,7 +20,6 @@ use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\ImportExport\Writer\TicketExportWriter;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
-use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
 use Psr\Log\LoggerInterface;
 
@@ -64,12 +63,12 @@ class TicketExportWriterTest extends WebTestCase
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
         $this->registry = self::getContainer()->get('doctrine');
-        $this->context  = $this->createMock(ContextInterface::class);
+        $this->context = $this->createMock(ContextInterface::class);
 
         $this->context->expects(self::any())
             ->method('getOption')
             ->willReturnMap([
-                ['channel', null, $this->channel->getId()]
+                ['channel', null, $this->channel->getId()],
             ]);
 
         $this->logger = $this->createMock(LoggerInterface::class);
@@ -85,7 +84,7 @@ class TicketExportWriterTest extends WebTestCase
         $this->writer->setLogger($this->logger);
     }
 
-    public function testWriteCreatesTicket()
+    public function testWriteCreatesTicket(): void
     {
         /** @var Ticket $ticket */
         $ticket = $this->getReference('oro_zendesk:not_synced_ticket');
@@ -145,7 +144,7 @@ class TicketExportWriterTest extends WebTestCase
         self::assertStringContainsString('Update related case.', $this->logOutput);
     }
 
-    public function testWriteCreatesComment()
+    public function testWriteCreatesComment(): void
     {
         $ticket = $this->getReference('oro_zendesk:not_synced_ticket');
 
@@ -210,7 +209,7 @@ class TicketExportWriterTest extends WebTestCase
         self::assertStringNotContainsString('Schedule job to sync existing ticket comments.', $this->logOutput);
     }
 
-    public function testWriteCreatesCommentWithExistingContact()
+    public function testWriteCreatesCommentWithExistingContact(): void
     {
         $ticket = $this->getReference('oro_zendesk:not_synced_ticket');
 
@@ -244,7 +243,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticket]);
 
-        $ticket  = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
+        $ticket = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
         $comment = $ticket->getComments()->first();
 
         $relatedComment = $comment->getRelatedComment();
@@ -255,7 +254,7 @@ class TicketExportWriterTest extends WebTestCase
         );
     }
 
-    public function testWriteSchedulesTicketCommentSync()
+    public function testWriteSchedulesTicketCommentSync(): void
     {
         $ticket = $this->getReference('oro_zendesk:not_synced_ticket_with_case_comments');
 
@@ -309,22 +308,20 @@ class TicketExportWriterTest extends WebTestCase
         self::assertTicketCommentIds($this->logOutput, $commentIds);
 
         self::assertMessageSent(
-            Topics::REVERS_SYNC_INTEGRATION,
-            new Message(
-                [
-                    'integration_id' => $this->channel->getId(),
-                    'connector_parameters' => [
-                        'id' => $commentIds,
-                    ],
-                    'connector' => 'ticket_comment',
-                    'transport_batch_size' => 100,
+            ReverseSyncIntegrationTopic::getName(),
+            [
+                'integration_id' => $this->channel->getId(),
+                'connector_parameters' => [
+                    'id' => $commentIds,
                 ],
-                MessagePriority::VERY_LOW
-            )
+                'connector' => 'ticket_comment',
+
+            ]
         );
+        self::assertMessageSentWithPriority(ReverseSyncIntegrationTopic::getName(), MessagePriority::VERY_LOW);
     }
 
-    public function testWriteUpdatesTicket()
+    public function testWriteUpdatesTicket(): void
     {
         /** @var Ticket $ticket */
         $ticket = $this->getReference('oro_zendesk:ticket_43');
@@ -383,7 +380,7 @@ class TicketExportWriterTest extends WebTestCase
         self::assertStringContainsString('Update related case.', $this->logOutput);
     }
 
-    public function testWriteCreatesUsers()
+    public function testWriteCreatesUsers(): void
     {
         $requester = $this->getReference('zendesk_user:sam.rogers@example.com');
         $submitter = $this->getReference('zendesk_user:garry.smith@example.com');
@@ -443,7 +440,7 @@ class TicketExportWriterTest extends WebTestCase
 
         $this->writer->write([$ticket]);
 
-        $ticket  = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
+        $ticket = $this->registry->getRepository(get_class($ticket))->find($ticket->getId());
         self::assertNotEmpty($ticket->getRequester());
         self::assertEquals($expectedRequester->getOriginId(), $ticket->getRequester()->getOriginId());
 
