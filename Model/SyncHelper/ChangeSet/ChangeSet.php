@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet;
 
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use Oro\Bundle\EntityExtendBundle\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**

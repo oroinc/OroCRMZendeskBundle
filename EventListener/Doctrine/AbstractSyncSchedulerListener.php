@@ -5,6 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\EventListener\Doctrine;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use Oro\Bundle\EntityExtendBundle\EntityPropertyInfo;
 use Oro\Bundle\IntegrationBundle\Manager\SyncScheduler;
 use Oro\Bundle\SecurityBundle\Authentication\TokenAccessorInterface;
 use Psr\Container\ContainerInterface;
@@ -101,7 +102,7 @@ abstract class AbstractSyncSchedulerListener implements ServiceSubscriberInterfa
      */
     protected function isIntegrationEntityValid($entity)
     {
-        if (!method_exists($entity, 'getChannel')) {
+        if (!EntityPropertyInfo::methodExists($entity, 'getChannel')) {
             throw new \InvalidArgumentException(
                 sprintf(
                     '$entity is instance of %s expect to have "getChannel" method.',

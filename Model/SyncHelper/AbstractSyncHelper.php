@@ -3,6 +3,7 @@
 namespace Oro\Bundle\ZendeskBundle\Model\SyncHelper;
 
 use Oro\Bundle\CaseBundle\Model\CaseEntityManager;
+use Oro\Bundle\EntityExtendBundle\PropertyAccess;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
@@ -12,10 +13,12 @@ use Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeSet;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Security\Acl\Util\ClassUtils;
 
+/**
+ * Base class for sync helpers.
+ */
 abstract class AbstractSyncHelper implements LoggerAwareInterface
 {
     /**
