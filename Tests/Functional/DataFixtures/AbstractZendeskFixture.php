@@ -3,9 +3,9 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Oro\Bundle\EntityExtendBundle\PropertyAccess;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 abstract class AbstractZendeskFixture extends AbstractFixture implements ContainerAwareInterface
 {
