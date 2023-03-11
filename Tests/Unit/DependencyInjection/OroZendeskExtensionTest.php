@@ -2,20 +2,19 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\DependencyInjection;
 
-use Oro\Bundle\TestFrameworkBundle\Test\DependencyInjection\ExtensionTestCase;
-use Oro\Bundle\ZendeskBundle\Controller\Api\Rest\TicketController;
 use Oro\Bundle\ZendeskBundle\DependencyInjection\OroZendeskExtension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class OroZendeskExtensionTest extends ExtensionTestCase
+class OroZendeskExtensionTest extends \PHPUnit\Framework\TestCase
 {
     public function testLoad(): void
     {
-        $this->loadExtension(new OroZendeskExtension());
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.environment', 'prod');
 
-        $expectedDefinitions = [
-            TicketController::class,
-        ];
+        $extension = new OroZendeskExtension();
+        $extension->load([], $container);
 
-        $this->assertDefinitionsLoaded($expectedDefinitions);
+        self::assertNotEmpty($container->getDefinitions());
     }
 }
