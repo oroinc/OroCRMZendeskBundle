@@ -4,6 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\UserBundle\Entity\User;
@@ -16,34 +17,27 @@ use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
 
 class ExportTicketCommentProcessorTest extends WebTestCase
 {
-    /** @var ExportTicketCommentProcessor */
-    private $processor;
-
     /** @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $context;
+    private Channel $channel;
+    private string $previousEmail;
+    private ExportTicketCommentProcessor $processor;
 
-    /** @var Channel */
-    private $channel;
-
-    /** @var string */
-    private $previousEmail;
 
     protected function setUp(): void
     {
         $this->initClient();
-
         $this->loadFixtures([LoadTicketData::class]);
+
         $this->context = $this->createMock(ContextInterface::class);
-
-        $this->processor = $this->getContainer()
-            ->get('oro_zendesk.importexport.processor.export_ticket_comment');
-
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->previousEmail = $this->channel->getTransport()->getZendeskUserEmail();
+
         $this->context->expects($this->any())
             ->method('getOption')
             ->willReturnMap([['channel', null, $this->channel->getId()]]);
 
+        $this->processor = $this->getContainer()->get('oro_zendesk.importexport.processor.export_ticket_comment');
         $this->processor->setImportExportContext($this->context);
     }
 
@@ -60,9 +54,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
 
         $userWithoutZendeskUser = $this->getReference('user:john.smith@example.com');
 
-        /**
-         * @var ZendeskRestTransport $transport
-         */
+        /** @var ZendeskRestTransport $transport */
         $transport = $this->channel->getTransport();
         $transport->setZendeskUserEmail('john.smith@example.com');
 
@@ -125,10 +117,11 @@ class ExportTicketCommentProcessorTest extends WebTestCase
 
     public function testProcessReturnExceptionIfInvalidEntityType()
     {
-        $this->expectException(\Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.'
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf(
+            'Imported entity must be instance of %s, stdClass given.',
+            TicketComment::class
+        ));
 
         $ticketComment = new \stdClass();
         $this->processor->process($ticketComment);
@@ -136,7 +129,8 @@ class ExportTicketCommentProcessorTest extends WebTestCase
 
     public function testProcessReturnNullIfCaseIsNull()
     {
-        $this->context->expects($this->once())->method('incrementErrorEntriesCount');
+        $this->context->expects($this->once())
+            ->method('incrementErrorEntriesCount');
         $ticketComment = new TicketComment();
         $ticketComment->setTicket($this->createTicketWithStatus(TicketStatus::STATUS_OPEN));
         $this->assertNull($this->processor->process($ticketComment));
@@ -144,7 +138,8 @@ class ExportTicketCommentProcessorTest extends WebTestCase
 
     public function testProcessIfTickedIsClosed()
     {
-        $this->context->expects($this->once())->method('incrementErrorEntriesCount');
+        $this->context->expects($this->once())
+            ->method('incrementErrorEntriesCount');
 
         $owner = $this->getReference('user:james.cook@example.com');
         $ticketComment = $this->createTicketComment('test', $owner, false, TicketStatus::STATUS_CLOSED);

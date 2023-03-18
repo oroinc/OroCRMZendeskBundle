@@ -3,63 +3,46 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Processor;
 
 use Doctrine\Persistence\ManagerRegistry;
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\ContactBundle\Entity\Contact;
+use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use Oro\Bundle\ZendeskBundle\ImportExport\Processor\ImportTicketCommentProcessor;
+use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
 
 class ImportTicketCommentProcessorTest extends WebTestCase
 {
-    /**
-     * @var int
-     */
-    protected static $ticketId;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $context;
-
-    /**
-     * @var ImportTicketCommentProcessor
-     */
-    protected $processor;
-
-    /**
-     * @var ManagerRegistry
-     */
-    protected $registry;
-
-    /**
-     * @var Channel
-     */
-    protected $channel;
+    /** @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $context;
+    private ManagerRegistry $registry;
+    private Channel $channel;
+    private ImportTicketCommentProcessor $processor;
 
     protected function setUp(): void
     {
         $this->initClient();
-        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->loadFixtures([LoadTicketData::class]);
 
-        $this->registry  = $this->getContainer()->get('doctrine');
+        $this->context = $this->createMock(ContextInterface::class);
+        $this->registry = $this->getContainer()->get('doctrine');
         $this->processor = $this->getContainer()->get('oro_zendesk.importexport.processor.import_ticket_comment');
-        $this->context   = $this->createMock('Oro\\Bundle\\ImportExportBundle\\Context\\ContextInterface');
-        $this->channel   = $this->getReference('zendesk_channel:first_test_channel');
+        $this->channel = $this->getReference('zendesk_channel:first_test_channel');
         $this->processor->setImportExportContext($this->context);
-    }
-
-    protected function postFixtureLoad()
-    {
-        self::$ticketId = $this->getReference('oro_zendesk:ticket_42')->getOriginId();
     }
 
     public function testProcessFailsWithInvalidArgument()
     {
-        $this->expectException(\Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\TicketComment, stdClass given.'
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf(
+            'Imported entity must be instance of %s, stdClass given.',
+            TicketComment::class
+        ));
 
         $this->processor->process(new \stdClass());
     }
@@ -93,7 +76,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
 
         $result = $this->processor->process($ticketComment);
 
-        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\TicketComment', $result);
+        $this->assertInstanceOf(TicketComment::class, $result);
 
         $this->assertNotSame($ticketComment, $result);
         $this->assertNotNull($result->getId());
@@ -121,7 +104,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
 
         $this->assertSame($ticketComment, $this->processor->process($ticketComment));
 
-        $this->assertInstanceOf('Oro\\Bundle\\ZendeskBundle\\Entity\\User', $ticketComment->getAuthor());
+        $this->assertInstanceOf(ZendeskUser::class, $ticketComment->getAuthor());
         $this->assertEquals($originId, $ticketComment->getAuthor()->getOriginId());
         $this->assertTrue($this->registry->getManager()->contains($ticketComment->getAuthor()));
     }
@@ -140,7 +123,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         $this->assertEquals($ticketComment, $this->processor->process($ticketComment));
 
         $comment = $ticketComment->getRelatedComment();
-        $this->assertInstanceOf('Oro\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
+        $this->assertInstanceOf(CaseComment::class, $comment);
         $this->assertFalse($this->registry->getManager()->contains($comment));
 
         $this->assertEquals($ticketComment->getBody(), $comment->getMessage());
@@ -166,8 +149,8 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         $this->assertSame($ticketComment, $this->processor->process($ticketComment));
 
         $comment = $ticketComment->getRelatedComment();
-        $this->assertInstanceOf('Oro\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
-        $this->assertInstanceOf('Oro\\Bundle\\UserBundle\\Entity\\User', $comment->getOwner());
+        $this->assertInstanceOf(CaseComment::class, $comment);
+        $this->assertInstanceOf(User::class, $comment->getOwner());
         $this->assertTrue($this->registry->getManager()->contains($comment->getOwner()));
         $this->assertEquals($expectedOwner->getId(), $comment->getOwner()->getId());
     }
@@ -190,37 +173,36 @@ class ImportTicketCommentProcessorTest extends WebTestCase
         $this->assertSame($ticketComment, $this->processor->process($ticketComment));
 
         $comment = $ticketComment->getRelatedComment();
-        $this->assertInstanceOf('Oro\\Bundle\\CaseBundle\\Entity\\CaseComment', $comment);
-        $this->assertInstanceOf('Oro\\Bundle\\ContactBundle\\Entity\\Contact', $comment->getContact());
+        $this->assertInstanceOf(CaseComment::class, $comment);
+        $this->assertInstanceOf(Contact::class, $comment->getContact());
         $this->assertTrue($this->registry->getManager()->contains($comment->getContact()));
         $this->assertEquals($expectedContact->getId(), $comment->getContact()->getId());
     }
 
-    protected function createZendeskTicketComment()
+    private function createZendeskTicketComment(): TicketComment
     {
         return new TicketComment();
     }
 
-    protected function createZendeskUser()
+    private function createZendeskUser(): ZendeskUser
     {
         return new ZendeskUser();
     }
 
-    protected function createTicket($originId)
+    private function createTicket(int $originId): Ticket
     {
-        return (new Ticket())->setOriginId($originId);
+        $ticket = new Ticket();
+        $ticket->setOriginId($originId);
+
+        return $ticket;
     }
 
-    protected function setExpectedContextOptions(array $options)
+    private function setExpectedContextOptions(array $options): void
     {
         $this->context->expects($this->any())
             ->method('getOption')
-            ->will(
-                $this->returnCallback(
-                    function ($name) use ($options) {
-                        return isset($options[$name]) ? $options[$name] : null;
-                    }
-                )
-            );
+            ->willReturnCallback(function ($name) use ($options) {
+                return $options[$name] ?? null;
+            });
     }
 }
