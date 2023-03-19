@@ -9,35 +9,32 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
 
 class LoadContactData extends AbstractZendeskFixture
 {
-    /**
-     * @var array
-     */
-    protected $data = array(
-        array(
+    private array $data = [
+        [
             'reference' => 'contact:jim.smith@example.com',
             'firstName' => 'Jim',
             'lastName'  => 'Smith',
             'email'     => 'jim.smith@example.com',
-        ),
-        array(
+        ],
+        [
             'reference' => 'contact:mike.johnson@example.com',
             'firstName' => 'Mike',
             'lastName'  => 'Johnson',
             'email'     => 'mike.johnson@example.com',
-        ),
-        array(
+        ],
+        [
             'reference' => 'contact:alex.johnson@example.com',
             'firstName' => 'Alex',
             'lastName'  => 'Johnson',
             'email'     => 'alex.johnson@example.com',
-        ),
-        array(
+        ],
+        [
             'reference' => 'contact:alex.miller@example.com',
             'firstName' => 'Alex',
             'lastName'  => 'Miller',
             'email'     => 'alex.miller@example.com',
-        ),
-    );
+        ],
+    ];
 
     /**
      * {@inheritdoc}
@@ -49,7 +46,7 @@ class LoadContactData extends AbstractZendeskFixture
             $entity = new Contact();
 
             $entity->setOrganization($organization);
-            $this->setEntityPropertyValues($entity, $data, array('email', 'reference'));
+            $this->setEntityPropertyValues($entity, $data, ['email', 'reference']);
 
             if (isset($data['reference'])) {
                 $this->setReference($data['reference'], $entity);
@@ -63,16 +60,12 @@ class LoadContactData extends AbstractZendeskFixture
         $manager->flush();
     }
 
-    /**
-     * @param string $email
-     * @param bool $primary
-     * @return ContactEmail
-     */
-    protected function createContactEmail($email, $primary = true)
+    private function createContactEmail(string $email, bool $primary = true): ContactEmail
     {
         $result = new ContactEmail();
         $result->setEmail($email);
         $result->setPrimary($primary);
+
         return $result;
     }
 }

@@ -10,8 +10,8 @@ use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
 
 class LoadChannelData extends AbstractZendeskFixture implements DependentFixtureInterface
 {
-    protected $channelData = array(
-        array(
+    private array $channelData = [
+        [
             'name' => 'zendesk',
             'type' => 'zendesk',
             'transport' => 'zendesk_transport:first_test_transport',
@@ -20,8 +20,8 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
             'synchronizationSettings' => [
                 'isTwoWaySyncEnabled' => true
             ],
-        ),
-        array(
+        ],
+        [
             'name' => 'zendesk_second',
             'type' => 'zendesk',
             'transport' => 'zendesk_transport:second_test_transport',
@@ -30,8 +30,8 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
             'synchronizationSettings' => [
                 'isTwoWaySyncEnabled' => false
             ],
-        )
-    );
+        ]
+    ];
     /**
      * {@inheritdoc}
      */
@@ -48,7 +48,7 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
             $entity->setDefaultUserOwner($admin);
             $entity->setOrganization($organization);
 
-            $this->setEntityPropertyValues($entity, $data, array('reference', 'synchronizationSettings'));
+            $this->setEntityPropertyValues($entity, $data, ['reference', 'synchronizationSettings']);
             $this->setReference($data['reference'], $entity);
 
             if (isset($data['synchronizationSettings'])) {
@@ -68,8 +68,8 @@ class LoadChannelData extends AbstractZendeskFixture implements DependentFixture
      */
     public function getDependencies()
     {
-        return array(
+        return [
             'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTransportData'
-        );
+        ];
     }
 }

@@ -3,14 +3,18 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
+use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
+use Oro\Bundle\ZendeskBundle\Entity\TicketType;
+use Oro\Bundle\ZendeskBundle\Entity\User;
 
 class TicketTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var Ticket
-     */
-    protected $target;
+    private Ticket $target;
 
     protected function setUp(): void
     {
@@ -20,7 +24,7 @@ class TicketTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider settersAndGettersDataProvider
      */
-    public function testSettersAndGetters($property, $value)
+    public function testSettersAndGetters(string $property, mixed $value)
     {
         $method = 'set' . ucfirst($property);
         $result = $this->target->$method($value);
@@ -44,8 +48,8 @@ class TicketTest extends \PHPUnit\Framework\TestCase
 
         $this->target->prePersist();
 
-        $this->assertInstanceOf('\DateTime', $this->target->getCreatedAt());
-        $this->assertInstanceOf('\DateTime', $this->target->getUpdatedAt());
+        $this->assertInstanceOf(\DateTime::class, $this->target->getCreatedAt());
+        $this->assertInstanceOf(\DateTime::class, $this->target->getUpdatedAt());
 
         $expectedCreated = $this->target->getCreatedAt();
         $expectedUpdated = $this->target->getUpdatedAt();
@@ -60,64 +64,47 @@ class TicketTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertNull($this->target->getUpdatedAt());
         $this->target->preUpdate();
-        $this->assertInstanceOf('\DateTime', $this->target->getUpdatedAt());
+        $this->assertInstanceOf(\DateTime::class, $this->target->getUpdatedAt());
     }
 
-    /**
-     * @return array
-     */
-    public function settersAndGettersDataProvider()
+    public function settersAndGettersDataProvider(): array
     {
-        $zendeskUser = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\User')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $ticketType = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\TicketType')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $ticketStatus = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\TicketStatus')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $ticketPriority = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\TicketPriority')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $case = $this->getMockBuilder('Oro\Bundle\CaseBundle\Entity\CaseEntity')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $comment = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\TicketComment')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $zendeskUser = $this->createMock(User::class);
+        $ticketType = $this->createMock(TicketType::class);
+        $ticketStatus = $this->createMock(TicketStatus::class);
+        $ticketPriority = $this->createMock(TicketPriority::class);
+        $case = $this->createMock(CaseEntity::class);
+        $comment = $this->createMock(TicketComment::class);
         $ticket = new Ticket();
-        $collaborators = new ArrayCollection(array($zendeskUser));
-        $comments = new ArrayCollection(array($comment));
+        $collaborators = new ArrayCollection([$zendeskUser]);
+        $comments = new ArrayCollection([$comment]);
 
-        $channel = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Entity\Channel')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $channel = $this->createMock(Channel::class);
 
-        return array(
-            array('originId', 123456789),
-            array('url', 'test.com'),
-            array('subject', 'test subject'),
-            array('description', 'test description'),
-            array('recipient', 'test@mail.com'),
-            array('type', $ticketType),
-            array('status', $ticketStatus),
-            array('priority', $ticketPriority),
-            array('createdAt', new \DateTime()),
-            array('updatedAt', new \DateTime()),
-            array('originCreatedAt', new \DateTime()),
-            array('originUpdatedAt', new \DateTime()),
-            array('dueAt', new \DateTime()),
-            array('requester', $zendeskUser),
-            array('assignee', $zendeskUser),
-            array('submitter', $zendeskUser),
-            array('relatedCase', $case),
-            array('externalId', uniqid()),
-            array('problem', $ticket),
-            array('channel', $channel),
-            array('collaborators', $collaborators),
-            array('hasIncidents', true),
-            array('comments', $comments),
-        );
+        return [
+            ['originId', 123456789],
+            ['url', 'test.com'],
+            ['subject', 'test subject'],
+            ['description', 'test description'],
+            ['recipient', 'test@mail.com'],
+            ['type', $ticketType],
+            ['status', $ticketStatus],
+            ['priority', $ticketPriority],
+            ['createdAt', new \DateTime()],
+            ['updatedAt', new \DateTime()],
+            ['originCreatedAt', new \DateTime()],
+            ['originUpdatedAt', new \DateTime()],
+            ['dueAt', new \DateTime()],
+            ['requester', $zendeskUser],
+            ['assignee', $zendeskUser],
+            ['submitter', $zendeskUser],
+            ['relatedCase', $case],
+            ['externalId', 'test_external_id'],
+            ['problem', $ticket],
+            ['channel', $channel],
+            ['collaborators', $collaborators],
+            ['hasIncidents', true],
+            ['comments', $comments],
+        ];
     }
 }

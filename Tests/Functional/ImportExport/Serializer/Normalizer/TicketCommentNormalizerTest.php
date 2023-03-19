@@ -10,10 +10,7 @@ use Oro\Bundle\ZendeskBundle\Entity\User;
 
 class TicketCommentNormalizerTest extends WebTestCase
 {
-    /**
-     * @var Serializer
-     */
-    protected $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {
@@ -33,11 +30,11 @@ class TicketCommentNormalizerTest extends WebTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function denormalizeProvider()
+    public function denormalizeProvider(): array
     {
-        return array(
-            'full' => array(
-                'data' => array(
+        return [
+            'full' => [
+                'data' => [
                     'id' => $originId = 100,
                     'author_id' => $authorId = 105,
                     'body' => $body = 'Body',
@@ -45,7 +42,7 @@ class TicketCommentNormalizerTest extends WebTestCase
                     'public' => $public = true,
                     'ticket_id' => $ticketId = 202,
                     'created_at' => $createdAt = '2014-06-12T11:45:21Z',
-                ),
+                ],
                 'expected' => $this->createTicketComment()
                     ->setOriginId($originId)
                     ->setAuthor($this->createUser($authorId))
@@ -54,16 +51,16 @@ class TicketCommentNormalizerTest extends WebTestCase
                     ->setPublic($public)
                     ->setTicket($this->createTicket($ticketId))
                     ->setOriginCreatedAt(new \DateTime($createdAt))
-            ),
-            'with ticket_id' => array(
-                'data' => array(
+            ],
+            'with ticket_id' => [
+                'data' => [
                     'id' => $originId = 100,
                     'author_id' => $authorId = 105,
                     'body' => $body = 'Body',
                     'html_body' => $htmlBody = '<p>Body</p>',
                     'public' => $public = true,
                     'created_at' => $createdAt = '2014-06-12T11:45:21Z',
-                ),
+                ],
                 'expected' => $this->createTicketComment()
                     ->setOriginId($originId)
                     ->setAuthor($this->createUser($authorId))
@@ -72,29 +69,29 @@ class TicketCommentNormalizerTest extends WebTestCase
                     ->setPublic($public)
                     ->setTicket($this->createTicket($ticketId = 202))
                     ->setOriginCreatedAt(new \DateTime($createdAt)),
-                'context' => array('ticket_id' => $ticketId),
-            ),
-            'short' => array(
+                'context' => ['ticket_id' => $ticketId],
+            ],
+            'short' => [
                 'data' => 100,
                 'expected' => $this->createTicketComment()->setOriginId(100)
-            ),
-        );
+            ],
+        ];
     }
 
     /**
      * @dataProvider normalizeDataProvider
      */
-    public function testNormalize($denormalized, $normalized, $context = array())
+    public function testNormalize($denormalized, $normalized, $context = [])
     {
         $actual = $this->serializer->normalize($denormalized, '', $context);
 
         $this->assertEquals($normalized, $actual);
     }
 
-    public function normalizeDataProvider()
+    public function normalizeDataProvider(): array
     {
-        return array(
-            'full' => array(
+        return [
+            'full' => [
                 'denormalized' => $this->createTicketComment()
                     ->setOriginId($originId = 100)
                     ->setAuthor($this->createUser($userId = 101))
@@ -103,45 +100,35 @@ class TicketCommentNormalizerTest extends WebTestCase
                     ->setHtmlBody('<p>Body</p>')
                     ->setPublic($public = true)
                     ->setCreatedAt(new \DateTime('2014-06-10T10:26:21+0000')),
-                'normalized' => array(
+                'normalized' => [
                     'id' => $originId,
                     'author_id' => $userId,
                     'ticket_id' => $ticketId,
                     'body' => $body,
                     'public' => $public,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
-    /**
-     * @return TicketComment
-     */
-    protected function createTicketComment()
+    private function createTicketComment(): TicketComment
     {
-        $result = new TicketComment();
-        return $result;
+        return new TicketComment();
     }
 
-    /**
-     * @param int $id
-     * @return Ticket
-     */
-    protected function createTicket($id)
+    private function createTicket(int $originId): Ticket
     {
         $result = new Ticket();
-        $result->setOriginId($id);
+        $result->setOriginId($originId);
+
         return $result;
     }
 
-    /**
-     * @param int $id
-     * @return User
-     */
-    protected function createUser($id)
+    private function createUser(int $originId): User
     {
         $result = new User();
-        $result->setOriginId($id);
+        $result->setOriginId($originId);
+
         return $result;
     }
 }

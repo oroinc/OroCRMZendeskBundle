@@ -63,16 +63,14 @@ class TicketExportWriterTest extends WebTestCase
         $this->channel = $this->getReference('zendesk_channel:first_test_channel');
 
         $this->registry = self::getContainer()->get('doctrine');
-        $this->context = $this->createMock(ContextInterface::class);
 
-        $this->context->expects(self::any())
+        $this->context = $this->createMock(ContextInterface::class);
+        $this->context->expects(self::once())
             ->method('getOption')
-            ->willReturnMap([
-                ['channel', null, $this->channel->getId()],
-            ]);
+            ->with('channel', null)
+            ->willReturn($this->channel->getId());
 
         $this->logger = $this->createMock(LoggerInterface::class);
-
         $this->logger->expects(self::any())
             ->method('log')
             ->willReturnCallback(function ($level, $message) {

@@ -5,33 +5,30 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\Model;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\ZendeskBundle\Model\SyncState;
 use Oro\Bundle\ZendeskBundle\Provider\UserConnector;
+use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadSyncStatusData;
 
 class SyncStateTest extends WebTestCase
 {
-    /**
-     * @var SyncState
-     */
-    protected $target;
+    private SyncState $target;
 
     protected function setUp(): void
     {
         $this->initClient();
-        $this->loadFixtures(array(
-                'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadSyncStatusData'
-            ));
+        $this->loadFixtures([LoadSyncStatusData::class]);
+
         $this->target = $this->getSyncStateService();
     }
 
     public function testServiceLoad()
     {
-        $this->assertInstanceOf('Oro\Bundle\ZendeskBundle\Model\SyncState', $this->target);
+        $this->assertInstanceOf(SyncState::class, $this->target);
     }
 
     public function testAddTicketId()
     {
-        $expected = array(rand(), rand(), rand(), rand(), rand());
+        $expected = [rand(), rand(), rand(), rand(), rand()];
         foreach ($expected as $id) {
-            $this->assertInstanceOf('Oro\Bundle\ZendeskBundle\Model\SyncState', $this->target->addTicketId($id));
+            $this->assertInstanceOf(SyncState::class, $this->target->addTicketId($id));
         }
         $syncState = $this->getSyncStateService();
         $actual  = $syncState->getTicketIds();
@@ -41,9 +38,9 @@ class SyncStateTest extends WebTestCase
 
     public function testSetTicketIds()
     {
-        $expected = array(rand(), rand(), rand(), rand(), rand());
+        $expected = [rand(), rand(), rand(), rand(), rand()];
 
-        $this->assertInstanceOf('Oro\Bundle\ZendeskBundle\Model\SyncState', $this->target->setTicketIds($expected));
+        $this->assertInstanceOf(SyncState::class, $this->target->setTicketIds($expected));
         $syncState = $this->getSyncStateService();
         $actual  = $syncState->getTicketIds();
 
@@ -59,10 +56,7 @@ class SyncStateTest extends WebTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return SyncState
-     */
-    protected function getSyncStateService()
+    private function getSyncStateService(): SyncState
     {
         return $this->getContainer()->get('oro_zendesk.sync_state');
     }

@@ -2,14 +2,15 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
+use Oro\Bundle\ZendeskBundle\Entity\User;
 
 class TicketCommentTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var TicketComment
-     */
-    protected $target;
+    private TicketComment $target;
 
     protected function setUp(): void
     {
@@ -19,7 +20,7 @@ class TicketCommentTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider settersAndGettersDataProvider
      */
-    public function testSettersAndGetters($property, $value)
+    public function testSettersAndGetters(string $property, mixed $value)
     {
         $method = 'set' . ucfirst($property);
         $result = $this->target->$method($value);
@@ -43,8 +44,8 @@ class TicketCommentTest extends \PHPUnit\Framework\TestCase
 
         $this->target->prePersist();
 
-        $this->assertInstanceOf('\DateTime', $this->target->getCreatedAt());
-        $this->assertInstanceOf('\DateTime', $this->target->getUpdatedAt());
+        $this->assertInstanceOf(\DateTime::class, $this->target->getCreatedAt());
+        $this->assertInstanceOf(\DateTime::class, $this->target->getUpdatedAt());
 
         $expectedCreated = $this->target->getCreatedAt();
         $expectedUpdated = $this->target->getUpdatedAt();
@@ -59,40 +60,28 @@ class TicketCommentTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertNull($this->target->getUpdatedAt());
         $this->target->preUpdate();
-        $this->assertInstanceOf('\DateTime', $this->target->getUpdatedAt());
+        $this->assertInstanceOf(\DateTime::class, $this->target->getUpdatedAt());
     }
 
-    /**
-     * @return array
-     */
-    public function settersAndGettersDataProvider()
+    public function settersAndGettersDataProvider(): array
     {
-        $zendeskUser = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\User')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $ticket = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\Ticket')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $comment = $this->getMockBuilder('Oro\Bundle\CaseBundle\Entity\CaseComment')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $zendeskUser = $this->createMock(User::class);
+        $ticket = $this->createMock(Ticket::class);
+        $comment = $this->createMock(CaseComment::class);
+        $channel = $this->createMock(Channel::class);
 
-        $channel = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Entity\Channel')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        return array(
-            array('originId', 123456789),
-            array('body', 'test message'),
-            array('htmlBody', '<strong>test message</strong>'),
-            array('public', true),
-            array('author', $zendeskUser),
-            array('ticket', $ticket),
-            array('createdAt', new \DateTime()),
-            array('originCreatedAt', new \DateTime()),
-            array('updatedAt', new \DateTime()),
-            array('channel', $channel),
-            array('relatedComment', $comment)
-        );
+        return [
+            ['originId', 123456789],
+            ['body', 'test message'],
+            ['htmlBody', '<strong>test message</strong>'],
+            ['public', true],
+            ['author', $zendeskUser],
+            ['ticket', $ticket],
+            ['createdAt', new \DateTime()],
+            ['originCreatedAt', new \DateTime()],
+            ['updatedAt', new \DateTime()],
+            ['channel', $channel],
+            ['relatedComment', $comment]
+        ];
     }
 }

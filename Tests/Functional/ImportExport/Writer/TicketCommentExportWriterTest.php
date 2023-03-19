@@ -43,9 +43,10 @@ class TicketCommentExportWriterTest extends WebTestCase
         $this->registry = $this->getContainer()->get('doctrine');
 
         $context = $this->createMock(ContextInterface::class);
-        $context->expects($this->any())
+        $context->expects($this->once())
             ->method('getOption')
-            ->willReturnMap([['channel', null, $this->getReference('zendesk_channel:first_test_channel')->getId()]]);
+            ->with('channel', null)
+            ->willReturn($this->getReference('zendesk_channel:first_test_channel')->getId());
 
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->any())
@@ -218,7 +219,8 @@ class TicketCommentExportWriterTest extends WebTestCase
         $author = $ticketComment->getAuthor();
         $author->setRole($this->registry->getRepository(UserRole::class)->find(UserRole::ROLE_AGENT));
 
-        $this->transport->expects($this->never())->method('createUser');
+        $this->transport->expects($this->never())
+            ->method('createUser');
 
         $expected = (new TicketComment())
             ->setOriginId(20001)
@@ -254,7 +256,8 @@ class TicketCommentExportWriterTest extends WebTestCase
         $author = $ticketComment->getAuthor();
         $author->setRole($this->registry->getRepository(UserRole::class)->find(UserRole::ROLE_AGENT));
 
-        $this->transport->expects($this->never())->method('createUser');
+        $this->transport->expects($this->never())
+            ->method('createUser');
 
         $exception = new InvalidRecordException('', 422);
 
@@ -266,12 +269,10 @@ class TicketCommentExportWriterTest extends WebTestCase
         try {
             $this->writer->write([$ticketComment]);
         } catch (\Exception $e) {
-            $this->fail(
-                sprintf(
-                    'Unexpected exception. Please check %s:createTicketComment',
-                    TicketCommentExportWriter::class
-                )
-            );
+            $this->fail(sprintf(
+                'Unexpected exception. Please check %s:createTicketComment',
+                TicketCommentExportWriter::class
+            ));
         }
     }
 
@@ -283,7 +284,8 @@ class TicketCommentExportWriterTest extends WebTestCase
         $author = $ticketComment->getAuthor();
         $author->setRole($this->registry->getRepository(UserRole::class)->find(UserRole::ROLE_AGENT));
 
-        $this->transport->expects($this->never())->method('createUser');
+        $this->transport->expects($this->never())
+            ->method('createUser');
 
         $exception = new \Exception();
 

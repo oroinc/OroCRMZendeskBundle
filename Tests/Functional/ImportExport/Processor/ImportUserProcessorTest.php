@@ -32,7 +32,8 @@ class ImportUserProcessorTest extends WebTestCase
         $context = $this->createMock(ContextInterface::class);
         $context->expects($this->any())
             ->method('getOption')
-            ->willReturnMap([['channel', null, $this->channel->getId()]]);
+            ->with('channel', null)
+            ->willReturn($this->channel->getId());
 
         $this->processor->setImportExportContext($context);
     }

@@ -34,7 +34,6 @@ class ImportTicketProcessorTest extends WebTestCase
     protected function setUp(): void
     {
         $this->initClient();
-
         $this->loadFixtures([LoadTicketData::class]);
 
         $this->registry = $this->getContainer()->get('doctrine');
@@ -44,7 +43,9 @@ class ImportTicketProcessorTest extends WebTestCase
         $context = $this->createMock(ContextInterface::class);
         $context->expects($this->any())
             ->method('getOption')
-            ->willReturnMap([['channel', null, $this->channel->getId()]]);
+            ->with('channel', null)
+            ->willReturn($this->channel->getId());
+
         $this->processor->setImportExportContext($context);
     }
 

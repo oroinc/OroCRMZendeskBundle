@@ -9,12 +9,11 @@ use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordExce
 class TicketCommentExceptionHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var TicketCommentExceptionHandler */
-    protected $exceptionHandler;
+    private $exceptionHandler;
 
     /** @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject */
-    protected $context;
+    private $context;
 
-    /** {@inheritdoc} */
     protected function setUp(): void
     {
         $this->context = $this->createMock(ContextInterface::class);
@@ -22,28 +21,12 @@ class TicketCommentExceptionHandlerTest extends \PHPUnit\Framework\TestCase
         $this->exceptionHandler = new TicketCommentExceptionHandler();
     }
 
-    /** {@inheritdoc} */
-    protected function tearDown(): void
-    {
-        unset(
-            $this->exceptionHandler,
-            $this->context
-        );
-
-        parent::tearDown();
-    }
-
     /**
      * @dataProvider exceptionDataProvider
-     *
-     * @param \Exception    $exception
-     * @param int           $expectedIncrementErrorEntriesCount
-     * @param bool          $expected
      */
-    public function testProcess(\Exception $exception, $expectedIncrementErrorEntriesCount, $expected)
+    public function testProcess(\Exception $exception, int $expectedIncrementErrorEntriesCount, bool $expected)
     {
-        $this->context
-             ->expects($this->exactly($expectedIncrementErrorEntriesCount))
+        $this->context->expects($this->exactly($expectedIncrementErrorEntriesCount))
              ->method('incrementErrorEntriesCount');
 
         $this->assertEquals(
@@ -52,8 +35,7 @@ class TicketCommentExceptionHandlerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /** @return mixed[] */
-    public function exceptionDataProvider()
+    public function exceptionDataProvider(): array
     {
         return [
             'Test with unexpected Exception' => [

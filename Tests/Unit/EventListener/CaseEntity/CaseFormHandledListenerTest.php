@@ -2,49 +2,43 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\EventListener\CaseEntity;
 
+use Oro\Bundle\CaseBundle\Entity\CaseComment;
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\CaseBundle\Event\FormHandlerEvent;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener;
 use Oro\Bundle\ZendeskBundle\Form\Extension\SyncWithZendeskExtension;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
+use Oro\Bundle\ZendeskBundle\Model\SyncManager;
+use Symfony\Component\Form\Form;
 
 class CaseFormHandledListenerTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var CaseEntityListener
-     */
-    protected $listener;
+    /** @var CaseEntityListener */
+    private $listener;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $syncManager;
+    /** @var SyncManager|\PHPUnit\Framework\MockObject\MockObject */
+    private $syncManager;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $oroEntityProvider;
+    /** @var OroEntityProvider|\PHPUnit\Framework\MockObject\MockObject */
+    private $oroEntityProvider;
 
     protected function setUp(): void
     {
-        $this->syncManager = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->oroEntityProvider = $this->getMockBuilder(
-            'Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider'
-        )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->syncManager = $this->createMock(SyncManager::class);
+        $this->oroEntityProvider = $this->createMock(OroEntityProvider::class);
+
         $this->listener = new CaseEntityListener($this->syncManager, $this->oroEntityProvider);
     }
 
     public function testBeforeSaveStartCommentJobIfEntityIsComment()
     {
-        $formHandlerEvent = $this->getMockBuilder('Oro\Bundle\CaseBundle\Event\FormHandlerEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $formHandlerEvent = $this->createMock(FormHandlerEvent::class);
 
-        $entity = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseComment');
+        $entity = $this->createMock(CaseComment::class);
         $formHandlerEvent->expects($this->once())
             ->method('getEntity')
-            ->will($this->returnValue($entity));
+            ->willReturn($entity);
         $this->syncManager->expects($this->once())
             ->method('syncComment')
             ->with($entity);
@@ -54,39 +48,33 @@ class CaseFormHandledListenerTest extends \PHPUnit\Framework\TestCase
     public function testBeforeSaveStartCommentJobIfEntityIsCase()
     {
         $expectedId = 42;
-        $formHandlerEvent = $this->getMockBuilder('Oro\Bundle\CaseBundle\Event\FormHandlerEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $formHandlerEvent = $this->createMock(FormHandlerEvent::class);
 
-        $entity = $this->createMock('Oro\Bundle\CaseBundle\Entity\CaseEntity');
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $channelField = $this->getMockBuilder('Symfony\Component\Form\Form')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $expectedChannel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
+        $entity = $this->createMock(CaseEntity::class);
+        $form = $this->createMock(Form::class);
+        $channelField = $this->createMock(Form::class);
+        $expectedChannel = $this->createMock(Channel::class);
         $channelField->expects($this->once())
             ->method('getData')
-            ->will($this->returnValue($expectedId));
+            ->willReturn($expectedId);
         $form->expects($this->once())
             ->method('has')
             ->with(SyncWithZendeskExtension::ZENDESK_CHANNEL_FIELD)
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $form->expects($this->once())
             ->method('get')
             ->with(SyncWithZendeskExtension::ZENDESK_CHANNEL_FIELD)
-            ->will($this->returnValue($channelField));
+            ->willReturn($channelField);
         $formHandlerEvent->expects($this->once())
             ->method('getEntity')
-            ->will($this->returnValue($entity));
+            ->willReturn($entity);
         $formHandlerEvent->expects($this->once())
             ->method('getForm')
-            ->will($this->returnValue($form));
+            ->willReturn($form);
         $this->oroEntityProvider->expects($this->once())
             ->method('getChannelById')
             ->with($expectedId)
-            ->will($this->returnValue($expectedChannel));
+            ->willReturn($expectedChannel);
         $this->syncManager->expects($this->once())
             ->method('syncCase')
             ->with($entity, $expectedChannel);

@@ -3,13 +3,14 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\Controller\Api\Rest;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
 
 class TicketControllerTest extends WebTestCase
 {
     protected function setUp(): void
     {
         $this->initClient(['debug' => false], $this->generateWsseAuthHeader());
-        $this->loadFixtures(['Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTicketData']);
+        $this->loadFixtures([LoadTicketData::class]);
     }
 
     public function testPostSyncCaseActionSuccess()

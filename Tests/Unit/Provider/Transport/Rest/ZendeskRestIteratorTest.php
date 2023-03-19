@@ -14,9 +14,11 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
     private const RESOURCE = 'users';
     private const PARAMS = ['foo' => 'bar'];
 
-    private RestClientInterface|\PHPUnit\Framework\MockObject\MockObject $client;
+    /** @var RestClientInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $client;
 
-    private ZendeskRestIterator $iterator;
+    /** @var ZendeskRestIterator */
+    private $iterator;
 
     protected function setUp(): void
     {
@@ -34,14 +36,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
     {
         $this->client->expects(self::once())
             ->method('getJSON')
-            ->willReturn(
-                [
-                    'rows' => [
-                        ['id' => 1],
-                        ['id' => 2],
-                    ],
-                ]
-            );
+            ->willReturn(['rows' => [['id' => 1], ['id' => 2]]]);
 
         $normalizer = $this->createMock(DenormalizerInterface::class);
         $normalizer->expects(self::any())

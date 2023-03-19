@@ -2,41 +2,35 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Placeholder\Filter;
 
+use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
+use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Oro\Bundle\ZendeskBundle\Placeholder\PlaceholderFilter;
 
-class PlaceholderFilter extends \PHPUnit\Framework\TestCase
+class PlaceholderFilterTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var PlaceholderFilter
-     */
-    protected $filter;
+    /** @var PlaceholderFilter */
+    private $filter;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $oroProvider;
+    /** @var OroEntityProvider|\PHPUnit\Framework\MockObject\MockObject */
+    private $oroProvider;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $zendeskProvider;
+    /** @var ZendeskEntityProvider|\PHPUnit\Framework\MockObject\MockObject */
+    private $zendeskProvider;
 
     protected function setUp(): void
     {
-        $this->oroProvider = $this->getMockBuilder(
-            'Oro\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\OroEntityProvider'
-        )->disableOriginalConstructor()->getMock();
-
-        $this->zendeskProvider = $this->getMockBuilder(
-            'Oro\\Bundle\\ZendeskBundle\\Model\\EntityProvider\\ZendeskEntityProvider'
-        )->disableOriginalConstructor()->getMock();
+        $this->oroProvider = $this->createMock(OroEntityProvider::class);
+        $this->zendeskProvider = $this->createMock(ZendeskEntityProvider::class);
 
         $this->filter = new PlaceholderFilter($this->oroProvider, $this->zendeskProvider);
     }
 
     public function testTicketAvailableIgnoreNotInstanceOrCaseEntity()
     {
-        $entity = new \StdClass();
+        $entity = new \stdClass();
 
         $this->zendeskProvider->expects($this->never())
             ->method($this->anything());
@@ -46,32 +40,32 @@ class PlaceholderFilter extends \PHPUnit\Framework\TestCase
 
     public function testTicketAvailable()
     {
-        $entity = $this->createMock('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity');
-        $ticket = $this->createMock('Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket');
+        $entity = $this->createMock(CaseEntity::class);
+        $ticket = $this->createMock(Ticket::class);
 
         $this->zendeskProvider->expects($this->once())
             ->method('getTicketByCase')
             ->with($entity)
-            ->will($this->returnValue($ticket));
+            ->willReturn($ticket);
 
         $this->assertTrue($this->filter->isTicketAvailable($entity));
     }
 
     public function testTicketNotAvailable()
     {
-        $entity = $this->createMock('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity');
+        $entity = $this->createMock(CaseEntity::class);
 
         $this->zendeskProvider->expects($this->once())
             ->method('getTicketByCase')
             ->with($entity)
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $this->assertFalse($this->filter->isTicketAvailable($entity));
     }
 
     public function testSyncApplicableIgnoreNotInstanceOrCaseEntity()
     {
-        $entity = new \StdClass();
+        $entity = new \stdClass();
 
         $this->zendeskProvider->expects($this->never())
             ->method($this->anything());
@@ -81,48 +75,49 @@ class PlaceholderFilter extends \PHPUnit\Framework\TestCase
 
     public function testSyncApplicable()
     {
-        $entity = $this->createMock('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity');
-        $channel = $this->createMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel');
+        $entity = $this->createMock(CaseEntity::class);
+        $channel = $this->createMock(Channel::class);
 
         $this->zendeskProvider->expects($this->once())
             ->method('getTicketByCase')
             ->with($entity)
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $this->oroProvider->expects($this->once())
             ->method('getEnabledTwoWaySyncChannels')
-            ->will($this->returnValue([$channel]));
+            ->willReturn([$channel]);
 
         $this->assertTrue($this->filter->isSyncApplicableForCaseEntity($entity));
     }
 
     public function testSyncNotApplicable()
     {
-        $entity = $this->createMock('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity');
+        $entity = $this->createMock(CaseEntity::class);
 
         $this->zendeskProvider->expects($this->once())
             ->method('getTicketByCase')
             ->with($entity)
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $this->oroProvider->expects($this->once())
             ->method('getEnabledTwoWaySyncChannels')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this->assertFalse($this->filter->isSyncApplicableForCaseEntity($entity));
     }
 
     public function testSyncNotApplicableForExistingTicket()
     {
-        $entity = $this->createMock('Oro\\Bundle\\CaseBundle\\Entity\\CaseEntity');
-        $ticket = $this->createMock('Oro\\Bundle\\ZendeskBundle\\Entity\\Ticket');
+        $entity = $this->createMock(CaseEntity::class);
+        $ticket = $this->createMock(Ticket::class);
 
         $this->zendeskProvider->expects($this->once())
             ->method('getTicketByCase')
             ->with($entity)
-            ->will($this->returnValue($ticket));
+            ->willReturn($ticket);
 
-        $this->oroProvider->expects($this->never())->method($this->anything());
+        $this->oroProvider->expects($this->never())
+            ->method($this->anything());
 
         $this->assertFalse($this->filter->isSyncApplicableForCaseEntity($entity));
     }

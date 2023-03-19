@@ -6,15 +6,8 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 
 class TicketStatusTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var TicketStatus
-     */
-    protected $target;
+    private string $name;
+    private TicketStatus $target;
 
     protected function setUp(): void
     {
@@ -39,7 +32,7 @@ class TicketStatusTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider settersAndGettersDataProvider
      */
-    public function testSettersAndGetters($property, $value)
+    public function testSettersAndGetters(string $property, string $value)
     {
         $method = 'set' . ucfirst($property);
         $result = $this->target->$method($value);
@@ -48,14 +41,11 @@ class TicketStatusTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($value, $this->target->{'get' . $property}());
     }
 
-    /**
-     * @return array
-     */
-    public function settersAndGettersDataProvider()
+    public function settersAndGettersDataProvider(): array
     {
-        return array(
-            array('label', 'test label'),
-            array('locale', 'test locale')
-        );
+        return [
+            ['label', 'test label'],
+            ['locale', 'test locale']
+        ];
     }
 }

@@ -2,26 +2,24 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\EventListener\Channel;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Event\IntegrationUpdateEvent;
 use Oro\Bundle\ZendeskBundle\EventListener\Channel\ChannelUpdateListener;
+use Oro\Bundle\ZendeskBundle\Model\SyncManager;
 use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 
 class ChannelUpdateListenerTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var ChannelUpdateListener
-     */
-    protected $listener;
+    /** @var ChannelUpdateListener */
+    private $listener;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $syncManager;
+    /** @var SyncManager|\PHPUnit\Framework\MockObject\MockObject */
+    private $syncManager;
 
     protected function setUp(): void
     {
-        $this->syncManager = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Model\SyncManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->syncManager = $this->createMock(SyncManager::class);
+
         $this->listener = new ChannelUpdateListener($this->syncManager);
     }
 
@@ -30,17 +28,15 @@ class ChannelUpdateListenerTest extends \PHPUnit\Framework\TestCase
      */
     public function testOnUpdate($data, $expectedRunSync = false)
     {
-        $channel = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $oldState = $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel');
-        $event = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Event\IntegrationUpdateEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $channel = $this->createMock(Channel::class);
+        $oldState = $this->createMock(Channel::class);
+        $event = $this->createMock(IntegrationUpdateEvent::class);
         $event->expects($this->once())
             ->method('getIntegration')
-            ->will($this->returnValue($channel));
+            ->willReturn($channel);
         $event->expects($this->any())
             ->method('getOldState')
-            ->will($this->returnValue($oldState));
+            ->willReturn($oldState);
         if ($expectedRunSync) {
             $this->syncManager->expects($this->once())
                 ->method('reverseSyncChannel')
@@ -51,93 +47,93 @@ class ChannelUpdateListenerTest extends \PHPUnit\Framework\TestCase
         }
         $channel->expects($this->once())
             ->method('getType')
-            ->will($this->returnValue($data['type']));
+            ->willReturn($data['type']);
         $settings = $this->getMockBuilder(\ArrayObject::class)
             ->addMethods(['offsetGetOr'])
             ->getMock();
         $settings->expects($this->any())
             ->method('offsetGetOr')
-            ->will($this->returnValue($data['sync_enable']));
+            ->willReturn($data['sync_enable']);
         $channel->expects($this->any())
             ->method('getSynchronizationSettings')
-            ->will($this->returnValue($settings));
+            ->willReturn($settings);
         $channel->expects($this->any())
             ->method('isEnabled')
-            ->will($this->returnValue($data['enable']));
+            ->willReturn($data['enable']);
         $settings = $this->getMockBuilder(\ArrayObject::class)
             ->addMethods(['offsetGetOr'])
             ->getMock();
         $settings->expects($this->any())
             ->method('offsetGetOr')
-            ->will($this->returnValue($data['sync_enable_old']));
+            ->willReturn($data['sync_enable_old']);
         $oldState->expects($this->any())
             ->method('getSynchronizationSettings')
-            ->will($this->returnValue($settings));
+            ->willReturn($settings);
         $oldState->expects($this->any())
             ->method('isEnabled')
-            ->will($this->returnValue($data['enable_old']));
+            ->willReturn($data['enable_old']);
         $this->listener->onUpdate($event);
     }
 
-    public function onUpdateDataProvider()
+    public function onUpdateDataProvider(): array
     {
-        return array(
-            'incorrect type' => array(
-                'data' => array(
+        return [
+            'incorrect type' => [
+                'data' => [
                     'type' => 'incorrect_type',
                     'sync_enable' => true,
                     'enable' => true,
                     'sync_enable_old' => false,
                     'enable_old' => true
-                )
-            ),
-            'two way sync not enabled' => array(
-                'data' => array(
+                ]
+            ],
+            'two way sync not enabled' => [
+                'data' => [
                     'type' => ChannelType::TYPE,
                     'sync_enable' => false,
                     'enable' => true,
                     'sync_enable_old' => false,
                     'enable_old' => false
-                )
-            ),
-            'two way sync already enabled' => array(
-                'data' => array(
+                ]
+            ],
+            'two way sync already enabled' => [
+                'data' => [
                     'type' => ChannelType::TYPE,
                     'sync_enable' => true,
                     'enable' => true,
                     'sync_enable_old' => true,
                     'enable_old' => true
-                )
-            ),
-            'two way sync already enabled but channel disabled' => array(
-                'data' => array(
+                ]
+            ],
+            'two way sync already enabled but channel disabled' => [
+                'data' => [
                     'type' => ChannelType::TYPE,
                     'sync_enable' => true,
                     'enable' => false,
                     'sync_enable_old' => false,
                     'enable_old' => true
-                )
-            ),
-            'two way sync was disabled' => array(
-                'data' => array(
+                ]
+            ],
+            'two way sync was disabled' => [
+                'data' => [
                     'type' => ChannelType::TYPE,
                     'sync_enable' => true,
                     'enable' => true,
                     'sync_enable_old' => false,
                     'enable_old' => true
-                ),
+                ],
                 'expectedRunSync' => true
-            ),
-            'two way sync already enabled but channel was disabled' => array(
-                'data' => array(
+            ],
+            'two way sync already enabled but channel was disabled' => [
+                'data' => [
                     'type' => ChannelType::TYPE,
                     'sync_enable' => true,
                     'enable' => true,
                     'sync_enable_old' => true,
                     'enable_old' => false
-                ),
+                ],
                 'expectedRunSync' => true
-            ),
-        );
+            ],
+        ];
     }
 }

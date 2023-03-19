@@ -23,7 +23,6 @@ class ExportTicketCommentProcessorTest extends WebTestCase
     private string $previousEmail;
     private ExportTicketCommentProcessor $processor;
 
-
     protected function setUp(): void
     {
         $this->initClient();

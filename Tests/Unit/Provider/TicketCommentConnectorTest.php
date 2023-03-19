@@ -17,84 +17,53 @@ class TicketCommentConnectorTest extends \PHPUnit\Framework\TestCase
 {
     use ExecutionContextTrait;
 
-    /**
-     * @var TicketCommentConnector
-     */
-    protected $connector;
+    /** @var TicketCommentConnector */
+    private $connector;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $mediator;
+    /** @var ConnectorContextMediator|\PHPUnit\Framework\MockObject\MockObject */
+    private $mediator;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $logger;
+    /** @var LoggerStrategy|\PHPUnit\Framework\MockObject\MockObject */
+    private $logger;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $registry;
+    /** @var ContextRegistry|\PHPUnit\Framework\MockObject\MockObject */
+    private $registry;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $syncState;
+    /** @var SyncState|\PHPUnit\Framework\MockObject\MockObject */
+    private $syncState;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $transport;
+    /** @var ZendeskTransportInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $transport;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $context;
+    /** @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $context;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $channel;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $stepExecutor;
+    /** @var StepExecution|\PHPUnit\Framework\MockObject\MockObject */
+    private $stepExecutor;
 
     protected function setUp(): void
     {
-        $this->registry = $this->getMockBuilder(ContextRegistry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->logger = $this->getMockBuilder(LoggerStrategy::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->mediator = $this->getMockBuilder(ConnectorContextMediator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->syncState = $this->getMockBuilder(SyncState::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->registry = $this->createMock(ContextRegistry::class);
+        $this->logger = $this->createMock(LoggerStrategy::class);
+        $this->mediator = $this->createMock(ConnectorContextMediator::class);
+        $this->syncState = $this->createMock(SyncState::class);
         $this->transport = $this->createMock(ZendeskTransportInterface::class);
         $this->context = $this->createMock(ContextInterface::class);
+        $this->stepExecutor = $this->createMock(StepExecution::class);
+
+        $channel = $this->createMock(Channel::class);
+        $channel->expects($this->any())
+            ->method('getTransport')
+            ->willReturn($this->createMock(Transport::class));
+
         $this->mediator->expects($this->any())
             ->method('getTransport')
-            ->will($this->returnValue($this->transport));
-        $this->channel = $this->createMock(Channel::class);
-        $transportEntity = $this->createMock(Transport::class);
-        $this->channel->expects($this->any())
-            ->method('getTransport')
-            ->will($this->returnValue($transportEntity));
+            ->willReturn($this->transport);
         $this->mediator->expects($this->any())
             ->method('getChannel')
-            ->will($this->returnValue($this->channel));
-        $this->stepExecutor = $this->getMockBuilder(StepExecution::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->willReturn($channel);
 
-        $this->stepExecutor
-            ->expects($this->any())
+        $this->stepExecutor->expects($this->any())
             ->method('getExecutionContext')
             ->willReturn($this->initExecutionContext());
 
@@ -106,45 +75,16 @@ class TicketCommentConnectorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown(): void
-    {
-        unset(
-            $this->connector,
-            $this->mediator,
-            $this->logger,
-            $this->registry,
-            $this->syncState,
-            $this->transport,
-            $this->context,
-            $this->channel,
-            $this->executionContext
-        );
-    }
-
     public function testGetConnectorSource()
     {
         $firstTicketId = 10;
         $secondTicketId = 20;
         $thirdTicketId = 30;
 
-        $firstComment = [
-            'id' => 1,
-        ];
-
-        $secondComment = [
-            'id' => 2,
-        ];
-
-        $thirdComment = [
-            'id' => 3,
-        ];
-
-        $fourthComment = [
-            'id' => 4,
-        ];
+        $firstComment = ['id' => 1];
+        $secondComment = ['id' => 2];
+        $thirdComment = ['id' => 3];
+        $fourthComment = ['id' => 4];
 
         $expectedResults = [
             $firstComment,
@@ -161,30 +101,22 @@ class TicketCommentConnectorTest extends \PHPUnit\Framework\TestCase
 
         $this->transport->expects($this->exactly(3))
             ->method('getTicketComments')
-            ->will($this->returnValueMap($map));
+            ->willReturnMap($map);
 
         $this->registry->expects($this->atLeastOnce())
             ->method('getByStepExecution')
             ->with($this->stepExecutor)
-            ->will($this->returnValue($this->context));
+            ->willReturn($this->context);
 
         $this->syncState->expects($this->once())
             ->method('getTicketIds')
-            ->will(
-                $this->returnValue(
-                    [
-                        $firstTicketId,
-                        $secondTicketId,
-                        $thirdTicketId,
-                    ]
-                )
-            );
+            ->willReturn([$firstTicketId, $secondTicketId, $thirdTicketId]);
 
         $isUpdatedLastSyncDateCallback = $this->getIsUpdatedLastSyncDateCallback();
         $this->connector->setStepExecution($this->stepExecutor);
         $this->assertTrue(
             $isUpdatedLastSyncDateCallback(),
-            "Last sync date should be saved to context data !"
+            'Last sync date should be saved to context data !'
         );
 
         foreach ($expectedResults as $expected) {

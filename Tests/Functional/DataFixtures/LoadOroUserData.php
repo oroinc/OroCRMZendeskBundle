@@ -9,35 +9,32 @@ use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
 
 class LoadOroUserData extends AbstractZendeskFixture
 {
-    /**
-     * @var array
-     */
-    protected $data = array(
-        array(
+    private array $data = [
+        [
             'reference' => 'user:bob.miller@example.com',
             'username' => 'bob.miller',
             'email' => 'bob.miller@example.com',
             'plainPassword' => 'password',
-        ),
-        array(
+        ],
+        [
             'reference' => 'user:james.cook@example.com',
             'username' => 'james.cook',
             'email' => 'james.cook@example.com',
             'plainPassword' => 'password',
-        ),
-        array(
+        ],
+        [
             'reference' => 'user:john.smith@example.com',
             'username' => 'john.smith',
             'email' => 'john.smith@example.com',
             'plainPassword' => 'password',
-        ),
-        array(
+        ],
+        [
             'reference' => 'user:anna.lee@example.com',
             'username' => 'anna.lee',
             'email' => 'anna.lee@example.com',
             'plainPassword' => 'password',
-        ),
-    );
+        ],
+    ];
 
     /**
      * {@inheritdoc}

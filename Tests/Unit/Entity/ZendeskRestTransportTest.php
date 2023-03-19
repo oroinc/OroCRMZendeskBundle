@@ -6,10 +6,7 @@ use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 
 class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var ZendeskRestTransport
-     */
-    protected $target;
+    private ZendeskRestTransport $target;
 
     protected function setUp(): void
     {
@@ -19,7 +16,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider settersAndGettersDataProvider
      */
-    public function testSettersAndGetters($property, $value)
+    public function testSettersAndGetters(string $property, string $value)
     {
         $method = 'set' . ucfirst($property);
         $result = $this->target->$method($value);
@@ -32,7 +29,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
     {
         $email = 'test@mail.com';
         $url = 'test_url.com';
-        $token = uniqid();
+        $token = 'test_token';
 
         $this->target->setEmail($email);
         $this->target->setUrl($url);
@@ -44,16 +41,13 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($result->get('url'), $url);
     }
 
-    /**
-     * @return array
-     */
-    public function settersAndGettersDataProvider()
+    public function settersAndGettersDataProvider(): array
     {
-        return array(
-            array('url', 'test_url.com'),
-            array('token', uniqid()),
-            array('email', 'test@mail.com'),
-            array('zendeskUserEmail', 'zendesk_test@mail.com')
-        );
+        return [
+            ['url', 'test_url.com'],
+            ['token', 'test_token'],
+            ['email', 'test@mail.com'],
+            ['zendeskUserEmail', 'zendesk_test@mail.com']
+        ];
     }
 }

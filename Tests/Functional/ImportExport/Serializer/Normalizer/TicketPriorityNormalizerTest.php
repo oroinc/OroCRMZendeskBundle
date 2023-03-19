@@ -8,10 +8,7 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 
 class TicketPriorityNormalizerTest extends WebTestCase
 {
-    /**
-     * @var Serializer
-     */
-    protected $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {
@@ -31,19 +28,19 @@ class TicketPriorityNormalizerTest extends WebTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function denormalizeProvider()
+    public function denormalizeProvider(): array
     {
-        return array(
-            'full' => array(
-                'data' => array(
+        return [
+            'full' => [
+                'data' => [
                     'name' => 'normal',
-                ),
+                ],
                 'expected' => new TicketPriority('normal')
-            ),
-            'short' => array(
+            ],
+            'short' => [
                 'data' => 'normal',
                 'expected' => new TicketPriority('normal')
-            ),
-        );
+            ],
+        ];
     }
 }

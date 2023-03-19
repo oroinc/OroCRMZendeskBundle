@@ -28,19 +28,20 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
     private const API_URL_PREFIX = 'api/v2';
     private const COMMENT_EVENT_TYPE = 'Comment';
 
-    private const TICKET_TYPE = Ticket::class;
-    private const COMMENT_TYPE = TicketComment::class;
-    private const USER_TYPE = User::class;
+    /** @var RestClientFactoryInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $clientFactory;
 
-    private RestClientFactoryInterface|\PHPUnit\Framework\MockObject\MockObject $clientFactory;
+    /** @var RestClientInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $client;
 
-    private RestClientInterface|\PHPUnit\Framework\MockObject\MockObject $client;
+    /** @var ContextAwareNormalizerInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $normalizer;
 
-    private ContextAwareNormalizerInterface|\PHPUnit\Framework\MockObject\MockObject $normalizer;
+    /** @var ContextAwareDenormalizerInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $denormalizer;
 
-    private ContextAwareDenormalizerInterface|\PHPUnit\Framework\MockObject\MockObject $denormalizer;
-
-    private ZendeskRestTransport $transport;
+    /** @var ZendeskRestTransport */
+    private $transport;
 
     protected function setUp(): void
     {
@@ -64,15 +65,15 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         /** @var ZendeskRestIteratorStub $result */
         $result = $this->transport->getUsers();
 
-        static::assertInstanceOf(ZendeskRestIteratorStub::class, $result);
+        self::assertInstanceOf(ZendeskRestIteratorStub::class, $result);
 
-        static::assertEquals($this->client, $result->xgetClient());
-        static::assertEquals('search.json', $result->xgetResource());
-        static::assertEquals('results', $result->xgetDataKeyName());
+        self::assertEquals($this->client, $result->xgetClient());
+        self::assertEquals('search.json', $result->xgetResource());
+        self::assertEquals('results', $result->xgetDataKeyName());
 
         $params = $result->xgetParams();
         $query = $params['query'] ?? '';
-        static::assertStringContainsString('type:user created<=', $query);
+        self::assertStringContainsString('type:user created<=', $query);
         $this->checkThatSearchQueryContainDateInCorrectFormat($query);
     }
 
@@ -84,7 +85,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         /** @var ZendeskRestIteratorStub $result */
         $result = $this->transport->getUsers(new \DateTime($datetime, new \DateTimeZone('UTC')));
 
-        static::assertEquals(
+        self::assertEquals(
             [
                 'query' => 'type:user updated>=2017-07-05T21:35:36+0000',
                 'sort_by' => 'created_at',
@@ -101,19 +102,19 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         /** @var ZendeskRestIteratorStub $result */
         $result = $this->transport->getTickets();
 
-        static::assertInstanceOf(ZendeskRestIterator::class, $result);
+        self::assertInstanceOf(ZendeskRestIterator::class, $result);
 
-        static::assertEquals($this->client, $result->xgetClient());
-        static::assertEquals('search.json', $result->xgetResource());
-        static::assertEquals('results', $result->xgetDataKeyName());
+        self::assertEquals($this->client, $result->xgetClient());
+        self::assertEquals('search.json', $result->xgetResource());
+        self::assertEquals('results', $result->xgetDataKeyName());
 
         $params = $result->xgetParams();
         $query = $params['query'] ?? '';
-        static::assertStringContainsString('type:ticket created<=', $query);
+        self::assertStringContainsString('type:ticket created<=', $query);
         $this->checkThatSearchQueryContainDateInCorrectFormat($query);
 
-        static::assertEquals($this->denormalizer, $result->xgetDenormalizer());
-        static::assertEquals(Ticket::class, $result->xgetItemType());
+        self::assertEquals($this->denormalizer, $result->xgetDenormalizer());
+        self::assertEquals(Ticket::class, $result->xgetItemType());
     }
 
     public function testGetTicketsWorksWithLastUpdatedAt(): void
@@ -123,7 +124,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
         /** @var ZendeskRestIteratorStub $result */
         $result = $this->transport->getTickets(new \DateTime($datetime, new \DateTimeZone('UTC')));
-        static::assertEquals(
+        self::assertEquals(
             [
                 'query' => 'type:ticket updated>=2014-06-27T01:08:00+0000',
                 'sort_by' => 'created_at',
@@ -141,15 +142,15 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         /** @var ZendeskRestIteratorStub $result */
         $result = $this->transport->getTicketComments($ticketId);
 
-        static::assertInstanceOf(ZendeskRestIterator::class, $result);
+        self::assertInstanceOf(ZendeskRestIterator::class, $result);
 
-        static::assertEquals($this->client, $result->xgetClient());
-        static::assertEquals('tickets/1/comments.json', $result->xgetResource());
-        static::assertEquals('comments', $result->xgetDataKeyName());
-        static::assertEquals([], $result->xgetParams());
-        static::assertEquals($this->denormalizer, $result->xgetDenormalizer());
-        static::assertEquals(TicketComment::class, $result->xgetItemType());
-        static::assertEquals(['ticket_id' => $ticketId], $result->xgetDenormalizeContext());
+        self::assertEquals($this->client, $result->xgetClient());
+        self::assertEquals('tickets/1/comments.json', $result->xgetResource());
+        self::assertEquals('comments', $result->xgetDataKeyName());
+        self::assertEquals([], $result->xgetParams());
+        self::assertEquals($this->denormalizer, $result->xgetDenormalizer());
+        self::assertEquals(TicketComment::class, $result->xgetItemType());
+        self::assertEquals(['ticket_id' => $ticketId], $result->xgetDenormalizeContext());
     }
 
     public function testGetTicketCommentsHandlesEmptyTicketId(): void
@@ -157,16 +158,14 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         $ticketId = null;
         $this->initTransport();
         $result = $this->transport->getTicketComments($ticketId);
-        static::assertInstanceOf('EmptyIterator', $result);
+        self::assertInstanceOf('EmptyIterator', $result);
     }
 
     /**
      * @dataProvider createUserProvider
-     *
-     * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */
     public function testCreateUserWorks(
-        object $data,
+        User $data,
         array $expectedNormalizeValueMap,
         array $expectedDenormalizeValueMap,
         array $expectedRequest,
@@ -193,7 +192,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
         $actualResult = $this->transport->createUser($data);
         if ($expectedResult) {
-            static::assertEquals($expectedResult, $actualResult);
+            self::assertEquals($expectedResult, $actualResult);
         }
     }
 
@@ -208,7 +207,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                 'expectedDenormalizeValueMap' => [
                     [
                         $createdUserData = ['id' => 1, 'name' => 'Foo'],
-                        self::USER_TYPE,
+                        User::class,
                         null,
                         [],
                         $createdUser = $this->createUser()->setOriginId(1)->setName('John Doe'),
@@ -297,11 +296,9 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider createTicketProvider
-     *
-     * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */
     public function testCreateTicketWorks(
-        object $data,
+        Ticket $data,
         array $expectedNormalizeValueMap,
         array $expectedDenormalizeValueMap,
         array $expectedRequest,
@@ -328,7 +325,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
         $actualResult = $this->transport->createTicket($data);
         if ($expectedResult) {
-            static::assertEquals($expectedResult, $actualResult);
+            self::assertEquals($expectedResult, $actualResult);
         }
     }
 
@@ -358,14 +355,14 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                             'subject' => 'My printer is on fire!',
                             'description' => 'The smoke is very colorful!',
                         ],
-                        self::TICKET_TYPE,
+                        Ticket::class,
                         null,
                         [],
                         $createdTicket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!'),
                     ],
                     [
                         $createdCommentData = ['id' => 2, 'body' => 'The smoke is very colorful!'],
-                        self::COMMENT_TYPE,
+                        TicketComment::class,
                         null,
                         [],
                         $createdComment = $this->createComment()->setOriginId(1)
@@ -415,7 +412,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                             'subject' => 'My printer is on fire!',
                             'description' => 'The smoke is very colorful!',
                         ],
-                        self::TICKET_TYPE,
+                        Ticket::class,
                         null,
                         [],
                         $createdTicket = $this->createTicket()->setOriginId(1)->setSubject('My printer is on fire!'),
@@ -507,11 +504,9 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider updateTicketProvider
-     *
-     * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */
     public function testUpdateTicketWorks(
-        object $data,
+        Ticket $data,
         array $expectedNormalizeValueMap,
         array $expectedDenormalizeValueMap,
         ?array $expectedRequest,
@@ -544,7 +539,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
         $actualResult = $this->transport->updateTicket($data);
         if ($expectedResult) {
-            static::assertEquals($expectedResult, $actualResult);
+            self::assertEquals($expectedResult, $actualResult);
         }
     }
 
@@ -570,7 +565,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                             'id' => 1,
                             'subject' => 'UPDATED',
                         ],
-                        self::TICKET_TYPE,
+                        Ticket::class,
                         null,
                         [],
                         $updatedTicket = $this->createTicket()->setOriginId(1)->setSubject('UPDATED'),
@@ -687,19 +682,9 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addTicketCommentProvider
-     *
-     * @param object $data
-     * @param array $expectedNormalizeValueMap
-     * @param array $expectedDenormalizeValueMap
-     * @param array|null $expectedRequest
-     * @param array|null $expectedResponse
-     * @param array|null $expectedException
-     * @param TicketComment|array|null $expectedResult
-     *
-     * @throws \Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException
      */
     public function testAddTicketCommentWorks(
-        object $data,
+        TicketComment $data,
         array $expectedNormalizeValueMap,
         array $expectedDenormalizeValueMap,
         ?array $expectedRequest,
@@ -736,7 +721,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
         $actualResult = $this->transport->addTicketComment($data);
         if ($expectedResult) {
-            static::assertEquals($expectedResult, $actualResult);
+            self::assertEquals($expectedResult, $actualResult);
         }
     }
 
@@ -765,7 +750,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
                             'id' => 1,
                             'body' => 'UPDATED',
                         ],
-                        self::COMMENT_TYPE,
+                        TicketComment::class,
                         null,
                         [],
                         $updatedComment = $this->createComment()->setOriginId(1)->setBody('UPDATED'),
