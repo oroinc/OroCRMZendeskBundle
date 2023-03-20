@@ -2,48 +2,45 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Model;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\ZendeskBundle\Model\EntityMapper;
 
 class EntityMapperTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $entityManager;
+    /** @var EntityManager|\PHPUnit\Framework\MockObject\MockObject */
+    private $entityManager;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $registry;
+    /** @var ManagerRegistry|\PHPUnit\Framework\MockObject\MockObject */
+    private $registry;
 
     protected function setUp(): void
     {
-        $this->entityManager = $this->getMockBuilder('Doctrine\\ORM\\EntityManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->registry = $this->createMock('Doctrine\Persistence\ManagerRegistry');
-        $this->registry->expects($this->any())->method('getManager')
+        $this->entityManager = $this->createMock(EntityManager::class);
+        $this->registry = $this->createMock(ManagerRegistry::class);
+        $this->registry->expects($this->any())
+            ->method('getManager')
             ->willReturn($this->entityManager);
     }
 
     public function testGetData()
     {
-        $expected = array(
-            'status'   => array(
-                array('case' => 'open', 'ticket' => 'new'),
-                array('case' => 'open', 'ticket' => 'open'),
-                array('case' => 'in_progress', 'ticket' => 'pending'),
-                array('case' => 'open', 'ticket' => 'hold'),
-                array('case' => 'resolved', 'ticket' => 'solved'),
-                array('case' => 'closed', 'ticket' => 'closed')
-            ),
-            'priority' => array(
-                array('case' => 'low', 'ticket' => 'low'),
-                array('case' => 'normal', 'ticket' => 'normal'),
-                array('case' => 'high', 'ticket' => 'high'),
-                array('case' => 'high', 'ticket' => 'urgent'),
-            )
-        );
+        $expected = [
+            'status'   => [
+                ['case' => 'open', 'ticket' => 'new'],
+                ['case' => 'open', 'ticket' => 'open'],
+                ['case' => 'in_progress', 'ticket' => 'pending'],
+                ['case' => 'open', 'ticket' => 'hold'],
+                ['case' => 'resolved', 'ticket' => 'solved'],
+                ['case' => 'closed', 'ticket' => 'closed']
+            ],
+            'priority' => [
+                ['case' => 'low', 'ticket' => 'low'],
+                ['case' => 'normal', 'ticket' => 'normal'],
+                ['case' => 'high', 'ticket' => 'high'],
+                ['case' => 'high', 'ticket' => 'urgent'],
+            ]
+        ];
 
         $mapper = $this->getMapper($expected);
         $map = $mapper->getMap();
@@ -54,13 +51,13 @@ class EntityMapperTest extends \PHPUnit\Framework\TestCase
     {
         $ticketStatus = 'search ticket status';
         $expected = 'case status';
-        $map = array(
-            EntityMapper::STATUS_KEY => array(
-                array(EntityMapper::CASE_KEY => 'case test', EntityMapper::TICKET_KEY => 'ticket test'),
-                array(EntityMapper::CASE_KEY => $expected, EntityMapper::TICKET_KEY => $ticketStatus),
-                array(EntityMapper::CASE_KEY => 'case test 1', EntityMapper::TICKET_KEY => 'ticket test 1'),
-            )
-        );
+        $map = [
+            EntityMapper::STATUS_KEY => [
+                [EntityMapper::CASE_KEY => 'case test', EntityMapper::TICKET_KEY => 'ticket test'],
+                [EntityMapper::CASE_KEY => $expected, EntityMapper::TICKET_KEY => $ticketStatus],
+                [EntityMapper::CASE_KEY => 'case test 1', EntityMapper::TICKET_KEY => 'ticket test 1'],
+            ]
+        ];
         $mapper = $this->getMapper($map);
         $actual = $mapper->getCaseStatusName($ticketStatus);
         $this->assertEquals($expected, $actual);
@@ -69,12 +66,12 @@ class EntityMapperTest extends \PHPUnit\Framework\TestCase
     public function testGetCaseStatusNameReturnNullIfNotFound()
     {
         $ticketStatus = 'search ticket status';
-        $map = array(
-            EntityMapper::STATUS_KEY => array(
-                array(EntityMapper::CASE_KEY => 'case test', EntityMapper::TICKET_KEY => 'ticket test'),
-                array(EntityMapper::CASE_KEY => 'case test 1', EntityMapper::TICKET_KEY => 'ticket test 1'),
-            )
-        );
+        $map = [
+            EntityMapper::STATUS_KEY => [
+                [EntityMapper::CASE_KEY => 'case test', EntityMapper::TICKET_KEY => 'ticket test'],
+                [EntityMapper::CASE_KEY => 'case test 1', EntityMapper::TICKET_KEY => 'ticket test 1'],
+            ]
+        ];
         $mapper = $this->getMapper($map);
         $actual = $mapper->getCaseStatusName($ticketStatus);
         $this->assertNull($actual);
@@ -84,13 +81,13 @@ class EntityMapperTest extends \PHPUnit\Framework\TestCase
     {
         $status = 'search case status';
         $expected = 'ticket status';
-        $map = array(
-            EntityMapper::STATUS_KEY => array(
-                array(EntityMapper::CASE_KEY => 'case test', EntityMapper::TICKET_KEY => 'ticket test'),
-                array(EntityMapper::CASE_KEY => $status, EntityMapper::TICKET_KEY => $expected),
-                array(EntityMapper::CASE_KEY => 'case test 1', EntityMapper::TICKET_KEY => 'ticket test 1'),
-            )
-        );
+        $map = [
+            EntityMapper::STATUS_KEY => [
+                [EntityMapper::CASE_KEY => 'case test', EntityMapper::TICKET_KEY => 'ticket test'],
+                [EntityMapper::CASE_KEY => $status, EntityMapper::TICKET_KEY => $expected],
+                [EntityMapper::CASE_KEY => 'case test 1', EntityMapper::TICKET_KEY => 'ticket test 1'],
+            ]
+        ];
         $mapper = $this->getMapper($map);
         $actual = $mapper->getTicketStatusName($status);
         $this->assertEquals($expected, $actual);
@@ -100,13 +97,13 @@ class EntityMapperTest extends \PHPUnit\Framework\TestCase
     {
         $priority = 'search case priority';
         $expected = 'ticket priority';
-        $map = array(
-            EntityMapper::PRIORITY_KEY => array(
-                array(EntityMapper::CASE_KEY => 'case test', EntityMapper::TICKET_KEY => 'ticket test'),
-                array(EntityMapper::CASE_KEY => $priority, EntityMapper::TICKET_KEY => $expected),
-                array(EntityMapper::CASE_KEY => 'case test 1', EntityMapper::TICKET_KEY => 'ticket test 1'),
-            )
-        );
+        $map = [
+            EntityMapper::PRIORITY_KEY => [
+                [EntityMapper::CASE_KEY => 'case test', EntityMapper::TICKET_KEY => 'ticket test'],
+                [EntityMapper::CASE_KEY => $priority, EntityMapper::TICKET_KEY => $expected],
+                [EntityMapper::CASE_KEY => 'case test 1', EntityMapper::TICKET_KEY => 'ticket test 1'],
+            ]
+        ];
         $mapper = $this->getMapper($map);
         $actual = $mapper->getTicketPriorityName($priority);
         $this->assertEquals($expected, $actual);
@@ -116,23 +113,19 @@ class EntityMapperTest extends \PHPUnit\Framework\TestCase
     {
         $priority = 'search ticket priority';
         $expected = 'case priority';
-        $map = array(
-            EntityMapper::PRIORITY_KEY => array(
-                array(EntityMapper::CASE_KEY => 'case test', EntityMapper::TICKET_KEY => 'ticket test'),
-                array(EntityMapper::CASE_KEY => $expected, EntityMapper::TICKET_KEY => $priority),
-                array(EntityMapper::CASE_KEY => 'case test 1', EntityMapper::TICKET_KEY => 'ticket test 1'),
-            )
-        );
+        $map = [
+            EntityMapper::PRIORITY_KEY => [
+                [EntityMapper::CASE_KEY => 'case test', EntityMapper::TICKET_KEY => 'ticket test'],
+                [EntityMapper::CASE_KEY => $expected, EntityMapper::TICKET_KEY => $priority],
+                [EntityMapper::CASE_KEY => 'case test 1', EntityMapper::TICKET_KEY => 'ticket test 1'],
+            ]
+        ];
         $mapper = $this->getMapper($map);
         $actual = $mapper->getCasePriorityName($priority);
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @param array $map
-     * @return EntityMapper
-     */
-    protected function getMapper($map = array())
+    private function getMapper(array $map = []): EntityMapper
     {
         return new EntityMapper($this->registry, $map);
     }

@@ -5,37 +5,20 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Oro\Bundle\EntityExtendBundle\PropertyAccess;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 abstract class AbstractZendeskFixture extends AbstractFixture implements ContainerAwareInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
+    use ContainerAwareTrait;
 
-    /**
-     * Sets $entity object properties from $data array
-     *
-     * @param object $entity
-     * @param array $data
-     * @param array $excludeProperties
-     */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = array())
+    protected function setEntityPropertyValues(object $entity, array $data, array $excludeProperties = []): void
     {
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
         foreach ($data as $property => $value) {
-            if (in_array($property, $excludeProperties)) {
+            if (\in_array($property, $excludeProperties, true)) {
                 continue;
             }
-            PropertyAccess::createPropertyAccessor()->setValue($entity, $property, $value);
+            $propertyAccessor->setValue($entity, $property, $value);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }

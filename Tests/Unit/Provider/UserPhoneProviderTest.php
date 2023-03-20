@@ -7,8 +7,7 @@ use Oro\Bundle\ZendeskBundle\Provider\UserPhoneProvider;
 
 class UserPhoneProviderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var UserPhoneProvider */
-    protected $provider;
+    private UserPhoneProvider $provider;
 
     protected function setUp(): void
     {

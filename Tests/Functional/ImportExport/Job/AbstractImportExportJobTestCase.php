@@ -12,19 +12,14 @@ use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestTransport;
 
 class AbstractImportExportJobTestCase extends WebTestCase
 {
-    const SYNC_PROCESSOR = 'oro_integration.reverse_sync.processor';
+    protected const SYNC_PROCESSOR = 'oro_integration.reverse_sync.processor';
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
+    /** @var ZendeskRestTransport|\PHPUnit\Framework\MockObject\MockObject */
     protected $resource;
 
-    /**
-     * @var ManagerRegistry
-     */
+    /** @var ManagerRegistry */
     protected $managerRegistry;
 
-    /** {@inheritdoc} */
     protected function setUp(): void
     {
         $this->initClient();
@@ -35,23 +30,13 @@ class AbstractImportExportJobTestCase extends WebTestCase
         $this->managerRegistry = $this->getContainer()->get('doctrine');
     }
 
-    /**
-     * @param string  $processorId
-     *
-     * @param Channel $channel
-     * @param string  $connector
-     * @param array   $parameters
-     * @param array   $jobLog
-     *
-     * @return bool
-     */
-    public function runImportExportConnectorsJob(
-        $processorId,
+    protected function runImportExportConnectorsJob(
+        string $processorId,
         Channel $channel,
-        $connector,
+        string $connector,
         array $parameters = [],
-        &$jobLog = []
-    ) {
+        array &$jobLog = []
+    ): bool {
         /** @var SyncProcessor $processor */
         $processor = $this->getContainer()->get($processorId);
         $testLoggerHandler = new TestHandler(Logger::WARNING);
@@ -64,14 +49,9 @@ class AbstractImportExportJobTestCase extends WebTestCase
         return $result;
     }
 
-    /**
-     * @param array $jobLog
-     *
-     * @return string
-     */
-    public function formatImportExportJobLog(array $jobLog)
+    protected function formatImportExportJobLog(array $jobLog): string
     {
-        $output = array_reduce(
+        return array_reduce(
             $jobLog,
             function ($carry, $record) {
                 $formatMessage = sprintf(
@@ -84,7 +64,5 @@ class AbstractImportExportJobTestCase extends WebTestCase
                 return $carry . $formatMessage;
             }
         );
-
-        return $output;
     }
 }

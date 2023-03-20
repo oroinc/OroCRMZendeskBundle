@@ -2,14 +2,14 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Entity;
 
+use Oro\Bundle\ContactBundle\Entity\Contact;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Entity\User;
+use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 
 class UserTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var User
-     */
-    protected $target;
+    private User $target;
 
     protected function setUp(): void
     {
@@ -19,7 +19,7 @@ class UserTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider settersAndGettersDataProvider
      */
-    public function testSettersAndGetters($property, $value)
+    public function testSettersAndGetters(string $property, mixed $value)
     {
         $method = 'set' . ucfirst($property);
         $result = $this->target->$method($value);
@@ -43,8 +43,8 @@ class UserTest extends \PHPUnit\Framework\TestCase
 
         $this->target->prePersist();
 
-        $this->assertInstanceOf('\DateTime', $this->target->getCreatedAt());
-        $this->assertInstanceOf('\DateTime', $this->target->getUpdatedAt());
+        $this->assertInstanceOf(\DateTime::class, $this->target->getCreatedAt());
+        $this->assertInstanceOf(\DateTime::class, $this->target->getUpdatedAt());
 
         $expectedCreated = $this->target->getCreatedAt();
         $expectedUpdated = $this->target->getUpdatedAt();
@@ -59,54 +59,40 @@ class UserTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertNull($this->target->getUpdatedAt());
         $this->target->preUpdate();
-        $this->assertInstanceOf('\DateTime', $this->target->getUpdatedAt());
+        $this->assertInstanceOf(\DateTime::class, $this->target->getUpdatedAt());
     }
 
-    /**
-     * @return array
-     */
-    public function settersAndGettersDataProvider()
+    public function settersAndGettersDataProvider(): array
     {
-        $role = $this->getMockBuilder('Oro\Bundle\ZendeskBundle\Entity\UserRole')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $role = $this->createMock(UserRole::class);
+        $user = $this->createMock(\Oro\Bundle\UserBundle\Entity\User::class);
+        $contact = $this->createMock(Contact::class);
+        $channel = $this->createMock(Channel::class);
 
-        $user = $this->getMockBuilder('Oro\Bundle\UserBundle\Entity\User')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $contact = $this->getMockBuilder('Oro\Bundle\ContactBundle\Entity\Contact')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $channel = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Entity\Channel')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        return array(
-            array('name', 'test name'),
-            array('url', 'test.com'),
-            array('email', 'test@mail.com'),
-            array('phone', '123456789'),
-            array('timeZone', 'UTC'),
-            array('locale', 'en'),
-            array('url', 'tes.com'),
-            array('createdAt', new \DateTime()),
-            array('originCreatedAt', new \DateTime()),
-            array('originUpdatedAt', new \DateTime()),
-            array('updatedAt', new \DateTime()),
-            array('lastLoginAt', new \DateTime()),
-            array('role', $role),
-            array('relatedUser', $user),
-            array('externalId', uniqid()),
-            array('details', 'details'),
-            array('notes', 'notes'),
-            array('alias', 'alias'),
-            array('onlyPrivateComments', true),
-            array('verified', true),
-            array('active', true),
-            array('channel', $channel),
-            array('relatedContact', $contact),
-        );
+        return [
+            ['name', 'test name'],
+            ['url', 'test.com'],
+            ['email', 'test@mail.com'],
+            ['phone', '123456789'],
+            ['timeZone', 'UTC'],
+            ['locale', 'en'],
+            ['url', 'tes.com'],
+            ['createdAt', new \DateTime()],
+            ['originCreatedAt', new \DateTime()],
+            ['originUpdatedAt', new \DateTime()],
+            ['updatedAt', new \DateTime()],
+            ['lastLoginAt', new \DateTime()],
+            ['role', $role],
+            ['relatedUser', $user],
+            ['externalId', 'test_external_id'],
+            ['details', 'details'],
+            ['notes', 'notes'],
+            ['alias', 'alias'],
+            ['onlyPrivateComments', true],
+            ['verified', true],
+            ['active', true],
+            ['channel', $channel],
+            ['relatedContact', $contact],
+        ];
     }
 }

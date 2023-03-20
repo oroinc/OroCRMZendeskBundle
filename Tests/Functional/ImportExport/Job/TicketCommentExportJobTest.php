@@ -8,10 +8,11 @@ use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
 
-/** @dbIsolationPerTest */
+/**
+ * @dbIsolationPerTest
+ */
 class TicketCommentExportJobTest extends AbstractImportExportJobTestCase
 {
-    /** {@inheritdoc} */
     protected function setUp(): void
     {
         parent::setUp();
@@ -21,8 +22,8 @@ class TicketCommentExportJobTest extends AbstractImportExportJobTestCase
     public function testExportTicketCommentForCloseTicket()
     {
         /** @var Channel $channel */
-        $channel        = $this->getReference('zendesk_channel:first_test_channel');
-        $ticketComment  = $this->getReference('zendesk_ticket_42_comment_3');
+        $channel = $this->getReference('zendesk_channel:first_test_channel');
+        $ticketComment = $this->getReference('zendesk_ticket_42_comment_3');
 
         $exception = new InvalidRecordException('', 422);
 
@@ -48,8 +49,8 @@ class TicketCommentExportJobTest extends AbstractImportExportJobTestCase
         /** @var Status $status */
         $status = $channel->getStatuses()->first();
 
-        static::assertStringContainsString('Some entities were skipped due to warnings', $status->getMessage());
-        static::assertStringContainsString(
+        self::assertStringContainsString('Some entities were skipped due to warnings', $status->getMessage());
+        self::assertStringContainsString(
             'Error ticket comment not exported because ticket is closed',
             $status->getMessage()
         );

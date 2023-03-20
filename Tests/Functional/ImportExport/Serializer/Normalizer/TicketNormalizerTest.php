@@ -3,7 +3,6 @@
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\ImportExport\Serializer\Normalizer;
 
 use Oro\Bundle\ImportExportBundle\Serializer\Serializer;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
@@ -14,15 +13,7 @@ use Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\TicketNormalizer
 
 class TicketNormalizerTest extends WebTestCase
 {
-    /**
-     * @var Serializer
-     */
-    protected $serializer;
-
-    /**
-     * @var Channel
-     */
-    protected $channel;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {
@@ -42,31 +33,11 @@ class TicketNormalizerTest extends WebTestCase
         $this->assertEquals($denormalized, $actual);
     }
 
-    protected function setChannel(Ticket $entity)
+    public function denormalizeDataProvider(): array
     {
-        $entity->setChannel($this->channel);
-        if ($entity->getProblem()) {
-            $entity->getProblem()->setChannel($this->channel);
-        }
-        if ($entity->getRequester()) {
-            $entity->getRequester()->setChannel($this->channel);
-        }
-        if ($entity->getSubmitter()) {
-            $entity->getSubmitter()->setChannel($this->channel);
-        }
-        if ($entity->getAssignee()) {
-            $entity->getAssignee()->setChannel($this->channel);
-        }
-        foreach ($entity->getCollaborators() as $collaborator) {
-            $collaborator->setChannel($this->channel);
-        }
-    }
-
-    public function denormalizeDataProvider()
-    {
-        return array(
-            'full' => array(
-                'normalized' => array(
+        return [
+            'full' => [
+                'normalized' => [
                     'id' => $originId = 100,
                     'url' => $url = 'https://foo.zendesk.com/api/v2/tickets/123.json',
                     'external_id' => $externalId = 123,
@@ -85,7 +56,7 @@ class TicketNormalizerTest extends WebTestCase
                     'due_at' => $dueAt = '2014-06-10T10:26:21Z',
                     'created_at' => $createdAt = '2014-06-12T11:45:21Z',
                     'updated_at' => $updatedAt = '2014-06-13T09:57:54Z',
-                ),
+                ],
                 'denormalized' => $this->createTicket()
                     ->setOriginId($originId)
                     ->setUrl($url)
@@ -107,28 +78,28 @@ class TicketNormalizerTest extends WebTestCase
                     ->setDueAt(new \DateTime($dueAt))
                     ->setOriginCreatedAt(new \DateTime($createdAt))
                     ->setOriginUpdatedAt(new \DateTime($updatedAt))
-            ),
-            'short' => array(
+            ],
+            'short' => [
                 'data' => 100,
                 'expected' => $this->createTicket()->setOriginId(100)
-            ),
-        );
+            ],
+        ];
     }
 
     /**
      * @dataProvider normalizeDataProvider
      */
-    public function testNormalize($denormalized, $normalized, $context = array())
+    public function testNormalize($denormalized, $normalized, $context = [])
     {
         $actual = $this->serializer->normalize($denormalized, '', $context);
 
         $this->assertEquals($normalized, $actual);
     }
 
-    public function normalizeDataProvider()
+    public function normalizeDataProvider(): array
     {
-        return array(
-            'full' => array(
+        return [
+            'full' => [
                 'denormalized' => $this->createTicket()
                     ->setOriginId($originId = 100)
                     ->setExternalId($externalId = 123)
@@ -143,7 +114,7 @@ class TicketNormalizerTest extends WebTestCase
                     ->setSubmitter($this->createUser($submitterId = 106))
                     ->setAssignee($this->createUser($assigneeId = 107))
                     ->setDueAt(new \DateTime($dueAt = '2014-06-10T10:26:21+0000')),
-                'normalized' => array(
+                'normalized' => [
                     'id' => $originId,
                     'external_id' => $externalId,
                     'subject' => $subject,
@@ -155,21 +126,21 @@ class TicketNormalizerTest extends WebTestCase
                     'submitter_id' => $submitterId,
                     'assignee_id' => $assigneeId,
                     'due_at' => $dueAt,
-                ),
-                'context' => array(
+                ],
+                'context' => [
                     'format' => \DateTime::ISO8601
-                )
-            ),
-            'new' => array(
+                ]
+            ],
+            'new' => [
                 'denormalized' => $this->createTicket()
                     ->setDescription($description = 'Ticket description'),
-                'normalized' => array(
-                    'comment' => array(
+                'normalized' => [
+                    'comment' => [
                         'body' => $description,
-                    ),
+                    ],
                     'external_id' => null,
                     'subject' => null,
-                    'collaborator_ids' => array(),
+                    'collaborator_ids' => [],
                     'type' => null,
                     'status' => null,
                     'priority' => null,
@@ -177,33 +148,26 @@ class TicketNormalizerTest extends WebTestCase
                     'submitter_id' => null,
                     'assignee_id' => null,
                     'due_at' => null,
-                ),
-            ),
-            'short' => array(
+                ],
+            ],
+            'short' => [
                 'denormalized' => $this->createTicket()->setOriginId($originId = 100),
                 'normalized' => $originId,
-                'context' => array('mode' => TicketNormalizer::SHORT_MODE),
-            ),
-        );
+                'context' => ['mode' => TicketNormalizer::SHORT_MODE],
+            ],
+        ];
     }
 
-    /**
-     * @return Ticket
-     */
-    protected function createTicket()
+    private function createTicket(): Ticket
     {
-        $result = new Ticket();
-        return $result;
+        return new Ticket();
     }
 
-    /**
-     * @param int $id
-     * @return User
-     */
-    protected function createUser($id)
+    private function createUser(int $originId): User
     {
         $result = new User();
-        $result->setOriginId($id);
+        $result->setOriginId($originId);
+
         return $result;
     }
 }

@@ -10,10 +10,7 @@ use Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer\UserNormalizer;
 
 class UserNormalizerTest extends WebTestCase
 {
-    /**
-     * @var Serializer
-     */
-    protected $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {
@@ -33,11 +30,11 @@ class UserNormalizerTest extends WebTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function denormalizeProvider()
+    public function denormalizeProvider(): array
     {
-        return array(
-            'full' => array(
-                'data' => array(
+        return [
+            'full' => [
+                'data' => [
                     'id' => 1,
                     'url' => $url = 'https://foo.zendesk.com/api/v2/users/123.json',
                     'external_id' => $externalId = 123,
@@ -56,7 +53,7 @@ class UserNormalizerTest extends WebTestCase
                     'created_at' => $createdAt = '2014-06-10T10:26:21Z',
                     'updated_at' => $updatedAt = '2014-06-12T11:45:21Z',
                     'role' => $roleName = 'agent',
-                ),
+                ],
                 'expected' => $this->createUser()
                     ->setOriginId(1)
                     ->setUrl($url)
@@ -76,28 +73,28 @@ class UserNormalizerTest extends WebTestCase
                     ->setOriginCreatedAt(new \DateTime($createdAt))
                     ->setOriginUpdatedAt(new \DateTime($updatedAt))
                     ->setRole(new UserRole($roleName))
-            ),
-            'short' => array(
+            ],
+            'short' => [
                 'data' => 100,
                 'expected' => $this->createUser()->setOriginId(100)
-            ),
-        );
+            ],
+        ];
     }
 
     /**
      * @dataProvider normalizeDataProvider
      */
-    public function testNormalize($denormalized, $normalized, $context = array())
+    public function testNormalize($denormalized, $normalized, $context = [])
     {
         $actual = $this->serializer->normalize($denormalized, '', $context);
 
         $this->assertEquals($normalized, $actual);
     }
 
-    public function normalizeDataProvider()
+    public function normalizeDataProvider(): array
     {
-        return array(
-            'full' => array(
+        return [
+            'full' => [
                 'denormalized' => $this->createUser()
                         ->setOriginId($originId = 100)
                         ->setExternalId($externalId = 123)
@@ -113,7 +110,7 @@ class UserNormalizerTest extends WebTestCase
                         ->setTimeZone($timeZone = 'Arizona')
                         ->setLocale($locale = 'en-US')
                         ->setRole(new UserRole($roleName = 'agent')),
-                'normalized' => array(
+                'normalized' => [
                     'id' => $originId,
                     'external_id' => $externalId,
                     'name' => $name,
@@ -128,20 +125,17 @@ class UserNormalizerTest extends WebTestCase
                     'time_zone' => $timeZone,
                     'locale' => $locale,
                     'role' => $roleName,
-                ),
-            ),
-            'short' => array(
+                ],
+            ],
+            'short' => [
                 'denormalized' => $this->createUser()->setOriginId($originId = 100),
                 'normalized' => $originId,
-                'context' => array('mode' => UserNormalizer::SHORT_MODE),
-            ),
-        );
+                'context' => ['mode' => UserNormalizer::SHORT_MODE],
+            ],
+        ];
     }
 
-    /**
-     * @return User
-     */
-    protected function createUser()
+    private function createUser(): User
     {
         return new User();
     }

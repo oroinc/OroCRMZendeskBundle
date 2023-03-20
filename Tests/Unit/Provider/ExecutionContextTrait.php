@@ -8,40 +8,30 @@ use Oro\Bundle\ZendeskBundle\Model\SyncState;
 
 trait ExecutionContextTrait
 {
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $executionContext;
+    /** @var ExecutionContext|\PHPUnit\Framework\MockObject\MockObject */
+    private $executionContext;
 
-    protected function initExecutionContext()
+    private function initExecutionContext()
     {
         $this->executionContext = $this->createMock(ExecutionContext::class);
-        $this->executionContext
-            ->expects($this->any())
+        $this->executionContext->expects($this->any())
             ->method('get')
-            ->willReturnCallback(
-                function ($id) {
-                    switch ($id) {
-                        case ConnectorInterface::CONTEXT_CONNECTOR_DATA_KEY:
-                            return [];
-                        default:
-                            return null;
-                    }
+            ->willReturnCallback(function ($id) {
+                if (ConnectorInterface::CONTEXT_CONNECTOR_DATA_KEY === $id) {
+                    return [];
                 }
-            );
+
+                return null;
+            });
 
         return $this->executionContext;
     }
 
-    /**
-     * @return \Closure
-     */
-    protected function getIsUpdatedLastSyncDateCallback()
+    private function getIsUpdatedLastSyncDateCallback(): \Closure
     {
         $isUpdatedLastSyncDate = false;
 
-        $this->executionContext
-            ->expects($this->atLeastOnce())
+        $this->executionContext->expects($this->atLeastOnce())
             ->method('put')
             ->willReturnCallback(
                 function ($id, $value) use (&$isUpdatedLastSyncDate) {

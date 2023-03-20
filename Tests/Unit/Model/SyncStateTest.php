@@ -11,51 +11,36 @@ use Psr\Log\LoggerInterface;
 
 class SyncStateTest extends \PHPUnit\Framework\TestCase
 {
-    const STATUS_ID = 1;
+    private const STATUS_ID = 1;
 
-    /**
-     * @var SyncState
-     */
-    protected $syncState;
+    /** @var SyncState */
+    private $syncState;
 
-    /**
-     * @var string
-     */
-    protected $connector = "CONNECTOR";
+    /** @var string */
+    private $connector = 'CONNECTOR';
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $channel;
+    /** @var Channel|\PHPUnit\Framework\MockObject\MockObject */
+    private $channel;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $channelRepository;
+    /** @var ChannelRepository|\PHPUnit\Framework\MockObject\MockObject */
+    private $channelRepository;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $logger;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $status;
+    /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $logger;
 
     protected function setUp(): void
     {
         $this->channel = $this->createMock(Channel::class);
         $this->channelRepository = $this->createMock(ChannelRepository::class);
-        $managerRegistry = $this->createMock(ManagerRegistry::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $managerRegistry
-            ->expects($this->once())
+
+        $doctrine = $this->createMock(ManagerRegistry::class);
+        $doctrine->expects($this->once())
             ->method('getRepository')
             ->with('OroIntegrationBundle:Channel')
             ->willReturn($this->channelRepository);
 
-        $this->syncState = new SyncState($managerRegistry);
+        $this->syncState = new SyncState($doctrine);
         $this->syncState->setLogger($this->logger);
     }
 
@@ -67,8 +52,7 @@ class SyncStateTest extends \PHPUnit\Framework\TestCase
             ->with($this->channel, $this->connector, Status::STATUS_COMPLETED)
             ->willReturn(null);
 
-        $this->assertSame(
-            null,
+        $this->assertNull(
             $this->syncState->getLastSyncDate($this->channel, $this->connector)
         );
     }
@@ -81,8 +65,7 @@ class SyncStateTest extends \PHPUnit\Framework\TestCase
         $this->getMockForStatusEntity($data);
 
         if (false !== $error) {
-            $this->logger
-                ->expects($this->once())
+            $this->logger->expects($this->once())
                 ->method('error')
                 ->with($error);
         }
@@ -93,10 +76,7 @@ class SyncStateTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @return array
-     */
-    public function getLastSyncDateProvider()
+    public function getLastSyncDateProvider(): array
     {
         return [
             "Key 'lastSyncDate' isn't set" => [
@@ -121,35 +101,19 @@ class SyncStateTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    protected function getMockForStatusEntity(array $data)
+    private function getMockForStatusEntity(array $data)
     {
-        $this->status = $this->createMock(Status::class);
-
-        $this->status
-            ->expects($this->any())
+        $status = $this->createMock(Status::class);
+        $status->expects($this->any())
             ->method('getId')
             ->willReturn(self::STATUS_ID);
-
-        $this->status
-            ->expects($this->atLeastOnce())
+        $status->expects($this->atLeastOnce())
             ->method('getData')
             ->willReturn($data);
 
-        $this->channelRepository
-            ->expects($this->once())
+        $this->channelRepository->expects($this->once())
             ->method('getLastStatusForConnector')
             ->with($this->channel, $this->connector, Status::STATUS_COMPLETED)
-            ->willReturn($this->status);
-    }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $this->syncState,
-            $this->channel,
-            $this->logger,
-            $this->status,
-            $this->channelRepository
-        );
+            ->willReturn($status);
     }
 }

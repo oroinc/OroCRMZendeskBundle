@@ -8,10 +8,7 @@ use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 
 class UserRoleNormalizerTest extends WebTestCase
 {
-    /**
-     * @var Serializer
-     */
-    protected $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {
@@ -31,19 +28,19 @@ class UserRoleNormalizerTest extends WebTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function denormalizeProvider()
+    public function denormalizeProvider(): array
     {
-        return array(
-            'full' => array(
-                'data' => array(
+        return [
+            'full' => [
+                'data' => [
                     'name' => 'agent',
-                ),
+                ],
                 'expected' => new UserRole('agent')
-            ),
-            'short' => array(
+            ],
+            'short' => [
                 'data' => 'end-user',
                 'expected' => new UserRole('end-user')
-            ),
-        );
+            ],
+        ];
     }
 }

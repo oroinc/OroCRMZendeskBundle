@@ -29,43 +29,39 @@ class AbstractZendeskConnectorTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp(): void
     {
-        $registry = $this->createMock(ContextRegistry::class);
-        $logger = $this->createMock(LoggerStrategy::class);
         $this->mediator = $this->createMock(ConnectorContextMediator::class);
-        $syncState = $this->createMock(SyncState::class);
-        $context = $this->createMock(ContextInterface::class);
+        $this->stepExecutor = $this->createMock(StepExecution::class);
+
         $channel = $this->createMock(Channel::class);
-        $transportEntity = $this->createMock(Transport::class);
         $channel->expects($this->any())
             ->method('getTransport')
-            ->willReturn($transportEntity);
+            ->willReturn($this->createMock(Transport::class));
+
         $this->mediator->expects($this->any())
             ->method('getChannel')
             ->willReturn($channel);
+
+        $syncState = $this->createMock(SyncState::class);
+
+        $registry = $this->createMock(ContextRegistry::class);
         $registry->expects($this->any())
             ->method('getByStepExecution')
-            ->willReturn($context);
-        $constructorArgs = [
-            $syncState,
-            $registry,
-            $logger,
-            $this->mediator
-        ];
+            ->willReturn($this->createMock(ContextInterface::class));
 
-        $this->connector = $this->getMockBuilder(AbstractZendeskConnector::class)
-            ->setConstructorArgs($constructorArgs)
-            ->onlyMethods(['getConnectorSource'])
-            ->getMockForAbstractClass();
-        $this->stepExecutor = $this->createMock(StepExecution::class);
+        $logger = $this->createMock(LoggerStrategy::class);
 
         $this->stepExecutor->expects($this->any())
             ->method('getExecutionContext')
             ->willReturn($this->initExecutionContext());
 
-        $iterator = $this->createMock(\Iterator::class);
+        $this->connector = $this->getMockBuilder(AbstractZendeskConnector::class)
+            ->setConstructorArgs([$syncState, $registry, $logger, $this->mediator])
+            ->onlyMethods(['getConnectorSource'])
+            ->getMockForAbstractClass();
+
         $this->connector->expects($this->any())
             ->method('getConnectorSource')
-            ->willReturn($iterator);
+            ->willReturn($this->createMock(\Iterator::class));
     }
 
     public function testValidateConfigurationThrowExceptionIfTransportInvalid()

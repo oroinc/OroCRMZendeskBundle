@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest\Exception;
 
+use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestResponseInterface;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 
 class RestExceptionTest extends \PHPUnit\Framework\TestCase
@@ -10,35 +11,35 @@ class RestExceptionTest extends \PHPUnit\Framework\TestCase
      * @dataProvider exceptionDataProvider
      */
     public function testCreateFromResponseWorks(
-        $expectedMessage,
-        $expectedValidationErrors,
-        $message,
-        $jsonData,
-        $jsonException,
-        $statusCode
+        string $expectedMessage,
+        array $expectedValidationErrors,
+        ?string $message,
+        array $jsonData,
+        bool $jsonException,
+        int $statusCode
     ) {
         $previous = new \Exception();
 
-        $response = $this->createMock('Oro\\Bundle\\IntegrationBundle\\Provider\\Rest\\Client\\RestResponseInterface');
+        $response = $this->createMock(RestResponseInterface::class);
 
         if ($jsonException) {
             $response->expects($this->once())
                 ->method('json')
-                ->will($this->throwException(new \Exception()));
+                ->willThrowException(new \Exception());
         } else {
             $response->expects($this->once())
                 ->method('json')
-                ->will($this->returnValue($jsonData));
+                ->willReturn($jsonData);
         }
 
         $response->expects($this->once())
             ->method('getStatusCode')
-            ->will($this->returnValue($statusCode));
+            ->willReturn($statusCode);
 
         $exception = InvalidRecordException::createFromResponse($response, $message, $previous);
 
         $this->assertInstanceOf(
-            'Oro\\Bundle\\ZendeskBundle\\Provider\\Transport\\Rest\\Exception\\InvalidRecordException',
+            InvalidRecordException::class,
             $exception
         );
         $this->assertSame($previous, $exception->getPrevious());
@@ -48,7 +49,7 @@ class RestExceptionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedMessage, $exception->getMessage());
     }
 
-    public function exceptionDataProvider()
+    public function exceptionDataProvider(): array
     {
         return [
             'response with expected errors format' => [

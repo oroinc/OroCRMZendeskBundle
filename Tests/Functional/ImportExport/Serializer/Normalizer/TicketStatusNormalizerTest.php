@@ -8,10 +8,7 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 
 class TicketStatusNormalizerTest extends WebTestCase
 {
-    /**
-     * @var Serializer
-     */
-    protected $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {
@@ -31,19 +28,19 @@ class TicketStatusNormalizerTest extends WebTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function denormalizeProvider()
+    public function denormalizeProvider(): array
     {
-        return array(
-            'full' => array(
-                'data' => array(
+        return [
+            'full' => [
+                'data' => [
                     'name' => 'open',
-                ),
+                ],
                 'expected' => new TicketStatus('open')
-            ),
-            'short' => array(
+            ],
+            'short' => [
                 'data' => 'open',
                 'expected' => new TicketStatus('open')
-            ),
-        );
+            ],
+        ];
     }
 }

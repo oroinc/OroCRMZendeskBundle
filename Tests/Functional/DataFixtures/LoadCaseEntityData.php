@@ -6,95 +6,91 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\CaseBundle\Entity\CasePriority;
 use Oro\Bundle\CaseBundle\Entity\CaseStatus;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
-class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwareInterface, DependentFixtureInterface
+class LoadCaseEntityData extends AbstractZendeskFixture implements DependentFixtureInterface
 {
-    /**
-     * @var array
-     */
-    protected $data = array(
-        array(
+    private array $data = [
+        [
             'subject'       => 'Case #1',
             'description'   => 'Case #1: Description',
             'assignedTo'    => 'user:bob.miller@example.com',
             'owner'         => 'user:bob.miller@example.com',
             'reference'     => 'oro_zendesk:case_1',
-            'comments' => array(
-                array(
+            'comments' => [
+                [
                     'reference' => 'case_1_comment_1',
                     'message' => 'Comment 1',
                     'public' => true,
                     'owner' => 'user:james.cook@example.com',
                     'createdAt' => '2014-06-10T15:54:22Z',
-                ),
-                array(
+                ],
+                [
                     'reference' => 'case_1_comment_2',
                     'message' => 'Comment 2',
                     'public' => true,
                     'contact' => 'contact:jim.smith@example.com',
                     'owner' => 'user:admin@example.com',
                     'createdAt' => '2014-06-10T15:54:22Z',
-                ),
-                array(
+                ],
+                [
                     'reference' => 'case_1_comment_3',
                     'message' => 'Comment 3',
                     'public' => true,
                     'owner' => 'user:admin@example.com',
                     'createdAt' => '2014-06-10T16:54:22Z',
-                ),
-                array(
+                ],
+                [
                     'reference' => 'case_1_comment_4',
                     'message' => 'Comment 4',
                     'public' => true,
                     'contact' => 'contact:alex.miller@example.com',
                     'owner' => 'user:admin@example.com',
                     'createdAt' => '2014-06-10T16:54:22Z',
-                ),
-            )
-        ),
-        array(
+                ],
+            ]
+        ],
+        [
             'subject'       => 'Case #2',
             'description'   => 'Case #2: Description',
             'owner'         => 'user:admin@example.com',
             'reference'     => 'oro_zendesk:case_2'
-        ),
-        array(
+        ],
+        [
             'subject'       => 'Case #3',
             'description'   => 'Case #3: Description',
             'owner'         => 'user:admin@example.com',
             'reference'     => 'oro_zendesk:case_3'
-        ),
-        array(
+        ],
+        [
             'subject'       => 'Case #4',
             'description'   => 'Case #4: Description',
             'owner'         => 'user:admin@example.com',
             'reference'     => 'oro_zendesk:case_4'
-        ),
-        array(
+        ],
+        [
             'subject'       => 'Case #5',
             'description'   => 'Case #5: Description',
             'reference'     => 'oro_zendesk:case_5',
             'owner'         => 'user:admin@example.com',
-            'comments' => array(
-                array(
+            'comments' => [
+                [
                     'reference' => 'case_5_comment_1',
                     'message' => 'Comment 1',
                     'public' => true,
                     'owner' => 'user:james.cook@example.com',
                     'createdAt' => '2014-06-10T15:54:22Z',
-                ),
-                array(
+                ],
+                [
                     'reference' => 'case_5_comment_2',
                     'message' => 'Comment 2',
                     'public' => true,
                     'contact' => 'contact:jim.smith@example.com',
                     'owner' => 'user:admin@example.com',
                     'createdAt' => '2014-06-10T15:54:22Z',
-                ),
-            )
-        ),
-        array(
+                ],
+            ]
+        ],
+        [
             'subject'        => 'Case 6, Zendesk Ticket 44',
             'description'    => 'Case 6, Zendesk Ticket 44 Description',
             'owner'          => 'user:james.cook@example.com',
@@ -103,8 +99,8 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             'relatedContact' => 'contact:jim.smith@example.com',
             'priority'       => CasePriority::PRIORITY_LOW,
             'reference'      => 'oro_zendesk:case_6'
-        ),
-        array(
+        ],
+        [
             'subject'        => 'Case 7, Zendesk Ticket 45',
             'description'    => 'Case 7, Zendesk Ticket 45 Description',
             'owner'          => 'user:james.cook@example.com',
@@ -113,8 +109,8 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             'relatedContact' => 'contact:jim.smith@example.com',
             'priority'       => CasePriority::PRIORITY_LOW,
             'reference'      => 'oro_zendesk:case_7'
-        ),
-    );
+        ],
+    ];
 
     /**
      * {@inheritdoc}
@@ -146,7 +142,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
             if (isset($data['priority'])) {
                 $data['priority'] = $manager->find(CasePriority::class, $data['priority']);
             }
-            $this->setEntityPropertyValues($entity, $data, array('reference', 'comments'));
+            $this->setEntityPropertyValues($entity, $data, ['reference', 'comments']);
 
             $manager->persist($entity);
 
@@ -167,7 +163,7 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
                         $commentData['createdAt'] = new \DateTime($commentData['createdAt']);
                     }
 
-                    $this->setEntityPropertyValues($comment, $commentData, array('reference'));
+                    $this->setEntityPropertyValues($comment, $commentData, ['reference']);
 
                     $manager->persist($comment);
                 }
@@ -182,8 +178,8 @@ class LoadCaseEntityData extends AbstractZendeskFixture implements ContainerAwar
      */
     public function getDependencies()
     {
-        return array(
+        return [
             'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadOroUserData'
-        );
+        ];
     }
 }

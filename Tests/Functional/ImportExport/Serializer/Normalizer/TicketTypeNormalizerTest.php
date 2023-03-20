@@ -8,10 +8,7 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 
 class TicketTypeNormalizerTest extends WebTestCase
 {
-    /**
-     * @var Serializer
-     */
-    protected $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {
@@ -31,19 +28,19 @@ class TicketTypeNormalizerTest extends WebTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function denormalizeProvider()
+    public function denormalizeProvider(): array
     {
-        return array(
-            'full' => array(
-                'data' => array(
+        return [
+            'full' => [
+                'data' => [
                     'name' => 'task',
-                ),
+                ],
                 'expected' => new TicketType('task')
-            ),
-            'short' => array(
+            ],
+            'short' => [
                 'data' => 'task',
                 'expected' => new TicketType('task')
-            ),
-        );
+            ],
+        ];
     }
 }

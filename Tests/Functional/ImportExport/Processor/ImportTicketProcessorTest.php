@@ -7,6 +7,7 @@ use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\CaseBundle\Entity\CasePriority;
 use Oro\Bundle\CaseBundle\Entity\CaseStatus;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
@@ -26,19 +27,13 @@ use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
  */
 class ImportTicketProcessorTest extends WebTestCase
 {
-    /** @var ImportTicketProcessor */
-    private $processor;
-
-    /** @var ManagerRegistry */
-    private $registry;
-
-    /** @var Channel */
-    private $channel;
+    private ManagerRegistry $registry;
+    private Channel $channel;
+    private ImportTicketProcessor $processor;
 
     protected function setUp(): void
     {
         $this->initClient();
-
         $this->loadFixtures([LoadTicketData::class]);
 
         $this->registry = $this->getContainer()->get('doctrine');
@@ -48,7 +43,9 @@ class ImportTicketProcessorTest extends WebTestCase
         $context = $this->createMock(ContextInterface::class);
         $context->expects($this->any())
             ->method('getOption')
-            ->willReturnMap([['channel', null, $this->channel->getId()]]);
+            ->with('channel', null)
+            ->willReturn($this->channel->getId());
+
         $this->processor->setImportExportContext($context);
     }
 
@@ -60,10 +57,11 @@ class ImportTicketProcessorTest extends WebTestCase
 
     public function testProcessInvalidArgumentFails()
     {
-        $this->expectException(\Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Imported entity must be instance of Oro\Bundle\ZendeskBundle\Entity\Ticket, stdClass given.'
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf(
+            'Imported entity must be instance of %s, stdClass given.',
+            Ticket::class
+        ));
 
         $this->processor->process(new \stdClass());
     }
@@ -274,7 +272,7 @@ class ImportTicketProcessorTest extends WebTestCase
     /**
      * @dataProvider statusMappingDataProvider
      */
-    public function testProcessMapsCaseStatus($ticketStatus, $caseStatus)
+    public function testProcessMapsCaseStatus(string $ticketStatus, string $caseStatus)
     {
         $zendeskTicket = $this->createZendeskTicket()
             ->setOriginId(1)
@@ -319,7 +317,7 @@ class ImportTicketProcessorTest extends WebTestCase
     /**
      * @dataProvider priorityMappingDataProvider
      */
-    public function testProcessMapsCasePriority($ticketPriority, $casePriority)
+    public function testProcessMapsCasePriority(string $ticketPriority, string $casePriority)
     {
         $zendeskTicket = $this->createZendeskTicket()
             ->setOriginId(1)
@@ -356,7 +354,7 @@ class ImportTicketProcessorTest extends WebTestCase
     /**
      * @dataProvider caseOwnerTicketFieldsDataProvider
      */
-    public function testProcessSyncsCaseOwner($fieldName)
+    public function testProcessSyncsCaseOwner(string $fieldName)
     {
         $setter = 'set' . ucfirst($fieldName);
         $getter = 'get' . ucfirst($fieldName);
@@ -388,7 +386,7 @@ class ImportTicketProcessorTest extends WebTestCase
     /**
      * @dataProvider caseAssignedToTicketFieldsDataProvider
      */
-    public function testProcessSyncsCaseAssignedTo($fieldName)
+    public function testProcessSyncsCaseAssignedTo(string $fieldName)
     {
         $setter = 'set' . ucfirst($fieldName);
         $getter = 'get' . ucfirst($fieldName);
@@ -420,7 +418,7 @@ class ImportTicketProcessorTest extends WebTestCase
     /**
      * @dataProvider caseRelatedContactTicketFieldsDataProvider
      */
-    public function testProcessSyncsCaseRelatedContact($fieldName)
+    public function testProcessSyncsCaseRelatedContact(string $fieldName)
     {
         $setter = 'set' . ucfirst($fieldName);
         $getter = 'get' . ucfirst($fieldName);
