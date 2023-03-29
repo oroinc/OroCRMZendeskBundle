@@ -213,6 +213,8 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
             $classType::SEARCH_TYPE
         );
 
+        $typePlural = $classType::SEARCH_TYPE.'s';
+
         $dateFilter = $this->getDateFilter($lastUpdatedAt);
         if (is_string($dateFilter)) {
             $query = sprintf(
@@ -226,8 +228,8 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
 
         $result = new $this->resultIteratorClass(
             $this->getClient(),
-            'search.json',
-            'results',
+            $typePlural.'.json',
+            $typePlural,
             $requestParams
         );
 

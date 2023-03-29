@@ -67,8 +67,8 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         static::assertInstanceOf(ZendeskRestIteratorStub::class, $result);
 
         static::assertEquals($this->client, $result->xgetClient());
-        static::assertEquals('search.json', $result->xgetResource());
-        static::assertEquals('results', $result->xgetDataKeyName());
+        static::assertEquals('users.json', $result->xgetResource());
+        static::assertEquals('users', $result->xgetDataKeyName());
 
         $params = $result->xgetParams();
         $query = $params['query'] ?? '';
@@ -104,8 +104,8 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         static::assertInstanceOf(ZendeskRestIterator::class, $result);
 
         static::assertEquals($this->client, $result->xgetClient());
-        static::assertEquals('search.json', $result->xgetResource());
-        static::assertEquals('results', $result->xgetDataKeyName());
+        static::assertEquals('tickets.json', $result->xgetResource());
+        static::assertEquals('tickets', $result->xgetDataKeyName());
 
         $params = $result->xgetParams();
         $query = $params['query'] ?? '';
