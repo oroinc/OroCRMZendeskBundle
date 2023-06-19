@@ -7,6 +7,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 
+/**
+ * Allows to decorate logger with another logger
+ */
 abstract class AbstractLoggerDecorator implements LoggerInterface
 {
     use LoggerAwareTrait;
@@ -18,7 +21,7 @@ abstract class AbstractLoggerDecorator implements LoggerInterface
      */
     public function __construct(LoggerInterface $logger = null)
     {
-        $this->setLogger($logger ? : new NullLogger());
+        $this->setLogger($logger ?: new NullLogger());
     }
 
     /**
