@@ -14,6 +14,7 @@ api:
 
         Oro\Bundle\ZendeskBundle\Entity\TicketComment:
             documentation_resource: '@OroZendeskBundle/Resources/doc/api/ticket_comment.md'
+            disable_meta_properties: [ title ]
 
         Oro\Bundle\ZendeskBundle\Entity\User:
             documentation_resource: '@OroZendeskBundle/Resources/doc/api/user.md'
