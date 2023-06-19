@@ -149,7 +149,7 @@ abstract class AbstractSyncHelper implements LoggerAwareInterface
      */
     protected function refreshDictionaryField($entity, $fieldName, $dictionaryEntityAlias = null, $required = false)
     {
-        $dictionaryEntityAlias = $dictionaryEntityAlias ? : $fieldName;
+        $dictionaryEntityAlias = $dictionaryEntityAlias ?: $fieldName;
         $value = null;
         $entityGetter = 'get' . ucfirst($fieldName);
         $entitySetter = 'set' . ucfirst($fieldName);
