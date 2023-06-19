@@ -11,6 +11,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 
 /**
+ * Represents Zendesk user
  * @ORM\Entity
  * @ORM\Table(
  *      name="orocrm_zd_user",
@@ -746,7 +747,7 @@ class User implements EmailHolderInterface
     public function prePersist()
     {
         $this->createdAt  = $this->createdAt ? $this->createdAt : new \DateTime('now', new \DateTimeZone('UTC'));
-        $this->updatedAt = $this->updatedAt? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
+        $this->updatedAt = $this->updatedAt ? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
     }
 
     /**

@@ -150,7 +150,7 @@ abstract class AbstractNormalizer implements
     {
         $className = $this->getTargetClassName();
 
-        return new $className;
+        return new $className();
     }
 
     /**
