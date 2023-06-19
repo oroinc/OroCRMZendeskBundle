@@ -1,0 +1,8 @@
+oro_entity:
+    entity_name_representation:
+        Oro\Bundle\ZendeskBundle\Entity\User:
+            full: [ name ]
+            short: [ name ]
+        Oro\Bundle\ZendeskBundle\Entity\Ticket:
+            full: [ subject ]
+            short: [ subject ]

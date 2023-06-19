@@ -3,3 +3,9 @@ services:
         decorates: oro_zendesk.transport.rest_transport
         parent: oro_zendesk.transport.rest_transport
         public: true
+
+    oro_zendesk.tests.entity_name_resolver.data_loader:
+        class: Oro\Bundle\ZendeskBundle\Tests\Functional\Environment\TestEntityNameResolverDataLoader
+        decorates: oro_entity.tests.entity_name_resolver.data_loader
+        arguments:
+            - '@.inner'
