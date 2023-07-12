@@ -218,7 +218,7 @@ class TicketComment
     }
 
     /**
-     * @param User $author
+     * @param User|null $author
      * @return TicketComment
      */
     public function setAuthor(User $author = null)
@@ -236,7 +236,7 @@ class TicketComment
     }
 
     /**
-     * @param Ticket $ticket
+     * @param Ticket|null $ticket
      * @return TicketComment
      */
     public function setTicket(Ticket $ticket = null)
@@ -255,7 +255,7 @@ class TicketComment
     }
 
     /**
-     * @param CaseComment $caseComment
+     * @param CaseComment|null $caseComment
      * @return TicketComment
      */
     public function setRelatedComment(CaseComment $caseComment = null)
@@ -274,7 +274,7 @@ class TicketComment
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param \DateTime|null $createdAt
      * @return TicketComment
      */
     public function setCreatedAt(\DateTime $createdAt = null)
@@ -293,7 +293,7 @@ class TicketComment
     }
 
     /**
-     * @param \DateTime $originCreatedAt
+     * @param \DateTime|null $originCreatedAt
      * @return TicketComment
      */
     public function setOriginCreatedAt(\DateTime $originCreatedAt = null)
@@ -312,7 +312,7 @@ class TicketComment
     }
 
     /**
-     * @param \DateTime $updatedAt
+     * @param \DateTime|null $updatedAt
      * @return TicketComment
      */
     public function setUpdatedAt(\DateTime $updatedAt = null)

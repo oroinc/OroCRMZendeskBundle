@@ -451,7 +451,7 @@ class User implements EmailHolderInterface
     }
 
     /**
-     * @param UserRole $role
+     * @param UserRole|null $role
      * @return User
      */
     public function setRole(UserRole $role = null)
@@ -580,7 +580,7 @@ class User implements EmailHolderInterface
     }
 
     /**
-     * @param \DateTime $lastLoginAt
+     * @param \DateTime|null $lastLoginAt
      * @return User
      */
     public function setLastLoginAt(\DateTime $lastLoginAt = null)
@@ -599,7 +599,7 @@ class User implements EmailHolderInterface
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param \DateTime|null $createdAt
      * @return User
      */
     public function setCreatedAt(\DateTime $createdAt = null)
@@ -618,7 +618,7 @@ class User implements EmailHolderInterface
     }
 
     /**
-     * @param \DateTime $updatedAt
+     * @param \DateTime|null $updatedAt
      * @return User
      */
     public function setUpdatedAt(\DateTime $updatedAt = null)
@@ -639,7 +639,7 @@ class User implements EmailHolderInterface
     }
 
     /**
-     * @param \DateTime $originCreatedAt
+     * @param \DateTime|null $originCreatedAt
      * @return User
      */
     public function setOriginCreatedAt(\DateTime $originCreatedAt = null)
@@ -658,7 +658,7 @@ class User implements EmailHolderInterface
     }
 
     /**
-     * @param \DateTime $originUpdatedAt
+     * @param \DateTime|null $originUpdatedAt
      * @return User
      */
     public function setOriginUpdatedAt(\DateTime $originUpdatedAt = null)
@@ -677,7 +677,7 @@ class User implements EmailHolderInterface
     }
 
     /**
-     * @param Contact $contact
+     * @param Contact|null $contact
      * @return User
      */
     public function setRelatedContact(Contact $contact = null)
@@ -696,7 +696,7 @@ class User implements EmailHolderInterface
     }
 
     /**
-     * @param OroUser $user
+     * @param OroUser|null $user
      * @return User
      */
     public function setRelatedUser(OroUser $user = null)

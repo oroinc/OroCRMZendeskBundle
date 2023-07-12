@@ -195,9 +195,6 @@ abstract class AbstractNormalizer implements
         return $this->fieldRules;
     }
 
-    /**
-     * @return PropertyAccessor
-     */
     protected function getPropertyAccessor(): PropertyAccessor
     {
         if (!self::$propertyAccessor) {
