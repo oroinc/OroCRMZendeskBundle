@@ -340,7 +340,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      * @param string $resource
      * @param string $name "ticket" or "user"
      * @param array $entityData
-     * @param array $responseData
+     * @param array|null $responseData
      *
      * @return array
      * @throws RestException
