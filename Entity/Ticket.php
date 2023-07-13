@@ -355,7 +355,7 @@ class Ticket
     }
 
     /**
-     * @param Ticket $problem
+     * @param Ticket|null $problem
      * @return Ticket
      */
     public function setProblem(Ticket $problem = null)
@@ -417,7 +417,7 @@ class Ticket
     }
 
     /**
-     * @param TicketType $type
+     * @param TicketType|null $type
      * @return Ticket
      */
     public function setType(TicketType $type = null)
@@ -436,7 +436,7 @@ class Ticket
     }
 
     /**
-     * @param TicketStatus $status
+     * @param TicketStatus|null $status
      * @return Ticket
      */
     public function setStatus(TicketStatus $status = null)
@@ -455,7 +455,7 @@ class Ticket
     }
 
     /**
-     * @param TicketPriority $priority
+     * @param TicketPriority|null $priority
      * @return Ticket
      */
     public function setPriority(TicketPriority $priority = null)
@@ -493,7 +493,7 @@ class Ticket
     }
 
     /**
-     * @param User $requester
+     * @param User|null $requester
      * @return Ticket
      */
     public function setRequester(User $requester = null)
@@ -512,7 +512,7 @@ class Ticket
     }
 
     /**
-     * @param User $submitter
+     * @param User|null $submitter
      * @return Ticket
      */
     public function setSubmitter(User $submitter = null)
@@ -531,7 +531,7 @@ class Ticket
     }
 
     /**
-     * @param User $assignee
+     * @param User|null $assignee
      * @return Ticket
      */
     public function setAssignee(User $assignee = null)
@@ -569,7 +569,7 @@ class Ticket
     }
 
     /**
-     * @param \DateTime $dueAt
+     * @param \DateTime|null $dueAt
      * @return Ticket
      */
     public function setDueAt(\DateTime $dueAt = null)
@@ -588,7 +588,7 @@ class Ticket
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param \DateTime|null $createdAt
      * @return Ticket
      */
     public function setCreatedAt(\DateTime $createdAt = null)
@@ -607,7 +607,7 @@ class Ticket
     }
 
     /**
-     * @param \DateTime $originCreatedAt
+     * @param \DateTime|null $originCreatedAt
      * @return Ticket
      */
     public function setOriginCreatedAt(\DateTime $originCreatedAt = null)
@@ -626,7 +626,7 @@ class Ticket
     }
 
     /**
-     * @param \DateTime $updatedAt
+     * @param \DateTime|null $updatedAt
      * @return Ticket
      */
     public function setUpdatedAt(\DateTime $updatedAt = null)
@@ -647,7 +647,7 @@ class Ticket
     }
 
     /**
-     * @param \DateTime $originUpdatedAt
+     * @param \DateTime|null $originUpdatedAt
      * @return Ticket
      */
     public function setOriginUpdatedAt(\DateTime $originUpdatedAt = null)
@@ -710,7 +710,7 @@ class Ticket
     }
 
     /**
-     * @param CaseEntity $case
+     * @param CaseEntity|null $case
      * @return Ticket
      */
     public function setRelatedCase(CaseEntity $case = null)

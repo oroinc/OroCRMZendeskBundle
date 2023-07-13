@@ -13,7 +13,7 @@ interface ZendeskTransportInterface extends TransportInterface
     /**
      * Get Zendesk users data.
      *
-     * @param \DateTime $lastSyncDate
+     * @param \DateTime|null $lastSyncDate
      *
      * @return \Iterator Iterator of User
      * @throws RestException
@@ -23,7 +23,7 @@ interface ZendeskTransportInterface extends TransportInterface
     /**
      * Get Zendesk tickets data.
      *
-     * @param \DateTime $lastSyncDate
+     * @param \DateTime|null $lastSyncDate
      *
      * @return \Iterator Iterator of Ticket
      * @throws RestException
