@@ -119,7 +119,7 @@ class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInt
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedServices()
+    public static function getSubscribedServices(): array
     {
         return [
             'oro_zendesk.entity_provider.oro' => OroEntityProvider::class,

@@ -158,7 +158,7 @@ abstract class AbstractSyncSchedulerListener implements ServiceSubscriberInterfa
     /**
      * {@inheritDoc}
      */
-    public static function getSubscribedServices()
+    public static function getSubscribedServices(): array
     {
         return [
             'oro_integration.sync_scheduler' => SyncScheduler::class
