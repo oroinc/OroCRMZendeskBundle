@@ -4,7 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\AbstractRestIterator;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface;
-use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 /**
  * Data iterator for the zendesk integration.
@@ -12,17 +12,11 @@ use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
 class ZendeskRestIterator extends AbstractRestIterator
 {
     protected string $resource;
-
     protected array $params;
-
     protected string $dataKeyName;
-
     protected ?string $nextPageUrl = null;
-
-    protected ?ContextAwareDenormalizerInterface $denormalizer = null;
-
+    protected ?DenormalizerInterface $denormalizer = null;
     protected string $itemType = '';
-
     protected array $denormalizeContext = [];
 
     public function __construct(RestClientInterface $client, string $resource, string $dataKeyName, array $params = [])
@@ -94,11 +88,8 @@ class ZendeskRestIterator extends AbstractRestIterator
         return $result;
     }
 
-    public function setupDenormalization(
-        ContextAwareDenormalizerInterface $denormalizer,
-        string $type,
-        array $context = []
-    ): void {
+    public function setupDenormalization(DenormalizerInterface $denormalizer, string $type, array $context = []): void
+    {
         $this->denormalizer = $denormalizer;
         $this->itemType = $type;
         $this->denormalizeContext = $context;

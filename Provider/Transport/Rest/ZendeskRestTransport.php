@@ -12,8 +12,8 @@ use Oro\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\RestException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Contains methods for getting and creating tickets, users, ticket comments
@@ -23,20 +23,15 @@ use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTransportInterface
 {
     private const API_URL_PREFIX = 'api/v2';
-    private const ACTION_GET_USERS = 'getUsers';
-    private const ACTION_GET_TICKETS = 'getTickets';
-    private const ACTION_GET_TICKET_COMMENTS = 'getTicketComments';
     private const COMMENT_EVENT_TYPE = 'Comment';
 
-    private ContextAwareNormalizerInterface $normalizer;
-
-    private ContextAwareDenormalizerInterface $denormalizer;
-
+    private NormalizerInterface $normalizer;
+    private DenormalizerInterface $denormalizer;
     private string $resultIteratorClass;
 
     public function __construct(
-        ContextAwareNormalizerInterface $normalizer,
-        ContextAwareDenormalizerInterface $denormalizer,
+        NormalizerInterface $normalizer,
+        DenormalizerInterface $denormalizer,
         ?string $resultIteratorClass = null
     ) {
         $this->normalizer = $normalizer;
@@ -200,12 +195,10 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     protected function getSearchResult($classType, \DateTime $lastUpdatedAt = null)
     {
         if (!defined(sprintf('%s::%s', $classType, 'SEARCH_TYPE'))) {
-            throw new InvalidConfigurationException(
-                sprintf(
-                    "Class `%s` must contain constant `SEARCH_TYPE` to make search request !",
-                    $classType
-                )
-            );
+            throw new InvalidConfigurationException(sprintf(
+                'Class `%s` must contain constant `SEARCH_TYPE` to make search request !',
+                $classType
+            ));
         }
 
         $query = sprintf(
