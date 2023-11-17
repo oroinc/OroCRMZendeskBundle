@@ -2,11 +2,9 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Provider\Transport\Rest;
 
-use Oro\Bundle\ImportExportBundle\Serializer\Encoder\DummyEncoder;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestIterator;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Symfony\Component\Serializer\Serializer;
 
 class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
 {
@@ -36,24 +34,24 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
     {
         $this->client->expects(self::once())
             ->method('getJSON')
-            ->willReturn(['rows' => [['id' => 1], ['id' => 2]]]);
+            ->with(self::RESOURCE, self::PARAMS)
+            ->willReturn([self::DATA_KEY_NAME => [['id' => 1], ['id' => 2]]]);
 
-        $normalizer = $this->createMock(DenormalizerInterface::class);
-        $normalizer->expects(self::any())
-            ->method('supportsDenormalization')
-            ->willReturn(true);
-        $normalizer->expects(self::any())
+        $itemType = 'testType';
+        $denormalizeContext = ['key' => 'val'];
+        $denormalizer = $this->createMock(DenormalizerInterface::class);
+        $denormalizer->expects(self::exactly(2))
             ->method('denormalize')
+            ->with(self::anything(), $itemType, '', $denormalizeContext)
             ->willReturnArgument(0);
 
-        $iterator = new ZendeskRestIterator($this->client, 'resource', 'rows', []);
-        $iterator->setupDenormalization(new Serializer([$normalizer], [new DummyEncoder()]), '');
+        $this->iterator->setupDenormalization($denormalizer, $itemType, $denormalizeContext);
 
-        $iterator->next();
-        self::assertEquals(['id' => 1], $iterator->current());
+        $this->iterator->next();
+        self::assertEquals(['id' => 1], $this->iterator->current());
 
-        $iterator->next();
-        self::assertEquals(['id' => 2], $iterator->current());
+        $this->iterator->next();
+        self::assertEquals(['id' => 2], $this->iterator->current());
     }
 
     /**
