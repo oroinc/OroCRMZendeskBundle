@@ -9,17 +9,17 @@ use Oro\Bundle\MigrationBundle\Migration\QueryBag;
 class OroZendeskBundleInstaller implements Installation
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getMigrationVersion()
+    public function getMigrationVersion(): string
     {
         return 'v1_5';
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function up(Schema $schema, QueryBag $queries)
+    public function up(Schema $schema, QueryBag $queries): void
     {
         $this->createRoleTable($schema);
         $this->createUserTable($schema);
@@ -32,7 +32,7 @@ class OroZendeskBundleInstaller implements Installation
         $this->updateOroIntegrationTransportTable($schema);
     }
 
-    public function updateOroIntegrationTransportTable(Schema $schema)
+    private function updateOroIntegrationTransportTable(Schema $schema): void
     {
         $table = $schema->getTable('oro_integration_transport');
         $table->addColumn('orocrm_zd_email', 'string', ['notnull' => false, 'length' => 100]);
@@ -41,19 +41,15 @@ class OroZendeskBundleInstaller implements Installation
         $table->addColumn('orocrm_zd_default_user_email', 'string', ['notnull' => false, 'length' => 100]);
     }
 
-    protected function createTicketCollaboratorTable(Schema $schema)
+    private function createTicketCollaboratorTable(Schema $schema): void
     {
-        /** Generate table orocrm_zd_ticket_collaborators **/
         $table = $schema->createTable('orocrm_zd_ticket_collaborators');
-        $table->addColumn('ticket_id', 'integer', []);
-        $table->addColumn('user_id', 'integer', []);
+        $table->addColumn('ticket_id', 'integer');
+        $table->addColumn('user_id', 'integer');
         $table->setPrimaryKey(['ticket_id', 'user_id']);
-        $table->addIndex(['ticket_id'], 'IDX_5632B9CD700047D2', []);
-        $table->addIndex(['user_id'], 'IDX_5632B9CDA76ED395', []);
-        /** End of generate table orocrm_zd_ticket_collaborators **/
+        $table->addIndex(['ticket_id'], 'IDX_5632B9CD700047D2');
+        $table->addIndex(['user_id'], 'IDX_5632B9CDA76ED395');
 
-        /** Generate foreign keys for table orocrm_zd_ticket_collaborators **/
-        $table = $schema->getTable('orocrm_zd_ticket_collaborators');
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_zd_user'),
             ['user_id'],
@@ -66,12 +62,10 @@ class OroZendeskBundleInstaller implements Installation
             ['id'],
             ['onDelete' => 'CASCADE', 'onUpdate' => null]
         );
-        /** End of generate foreign keys for table orocrm_zd_ticket_collaborators **/
     }
 
-    protected function createTicketTable(Schema $schema)
+    private function createTicketTable(Schema $schema): void
     {
-        /** Generate table orocrm_zd_ticket **/
         $table = $schema->createTable('orocrm_zd_ticket');
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('problem_id', 'integer', ['notnull' => false]);
@@ -98,18 +92,15 @@ class OroZendeskBundleInstaller implements Installation
         $table->setPrimaryKey(['id']);
         $table->addUniqueIndex(['case_id'], 'UNIQ_45472C5FCF10D4F5');
         $table->addUniqueIndex(['origin_id', 'channel_id'], 'zd_ticket_oid_cid_unq');
-        $table->addIndex(['type_name'], 'IDX_45472C5F892CBB0E', []);
-        $table->addIndex(['status_name'], 'IDX_45472C5F6625D392', []);
-        $table->addIndex(['priority_name'], 'IDX_45472C5F965BD3DF', []);
-        $table->addIndex(['requester_id'], 'IDX_45472C5FED442CF4', []);
-        $table->addIndex(['submitter_id'], 'IDX_45472C5F919E5513', []);
-        $table->addIndex(['assignee_id'], 'IDX_45472C5F59EC7D60', []);
-        $table->addIndex(['channel_id'], 'IDX_45472C5F72F5A1AA', []);
-        $table->addIndex(['problem_id'], 'IDX_45472C5FA0DCED86', []);
-        /** End of generate table orocrm_zd_ticket **/
+        $table->addIndex(['type_name'], 'IDX_45472C5F892CBB0E');
+        $table->addIndex(['status_name'], 'IDX_45472C5F6625D392');
+        $table->addIndex(['priority_name'], 'IDX_45472C5F965BD3DF');
+        $table->addIndex(['requester_id'], 'IDX_45472C5FED442CF4');
+        $table->addIndex(['submitter_id'], 'IDX_45472C5F919E5513');
+        $table->addIndex(['assignee_id'], 'IDX_45472C5F59EC7D60');
+        $table->addIndex(['channel_id'], 'IDX_45472C5F72F5A1AA');
+        $table->addIndex(['problem_id'], 'IDX_45472C5FA0DCED86');
 
-        /** Generate foreign keys for table orocrm_zd_ticket **/
-        $table = $schema->getTable('orocrm_zd_ticket');
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_zd_ticket'),
             ['problem_id'],
@@ -164,12 +155,10 @@ class OroZendeskBundleInstaller implements Installation
             ['name'],
             ['onDelete' => 'SET NULL', 'onUpdate' => null]
         );
-        /** End of generate foreign keys for table orocrm_zd_ticket **/
     }
 
-    protected function createUserTable(Schema $schema)
+    private function createUserTable(Schema $schema): void
     {
-        /** Generate table orocrm_zd_user **/
         $table = $schema->createTable('orocrm_zd_user');
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('channel_id', 'integer', ['notnull' => false]);
@@ -198,14 +187,11 @@ class OroZendeskBundleInstaller implements Installation
         $table->addColumn('locale', 'string', ['notnull' => false, 'length' => 30]);
         $table->setPrimaryKey(['id']);
         $table->addUniqueIndex(['origin_id', 'channel_id'], 'zd_user_oid_cid_unq');
-        $table->addIndex(['role_name'], 'IDX_5CD5C9CDE09C0C92', []);
-        $table->addIndex(['related_contact_id'], 'IDX_5CD5C9CD6D6C2DFA', []);
-        $table->addIndex(['related_user_id'], 'IDX_5CD5C9CD98771930', []);
-        $table->addIndex(['channel_id'], 'IDX_5CD5C9CD72F5A1AA', []);
-        /** End of generate table orocrm_zd_user **/
+        $table->addIndex(['role_name'], 'IDX_5CD5C9CDE09C0C92');
+        $table->addIndex(['related_contact_id'], 'IDX_5CD5C9CD6D6C2DFA');
+        $table->addIndex(['related_user_id'], 'IDX_5CD5C9CD98771930');
+        $table->addIndex(['channel_id'], 'IDX_5CD5C9CD72F5A1AA');
 
-        /** Generate foreign keys for table orocrm_zd_user **/
-        $table = $schema->getTable('orocrm_zd_user');
         $table->addForeignKeyConstraint(
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
@@ -230,19 +216,15 @@ class OroZendeskBundleInstaller implements Installation
             ['name'],
             ['onDelete' => 'SET NULL', 'onUpdate' => null]
         );
-        /** End of generate foreign keys for table orocrm_zd_user **/
     }
 
-    protected function createRoleTable(Schema $schema)
+    private function createRoleTable(Schema $schema): void
     {
-        /** Generate table orocrm_zd_user_role **/
         $table = $schema->createTable('orocrm_zd_user_role');
         $table->addColumn('name', 'string', ['length' => 16]);
         $table->addColumn('label', 'string', ['length' => 255]);
         $table->setPrimaryKey(['name']);
-        /** End of generate table orocrm_zd_user_role **/
 
-        /** Generate table orocrm_zd_user_role_trans **/
         $table = $schema->createTable('orocrm_zd_user_role_trans');
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('foreign_key', 'string', ['length' => 16]);
@@ -251,24 +233,16 @@ class OroZendeskBundleInstaller implements Installation
         $table->addColumn('object_class', 'string', ['length' => 191]);
         $table->addColumn('field', 'string', ['length' => 32]);
         $table->setPrimaryKey(['id']);
-        $table->addIndex(
-            ['locale', 'object_class', 'field', 'foreign_key'],
-            'orocrm_zd_user_role_trans_idx',
-            []
-        );
-        /** End of generate table orocrm_zd_user_role_trans **/
+        $table->addIndex(['locale', 'object_class', 'field', 'foreign_key'], 'orocrm_zd_user_role_trans_idx');
     }
 
-    protected function createPriorityTable(Schema $schema)
+    private function createPriorityTable(Schema $schema): void
     {
-        /** Generate table orocrm_zd_ticket_priority **/
         $table = $schema->createTable('orocrm_zd_ticket_priority');
         $table->addColumn('name', 'string', ['length' => 16]);
         $table->addColumn('label', 'string', ['length' => 255]);
         $table->setPrimaryKey(['name']);
-        /** End of generate table orocrm_zd_ticket_priority **/
 
-        /** Generate table orocrm_zd_ticket_priority_tran **/
         $table = $schema->createTable('orocrm_zd_ticket_priority_tran');
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('foreign_key', 'string', ['length' => 16]);
@@ -277,24 +251,16 @@ class OroZendeskBundleInstaller implements Installation
         $table->addColumn('object_class', 'string', ['length' => 191]);
         $table->addColumn('field', 'string', ['length' => 32]);
         $table->setPrimaryKey(['id']);
-        $table->addIndex(
-            ['locale', 'object_class', 'field', 'foreign_key'],
-            'orocrm_zd_ticket_priority_tran_idx',
-            []
-        );
-        /** End of generate table orocrm_zd_ticket_priority_tran **/
+        $table->addIndex(['locale', 'object_class', 'field', 'foreign_key'], 'orocrm_zd_ticket_priority_tran_idx');
     }
 
-    protected function createStatusTable(Schema $schema)
+    private function createStatusTable(Schema $schema): void
     {
-        /** Generate table orocrm_zd_ticket_status **/
         $table = $schema->createTable('orocrm_zd_ticket_status');
         $table->addColumn('name', 'string', ['length' => 16]);
         $table->addColumn('label', 'string', ['length' => 255]);
         $table->setPrimaryKey(['name']);
-        /** End of generate table orocrm_zd_ticket_status **/
 
-        /** Generate table orocrm_zd_ticket_status_trans **/
         $table = $schema->createTable('orocrm_zd_ticket_status_trans');
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('foreign_key', 'string', ['length' => 16]);
@@ -303,17 +269,11 @@ class OroZendeskBundleInstaller implements Installation
         $table->addColumn('object_class', 'string', ['length' => 191]);
         $table->addColumn('field', 'string', ['length' => 32]);
         $table->setPrimaryKey(['id']);
-        $table->addIndex(
-            ['locale', 'object_class', 'field', 'foreign_key'],
-            'orocrm_zd_ticket_status_trans_idx',
-            []
-        );
-        /** End of generate table orocrm_zd_ticket_status_trans **/
+        $table->addIndex(['locale', 'object_class', 'field', 'foreign_key'], 'orocrm_zd_ticket_status_trans_idx');
     }
 
-    protected function createCommentTable(Schema $schema)
+    private function createCommentTable(Schema $schema): void
     {
-        /** Generate table orocrm_zd_comment **/
         $table = $schema->createTable('orocrm_zd_comment');
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('channel_id', 'integer', ['notnull' => false]);
@@ -324,19 +284,16 @@ class OroZendeskBundleInstaller implements Installation
         $table->addColumn('body', 'text', ['notnull' => false]);
         $table->addColumn('html_body', 'text', ['notnull' => false]);
         $table->addColumn('public', 'boolean', ['default' => '0']);
-        $table->addColumn('created_at', 'datetime', []);
+        $table->addColumn('created_at', 'datetime');
         $table->addColumn('origin_created_at', 'datetime', ['notnull' => false]);
-        $table->addColumn('updated_at', 'datetime', []);
+        $table->addColumn('updated_at', 'datetime');
         $table->setPrimaryKey(['id']);
         $table->addUniqueIndex(['related_comment_id'], 'UNIQ_20AD0BDA72A475A3');
         $table->addUniqueIndex(['origin_id', 'channel_id'], 'zd_comment_oid_cid_unq');
-        $table->addIndex(['author_id'], 'IDX_20AD0BDAF675F31B', []);
-        $table->addIndex(['ticket_id'], 'IDX_20AD0BDA700047D2', []);
-        $table->addIndex(['channel_id'], 'IDX_20AD0BDA72F5A1AA', []);
-        /** End of generate table orocrm_zd_comment **/
+        $table->addIndex(['author_id'], 'IDX_20AD0BDAF675F31B');
+        $table->addIndex(['ticket_id'], 'IDX_20AD0BDA700047D2');
+        $table->addIndex(['channel_id'], 'IDX_20AD0BDA72F5A1AA');
 
-        /** Generate foreign keys for table orocrm_zd_comment **/
-        $table = $schema->getTable('orocrm_zd_comment');
         $table->addForeignKeyConstraint(
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
@@ -361,19 +318,15 @@ class OroZendeskBundleInstaller implements Installation
             ['id'],
             ['onDelete' => 'SET NULL', 'onUpdate' => null]
         );
-        /** End of generate foreign keys for table orocrm_zd_comment **/
     }
 
-    protected function createTypeTable(Schema $schema)
+    private function createTypeTable(Schema $schema): void
     {
-        /** Generate table orocrm_zd_ticket_type **/
         $table = $schema->createTable('orocrm_zd_ticket_type');
         $table->addColumn('name', 'string', ['length' => 16]);
         $table->addColumn('label', 'string', ['length' => 255]);
         $table->setPrimaryKey(['name']);
-        /** End of generate table orocrm_zd_ticket_type **/
 
-        /** Generate table orocrm_zd_ticket_type_trans **/
         $table = $schema->createTable('orocrm_zd_ticket_type_trans');
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('foreign_key', 'string', ['length' => 16]);
@@ -382,11 +335,6 @@ class OroZendeskBundleInstaller implements Installation
         $table->addColumn('object_class', 'string', ['length' => 191]);
         $table->addColumn('field', 'string', ['length' => 32]);
         $table->setPrimaryKey(['id']);
-        $table->addIndex(
-            ['locale', 'object_class', 'field', 'foreign_key'],
-            'orocrm_zd_ticket_type_trans_idx',
-            []
-        );
-        /** End of generate table orocrm_zd_ticket_type_trans **/
+        $table->addIndex(['locale', 'object_class', 'field', 'foreign_key'], 'orocrm_zd_ticket_type_trans_idx');
     }
 }
