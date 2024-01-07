@@ -7,48 +7,37 @@ use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 
 /**
- * Loads default ticket priorities
+ * Loads Zendesk ticket priorities.
  */
 class LoadPriorityData extends AbstractTranslatableEntityFixture
 {
-    const TRANSLATION_PREFIX = 'ticket_priority';
+    private const TRANSLATION_PREFIX = 'ticket_priority';
 
     /**
-     * @var array
+     * {@inheritDoc}
      */
-    protected $names = array(
-        TicketPriority::PRIORITY_LOW,
-        TicketPriority::PRIORITY_NORMAL,
-        TicketPriority::PRIORITY_HIGH,
-        TicketPriority::PRIORITY_URGENT,
-    );
-
-    /**
-     * Load entities to DB
-     */
-    protected function loadEntities(ObjectManager $manager)
+    protected function loadEntities(ObjectManager $manager): void
     {
-        $repository = $manager->getRepository(TicketPriority::class);
-
+        $ticketPriorityRepository = $manager->getRepository(TicketPriority::class);
         $translationLocales = $this->getTranslationLocales();
-
+        $names = [
+            TicketPriority::PRIORITY_LOW,
+            TicketPriority::PRIORITY_NORMAL,
+            TicketPriority::PRIORITY_HIGH,
+            TicketPriority::PRIORITY_URGENT
+        ];
         foreach ($translationLocales as $locale) {
-            foreach ($this->names as $name) {
+            foreach ($names as $name) {
                 /** @var TicketPriority $ticketPriority */
-                $ticketPriority = $repository->findOneBy(array('name' => $name));
+                $ticketPriority = $ticketPriorityRepository->findOneBy(['name' => $name]);
                 if (!$ticketPriority) {
                     $ticketPriority = new TicketPriority($name);
                 }
 
-                // set locale and label
-                $label = $this->translate($name, static::TRANSLATION_PREFIX, $locale);
-                $ticketPriority->setLocale($locale)
-                    ->setLabel($label);
-
-                // save
+                $ticketPriority->setLocale($locale);
+                $ticketPriority->setLabel($this->translate($name, self::TRANSLATION_PREFIX, $locale));
                 $manager->persist($ticketPriority);
             }
-
             $manager->flush();
         }
     }

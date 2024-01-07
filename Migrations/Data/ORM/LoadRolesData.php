@@ -7,46 +7,36 @@ use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 
 /**
- * Loads default user roles
+ * Loads Zendesk user roles.
  */
 class LoadRolesData extends AbstractTranslatableEntityFixture
 {
-    const TRANSLATION_PREFIX = 'zendesk_user_role';
+    private const TRANSLATION_PREFIX = 'zendesk_user_role';
 
     /**
-     * @var array
+     * {@inheritDoc}
      */
-    protected $names = array(
-        UserRole::ROLE_ADMIN,
-        UserRole::ROLE_AGENT,
-        UserRole::ROLE_END_USER
-    );
-    /**
-     * Load entities to DB
-     */
-    protected function loadEntities(ObjectManager $manager)
+    protected function loadEntities(ObjectManager $manager): void
     {
-        $repository = $manager->getRepository(UserRole::class);
-
+        $userRoleRepository = $manager->getRepository(UserRole::class);
         $translationLocales = $this->getTranslationLocales();
-
+        $names = [
+            UserRole::ROLE_ADMIN,
+            UserRole::ROLE_AGENT,
+            UserRole::ROLE_END_USER
+        ];
         foreach ($translationLocales as $locale) {
-            foreach ($this->names as $name) {
+            foreach ($names as $name) {
                 /** @var UserRole $zendeskUserRole */
-                $zendeskUserRole = $repository->findOneBy(array('name' => $name));
+                $zendeskUserRole = $userRoleRepository->findOneBy(['name' => $name]);
                 if (!$zendeskUserRole) {
                     $zendeskUserRole = new UserRole($name);
                 }
 
-                // set locale and label
-                $label = $this->translate($name, static::TRANSLATION_PREFIX, $locale);
-                $zendeskUserRole->setLocale($locale)
-                    ->setLabel($label);
-
-                // save
+                $zendeskUserRole->setLocale($locale);
+                $zendeskUserRole->setLabel($this->translate($name, self::TRANSLATION_PREFIX, $locale));
                 $manager->persist($zendeskUserRole);
             }
-
             $manager->flush();
         }
     }
