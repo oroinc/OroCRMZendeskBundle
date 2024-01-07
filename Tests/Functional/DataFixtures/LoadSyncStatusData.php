@@ -2,13 +2,14 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
+use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 use Oro\Bundle\ZendeskBundle\Provider\UserConnector;
 
-class LoadSyncStatusData extends AbstractZendeskFixture implements DependentFixtureInterface
+class LoadSyncStatusData extends AbstractFixture implements DependentFixtureInterface
 {
     private array $statusData = [
         [
@@ -46,39 +47,36 @@ class LoadSyncStatusData extends AbstractZendeskFixture implements DependentFixt
             'connector' => TicketConnector::TYPE,
             'message' => '',
             'date' => '2014-06-06T11:24:23Z'
-        ],
+        ]
     ];
+
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function load(ObjectManager $manager)
+    public function getDependencies(): array
     {
-        foreach ($this->statusData as $data) {
-            $channel = $this->getReference($data['channel']);
-            unset($data['channel']);
-            $entity       = new Status();
-            $data['date'] = new \DateTime($data['date']);
-
-            $this->setEntityPropertyValues($entity, $data, ['reference']);
-            $channel->addStatus($entity);
-
-            if (isset($data['reference'])) {
-                $this->setReference($data['reference'], $entity);
-            }
-
-            $manager->persist($entity);
-        }
-
-        $manager->flush();
+        return [LoadChannelData::class];
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getDependencies()
+    public function load(ObjectManager $manager): void
     {
-        return [
-            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData'
-        ];
+        foreach ($this->statusData as $data) {
+            $channel = $this->getReference($data['channel']);
+            $entity = new Status();
+            $entity->setChannel($channel);
+            $entity->setCode($data['code']);
+            $entity->setConnector($data['connector']);
+            $entity->setMessage($data['message']);
+            $entity->setDate(new \DateTime($data['date']));
+            $channel->addStatus($entity);
+            if (isset($data['reference'])) {
+                $this->setReference($data['reference'], $entity);
+            }
+            $manager->persist($entity);
+        }
+        $manager->flush();
     }
 }
