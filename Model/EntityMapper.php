@@ -8,6 +8,9 @@ use Oro\Bundle\CaseBundle\Entity\CaseStatus;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 
+/**
+ * Maps Zendesk entities to Oro entities
+ */
 class EntityMapper
 {
     const STATUS_KEY   = 'status';
@@ -44,7 +47,7 @@ class EntityMapper
     {
         $name = $this->getCaseStatusName($ticketStatus);
 
-        return $name ? $this->registry->getManager()->find('OroCaseBundle:CaseStatus', $name) : null;
+        return $name ? $this->registry->getManager()->find(CaseStatus::class, $name) : null;
     }
 
     /**
@@ -69,7 +72,7 @@ class EntityMapper
     {
         $name = $this->getCasePriorityName($ticketPriority);
 
-        return $name ? $this->registry->getManager()->find('OroCaseBundle:CasePriority', $name) : null;
+        return $name ? $this->registry->getManager()->find(CasePriority::class, $name) : null;
     }
 
     /**
@@ -94,7 +97,7 @@ class EntityMapper
     {
         $name = $this->getTicketStatusName($caseStatus);
 
-        return $name ? $this->registry->getManager()->find('OroZendeskBundle:TicketStatus', $name) : null;
+        return $name ? $this->registry->getManager()->find(TicketStatus::class, $name) : null;
     }
 
     /**
@@ -119,7 +122,7 @@ class EntityMapper
     {
         $name = $this->getTicketPriorityName($casePriority);
 
-        return $name ? $this->registry->getManager()->find('OroZendeskBundle:TicketPriority', $name) : null;
+        return $name ? $this->registry->getManager()->find(TicketPriority::class, $name) : null;
     }
 
     /**

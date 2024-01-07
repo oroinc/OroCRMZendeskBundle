@@ -6,6 +6,9 @@ use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
 use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 
+/**
+ * Loads default ticket types
+ */
 class LoadTicketTypeData extends AbstractTranslatableEntityFixture
 {
     const TRANSLATION_PREFIX = 'ticket_type';
@@ -24,7 +27,7 @@ class LoadTicketTypeData extends AbstractTranslatableEntityFixture
      */
     protected function loadEntities(ObjectManager $manager)
     {
-        $repository = $manager->getRepository('OroZendeskBundle:TicketType');
+        $repository = $manager->getRepository(TicketType::class);
 
         $translationLocales = $this->getTranslationLocales();
 

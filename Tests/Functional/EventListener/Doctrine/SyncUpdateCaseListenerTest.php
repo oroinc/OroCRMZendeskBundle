@@ -26,7 +26,7 @@ class SyncUpdateCaseListenerTest extends WebTestCase
             ->findOneBy(['username' => LoadAdminUserData::DEFAULT_ADMIN_USERNAME]);
 
         self::assertNotNull($user, 'Cannot get admin user');
-        $token = new UsernamePasswordToken($user, $user->getUsername(), 'main');
+        $token = new UsernamePasswordToken($user, 'main');
         self::getContainer()->get('security.token_storage')->setToken($token);
     }
 

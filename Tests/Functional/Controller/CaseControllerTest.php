@@ -64,7 +64,7 @@ class CaseControllerTest extends WebTestCase
         self::assertCount(0, $crawler->filter('.zendesk-integration-btn-group'));
         self::assertStringNotContainsString('Publish to Zendesk', $crawler->html());
 
-        $crawler = $crawler->filterXPath('//span[text()="Zendesk ticket info"]')->parents();
+        $crawler = $crawler->filterXPath('//span[text()="Zendesk ticket info"]')->ancestors();
 
         $externalId = $this->getFieldValue('Ticket Number', $crawler);
         self::assertStringContainsString($expectedTicket->getOriginId(), $externalId->html());
@@ -128,7 +128,7 @@ class CaseControllerTest extends WebTestCase
     {
         $labelNode = $crawler->filterXPath("//label[text()=\"{$label}\"]");
         $this->assertTrue($labelNode->count() > 0, "label({$label}) not found");
-        $value = $labelNode->parents()->first()->filterXPath('//div[@class="control-label"]');
+        $value = $labelNode->ancestors()->first()->filterXPath('//div[@class="control-label"]');
         $this->assertTrue($value->count() > 0, "value({$label}) not found");
 
         return $value;

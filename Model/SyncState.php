@@ -9,6 +9,9 @@ use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+/**
+ * DTO for storing sync state
+ */
 class SyncState
 {
     const LAST_SYNC_DATE_KEY = 'lastSyncDate';
@@ -49,7 +52,7 @@ class SyncState
         /**
          * @var $channelRepository ChannelRepository
          */
-        $channelRepository = $this->managerRegistry->getRepository('OroIntegrationBundle:Channel');
+        $channelRepository = $this->managerRegistry->getRepository(Channel::class);
         $status = $channelRepository->getLastStatusForConnector($channel, $connector, Status::STATUS_COMPLETED);
 
         if (null === $status) {

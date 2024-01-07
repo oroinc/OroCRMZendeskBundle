@@ -6,6 +6,9 @@ use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 
+/**
+ * Loads default user roles
+ */
 class LoadRolesData extends AbstractTranslatableEntityFixture
 {
     const TRANSLATION_PREFIX = 'zendesk_user_role';
@@ -23,7 +26,7 @@ class LoadRolesData extends AbstractTranslatableEntityFixture
      */
     protected function loadEntities(ObjectManager $manager)
     {
-        $repository = $manager->getRepository('OroZendeskBundle:UserRole');
+        $repository = $manager->getRepository(UserRole::class);
 
         $translationLocales = $this->getTranslationLocales();
 

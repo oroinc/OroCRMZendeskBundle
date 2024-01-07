@@ -7,9 +7,11 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Repository\ChannelRepository;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Oro\Bundle\ZendeskBundle\Model\SyncState;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class SyncStateTest extends \PHPUnit\Framework\TestCase
+class SyncStateTest extends TestCase
 {
     private const STATUS_ID = 1;
 
@@ -19,13 +21,13 @@ class SyncStateTest extends \PHPUnit\Framework\TestCase
     /** @var string */
     private $connector = 'CONNECTOR';
 
-    /** @var Channel|\PHPUnit\Framework\MockObject\MockObject */
+    /** @var Channel|MockObject */
     private $channel;
 
-    /** @var ChannelRepository|\PHPUnit\Framework\MockObject\MockObject */
+    /** @var ChannelRepository|MockObject */
     private $channelRepository;
 
-    /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject */
+    /** @var LoggerInterface|MockObject */
     private $logger;
 
     protected function setUp(): void
@@ -37,7 +39,7 @@ class SyncStateTest extends \PHPUnit\Framework\TestCase
         $doctrine = $this->createMock(ManagerRegistry::class);
         $doctrine->expects($this->once())
             ->method('getRepository')
-            ->with('OroIntegrationBundle:Channel')
+            ->with(Channel::class)
             ->willReturn($this->channelRepository);
 
         $this->syncState = new SyncState($doctrine);

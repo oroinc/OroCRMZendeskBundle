@@ -44,7 +44,7 @@ class TicketController extends AbstractFOSRestController
             return $this->handleView($this->view(['message' => 'Invalid channel type.'], Response::HTTP_BAD_REQUEST));
         }
 
-        $this->get('oro_zendesk.model.sync_manager')->syncCase($caseEntity, $channel, true);
+        $this->container->get('oro_zendesk.model.sync_manager')->syncCase($caseEntity, $channel, true);
 
         return $this->handleView($this->view('', Response::HTTP_OK));
     }

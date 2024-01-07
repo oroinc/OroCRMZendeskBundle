@@ -6,6 +6,9 @@ use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
 use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 
+/**
+ * Loads default ticket priorities
+ */
 class LoadPriorityData extends AbstractTranslatableEntityFixture
 {
     const TRANSLATION_PREFIX = 'ticket_priority';
@@ -25,7 +28,7 @@ class LoadPriorityData extends AbstractTranslatableEntityFixture
      */
     protected function loadEntities(ObjectManager $manager)
     {
-        $repository = $manager->getRepository('OroZendeskBundle:TicketPriority');
+        $repository = $manager->getRepository(TicketPriority::class);
 
         $translationLocales = $this->getTranslationLocales();
 

@@ -3,6 +3,7 @@
 namespace Oro\Bundle\ZendeskBundle\EventListener\Doctrine;
 
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
+use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 
 /**
@@ -66,7 +67,7 @@ class SyncUpdateCaseListener extends AbstractSyncSchedulerListener
         $result = null;
         /** @var CaseEntity $entity */
         if ($entity->getId()) {
-            $result = $this->entityManager->getRepository('OroZendeskBundle:Ticket')
+            $result = $this->entityManager->getRepository(Ticket::class)
                 ->findOneBy(['relatedCase' => $entity]);
         }
         return $result;

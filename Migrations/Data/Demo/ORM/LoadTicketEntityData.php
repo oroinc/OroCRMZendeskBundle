@@ -22,6 +22,9 @@ use Oro\Bundle\ZendeskBundle\Model\EntityMapper;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Loads demo data for zendesk ticket entity
+ */
 class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     const TICKET_COUNT = 10;
@@ -106,7 +109,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
         if (!$case) {
             return null;
         }
-        $requester = $this->getZendeskUserByUser($this->getRandomEntity('OroUserBundle:User'));
+        $requester = $this->getZendeskUserByUser($this->getRandomEntity(OroUser::class));
         $assignee = $this->getZendeskUserByUser($case->getAssignedTo());
         $data = array(
             'originId' => $this->ticketOriginId,
@@ -126,10 +129,10 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
         );
 
         if ($data['hasIncidents']) {
-            $type = $this->entityManager->getRepository('OroZendeskBundle:TicketType')
+            $type = $this->entityManager->getRepository(TicketType::class)
                 ->findOneBy(array('name' => TicketType::TYPE_PROBLEM));
         } else {
-            $type = $this->getRandomEntity('OroZendeskBundle:TicketType');
+            $type = $this->getRandomEntity(TicketType::class);
         }
 
         /**
@@ -184,7 +187,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
         if ($this->cases === null) {
             $this->cases = $this->entityManager->createQueryBuilder()
                 ->select('e')
-                ->from('OroCaseBundle:CaseEntity', 'e')
+                ->from(CaseEntity::class, 'e')
                 ->setMaxResults(LoadCaseEntityData::CASES_COUNT)
                 ->getQuery()
                 ->execute();
@@ -347,7 +350,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
      */
     protected function getRoleByName($roleName)
     {
-        $role = $this->entityManager->getRepository('OroZendeskBundle:UserRole')
+        $role = $this->entityManager->getRepository(UserRole::class)
             ->findOneBy(array('name' => $roleName));
 
         return $role;

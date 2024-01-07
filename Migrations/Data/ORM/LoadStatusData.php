@@ -6,6 +6,9 @@ use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 
+/**
+ * Loads default ticket statuses
+ */
 class LoadStatusData extends AbstractTranslatableEntityFixture
 {
     const TRANSLATION_PREFIX = 'ticket_status';
@@ -26,7 +29,7 @@ class LoadStatusData extends AbstractTranslatableEntityFixture
      */
     protected function loadEntities(ObjectManager $manager)
     {
-        $repository = $manager->getRepository('OroZendeskBundle:TicketStatus');
+        $repository = $manager->getRepository(TicketStatus::class);
 
         $translationLocales = $this->getTranslationLocales();
 
