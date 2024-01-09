@@ -40,7 +40,7 @@ abstract class AbstractSyncSchedulerListener implements ServiceSubscriberInterfa
     public function onFlush(OnFlushEventArgs $event)
     {
         $this->scheduledSyncMap = [];
-        $this->entityManager = $event->getEntityManager();
+        $this->entityManager = $event->getObjectManager();
 
         // check for logged user is for confidence that data changes mes from UI, not from sync process.
         if (!$this->tokenAccessor->hasUser()) {

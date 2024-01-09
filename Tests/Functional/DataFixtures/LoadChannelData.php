@@ -2,74 +2,59 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
+use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\OrganizationBundle\Entity\Organization;
-use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
+use Oro\Bundle\TestFrameworkBundle\Tests\Functional\DataFixtures\LoadOrganization;
+use Oro\Bundle\TestFrameworkBundle\Tests\Functional\DataFixtures\LoadUser;
 
-class LoadChannelData extends AbstractZendeskFixture implements DependentFixtureInterface
+class LoadChannelData extends AbstractFixture implements DependentFixtureInterface
 {
     private array $channelData = [
-        [
+        'zendesk_channel:first_test_channel' => [
             'name' => 'zendesk',
             'type' => 'zendesk',
             'transport' => 'zendesk_transport:first_test_transport',
             'enabled' => true,
-            'reference' => 'zendesk_channel:first_test_channel',
-            'synchronizationSettings' => [
-                'isTwoWaySyncEnabled' => true
-            ],
+            'synchronizationSettings' => ['isTwoWaySyncEnabled' => true]
         ],
-        [
+        'zendesk_channel:second_test_channel' => [
             'name' => 'zendesk_second',
             'type' => 'zendesk',
             'transport' => 'zendesk_transport:second_test_transport',
             'enabled' => true,
-            'reference' => 'zendesk_channel:second_test_channel',
-            'synchronizationSettings' => [
-                'isTwoWaySyncEnabled' => false
-            ],
+            'synchronizationSettings' => ['isTwoWaySyncEnabled' => false]
         ]
     ];
+
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function load(ObjectManager $manager)
+    public function getDependencies(): array
     {
-        $userManager = $this->container->get('oro_user.manager');
-        $admin = $userManager->findUserByEmail(LoadAdminUserData::DEFAULT_ADMIN_EMAIL);
-        $organization = $manager->getRepository(Organization::class)->getFirst();
-        foreach ($this->channelData as $data) {
-            $entity = new Channel();
-
-            $data['transport'] = $this->getReference($data['transport']);
-
-            $entity->setDefaultUserOwner($admin);
-            $entity->setOrganization($organization);
-
-            $this->setEntityPropertyValues($entity, $data, ['reference', 'synchronizationSettings']);
-            $this->setReference($data['reference'], $entity);
-
-            if (isset($data['synchronizationSettings'])) {
-                foreach ($data['synchronizationSettings'] as $key => $value) {
-                    $entity->getSynchronizationSettingsReference()->offsetSet($key, $value);
-                }
-            }
-
-            $manager->persist($entity);
-        }
-
-        $manager->flush();
+        return [LoadTransportData::class, LoadOrganization::class, LoadUser::class];
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getDependencies()
+    public function load(ObjectManager $manager): void
     {
-        return [
-            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadTransportData'
-        ];
+        foreach ($this->channelData as $reference => $data) {
+            $entity = new Channel();
+            $entity->setDefaultUserOwner($this->getReference(LoadUser::USER));
+            $entity->setOrganization($this->getReference(LoadOrganization::ORGANIZATION));
+            $entity->setName($data['name']);
+            $entity->setType($data['type']);
+            $entity->setEnabled($data['enabled']);
+            $entity->setTransport($this->getReference($data['transport']));
+            foreach ($data['synchronizationSettings'] as $key => $value) {
+                $entity->getSynchronizationSettingsReference()->offsetSet($key, $value);
+            }
+            $this->setReference($reference, $entity);
+            $manager->persist($entity);
+        }
+        $manager->flush();
     }
 }

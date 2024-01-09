@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
@@ -11,11 +11,10 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketPriority;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 
-class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureInterface
+class LoadTicketData extends AbstractFixture implements DependentFixtureInterface
 {
     private array $data = [
-        [
-            'reference' => 'oro_zendesk:ticket_43',
+        'oro_zendesk:ticket_43' => [
             'originId' => 43,
             'url' => 'https://foo.zendesk.com/api/v2/tickets/43.json',
             'subject' => 'Zendesk Ticket 43',
@@ -33,8 +32,7 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
             'channel' => 'zendesk_channel:first_test_channel'
         ],
-        [
-            'reference' => 'oro_zendesk:ticket_42',
+        'oro_zendesk:ticket_42' => [
             'originId' => 42,
             'url' => 'https://foo.zendesk.com/api/v2/tickets/42.json',
             'subject' => 'Zendesk Ticket 42',
@@ -55,8 +53,7 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
             'dueAt' => '2014-06-11T12:13:11Z',
             'relatedCase' => 'oro_zendesk:case_1',
             'comments' => [
-                [
-                    'reference' => 'zendesk_ticket_42_comment_1',
+                'zendesk_ticket_42_comment_1' => [
                     'originId' => 1000,
                     'body' => 'Comment 1',
                     'htmlBody' => '<p>Comment 1</p>',
@@ -66,8 +63,7 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
                     'relatedComment' => 'case_1_comment_1',
                     'channel' => 'zendesk_channel:first_test_channel'
                 ],
-                [
-                    'reference' => 'zendesk_ticket_42_comment_2',
+                'zendesk_ticket_42_comment_2' => [
                     'originId' => 1001,
                     'body' => 'Comment 2',
                     'htmlBody' => '<p>Comment 2</p>',
@@ -77,8 +73,7 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
                     'relatedComment' => 'case_1_comment_2',
                     'channel' => 'zendesk_channel:first_test_channel'
                 ],
-                [
-                    'reference' => 'zendesk_ticket_42_comment_3',
+                'zendesk_ticket_42_comment_3' => [
                     'body' => 'Comment 3',
                     'htmlBody' => '<p>Comment 3</p>',
                     'public' => false,
@@ -87,8 +82,7 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
                     'relatedComment' => 'case_1_comment_3',
                     'channel' => 'zendesk_channel:first_test_channel'
                 ],
-                [
-                    'reference' => 'zendesk_ticket_42_comment_4',
+                'zendesk_ticket_42_comment_4' => [
                     'body' => 'Comment 4',
                     'htmlBody' => '<p>Comment 4</p>',
                     'public' => false,
@@ -96,12 +90,11 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
                     'createdAt' => '2014-06-05T12:24:23Z',
                     'relatedComment' => 'case_1_comment_4',
                     'channel' => 'zendesk_channel:first_test_channel'
-                ],
+                ]
             ],
             'channel' => 'zendesk_channel:first_test_channel'
         ],
-        [
-            'reference' => 'oro_zendesk:ticket_44_case_6',
+        'oro_zendesk:ticket_44_case_6' => [
             'originId' => 44,
             'url' => 'https://foo.zendesk.com/api/v2/tickets/44.json',
             'subject' => 'Case 6, Zendesk Ticket 44',
@@ -120,8 +113,7 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
             'relatedCase' => 'oro_zendesk:case_6',
             'channel' => 'zendesk_channel:first_test_channel'
         ],
-        [
-            'reference' => 'oro_zendesk:not_synced_ticket',
+        'oro_zendesk:not_synced_ticket' => [
             'subject' => 'Not Synced Zendesk Ticket',
             'description' => 'Not Synced Zendesk Ticket Description',
             'type' => TicketType::TYPE_TASK,
@@ -136,8 +128,7 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
             'channel' => 'zendesk_channel:first_test_channel'
         ],
-        [
-            'reference' => 'oro_zendesk:not_synced_ticket_with_case_comments',
+        'oro_zendesk:not_synced_ticket_with_case_comments' => [
             'subject' => 'Not Synced Zendesk Ticket with Case Comments',
             'description' => 'Not Synced Zendesk Ticket with Case Comments Description',
             'type' => TicketType::TYPE_TASK,
@@ -150,16 +141,15 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
             'updatedAt' => '2014-06-05T13:43:21Z',
             'relatedCase' => 'oro_zendesk:case_5',
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
-            'channel' => 'zendesk_channel:first_test_channel',
+            'channel' => 'zendesk_channel:first_test_channel'
         ],
-        [
-            'reference' => 'oro_zendesk:synced_ticket_with_not_synced_comments',
+        'oro_zendesk:synced_ticket_with_not_synced_comments' => [
             'subject' => 'Synced Zendesk Ticket with not synced Comments',
             'description' => 'Synced Zendesk Ticket with not synced Comments Description',
             'type' => TicketType::TYPE_TASK,
             'status' => TicketStatus::STATUS_OPEN,
             'priority' => TicketPriority::PRIORITY_LOW,
-            'originId'  => 2000,
+            'originId' => 2000,
             'requester' => 'zendesk_user:alex.taylor@example.com',
             'submitter' => 'zendesk_user:fred.taylor@example.com',
             'assignee' => 'zendesk_user:fred.taylor@example.com',
@@ -169,8 +159,7 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
             'originUpdatedAt' => '2014-06-09T17:45:22Z',
             'channel' => 'zendesk_channel:second_test_channel',
             'comments' => [
-                [
-                    'reference' => 'zendesk_ticket_52_comment_1',
+                'zendesk_ticket_52_comment_1' => [
                     'originId' => 2000,
                     'body' => 'Comment 1',
                     'htmlBody' => '<p>Comment 1</p>',
@@ -179,8 +168,7 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
                     'createdAt' => '2014-06-05T12:24:23Z',
                     'channel' => 'zendesk_channel:second_test_channel'
                 ],
-                [
-                    'reference' => 'zendesk_ticket_52_comment_2',
+                'zendesk_ticket_52_comment_2' => [
                     'originId' => 2001,
                     'body' => 'Comment 2',
                     'htmlBody' => '<p>Comment 2</p>',
@@ -189,8 +177,7 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
                     'createdAt' => '2014-06-05T12:24:23Z',
                     'channel' => 'zendesk_channel:second_test_channel'
                 ],
-                [
-                    'reference' => 'zendesk_ticket_52_comment_3',
+                'zendesk_ticket_52_comment_3' => [
                     'body' => 'Comment 3',
                     'htmlBody' => '<p>Comment 3</p>',
                     'public' => false,
@@ -198,119 +185,104 @@ class LoadTicketData extends AbstractZendeskFixture implements DependentFixtureI
                     'createdAt' => '2014-06-05T12:24:23Z',
                     'channel' => 'zendesk_channel:second_test_channel'
                 ],
-                [
-                    'reference' => 'zendesk_ticket_52_comment_4',
+                'zendesk_ticket_52_comment_4' => [
                     'body' => 'Comment 4',
                     'htmlBody' => '<p>Comment 4</p>',
                     'public' => false,
                     'author' => 'zendesk_user:alex.miller@example.com',
                     'createdAt' => '2014-06-05T12:24:23Z',
                     'channel' => 'zendesk_channel:second_test_channel'
-                ],
-            ],
-        ],
+                ]
+            ]
+        ]
     ];
 
     /**
-     * {@inheritdoc}
-     * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * {@inheritDoc}
      */
-    public function load(ObjectManager $manager)
+    public function getDependencies(): array
     {
-        foreach ($this->data as $data) {
-            $entity = new Ticket();
-
-            if (isset($data['reference'])) {
-                $this->addReference($data['reference'], $entity);
-            }
-
-            if (isset($data['collaborators'])) {
-                $collaborators = new ArrayCollection();
-                foreach ($data['collaborators'] as $user) {
-                    $collaborators->add($this->getReference($user));
-                }
-                $data['collaborators'] = $collaborators;
-            }
-
-            $data['priority'] = $manager->find(TicketPriority::class, $data['priority']);
-            $data['status'] = $manager->find(TicketStatus::class, $data['status']);
-            $data['type'] = $manager->find(TicketType::class, $data['type']);
-
-            if (isset($data['channel'])) {
-                $data['channel'] = $this->getReference($data['channel']);
-            }
-            if (isset($data['createdAt'])) {
-                $data['createdAt'] = new \DateTime($data['createdAt']);
-            }
-            if (isset($data['updatedAt'])) {
-                $data['updatedAt'] = new \DateTime($data['updatedAt']);
-            }
-            if (isset($data['dueAt'])) {
-                $data['dueAt'] = new \DateTime($data['dueAt']);
-            }
-            if (isset($data['problem'])) {
-                $data['problem'] = $this->getReference($data['problem']);
-            }
-            if (isset($data['requester'])) {
-                $data['requester'] = $this->getReference($data['requester']);
-            }
-            if (isset($data['submitter'])) {
-                $data['submitter'] = $this->getReference($data['submitter']);
-            }
-            if (isset($data['assignee'])) {
-                $data['assignee'] = $this->getReference($data['assignee']);
-            }
-            if (isset($data['relatedCase'])) {
-                $data['relatedCase'] = $this->getReference($data['relatedCase']);
-            }
-            if (isset($data['originUpdatedAt'])) {
-                $data['originUpdatedAt'] = new \DateTime($data['originUpdatedAt']);
-            }
-            $this->setEntityPropertyValues($entity, $data, ['reference', 'comments']);
-
-            $manager->persist($entity);
-
-            if (isset($data['comments'])) {
-                foreach ($data['comments'] as $commentData) {
-                    $comment = new TicketComment();
-                    $entity->addComment($comment);
-
-                    if (isset($commentData['reference'])) {
-                        $this->addReference($commentData['reference'], $comment);
-                    }
-                    if (isset($commentData['author'])) {
-                        $commentData['author'] = $this->getReference($commentData['author']);
-                    }
-                    if (isset($commentData['channel'])) {
-                        $commentData['channel'] = $this->getReference($commentData['channel']);
-                    }
-                    if (isset($commentData['relatedComment'])) {
-                        $commentData['relatedComment'] = $this->getReference($commentData['relatedComment']);
-                    }
-                    if (isset($commentData['createdAt'])) {
-                        $commentData['createdAt'] = new \DateTime($commentData['createdAt']);
-                    }
-
-                    $this->setEntityPropertyValues($comment, $commentData, ['reference']);
-
-                    $manager->persist($comment);
-                }
-            }
-        }
-
-        $manager->flush();
+        return [
+            LoadCaseEntityData::class,
+            LoadZendeskUserData::class,
+            LoadChannelData::class
+        ];
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    public function getDependencies()
+    public function load(ObjectManager $manager): void
     {
-        return [
-            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadCaseEntityData',
-            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadZendeskUserData',
-            'Oro\\Bundle\\ZendeskBundle\\Tests\\Functional\\DataFixtures\\LoadChannelData'
-        ];
+        foreach ($this->data as $reference => $data) {
+            $entity = new Ticket();
+            $entity->setSubject($data['subject']);
+            $entity->setDescription($data['description']);
+            $entity->setType($manager->find(TicketType::class, $data['type']));
+            $entity->setStatus($manager->find(TicketStatus::class, $data['status']));
+            $entity->setPriority($manager->find(TicketPriority::class, $data['priority']));
+            $entity->setRequester($this->getReference($data['requester']));
+            $entity->setSubmitter($this->getReference($data['submitter']));
+            $entity->setAssignee($this->getReference($data['assignee']));
+            $entity->setCreatedAt(new \DateTime($data['createdAt']));
+            $entity->setUpdatedAt(new \DateTime($data['updatedAt']));
+            $entity->setRelatedCase($this->getReference($data['relatedCase']));
+            $entity->setChannel($this->getReference($data['channel']));
+            if (isset($data['collaborators'])) {
+                foreach ($data['collaborators'] as $user) {
+                    $entity->addCollaborator($this->getReference($user));
+                }
+            }
+            if (isset($data['originId'])) {
+                $entity->setOriginId($data['originId']);
+            }
+            if (isset($data['url'])) {
+                $entity->setUrl($data['url']);
+            }
+            if (isset($data['externalId'])) {
+                $entity->setExternalId($data['externalId']);
+            }
+            if (isset($data['problem'])) {
+                $entity->setProblem($this->getReference($data['problem']));
+            }
+            if (isset($data['recipient'])) {
+                $entity->setRecipient($data['recipient']);
+            }
+            if (isset($data['hasIncidents'])) {
+                $entity->setHasIncidents($data['hasIncidents']);
+            }
+            if (isset($data['dueAt'])) {
+                $entity->setDueAt(new \DateTime($data['dueAt']));
+            }
+            if (isset($data['originUpdatedAt'])) {
+                $entity->setOriginUpdatedAt(new \DateTime($data['originUpdatedAt']));
+            }
+            $manager->persist($entity);
+            $this->setReference($reference, $entity);
+
+            if (isset($data['comments'])) {
+                foreach ($data['comments'] as $commentReference => $commentData) {
+                    $comment = new TicketComment();
+                    $entity->addComment($comment);
+                    $comment->setBody($commentData['body']);
+                    $comment->setHtmlBody($commentData['htmlBody']);
+                    $comment->setPublic($commentData['public']);
+                    $comment->setAuthor($this->getReference($commentData['author']));
+                    $comment->setChannel($this->getReference($commentData['channel']));
+                    $comment->setCreatedAt(new \DateTime($commentData['createdAt']));
+                    if (isset($commentData['relatedComment'])) {
+                        $comment->setRelatedComment($this->getReference($commentData['relatedComment']));
+                    }
+                    if (isset($commentData['originId'])) {
+                        $comment->setOriginId($commentData['originId']);
+                    }
+                    $manager->persist($comment);
+                    $this->setReference($commentReference, $comment);
+                }
+            }
+        }
+        $manager->flush();
     }
 }

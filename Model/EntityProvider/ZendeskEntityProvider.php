@@ -20,6 +20,9 @@ use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 
+/**
+ * Provides Zendesk entities for Oro entities
+ */
 class ZendeskEntityProvider
 {
     /** @var ManagerRegistry */
@@ -80,7 +83,7 @@ class ZendeskEntityProvider
      */
     public function getUser(User $user, Channel $channel, $defaultIfNotExist = false)
     {
-        $result = $this->registry->getRepository('OroZendeskBundle:User')
+        $result = $this->registry->getRepository(User::class)
             ->findOneBy(array('originId' => $user->getOriginId(), 'channel' => $channel));
 
         if (!$result) {
@@ -113,7 +116,7 @@ class ZendeskEntityProvider
         }
 
         /** @var EntityRepository $repo */
-        $repo = $this->registry->getRepository('OroZendeskBundle:User');
+        $repo = $this->registry->getRepository(User::class);
 
         /** @var User|null $user */
         $user = $repo->findOneBy(array('email' => $emails, 'channel' => $channel));
@@ -129,7 +132,7 @@ class ZendeskEntityProvider
      * @param Channel $channel
      *
      * @return null|User
-     * @throws \Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getDefaultZendeskUser(Channel $channel)
     {
@@ -140,7 +143,7 @@ class ZendeskEntityProvider
 
         $email = $transport->getZendeskUserEmail();
 
-        return $this->registry->getRepository('OroZendeskBundle:User')
+        return $this->registry->getRepository(User::class)
             ->findOneBy(array('email' => $email, 'channel' => $channel));
     }
 
@@ -160,7 +163,7 @@ class ZendeskEntityProvider
             return $result;
         }
 
-        $result = $this->registry->getRepository('OroZendeskBundle:User')
+        $result = $this->registry->getRepository(User::class)
             ->findOneBy(array('relatedContact' => $contact, 'channel' => $channel));
 
         if ($result) {
@@ -222,7 +225,7 @@ class ZendeskEntityProvider
      */
     public function getUserRoleByName($roleName)
     {
-        return $this->registry->getManager()->find('OroZendeskBundle:UserRole', $roleName);
+        return $this->registry->getManager()->find(UserRole::class, $roleName);
     }
 
     /**
@@ -243,7 +246,7 @@ class ZendeskEntityProvider
      */
     public function getTicketByCase(CaseEntity $caseEntity)
     {
-        return $this->registry->getRepository('OroZendeskBundle:Ticket')
+        return $this->registry->getRepository(Ticket::class)
             ->findOneBy(array('relatedCase' => $caseEntity));
     }
 
@@ -255,7 +258,7 @@ class ZendeskEntityProvider
      */
     public function getTicketByOriginId($originId, Channel $channel)
     {
-        $result = $this->registry->getRepository('OroZendeskBundle:Ticket')
+        $result = $this->registry->getRepository(Ticket::class)
             ->findOneBy(array('originId' => $originId, 'channel' => $channel));
 
         return $result;
@@ -268,7 +271,7 @@ class ZendeskEntityProvider
      */
     public function getNotSyncedTicketComments(Channel $channel)
     {
-        $qb = $this->registry->getRepository('OroZendeskBundle:TicketComment')
+        $qb = $this->registry->getRepository(TicketComment::class)
             ->createQueryBuilder('c')
             ->where('c.channel=:channel')
             ->andWhere('c.originId is NULL')
@@ -285,7 +288,7 @@ class ZendeskEntityProvider
      */
     public function getTicketComment(TicketComment $ticketComment, Channel $channel)
     {
-        $result = $this->registry->getRepository('OroZendeskBundle:TicketComment')
+        $result = $this->registry->getRepository(TicketComment::class)
             ->findOneBy(array('originId' => $ticketComment->getOriginId(), 'channel' => $channel));
 
         return $result;
@@ -298,7 +301,7 @@ class ZendeskEntityProvider
      */
     public function getTicketCommentByCaseComment(CaseComment $caseComment)
     {
-        return $this->registry->getRepository('OroZendeskBundle:TicketComment')
+        return $this->registry->getRepository(TicketComment::class)
             ->findOneBy(array('relatedComment' => $caseComment));
     }
 
@@ -309,7 +312,7 @@ class ZendeskEntityProvider
      */
     public function getTicketStatus(TicketStatus $ticketStatus)
     {
-        return $this->registry->getManager()->find('OroZendeskBundle:TicketStatus', $ticketStatus->getName());
+        return $this->registry->getManager()->find(TicketStatus::class, $ticketStatus->getName());
     }
 
     /**
@@ -319,7 +322,7 @@ class ZendeskEntityProvider
      */
     public function getTicketPriority(TicketPriority $ticketPriority)
     {
-        return $this->registry->getManager()->find('OroZendeskBundle:TicketPriority', $ticketPriority->getName());
+        return $this->registry->getManager()->find(TicketPriority::class, $ticketPriority->getName());
     }
 
     /**
@@ -329,6 +332,6 @@ class ZendeskEntityProvider
      */
     public function getTicketType(TicketType $ticketType)
     {
-        return $this->registry->getManager()->find('OroZendeskBundle:TicketType', $ticketType->getName());
+        return $this->registry->getManager()->find(TicketType::class, $ticketType->getName());
     }
 }

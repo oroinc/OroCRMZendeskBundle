@@ -4,6 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\Model\EntityProvider;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Oro\Bundle\AccountBundle\Entity\Account;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\ContactBundle\Entity\Contact;
 use Oro\Bundle\ContactBundle\Entity\ContactEmail;
@@ -14,6 +15,9 @@ use Oro\Bundle\UserBundle\Entity\User as OroUser;
 use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 
+/**
+ * Provides Oro entities for Zendesk entities
+ */
 class OroEntityProvider
 {
     /**
@@ -47,7 +51,7 @@ class OroEntityProvider
     {
         $user = $channel->getDefaultUserOwner();
         if ($user) {
-            $user = $this->registry->getRepository('OroUserBundle:User')
+            $user = $this->registry->getRepository(OroUser::class)
                 ->find($user->getId());
         }
 
@@ -62,14 +66,14 @@ class OroEntityProvider
      */
     public function getUser(ZendeskUser $user, $defaultIfNotExist = false)
     {
-        $oroUser = $this->registry->getRepository('OroUserBundle:User')
+        $oroUser = $this->registry->getRepository(OroUser::class)
             ->findOneBy(array('email' => $user->getEmail()));
 
         if (!$oroUser) {
             /**
              * @var Email $email
              */
-            $email = $this->registry->getRepository('OroUserBundle:Email')
+            $email = $this->registry->getRepository(Email::class)
                 ->findOneBy(array('email' => $user->getEmail()));
 
             if ($email) {
@@ -95,7 +99,7 @@ class OroEntityProvider
             return null;
         }
 
-        $contactEmails = $this->registry->getRepository('OroContactBundle:ContactEmail')
+        $contactEmails = $this->registry->getRepository(ContactEmail::class)
             ->findBy(
                 array(
                     'email' => $user->getEmail()
@@ -139,7 +143,7 @@ class OroEntityProvider
      */
     public function getChannelById($channelId)
     {
-        return $this->registry->getManager()->find('OroIntegrationBundle:Channel', $channelId);
+        return $this->registry->getManager()->find(Channel::class, $channelId);
     }
 
     /**
@@ -149,7 +153,7 @@ class OroEntityProvider
      */
     public function getEnabledChannels()
     {
-        return $this->registry->getRepository('OroIntegrationBundle:Channel')
+        return $this->registry->getRepository(Channel::class)
             ->getConfiguredChannelsForSync(ChannelType::TYPE);
     }
 
@@ -171,7 +175,7 @@ class OroEntityProvider
     public function getAccountByContact(Contact $contact)
     {
         /** @var EntityRepository $repository */
-        $repository = $this->registry->getRepository('OroAccountBundle:Account');
+        $repository = $this->registry->getRepository(Account::class);
         $qb         = $repository->createQueryBuilder('account');
         $qb->where('account.defaultContact = :contact')
             ->setMaxResults(1)
@@ -199,7 +203,7 @@ class OroEntityProvider
      */
     public function getCaseById($id)
     {
-        return $this->registry->getManager()->find('OroCaseBundle:CaseEntity', $id);
+        return $this->registry->getManager()->find(CaseEntity::class, $id);
     }
 
     /**

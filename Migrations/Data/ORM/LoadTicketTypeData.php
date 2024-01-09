@@ -6,45 +6,38 @@ use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
 use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 
+/**
+ * Loads Zendesk ticket types.
+ */
 class LoadTicketTypeData extends AbstractTranslatableEntityFixture
 {
-    const TRANSLATION_PREFIX = 'ticket_type';
+    private const TRANSLATION_PREFIX = 'ticket_type';
 
     /**
-     * @var array
+     * {@inheritDoc}
      */
-    protected $names = array(
-        TicketType::TYPE_INCIDENT,
-        TicketType::TYPE_PROBLEM,
-        TicketType::TYPE_QUESTION,
-        TicketType::TYPE_TASK
-    );
-    /**
-     * Load entities to DB
-     */
-    protected function loadEntities(ObjectManager $manager)
+    protected function loadEntities(ObjectManager $manager): void
     {
-        $repository = $manager->getRepository('OroZendeskBundle:TicketType');
-
+        $ticketTypeRepository = $manager->getRepository(TicketType::class);
         $translationLocales = $this->getTranslationLocales();
-
+        $names = [
+            TicketType::TYPE_INCIDENT,
+            TicketType::TYPE_PROBLEM,
+            TicketType::TYPE_QUESTION,
+            TicketType::TYPE_TASK
+        ];
         foreach ($translationLocales as $locale) {
-            foreach ($this->names as $name) {
+            foreach ($names as $name) {
                 /** @var TicketType $ticketType */
-                $ticketType = $repository->findOneBy(array('name' => $name));
+                $ticketType = $ticketTypeRepository->findOneBy(['name' => $name]);
                 if (!$ticketType) {
                     $ticketType = new TicketType($name);
                 }
 
-                // set locale and label
-                $label = $this->translate($name, static::TRANSLATION_PREFIX, $locale);
-                $ticketType->setLocale($locale)
-                    ->setLabel($label);
-
-                // save
+                $ticketType->setLocale($locale);
+                $ticketType->setLabel($this->translate($name, self::TRANSLATION_PREFIX, $locale));
                 $manager->persist($ticketType);
             }
-
             $manager->flush();
         }
     }

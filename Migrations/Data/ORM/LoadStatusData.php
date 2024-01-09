@@ -6,47 +6,40 @@ use Doctrine\Persistence\ObjectManager;
 use Oro\Bundle\TranslationBundle\DataFixtures\AbstractTranslatableEntityFixture;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 
+/**
+ * Loads Zendesk ticket statuses.
+ */
 class LoadStatusData extends AbstractTranslatableEntityFixture
 {
-    const TRANSLATION_PREFIX = 'ticket_status';
+    private const TRANSLATION_PREFIX = 'ticket_status';
 
     /**
-     * @var array
+     * {@inheritDoc}
      */
-    protected $names = array(
-        TicketStatus::STATUS_CLOSED,
-        TicketStatus::STATUS_HOLD,
-        TicketStatus::STATUS_NEW,
-        TicketStatus::STATUS_OPEN,
-        TicketStatus::STATUS_PENDING,
-        TicketStatus::STATUS_SOLVED,
-    );
-    /**
-     * Load entities to DB
-     */
-    protected function loadEntities(ObjectManager $manager)
+    protected function loadEntities(ObjectManager $manager): void
     {
-        $repository = $manager->getRepository('OroZendeskBundle:TicketStatus');
-
+        $ticketStatusRepository = $manager->getRepository(TicketStatus::class);
         $translationLocales = $this->getTranslationLocales();
-
+        $names = [
+            TicketStatus::STATUS_CLOSED,
+            TicketStatus::STATUS_HOLD,
+            TicketStatus::STATUS_NEW,
+            TicketStatus::STATUS_OPEN,
+            TicketStatus::STATUS_PENDING,
+            TicketStatus::STATUS_SOLVED
+        ];
         foreach ($translationLocales as $locale) {
-            foreach ($this->names as $name) {
+            foreach ($names as $name) {
                 /** @var TicketStatus $ticketStatus */
-                $ticketStatus = $repository->findOneBy(array('name' => $name));
+                $ticketStatus = $ticketStatusRepository->findOneBy(['name' => $name]);
                 if (!$ticketStatus) {
                     $ticketStatus = new TicketStatus($name);
                 }
 
-                // set locale and label
-                $label = $this->translate($name, static::TRANSLATION_PREFIX, $locale);
-                $ticketStatus->setLocale($locale)
-                    ->setLabel($label);
-
-                // save
+                $ticketStatus->setLocale($locale);
+                $ticketStatus->setLabel($this->translate($name, self::TRANSLATION_PREFIX, $locale));
                 $manager->persist($ticketStatus);
             }
-
             $manager->flush();
         }
     }

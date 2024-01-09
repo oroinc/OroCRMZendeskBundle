@@ -2,65 +2,71 @@
 
 namespace Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures;
 
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Oro\Bundle\TestFrameworkBundle\Tests\Functional\DataFixtures\LoadUser;
 use Oro\Bundle\UserBundle\Entity\Role;
 use Oro\Bundle\UserBundle\Entity\User;
-use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class LoadOroUserData extends AbstractZendeskFixture
+class LoadOroUserData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
+    use ContainerAwareTrait;
+
     private array $data = [
-        [
-            'reference' => 'user:bob.miller@example.com',
+        'user:bob.miller@example.com' => [
             'username' => 'bob.miller',
             'email' => 'bob.miller@example.com',
-            'plainPassword' => 'password',
+            'plainPassword' => 'password'
         ],
-        [
-            'reference' => 'user:james.cook@example.com',
+        'user:james.cook@example.com' => [
             'username' => 'james.cook',
             'email' => 'james.cook@example.com',
-            'plainPassword' => 'password',
+            'plainPassword' => 'password'
         ],
-        [
-            'reference' => 'user:john.smith@example.com',
+        'user:john.smith@example.com' => [
             'username' => 'john.smith',
             'email' => 'john.smith@example.com',
-            'plainPassword' => 'password',
+            'plainPassword' => 'password'
         ],
-        [
-            'reference' => 'user:anna.lee@example.com',
+        'user:anna.lee@example.com' => [
             'username' => 'anna.lee',
             'email' => 'anna.lee@example.com',
-            'plainPassword' => 'password',
-        ],
+            'plainPassword' => 'password'
+        ]
     ];
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function load(ObjectManager $manager)
+    public function getDependencies(): array
+    {
+        return [LoadUser::class];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function load(ObjectManager $manager): void
     {
         $userManager = $this->container->get('oro_user.manager');
         $role = $manager->getRepository(Role::class)->findOneBy(['role' => User::ROLE_DEFAULT]);
-
-        $admin = $userManager->findUserByEmail(LoadAdminUserData::DEFAULT_ADMIN_EMAIL);
-        if ($admin) {
-            $this->setReference('user:' . LoadAdminUserData::DEFAULT_ADMIN_EMAIL, $admin);
-        }
-
-        foreach ($this->data as $data) {
+        /** @var User $admin */
+        $admin = $this->getReference(LoadUser::USER);
+        $this->setReference('user:admin@example.com', $admin);
+        foreach ($this->data as $reference => $data) {
+            /** @var User $entity */
             $entity = $userManager->createUser();
-            if (isset($data['reference'])) {
-                $this->setReference($data['reference'], $entity);
-            }
-            $this->setEntityPropertyValues($entity, $data, ['reference']);
+            $entity->setUsername($data['username']);
+            $entity->setEmail($data['email']);
+            $entity->setPlainPassword($data['plainPassword']);
             $entity->addUserRole($role);
             $entity->setOwner($admin->getOwner()); //for case controller test
-
+            $this->setReference($reference, $entity);
             $userManager->updateUser($entity, false);
         }
-
         $manager->flush();
     }
 }

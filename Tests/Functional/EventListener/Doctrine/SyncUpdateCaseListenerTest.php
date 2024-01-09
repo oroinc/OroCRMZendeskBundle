@@ -5,8 +5,8 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\EventListener\Doctrine;
 use Oro\Bundle\IntegrationBundle\Async\Topic\ReverseSyncIntegrationTopic;
 use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\TestFrameworkBundle\Tests\Functional\DataFixtures\LoadUser;
 use Oro\Bundle\UserBundle\Entity\User;
-use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
 use Oro\Component\MessageQueue\Client\MessagePriority;
@@ -19,15 +19,12 @@ class SyncUpdateCaseListenerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->initClient([], self::generateBasicAuthHeader());
-        $this->loadFixtures([LoadTicketData::class]);
+        $this->loadFixtures([LoadTicketData::class, LoadUser::class]);
 
-        $user = self::getContainer()->get('doctrine')
-            ->getRepository(User::class)
-            ->findOneBy(['username' => LoadAdminUserData::DEFAULT_ADMIN_USERNAME]);
-
-        self::assertNotNull($user, 'Cannot get admin user');
-        $token = new UsernamePasswordToken($user, $user->getUsername(), 'main');
-        self::getContainer()->get('security.token_storage')->setToken($token);
+        /** @var User $user */
+        $user = $this->getReference(LoadUser::USER);
+        self::getContainer()->get('security.token_storage')
+            ->setToken(new UsernamePasswordToken($user, 'main'));
     }
 
     public function testListenerCreatesSyncJobOnCaseUpdate(): void
