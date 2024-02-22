@@ -63,7 +63,7 @@ SQL;
         ];
 
         $this->logQuery($logger, $selectStatusQuery, $selectStatusParams, $selectStatusTypes);
-        $result = $this->connection->fetchAll($selectStatusQuery, $selectStatusParams, $selectStatusTypes);
+        $result = $this->connection->fetchAllAssociative($selectStatusQuery, $selectStatusParams, $selectStatusTypes);
 
         $jsonArrayType = Type::getType(Types::JSON_ARRAY);
         $platform = $this->connection->getDatabasePlatform();
