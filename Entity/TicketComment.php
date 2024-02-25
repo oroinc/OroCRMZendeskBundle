@@ -2,133 +2,69 @@
 
 namespace Oro\Bundle\ZendeskBundle\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\CaseBundle\Entity\CaseComment;
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
+use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\Config;
+use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 
 /**
  * Represents Zendesk ticket comment
- * @ORM\Entity
- * @ORM\Table(
- *      name="orocrm_zd_comment",
- *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="zd_comment_oid_cid_unq", columns={"origin_id", "channel_id"})
- *     }
- * )
- * @ORM\HasLifecycleCallbacks()
- * @Config(
- *  defaultValues={
- *      "entity"={
- *          "icon"="fa-list-alt"
- *      }
- *  }
- * )
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'orocrm_zd_comment')]
+#[ORM\UniqueConstraint(name: 'zd_comment_oid_cid_unq', columns: ['origin_id', 'channel_id'])]
+#[ORM\HasLifecycleCallbacks]
+#[Config(defaultValues: ['entity' => ['icon' => 'fa-list-alt']])]
 class TicketComment
 {
-    /**
-     * @var int
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
     /**
-     * @var int
-     * @ORM\Column(name="origin_id", type="bigint", nullable=true)
+     * @var int|null
      */
+    #[ORM\Column(name: 'origin_id', type: Types::BIGINT, nullable: true)]
     protected $originId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="body", type="text", nullable=true)
-     */
-    protected $body;
+    #[ORM\Column(name: 'body', type: Types::TEXT, nullable: true)]
+    protected ?string $body = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="html_body", type="text", nullable=true)
-     */
-    protected $htmlBody;
+    #[ORM\Column(name: 'html_body', type: Types::TEXT, nullable: true)]
+    protected ?string $htmlBody = null;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="public", type="boolean", options={"default"=false})
-     */
-    protected $public = false;
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN, options: ['default' => false])]
+    protected ?bool $public = false;
 
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="author_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $author;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    protected ?User $author = null;
 
-    /**
-     * @var Ticket
-     *
-     * @ORM\ManyToOne(targetEntity="Ticket", inversedBy="comments")
-     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $ticket;
+    #[ORM\ManyToOne(targetEntity: Ticket::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(name: 'ticket_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    protected ?Ticket $ticket = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime")
-     * @ConfigField(
-     *      defaultValues={
-     *          "entity"={
-     *              "label"="oro.ui.created_at"
-     *          }
-     *      }
-     * )
-     */
-    protected $createdAt;
+    #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE)]
+    #[ConfigField(defaultValues: ['entity' => ['label' => 'oro.ui.created_at']])]
+    protected ?\DateTimeInterface $createdAt = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="origin_created_at", type="datetime", nullable=true)
-     */
-    protected $originCreatedAt;
+    #[ORM\Column(name: 'origin_created_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    protected ?\DateTimeInterface $originCreatedAt = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime")
-     * @ConfigField(
-     *      defaultValues={
-     *          "entity"={
-     *              "label"="oro.ui.updated_at"
-     *          }
-     *      }
-     * )
-     */
-    protected $updatedAt;
+    #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE)]
+    #[ConfigField(defaultValues: ['entity' => ['label' => 'oro.ui.updated_at']])]
+    protected ?\DateTimeInterface $updatedAt = null;
 
-    /**
-     * @var CaseComment
-     *
-     * @ORM\OneToOne(targetEntity="Oro\Bundle\CaseBundle\Entity\CaseComment", cascade={"persist"})
-     * @ORM\JoinColumn(name="related_comment_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $relatedComment;
+    #[ORM\OneToOne(targetEntity: CaseComment::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'related_comment_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    protected ?CaseComment $relatedComment = null;
 
-    /**
-     * @var Integration
-     *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\IntegrationBundle\Entity\Channel")
-     * @ORM\JoinColumn(name="channel_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    protected $channel;
+    #[ORM\ManyToOne(targetEntity: Integration::class)]
+    #[ORM\JoinColumn(name: 'channel_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected ?Integration $channel = null;
 
     /**
      * @var bool
@@ -359,18 +295,14 @@ class TicketComment
         return $this->channel ? $this->channel->getName() : null;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\PrePersist]
     public function prePersist()
     {
         $this->createdAt  = $this->createdAt ? $this->createdAt : new \DateTime('now', new \DateTimeZone('UTC'));
         $this->updatedAt = $this->updatedAt ? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
     }
 
-    /**
-     * @ORM\PreUpdate
-     */
+    #[ORM\PreUpdate]
     public function preUpdate()
     {
         if (!$this->updatedAtLocked) {

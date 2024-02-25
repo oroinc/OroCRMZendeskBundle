@@ -4,238 +4,125 @@ namespace Oro\Bundle\ZendeskBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
+use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\Config;
+use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 
 /**
  * Represents a Zendesk ticket.
  *
- * @ORM\Entity
- * @ORM\Table(
- *      name="orocrm_zd_ticket",
- *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="zd_ticket_oid_cid_unq", columns={"origin_id", "channel_id"})
- *     }
- * )
- * @ORM\HasLifecycleCallbacks()
- * @Config(
- *  defaultValues={
- *      "entity"={
- *          "icon"="fa-list-alt"
- *      }
- *  }
- * )
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'orocrm_zd_ticket')]
+#[ORM\UniqueConstraint(name: 'zd_ticket_oid_cid_unq', columns: ['origin_id', 'channel_id'])]
+#[ORM\HasLifecycleCallbacks]
+#[Config(defaultValues: ['entity' => ['icon' => 'fa-list-alt']])]
 class Ticket
 {
     const SEARCH_TYPE = 'ticket';
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
     /**
-     * @var int
-     * @ORM\Column(name="origin_id", type="bigint", nullable=true)
+     * @var int|null
      */
+    #[ORM\Column(name: 'origin_id', type: Types::BIGINT, nullable: true)]
     protected $originId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="url", type="string", length=255, nullable=true)
-     */
-    protected $url;
+    #[ORM\Column(name: 'url', type: Types::STRING, length: 255, nullable: true)]
+    protected ?string $url = null;
+
+    #[ORM\Column(name: 'subject', type: Types::STRING, length: 255, nullable: true)]
+    protected ?string $subject = null;
+
+    #[ORM\Column(name: 'description', type: Types::TEXT, nullable: true)]
+    protected ?string $description = null;
+
+    #[ORM\Column(name: 'external_id', type: Types::STRING, length: 50, nullable: true)]
+    protected ?string $externalId = null;
+
+    #[ORM\ManyToOne(targetEntity: Ticket::class)]
+    #[ORM\JoinColumn(name: 'problem_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    protected ?Ticket $problem = null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="subject", type="string", length=255, nullable=true)
+     * @var Collection<int, User>
      */
-    protected $subject;
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'orocrm_zd_ticket_collaborators')]
+    #[ORM\JoinColumn(name: 'ticket_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected ?Collection $collaborators = null;
+
+    #[ORM\ManyToOne(targetEntity: TicketType::class)]
+    #[ORM\JoinColumn(name: 'type_name', referencedColumnName: 'name', onDelete: 'SET NULL')]
+    protected ?TicketType $type = null;
+
+    #[ORM\ManyToOne(targetEntity: TicketStatus::class)]
+    #[ORM\JoinColumn(name: 'status_name', referencedColumnName: 'name', onDelete: 'SET NULL')]
+    protected ?TicketStatus $status = null;
+
+    #[ORM\ManyToOne(targetEntity: TicketPriority::class)]
+    #[ORM\JoinColumn(name: 'priority_name', referencedColumnName: 'name', onDelete: 'SET NULL')]
+    protected ?TicketPriority $priority = null;
+
+    #[ORM\Column(name: 'recipient_email', type: Types::STRING, length: 100, nullable: true)]
+    protected ?string $recipient = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'requester_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    protected ?User $requester = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'submitter_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    protected ?User $submitter = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'assignee_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    protected ?User $assignee = null;
+
+    #[ORM\Column(name: 'has_incidents', type: Types::BOOLEAN, options: ['default' => false])]
+    protected ?bool $hasIncidents = false;
+
+    #[ORM\Column(name: 'due_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    protected ?\DateTimeInterface $dueAt = null;
+
+    #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['entity' => ['label' => 'oro.ui.created_at']])]
+    protected ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(name: 'origin_created_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    protected ?\DateTimeInterface $originCreatedAt = null;
+
+    #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['entity' => ['label' => 'oro.ui.updated_at']])]
+    protected ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\Column(name: 'origin_updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    protected ?\DateTimeInterface $originUpdatedAt = null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="text", nullable=true)
+     * @var Collection<int, TicketComment>
      */
-    protected $description;
+    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: TicketComment::class, cascade: ['persist'], orphanRemoval: true)]
+    protected ?Collection $comments = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="external_id", type="string", length=50, nullable=true)
-     */
-    protected $externalId;
+    #[ORM\OneToOne(targetEntity: CaseEntity::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'case_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    protected ?CaseEntity $relatedCase = null;
 
-    /**
-     * @var Ticket
-     *
-     * @ORM\ManyToOne(targetEntity="Ticket")
-     * @ORM\JoinColumn(name="problem_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $problem;
-
-    /**
-     * @var Collection
-     *
-     * @ORM\ManyToMany(targetEntity="User")
-     * @ORM\JoinTable(name="orocrm_zd_ticket_collaborators",
-     *      joinColumns={@ORM\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="CASCADE")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")}
-     * )
-     */
-    protected $collaborators;
-
-    /**
-     * @var TicketType
-     *
-     * @ORM\ManyToOne(targetEntity="TicketType")
-     * @ORM\JoinColumn(name="type_name", referencedColumnName="name", onDelete="SET NULL")
-     */
-    protected $type;
-
-    /**
-     * @var TicketStatus
-     *
-     * @ORM\ManyToOne(targetEntity="TicketStatus")
-     * @ORM\JoinColumn(name="status_name", referencedColumnName="name", onDelete="SET NULL")
-     */
-    protected $status;
-
-    /**
-     * @var TicketPriority
-     *
-     * @ORM\ManyToOne(targetEntity="TicketPriority")
-     * @ORM\JoinColumn(name="priority_name", referencedColumnName="name", onDelete="SET NULL")
-     */
-    protected $priority;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="recipient_email", type="string", length=100, nullable=true)
-     */
-    protected $recipient;
-
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="requester_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $requester;
-
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="submitter_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $submitter;
-
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="assignee_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $assignee;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="has_incidents", type="boolean", options={"default"=false})
-     */
-    protected $hasIncidents = false;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="due_at", type="datetime", nullable=true)
-     */
-    protected $dueAt;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
-     * @ConfigField(
-     *      defaultValues={
-     *          "entity"={
-     *              "label"="oro.ui.created_at"
-     *          }
-     *      }
-     * )
-     */
-    protected $createdAt;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="origin_created_at", type="datetime", nullable=true)
-     */
-    protected $originCreatedAt;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
-     * @ConfigField(
-     *      defaultValues={
-     *          "entity"={
-     *              "label"="oro.ui.updated_at"
-     *          }
-     *      }
-     * )
-     */
-    protected $updatedAt;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="origin_updated_at", type="datetime", nullable=true)
-     */
-    protected $originUpdatedAt;
-
-    /**
-     * @var Collection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="TicketComment",
-     *     mappedBy="ticket",
-     *     orphanRemoval=true,
-     *     cascade={"persist"}
-     * )
-     */
-    protected $comments;
-
-    /**
-     * @var CaseEntity
-     *
-     * @ORM\OneToOne(targetEntity="Oro\Bundle\CaseBundle\Entity\CaseEntity", cascade={"persist"})
-     * @ORM\JoinColumn(name="case_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $relatedCase;
-
-    /**
-     * @var Integration
-     *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\IntegrationBundle\Entity\Channel")
-     * @ORM\JoinColumn(name="channel_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    protected $channel;
+    #[ORM\ManyToOne(targetEntity: Integration::class)]
+    #[ORM\JoinColumn(name: 'channel_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected ?Integration $channel = null;
 
     /**
      * @var bool
@@ -755,18 +642,14 @@ class Ticket
         return $this->channel ? $this->channel->getName() : null;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\PrePersist]
     public function prePersist()
     {
         $this->createdAt  = $this->createdAt ? $this->createdAt : new \DateTime('now', new \DateTimeZone('UTC'));
         $this->updatedAt = $this->updatedAt ? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
     }
 
-    /**
-     * @ORM\PreUpdate
-     */
+    #[ORM\PreUpdate]
     public function preUpdate()
     {
         if (!$this->updatedAtLocked) {
