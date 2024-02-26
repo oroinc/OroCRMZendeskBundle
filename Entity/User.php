@@ -2,232 +2,115 @@
 
 namespace Oro\Bundle\ZendeskBundle\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\ContactBundle\Entity\Contact;
 use Oro\Bundle\EmailBundle\Model\EmailHolderInterface;
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
+use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\Config;
+use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 
 /**
  * Represents Zendesk user
- * @ORM\Entity
- * @ORM\Table(
- *      name="orocrm_zd_user",
- *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="zd_user_oid_cid_unq", columns={"origin_id", "channel_id"})
- *     }
- * )
- * @ORM\HasLifecycleCallbacks()
- * @Config(
- *  defaultValues={
- *      "entity"={
- *          "icon"="fa-list-alt"
- *      }
- *  }
- * )
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'orocrm_zd_user')]
+#[ORM\UniqueConstraint(name: 'zd_user_oid_cid_unq', columns: ['origin_id', 'channel_id'])]
+#[ORM\HasLifecycleCallbacks]
+#[Config(defaultValues: ['entity' => ['icon' => 'fa-list-alt']])]
 class User implements EmailHolderInterface
 {
     const SEARCH_TYPE = 'user';
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
     /**
-     * @var int
-     * @ORM\Column(name="origin_id", type="bigint", nullable=true)
+     * @var int|null
      */
+    #[ORM\Column(name: 'origin_id', type: Types::BIGINT, nullable: true)]
     protected $originId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="url", type="string", length=255, nullable=true)
-     */
-    protected $url;
+    #[ORM\Column(name: 'url', type: Types::STRING, length: 255, nullable: true)]
+    protected ?string $url = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="external_id", type="string", length=50, nullable=true)
-     */
-    protected $externalId;
+    #[ORM\Column(name: 'external_id', type: Types::STRING, length: 50, nullable: true)]
+    protected ?string $externalId = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
-     */
-    protected $name;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255, nullable: true)]
+    protected ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="details", type="text", nullable=true)
-     */
-    protected $details;
+    #[ORM\Column(name: 'details', type: Types::TEXT, nullable: true)]
+    protected ?string $details = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ticket_restrictions", type="string", length=30, nullable=true)
-     */
-    protected $ticketRestriction;
+    #[ORM\Column(name: 'ticket_restrictions', type: Types::STRING, length: 30, nullable: true)]
+    protected ?string $ticketRestriction = null;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="only_private_comments", type="boolean", options={"default"=false})
-     */
-    protected $onlyPrivateComments = false;
+    #[ORM\Column(name: 'only_private_comments', type: Types::BOOLEAN, options: ['default' => false])]
+    protected ?bool $onlyPrivateComments = false;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="notes", type="text", nullable=true)
-     */
-    protected $notes;
+    #[ORM\Column(name: 'notes', type: Types::TEXT, nullable: true)]
+    protected ?string $notes = null;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="verified", type="boolean", options={"default"=false})
-     */
-    protected $verified = false;
+    #[ORM\Column(name: 'verified', type: Types::BOOLEAN, options: ['default' => false])]
+    protected ?bool $verified = false;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="active", type="boolean", options={"default"=false})
-     */
-    protected $active = false;
+    #[ORM\Column(name: 'active', type: Types::BOOLEAN, options: ['default' => false])]
+    protected ?bool $active = false;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="alias", type="string", length=100, nullable=true)
-     */
-    protected $alias;
+    #[ORM\Column(name: 'alias', type: Types::STRING, length: 100, nullable: true)]
+    protected ?string $alias = null;
 
-    /**
-     * @var UserRole
-     *
-     * @ORM\ManyToOne(targetEntity="UserRole", cascade={"persist"})
-     * @ORM\JoinColumn(name="role_name", referencedColumnName="name", onDelete="SET NULL")
-     */
-    protected $role;
+    #[ORM\ManyToOne(targetEntity: UserRole::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'role_name', referencedColumnName: 'name', onDelete: 'SET NULL')]
+    protected ?UserRole $role = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=255, nullable=true)
-     */
-    protected $email;
+    #[ORM\Column(name: 'email', type: Types::STRING, length: 255, nullable: true)]
+    protected ?string $email = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="phone", type="string", length=50, nullable=true)
-     */
-    protected $phone;
+    #[ORM\Column(name: 'phone', type: Types::STRING, length: 50, nullable: true)]
+    protected ?string $phone = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="time_zone", type="string", length=30, nullable=true)
-     */
-    protected $timeZone;
+    #[ORM\Column(name: 'time_zone', type: Types::STRING, length: 30, nullable: true)]
+    protected ?string $timeZone = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="locale", type="string", length=30, nullable=true)
-     */
-    protected $locale;
+    #[ORM\Column(name: 'locale', type: Types::STRING, length: 30, nullable: true)]
+    protected ?string $locale = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="last_login_at", type="datetime", nullable=true)
-     */
-    protected $lastLoginAt;
+    #[ORM\Column(name: 'last_login_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    protected ?\DateTimeInterface $lastLoginAt = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
-     * @ConfigField(
-     *      defaultValues={
-     *          "entity"={
-     *              "label"="oro.ui.created_at"
-     *          }
-     *      }
-     * )
-     */
-    protected $createdAt;
+    #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['entity' => ['label' => 'oro.ui.created_at']])]
+    protected ?\DateTimeInterface $createdAt = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
-     * @ConfigField(
-     *      defaultValues={
-     *          "entity"={
-     *              "label"="oro.ui.updated_at"
-     *          }
-     *      }
-     * )
-     */
-    protected $updatedAt;
+    #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['entity' => ['label' => 'oro.ui.updated_at']])]
+    protected ?\DateTimeInterface $updatedAt = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="origin_created_at", type="datetime", nullable=true)
-     */
-    protected $originCreatedAt;
+    #[ORM\Column(name: 'origin_created_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    protected ?\DateTimeInterface $originCreatedAt = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="origin_updated_at", type="datetime", nullable=true)
-     */
-    protected $originUpdatedAt;
+    #[ORM\Column(name: 'origin_updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    protected ?\DateTimeInterface $originUpdatedAt = null;
 
-    /**
-     * @var Contact
-     *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\ContactBundle\Entity\Contact", cascade={"persist"})
-     * @ORM\JoinColumn(name="related_contact_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $relatedContact;
+    #[ORM\ManyToOne(targetEntity: Contact::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'related_contact_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    protected ?Contact $relatedContact = null;
 
-    /**
-     * @var OroUser
-     *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\UserBundle\Entity\User", cascade={"persist"})
-     * @ORM\JoinColumn(name="related_user_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $relatedUser;
+    #[ORM\ManyToOne(targetEntity: OroUser::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'related_user_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    protected ?OroUser $relatedUser = null;
 
-    /**
-     * @var Integration
-     *
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\IntegrationBundle\Entity\Channel")
-     * @ORM\JoinColumn(name="channel_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    protected $channel;
+    #[ORM\ManyToOne(targetEntity: Integration::class)]
+    #[ORM\JoinColumn(name: 'channel_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected ?Integration $channel = null;
 
     /**
      * @var bool
@@ -741,18 +624,14 @@ class User implements EmailHolderInterface
         return $this->channel ? $this->channel->getName() : null;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\PrePersist]
     public function prePersist()
     {
         $this->createdAt  = $this->createdAt ? $this->createdAt : new \DateTime('now', new \DateTimeZone('UTC'));
         $this->updatedAt = $this->updatedAt ? $this->updatedAt : new \DateTime('now', new \DateTimeZone('UTC'));
     }
 
-    /**
-     * @ORM\PreUpdate
-     */
+    #[ORM\PreUpdate]
     public function preUpdate()
     {
         if (!$this->updatedAtLocked) {

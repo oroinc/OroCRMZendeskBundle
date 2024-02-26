@@ -2,27 +2,21 @@
 
 namespace Oro\Bundle\ZendeskBundle\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Translatable\Translatable;
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
+use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\Config;
+use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\ConfigField;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="orocrm_zd_ticket_status")
- * @Gedmo\TranslationEntity(class="Oro\Bundle\ZendeskBundle\Entity\TicketStatusTranslation")
- * @Config(
- *      defaultValues={
- *          "grouping"={
- *              "groups"={"dictionary"}
- *          },
- *          "dictionary"={
- *              "virtual_fields"={"label"}
- *          }
- *      }
- * )
- */
+* Entity that represents Ticket Status
+*
+*/
+#[ORM\Entity]
+#[ORM\Table(name: 'orocrm_zd_ticket_status')]
+#[Gedmo\TranslationEntity(class: TicketStatusTranslation::class)]
+#[Config(defaultValues: ['grouping' => ['groups' => ['dictionary']], 'dictionary' => ['virtual_fields' => ['label']]])]
 class TicketStatus implements Translatable
 {
     const STATUS_NEW = 'new';
@@ -32,33 +26,17 @@ class TicketStatus implements Translatable
     const STATUS_SOLVED = 'solved';
     const STATUS_CLOSED = 'closed';
 
-    /**
-     * @var string
-     *
-     * @ORM\Id
-     * @ORM\Column(name="name", type="string", length=16)
-     * @ConfigField(
-     *      defaultValues={
-     *          "importexport"={
-     *              "identity"=true
-     *          }
-     *      }
-     * )
-     */
-    protected $name;
+    #[ORM\Id]
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 16)]
+    #[ConfigField(defaultValues: ['importexport' => ['identity' => true]])]
+    protected ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="label", type="string", length=255)
-     * @Gedmo\Translatable
-     */
-    protected $label;
+    #[ORM\Column(name: 'label', type: Types::STRING, length: 255)]
+    #[Gedmo\Translatable]
+    protected ?string $label = null;
 
-    /**
-     * @Gedmo\Locale
-     */
-    protected $locale;
+    #[Gedmo\Locale]
+    protected ?string $locale = null;
 
     /**
      * @param string $name
