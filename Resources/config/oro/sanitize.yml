@@ -1,0 +1,10 @@
+oro_sanitize:
+    entity:
+        oro_integration_transport:
+            fields:
+                orocrm_zd_email: md5
+                orocrm_zd_url: md5
+                orocrm_zd_token: md5
+        orocrm_zd_user:
+            fields:
+                email: email
