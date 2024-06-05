@@ -69,7 +69,7 @@ class OroEntityProviderTest extends WebTestCase
                     'middle_name' => $middleName = 'M.',
                     'prefix' => $prefix = 'Mr.',
                     'suffix' => $suffix = 'Jr.',
-                    'phone'=> $phone = '123456789'
+                    'phone' => $phone = '123456789'
                 ],
                 'user' => $this->getUser($email, "{$prefix} {$firstName} {$middleName} {$lastName} {$suffix}", $phone)
             ],
@@ -81,7 +81,7 @@ class OroEntityProviderTest extends WebTestCase
                     'last_name' => $lastName,
                     'prefix' => $prefix = 'Mr',
                     'suffix' => $suffix = 'Jr',
-                    'phone'=> $phone
+                    'phone' => $phone
                 ],
                 'user' => $this->getUser(
                     $email,
@@ -95,7 +95,7 @@ class OroEntityProviderTest extends WebTestCase
                     'first_name' => $firstName = 'TestPrefix.',
                     'last_name' => $lastName = 'M. Smith Test_Suffix.',
                     'middle_name' => $middleName = 'Alex',
-                    'phone'=> $phone = '123456789'
+                    'phone' => $phone = '123456789'
                 ],
                 'user' => $this->getUser($email, "{$firstName} {$middleName} {$lastName}", $phone)
             ],
@@ -106,7 +106,7 @@ class OroEntityProviderTest extends WebTestCase
                     'last_name' => $lastName = 'Smith',
                     'middle_name' => $middleName = 'M.',
                     'prefix' => $prefix = 'Dr',
-                    'phone'=> $phone = '123456789'
+                    'phone' => $phone = '123456789'
                 ],
                 'user' => $this->getUser($email, "{$prefix} {$firstName} {$middleName} {$lastName}", $phone)
             ],
@@ -117,7 +117,7 @@ class OroEntityProviderTest extends WebTestCase
                     'last_name' => $lastName = 'Smith',
                     'middle_name' => $middleName = 'M.',
                     'suffix' => $suffix = 'Jnr.',
-                    'phone'=> $phone = '123456789'
+                    'phone' => $phone = '123456789'
                 ],
                 'user' => $this->getUser($email, "{$firstName} {$middleName} {$lastName} {$suffix}", $phone)
             ],
@@ -127,7 +127,7 @@ class OroEntityProviderTest extends WebTestCase
                     'first_name' => $firstName = 'Alex',
                     'last_name' => $lastName = 'Smith',
                     'middle_name' => $middleName = 'M.',
-                    'phone'=> $phone = '123456789'
+                    'phone' => $phone = '123456789'
                 ],
                 'user' => $this->getUser($email, "{$firstName} {$middleName} {$lastName}", $phone)
             ],
@@ -138,7 +138,7 @@ class OroEntityProviderTest extends WebTestCase
                     'middle_name' => '',
                     'prefix' => $prefix,
                     'last_name' => $suffix,
-                    'phone'=> $phone
+                    'phone' => $phone
                 ],
                 'user' => $this->getUser($email, "{$prefix} {$firstName} {$suffix}", $phone)
             ],
@@ -148,7 +148,7 @@ class OroEntityProviderTest extends WebTestCase
                     'first_name' => $firstName,
                     'middle_name' => '',
                     'last_name' => $lastName,
-                    'phone'=> $phone
+                    'phone' => $phone
                 ],
                 'user' => $this->getUser($email, "{$firstName} {$lastName}", $phone)
             ],
@@ -158,7 +158,7 @@ class OroEntityProviderTest extends WebTestCase
                     'first_name' => $prefix,
                     'middle_name' => '',
                     'last_name' => $suffix,
-                    'phone'=> $phone
+                    'phone' => $phone
                 ],
                 'user' => $this->getUser($email, "{$prefix} {$suffix}", $phone)
             ],
@@ -168,7 +168,7 @@ class OroEntityProviderTest extends WebTestCase
                     'first_name' => $firstName,
                     'middle_name' => $middleName,
                     'last_name' => $lastName,
-                    'phone'=> $phone
+                    'phone' => $phone
                 ],
                 'user' => $this->getUser($email, "  {$firstName} {$middleName} {$lastName}   ", $phone)
             ],
@@ -178,7 +178,7 @@ class OroEntityProviderTest extends WebTestCase
                     'first_name' => $firstName,
                     'middle_name' => '',
                     'last_name' => $firstName,
-                    'phone'=> $phone
+                    'phone' => $phone
                 ],
                 'user' => $this->getUser($email, "  {$firstName}   ", $phone)
             ]
