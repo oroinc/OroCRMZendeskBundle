@@ -30,7 +30,7 @@
     <script type="text/javascript">
         loadModules(['jquery', 'routing', 'oroui/js/mediator', 'oroui/js/messenger', 'orotranslation/js/translator'],
             function ($, routing, mediator, messenger, __) {
-                $('.zendesk-integration-btn').bind('click', function(event) {
+                $('.zendesk-integration-btn').on('click', function(event) {
                     event.preventDefault();
 
                     var id = $(this).data('channel-id');
