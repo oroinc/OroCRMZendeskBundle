@@ -29,6 +29,7 @@ class RestException extends BaseException implements ZendeskException
      * @param \Exception|null $previous
      * @return RestException
      */
+    #[\Override]
     public static function createFromResponse(
         RestResponseInterface $response,
         $message = null,

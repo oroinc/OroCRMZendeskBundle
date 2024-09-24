@@ -50,17 +50,13 @@ class LoadSyncStatusData extends AbstractFixture implements DependentFixtureInte
         ]
     ];
 
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     public function getDependencies(): array
     {
         return [LoadChannelData::class];
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     public function load(ObjectManager $manager): void
     {
         foreach ($this->statusData as $data) {

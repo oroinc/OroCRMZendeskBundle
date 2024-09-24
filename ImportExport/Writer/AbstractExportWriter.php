@@ -93,6 +93,7 @@ abstract class AbstractExportWriter implements
     /**
      * @throws \Exception
      */
+    #[\Override]
     public function write(array $entities)
     {
         $this->transport->init($this->getChannel()->getTransport());
@@ -153,17 +154,13 @@ abstract class AbstractExportWriter implements
         return $this->channel;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function setStepExecution(StepExecution $stepExecution)
     {
         $this->setImportExportContext($this->contextRegistry->getByStepExecution($stepExecution));
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function setImportExportContext(ContextInterface $context)
     {
         $this->context = $context;
@@ -185,6 +182,7 @@ abstract class AbstractExportWriter implements
      * @param LoggerInterface $logger
      * @return null
      */
+    #[\Override]
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = new ImportExportLogger($logger);

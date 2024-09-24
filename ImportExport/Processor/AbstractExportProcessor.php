@@ -62,6 +62,7 @@ abstract class AbstractExportProcessor implements
      * @param LoggerInterface $logger
      * @return null
      */
+    #[\Override]
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = new ImportExportLogger($logger);
@@ -101,14 +102,13 @@ abstract class AbstractExportProcessor implements
         return $this->channel;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function setStepExecution(StepExecution $stepExecution)
     {
         $this->setImportExportContext($this->contextRegistry->getByStepExecution($stepExecution));
     }
 
+    #[\Override]
     public function setImportExportContext(ContextInterface $context)
     {
         $this->context = $context;

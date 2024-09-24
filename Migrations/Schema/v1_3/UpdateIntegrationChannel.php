@@ -9,9 +9,6 @@ use Oro\Bundle\MigrationBundle\Migration\SqlMigrationQuery;
 
 class UpdateIntegrationChannel implements Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function up(Schema $schema, QueryBag $queries)
     {
         // change associations with the integration channel from "onDelete=SET NULL" to "onDelete=CASCADE"

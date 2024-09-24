@@ -31,6 +31,7 @@ class TicketCommentExportWriterTest extends WebTestCase
     /** @var string */
     private $logOutput;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();

@@ -24,6 +24,7 @@ class ImportTicketCommentProcessorTest extends WebTestCase
     private Channel $channel;
     private ImportTicketCommentProcessor $processor;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();

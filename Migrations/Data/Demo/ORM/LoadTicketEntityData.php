@@ -66,17 +66,13 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
 
     protected $zendeskUsers = array();
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function load(ObjectManager $manager)
     {
         $this->entityManager = $manager;
@@ -314,9 +310,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
         return $this->entitiesCount[$entityName];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getDependencies()
     {
         return array(

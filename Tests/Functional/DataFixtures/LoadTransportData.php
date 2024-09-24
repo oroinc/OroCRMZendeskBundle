@@ -22,9 +22,7 @@ class LoadTransportData extends AbstractFixture
             'zendeskUserEmail' => 'fred.taylor@example.com'
         ]
     ];
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     public function load(ObjectManager $manager): void
     {
         foreach ($this->transportData as $reference => $data) {

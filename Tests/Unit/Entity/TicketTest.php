@@ -16,6 +16,7 @@ class TicketTest extends \PHPUnit\Framework\TestCase
 {
     private Ticket $target;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->target = new Ticket();

@@ -18,6 +18,7 @@ class ZendeskRestIteratorTest extends \PHPUnit\Framework\TestCase
     /** @var ZendeskRestIterator */
     private $iterator;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->client = $this->createMock(RestClientInterface::class);

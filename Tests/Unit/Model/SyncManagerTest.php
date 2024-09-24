@@ -30,6 +30,7 @@ class SyncManagerTest extends \PHPUnit\Framework\TestCase
     /** @var SyncManager */
     private $syncManager;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->scheduler = $this->createMock(SyncScheduler::class);

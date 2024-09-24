@@ -9,6 +9,7 @@ class TicketTypeTest extends \PHPUnit\Framework\TestCase
     private string $name;
     private TicketType $target;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->name = TicketType::TYPE_TASK;

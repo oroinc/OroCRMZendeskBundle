@@ -20,9 +20,7 @@ class ChannelUpdateListener implements EventSubscriberInterface
         $this->syncManager = $syncManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

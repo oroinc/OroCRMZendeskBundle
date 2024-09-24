@@ -18,9 +18,7 @@ class LoadTransportData extends AbstractFixture
         'zendeskUserEmail' => 'demo_user@mail.com'
     ];
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function load(ObjectManager $manager)
     {
         $transport = new ZendeskRestTransport();

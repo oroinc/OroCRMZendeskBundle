@@ -14,9 +14,7 @@ class TicketCommentConnector extends AbstractZendeskConnector implements TwoWayS
     const IMPORT_JOB = 'zendesk_ticket_comment_import';
     const EXPORT_JOB = 'zendesk_ticket_comment_export';
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getConnectorSource()
     {
         $comments = new \AppendIterator();
@@ -27,33 +25,25 @@ class TicketCommentConnector extends AbstractZendeskConnector implements TwoWayS
         return $comments;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getLabel(): string
     {
         return 'oro.zendesk.connector.ticket_comment.label';
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getImportEntityFQCN()
     {
         return self::IMPORT_ENTITY;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getImportJobName()
     {
         return self::IMPORT_JOB;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getType()
     {
         return self::TYPE;
@@ -62,6 +52,7 @@ class TicketCommentConnector extends AbstractZendeskConnector implements TwoWayS
     /**
      * @return string
      */
+    #[\Override]
     public function getExportJobName()
     {
         return self::EXPORT_JOB;

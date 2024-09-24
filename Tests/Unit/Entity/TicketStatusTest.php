@@ -9,6 +9,7 @@ class TicketStatusTest extends \PHPUnit\Framework\TestCase
     private string $name;
     private TicketStatus $target;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->name = TicketStatus::STATUS_CLOSED;

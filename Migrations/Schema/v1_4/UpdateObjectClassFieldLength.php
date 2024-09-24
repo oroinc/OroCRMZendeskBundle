@@ -12,9 +12,6 @@ use Oro\Bundle\MigrationBundle\Migration\QueryBag;
  */
 class UpdateObjectClassFieldLength implements Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function up(Schema $schema, QueryBag $queries)
     {
         $table = $schema->getTable('orocrm_zd_user_role_trans');

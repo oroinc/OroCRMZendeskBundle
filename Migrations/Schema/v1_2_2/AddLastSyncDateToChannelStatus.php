@@ -18,17 +18,13 @@ use Psr\Log\LoggerInterface;
 
 class AddLastSyncDateToChannelStatus extends ParametrizedMigrationQuery implements Migration
 {
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function up(Schema $schema, QueryBag $queries)
     {
         $queries->addQuery(new self());
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getDescription()
     {
         return "This migration update field 'data' " .
@@ -37,9 +33,7 @@ class AddLastSyncDateToChannelStatus extends ParametrizedMigrationQuery implemen
             "for all records that relate to channel 'zendesk' and one of next connectors 'user' or 'ticket'";
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function execute(LoggerInterface $logger)
     {
         $selectStatusQuery = <<<SQL

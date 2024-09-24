@@ -23,6 +23,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
     private string $previousEmail;
     private ExportTicketCommentProcessor $processor;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();
@@ -40,6 +41,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         $this->processor->setImportExportContext($this->context);
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         // @see testNewCommentWithoutAuthor

@@ -14,41 +14,31 @@ class TicketConnector extends AbstractZendeskConnector implements TwoWaySyncConn
     const EXPORT_JOB = 'zendesk_ticket_export';
     const TYPE = 'ticket';
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getConnectorSource()
     {
         return $this->transport->getTickets($this->getLastSyncDate());
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getLabel(): string
     {
         return 'oro.zendesk.connector.ticket.label';
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getImportEntityFQCN()
     {
         return self::IMPORT_ENTITY;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getImportJobName()
     {
         return self::IMPORT_JOB;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getType()
     {
         return self::TYPE;
@@ -57,6 +47,7 @@ class TicketConnector extends AbstractZendeskConnector implements TwoWaySyncConn
     /**
      * @return string
      */
+    #[\Override]
     public function getExportJobName()
     {
         return self::EXPORT_JOB;

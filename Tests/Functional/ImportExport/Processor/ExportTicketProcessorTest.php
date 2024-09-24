@@ -29,6 +29,7 @@ class ExportTicketProcessorTest extends WebTestCase
     /** @var string */
     private $previousEmail;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();
@@ -46,6 +47,7 @@ class ExportTicketProcessorTest extends WebTestCase
         $this->processor->setImportExportContext($this->context);
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         //see testProcessorReturnNullIfRequesterDoesNotFoundAndDefaultUserNotExist

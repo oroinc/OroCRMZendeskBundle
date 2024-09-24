@@ -9,6 +9,7 @@ class UserPhoneProviderTest extends \PHPUnit\Framework\TestCase
 {
     private UserPhoneProvider $provider;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->provider = new UserPhoneProvider();

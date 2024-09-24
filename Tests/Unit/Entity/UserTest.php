@@ -11,6 +11,7 @@ class UserTest extends \PHPUnit\Framework\TestCase
 {
     private User $target;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->target = new User();

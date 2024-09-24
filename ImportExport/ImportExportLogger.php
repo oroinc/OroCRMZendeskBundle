@@ -19,17 +19,13 @@ class ImportExportLogger extends AbstractLoggerDecorator implements ContextAware
      */
     protected $context;
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getMessage($level, $message, array $context)
     {
         return $this->messagePrefix . $message;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function log($level, $message, array $context = array())
     {
         if ($this->context
@@ -48,9 +44,7 @@ class ImportExportLogger extends AbstractLoggerDecorator implements ContextAware
         $this->messagePrefix = $prefix;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function setImportExportContext(ContextInterface $context)
     {
         $this->context = $context;

@@ -155,9 +155,7 @@ abstract class AbstractSyncSchedulerListener implements ServiceSubscriberInterfa
      */
     abstract protected function scheduleSync($entity);
 
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     public static function getSubscribedServices(): array
     {
         return [

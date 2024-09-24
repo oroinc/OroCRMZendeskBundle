@@ -57,9 +57,6 @@ class TicketCommentSyncHelper extends AbstractSyncHelper
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function syncRelatedEntities($entity, Channel $channel)
     {
         $this->channel = $channel;

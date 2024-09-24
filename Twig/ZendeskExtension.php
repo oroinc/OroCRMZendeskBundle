@@ -46,9 +46,7 @@ class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInt
         return $this->container->get('oro_zendesk.entity_provider.zendesk');
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getFunctions()
     {
         return [
@@ -116,9 +114,7 @@ class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInt
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public static function getSubscribedServices(): array
     {
         return [

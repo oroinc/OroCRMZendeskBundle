@@ -24,9 +24,7 @@ class SyncUpdateCaseListener extends AbstractSyncSchedulerListener
         'owner',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getEntitiesToSync()
     {
         $entities = $this->entityManager->getUnitOfWork()->getScheduledEntityUpdates();
@@ -42,9 +40,7 @@ class SyncUpdateCaseListener extends AbstractSyncSchedulerListener
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function isSyncRequired($entity)
     {
         /** @var CaseEntity $entity */
@@ -59,9 +55,7 @@ class SyncUpdateCaseListener extends AbstractSyncSchedulerListener
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getIntegrationEntityToSync($entity)
     {
         $result = null;
@@ -73,9 +67,7 @@ class SyncUpdateCaseListener extends AbstractSyncSchedulerListener
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function scheduleSync($entity)
     {
         $this->getSyncScheduler()->schedule($entity->getChannel()->getId(), TicketConnector::TYPE, [

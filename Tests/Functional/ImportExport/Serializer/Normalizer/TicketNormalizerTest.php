@@ -15,6 +15,7 @@ class TicketNormalizerTest extends WebTestCase
 {
     private Serializer $serializer;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();

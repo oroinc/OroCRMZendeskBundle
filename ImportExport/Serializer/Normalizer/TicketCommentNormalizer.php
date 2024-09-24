@@ -11,9 +11,7 @@ use Oro\Bundle\ZendeskBundle\Entity\User;
  */
 class TicketCommentNormalizer extends AbstractNormalizer
 {
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getFieldRules(): array
     {
         return [
@@ -46,9 +44,7 @@ class TicketCommentNormalizer extends AbstractNormalizer
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function denormalize($data, string $type, string $format = null, array $context = [])
     {
         if (is_array($data) && isset($context['ticket_id'])) {
@@ -58,9 +54,7 @@ class TicketCommentNormalizer extends AbstractNormalizer
         return parent::denormalize($data, $type, $format, $context);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getTargetClassName(): string
     {
         return TicketComment::class;

@@ -76,9 +76,7 @@ class LoadZendeskUserData extends AbstractFixture implements DependentFixtureInt
         ]
     ];
 
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     public function getDependencies(): array
     {
         return [
@@ -88,9 +86,7 @@ class LoadZendeskUserData extends AbstractFixture implements DependentFixtureInt
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     public function load(ObjectManager $manager): void
     {
         foreach ($this->data as $reference => $data) {

@@ -66,9 +66,7 @@ abstract class AbstractNormalizer implements
      */
     abstract protected function getTargetClassName();
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function normalize($object, string $format = null, array $context = [])
     {
         $targetClass = $this->getTargetClassName();
@@ -103,9 +101,7 @@ abstract class AbstractNormalizer implements
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function denormalize($data, string $type, string $format = null, array $context = [])
     {
         $fieldRules = $this->getProcessedFieldRules();
@@ -204,9 +200,7 @@ abstract class AbstractNormalizer implements
         return self::$propertyAccessor;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         $className = $this->getTargetClassName();
@@ -214,9 +208,7 @@ abstract class AbstractNormalizer implements
         return $data instanceof $className;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool
     {
         return $type === $this->getTargetClassName();
@@ -225,6 +217,7 @@ abstract class AbstractNormalizer implements
     /**
      * @throws InvalidArgumentException
      */
+    #[\Override]
     public function setSerializer(SerializerInterface $serializer): void
     {
         if (!$serializer instanceof ContextAwareNormalizerInterface

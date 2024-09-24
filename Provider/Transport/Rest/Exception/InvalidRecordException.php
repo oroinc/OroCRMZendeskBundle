@@ -25,6 +25,7 @@ class InvalidRecordException extends RestException
      * @param \Exception|null $previous
      * @return RestException
      */
+    #[\Override]
     public static function createFromResponse(
         RestResponseInterface $response,
         $message = null,

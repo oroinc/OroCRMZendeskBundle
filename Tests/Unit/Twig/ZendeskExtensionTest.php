@@ -23,6 +23,7 @@ class ZendeskExtensionTest extends \PHPUnit\Framework\TestCase
     /** @var ZendeskEntityProvider|\PHPUnit\Framework\MockObject\MockObject */
     private $zendeskProvider;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->oroProvider = $this->createMock(OroEntityProvider::class);

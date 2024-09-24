@@ -14,6 +14,7 @@ class OroEntityProviderTest extends WebTestCase
     private OroEntityProvider $target;
     private Channel $channel;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();

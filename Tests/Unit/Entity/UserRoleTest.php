@@ -9,6 +9,7 @@ class UserRoleTest extends \PHPUnit\Framework\TestCase
     private string $name;
     private UserRole $target;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->name = UserRole::ROLE_ADMIN;

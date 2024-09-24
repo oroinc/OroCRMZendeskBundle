@@ -23,6 +23,7 @@ class CaseFormHandledListenerTest extends \PHPUnit\Framework\TestCase
     /** @var OroEntityProvider|\PHPUnit\Framework\MockObject\MockObject */
     private $oroEntityProvider;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->syncManager = $this->createMock(SyncManager::class);
