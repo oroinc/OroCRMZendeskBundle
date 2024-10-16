@@ -13,6 +13,7 @@ class CaseControllerTest extends WebTestCase
     private CaseEntity $caseWithoutTicket;
     private CaseEntity $caseWithTicket;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient([], $this->generateBasicAuthHeader());

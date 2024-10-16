@@ -39,9 +39,6 @@ class UserSyncHelper extends AbstractSyncHelper
         return $this->zendeskProvider->getDefaultZendeskUser($channel);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function copyEntityProperties($targetUser, $sourceUser)
     {
         $this->syncProperties(

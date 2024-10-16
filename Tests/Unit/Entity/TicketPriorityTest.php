@@ -9,6 +9,7 @@ class TicketPriorityTest extends \PHPUnit\Framework\TestCase
     private string $name;
     private TicketPriority $target;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->name = TicketPriority::PRIORITY_HIGH;

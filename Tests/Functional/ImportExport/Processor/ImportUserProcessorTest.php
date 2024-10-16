@@ -20,6 +20,7 @@ class ImportUserProcessorTest extends WebTestCase
     private Channel $channel;
     private ImportUserProcessor $processor;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();

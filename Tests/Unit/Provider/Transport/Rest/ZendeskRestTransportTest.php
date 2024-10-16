@@ -43,6 +43,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
     /** @var ZendeskRestTransport */
     private $transport;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->client = $this->createMock(RestClientInterface::class);

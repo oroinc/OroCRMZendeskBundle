@@ -27,6 +27,7 @@ class AbstractZendeskConnectorTest extends \PHPUnit\Framework\TestCase
     /** @var ConnectorContextMediator|\PHPUnit\Framework\MockObject\MockObject */
     private $mediator;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->mediator = $this->createMock(ConnectorContextMediator::class);

@@ -36,9 +36,7 @@ class ImportTicketProcessor extends AbstractImportProcessor
         $this->oroProvider = $oroEntityProvider;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function process($entity)
     {
         if (!$entity instanceof Ticket) {

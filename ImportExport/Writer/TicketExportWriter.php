@@ -48,6 +48,7 @@ class TicketExportWriter extends AbstractExportWriter
     /**
      * @param Ticket $ticket
      */
+    #[\Override]
     protected function writeItem($ticket)
     {
         $this->getLogger()->setMessagePrefix("Zendesk Ticket [id={$ticket->getId()}]: ");
@@ -164,9 +165,7 @@ class TicketExportWriter extends AbstractExportWriter
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function postFlush()
     {
         $this->createNewTicketComments($this->newTickets);

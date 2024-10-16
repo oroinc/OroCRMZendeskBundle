@@ -18,9 +18,7 @@ class ImportUserProcessor extends AbstractImportProcessor
         $this->helper = $helper;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function process($entity)
     {
         if (!$entity instanceof ZendeskUser) {

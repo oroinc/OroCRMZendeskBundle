@@ -32,9 +32,7 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
         $this->oroProvider = $oroProvider;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $channels = $this->oroProvider->getEnabledTwoWaySyncChannels();
@@ -62,9 +60,7 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         /** @var CaseEntity $data */
@@ -74,9 +70,7 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public static function getExtendedTypes(): iterable
     {
         return [CaseEntityType::class];

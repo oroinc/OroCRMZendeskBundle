@@ -28,9 +28,7 @@ class ZendeskRestIterator extends AbstractRestIterator
         $this->params = $params;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function loadPage(RestClientInterface $client)
     {
         $data = null;
@@ -50,9 +48,7 @@ class ZendeskRestIterator extends AbstractRestIterator
         return $data;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getRowsFromPageData(array $data)
     {
         if (isset($data[$this->dataKeyName]) && is_array($data[$this->dataKeyName])) {
@@ -62,9 +58,7 @@ class ZendeskRestIterator extends AbstractRestIterator
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getTotalCountFromPageData(array $data, $previousValue)
     {
         if (isset($data['count'])) {
@@ -74,9 +68,7 @@ class ZendeskRestIterator extends AbstractRestIterator
         return $previousValue;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function current(): mixed
     {
         $result = parent::current();

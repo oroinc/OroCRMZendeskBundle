@@ -11,6 +11,7 @@ class ZendeskEntityProviderTest extends WebTestCase
 {
     private ZendeskEntityProvider $target;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();

@@ -16,6 +16,7 @@ class ChannelUpdateListenerTest extends \PHPUnit\Framework\TestCase
     /** @var SyncManager|\PHPUnit\Framework\MockObject\MockObject */
     private $syncManager;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->syncManager = $this->createMock(SyncManager::class);

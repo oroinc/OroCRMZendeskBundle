@@ -18,9 +18,7 @@ class ImportTicketCommentProcessor extends AbstractImportProcessor
         $this->helper = $helper;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function process($entity)
     {
         if (!$entity instanceof TicketComment) {

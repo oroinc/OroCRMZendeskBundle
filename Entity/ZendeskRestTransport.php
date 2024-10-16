@@ -108,9 +108,7 @@ class ZendeskRestTransport extends Transport
         return $this->zendeskUserEmail;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getSettingsBag()
     {
         if (null === $this->settings) {

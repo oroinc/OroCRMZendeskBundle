@@ -27,6 +27,7 @@ class TicketCommentExportWriter extends AbstractExportWriter
     /**
      * @param TicketComment $ticketComment
      */
+    #[\Override]
     protected function writeItem($ticketComment)
     {
         $this->getLogger()->setMessagePrefix("Zendesk Ticket Comment [id={$ticketComment->getId()}]: ");

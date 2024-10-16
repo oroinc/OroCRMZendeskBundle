@@ -12,6 +12,7 @@ class TicketCommentTest extends \PHPUnit\Framework\TestCase
 {
     private TicketComment $target;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->target = new TicketComment();

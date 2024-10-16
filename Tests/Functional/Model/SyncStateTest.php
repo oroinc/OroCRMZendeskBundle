@@ -11,6 +11,7 @@ class SyncStateTest extends WebTestCase
 {
     private SyncState $target;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient();

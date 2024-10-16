@@ -29,6 +29,7 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
         'organization' => 'default_organization',
     ];
 
+    #[\Override]
     public function getDependencies()
     {
         return [
@@ -36,9 +37,7 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function load(ObjectManager $manager)
     {
         $channel = new Channel();

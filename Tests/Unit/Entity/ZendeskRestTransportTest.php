@@ -8,6 +8,7 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 {
     private ZendeskRestTransport $target;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->target = new ZendeskRestTransport();

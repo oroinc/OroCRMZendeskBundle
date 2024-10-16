@@ -4,9 +4,7 @@ namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
 class UserRoleNormalizer extends AbstractNormalizer
 {
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getFieldRules()
     {
         return array(
@@ -16,9 +14,7 @@ class UserRoleNormalizer extends AbstractNormalizer
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getTargetClassName()
     {
         return 'Oro\\Bundle\\ZendeskBundle\\Entity\\UserRole';

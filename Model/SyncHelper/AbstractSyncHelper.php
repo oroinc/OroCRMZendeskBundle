@@ -202,9 +202,7 @@ abstract class AbstractSyncHelper implements LoggerAwareInterface
         return $this->logger;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;

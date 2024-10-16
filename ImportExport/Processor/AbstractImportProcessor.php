@@ -92,14 +92,13 @@ abstract class AbstractImportProcessor implements
         $this->connectorContextMediator = $connectorContextMediator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function setStepExecution(StepExecution $stepExecution)
     {
         $this->setImportExportContext($this->contextRegistry->getByStepExecution($stepExecution));
     }
 
+    #[\Override]
     public function setImportExportContext(ContextInterface $context)
     {
         $this->context = $context;
@@ -129,6 +128,7 @@ abstract class AbstractImportProcessor implements
      * @param LoggerInterface $logger
      * @return null
      */
+    #[\Override]
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = new ImportExportLogger($logger);

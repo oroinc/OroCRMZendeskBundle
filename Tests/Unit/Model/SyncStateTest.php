@@ -30,6 +30,7 @@ class SyncStateTest extends TestCase
     /** @var LoggerInterface|MockObject */
     private $logger;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->channel = $this->createMock(Channel::class);

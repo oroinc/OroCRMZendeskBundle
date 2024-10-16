@@ -14,6 +14,7 @@ class TicketCommentExceptionHandlerTest extends \PHPUnit\Framework\TestCase
     /** @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $context;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->context = $this->createMock(ContextInterface::class);

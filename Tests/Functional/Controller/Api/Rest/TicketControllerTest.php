@@ -7,6 +7,7 @@ use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTicketData;
 
 class TicketControllerTest extends WebTestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         $this->initClient(['debug' => false], $this->generateWsseAuthHeader());

@@ -41,6 +41,7 @@ class TicketCommentConnectorTest extends \PHPUnit\Framework\TestCase
     /** @var StepExecution|\PHPUnit\Framework\MockObject\MockObject */
     private $stepExecutor;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->registry = $this->createMock(ContextRegistry::class);

@@ -9,17 +9,13 @@ class ChannelType implements ChannelInterface, IconAwareIntegrationInterface
 {
     const TYPE = 'zendesk';
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getLabel()
     {
         return 'oro.zendesk.channel_type.label';
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getIcon()
     {
         return 'bundles/orozendesk/img/zendesk.com.ico';

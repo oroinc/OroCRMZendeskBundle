@@ -14,7 +14,7 @@ class TicketCommentExceptionHandler implements ExceptionHandlerInterface
         self::TICKED_IS_CLOSED_ERROR_CODE => 'Error ticket comment not exported because ticket is closed'
     ];
 
-    /** @inheritdoc */
+    #[\Override]
     public function process(\Exception $exception, ContextInterface $context)
     {
         if (!($exception instanceof InvalidRecordException)) {

@@ -13,9 +13,7 @@ class LoadPriorityData extends AbstractTranslatableEntityFixture
 {
     private const TRANSLATION_PREFIX = 'ticket_priority';
 
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     protected function loadEntities(ObjectManager $manager): void
     {
         $ticketPriorityRepository = $manager->getRepository(TicketPriority::class);

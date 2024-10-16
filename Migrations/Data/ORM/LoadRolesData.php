@@ -13,9 +13,7 @@ class LoadRolesData extends AbstractTranslatableEntityFixture
 {
     private const TRANSLATION_PREFIX = 'zendesk_user_role';
 
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     protected function loadEntities(ObjectManager $manager): void
     {
         $userRoleRepository = $manager->getRepository(UserRole::class);

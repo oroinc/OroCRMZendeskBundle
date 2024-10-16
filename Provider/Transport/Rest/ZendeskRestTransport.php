@@ -40,27 +40,27 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     }
 
     /**
-     * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/search.html
      */
+    #[\Override]
     public function getUsers(\DateTime $lastSyncDate = null)
     {
         return $this->getSearchResult(User::class, $lastSyncDate);
     }
 
     /**
-     * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/search.html
      */
+    #[\Override]
     public function getTickets(\DateTime $lastSyncDate = null)
     {
         return $this->getSearchResult(Ticket::class, $lastSyncDate);
     }
 
     /**
-     * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/ticket_comments.html#listing-comments
      */
+    #[\Override]
     public function getTicketComments($ticketId)
     {
         if (!$ticketId) {
@@ -79,9 +79,9 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     }
 
     /**
-     * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/users.html#create-user
      */
+    #[\Override]
     public function createUser(User $user)
     {
         $userData = $this->normalizer->normalize($user);
@@ -90,9 +90,9 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     }
 
     /**
-     * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/tickets.html#creating-tickets
      */
+    #[\Override]
     public function createTicket(Ticket $ticket)
     {
         $ticketData = $this->normalizer->normalize($ticket);
@@ -115,9 +115,9 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     }
 
     /**
-     * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/tickets.html#getting-tickets
      */
+    #[\Override]
     public function getTicket($id)
     {
         $response = $this->client->get(
@@ -143,9 +143,9 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     }
 
     /**
-     * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/tickets.html#updating-tickets
      */
+    #[\Override]
     public function updateTicket(Ticket $ticket)
     {
         if (!$ticket->getOriginId()) {
@@ -160,9 +160,9 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     }
 
     /**
-     * {@inheritdoc}
      * @link http://developer.zendesk.com/documentation/rest_api/tickets.html#creating-tickets
      */
+    #[\Override]
     public function addTicketComment(TicketComment $comment)
     {
         if (!$comment->getTicket() || !$comment->getTicket()->getOriginId()) {
@@ -375,41 +375,31 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         return $responseData[$name];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getLabel()
     {
         return 'oro.zendesk.transport.rest.label';
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getSettingsFormType()
     {
         return RestTransportSettingsFormType::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getSettingsEntityFQCN()
     {
         return ZendeskTransportSettingsEntity::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getClientBaseUrl(ParameterBag $parameterBag)
     {
         return rtrim($parameterBag->get('url'), '/') . '/' . ltrim(static::API_URL_PREFIX, '/');
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getClientOptions(ParameterBag $parameterBag)
     {
         $email = $parameterBag->get('email');

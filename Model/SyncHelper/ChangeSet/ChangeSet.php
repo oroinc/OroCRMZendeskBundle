@@ -115,25 +115,19 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->values);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function offsetExists($offset): bool
     {
         return isset($this->values[$offset]) || array_key_exists($offset, $this->values);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function offsetGet($offset): ?ChangeValue
     {
         if (isset($this->values[$offset])) {
@@ -142,9 +136,7 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function offsetSet($offset, $value): void
     {
         if (!$value instanceof ChangeValue) {
@@ -159,17 +151,13 @@ class ChangeSet implements \Countable, \IteratorAggregate, \ArrayAccess
         $this->values[$offset] = $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function offsetUnset($offset): void
     {
         unset($this->values[$offset]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function count(): int
     {
         return count($this->values);

@@ -10,9 +10,7 @@ use Oro\Bundle\ZendeskBundle\Entity\User;
 
 class ExportTicketCommentProcessor extends AbstractExportProcessor
 {
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function process($ticketComment)
     {
         if (!$ticketComment instanceof TicketComment) {

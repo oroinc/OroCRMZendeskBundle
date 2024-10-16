@@ -32,9 +32,7 @@ abstract class AbstractZendeskConnector extends AbstractConnector
         parent::__construct($contextRegistry, $logger, $contextMediator);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function initializeFromContext(ContextInterface $context)
     {
         parent::initializeFromContext($context);
@@ -62,9 +60,7 @@ abstract class AbstractZendeskConnector extends AbstractConnector
         return $this->syncState->getLastSyncDate($channel, $this->getType());
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function validateConfiguration()
     {
         parent::validateConfiguration();

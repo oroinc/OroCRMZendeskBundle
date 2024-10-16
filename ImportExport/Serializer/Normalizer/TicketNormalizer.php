@@ -13,9 +13,7 @@ use Oro\Bundle\ZendeskBundle\Entity\User;
  */
 class TicketNormalizer extends AbstractNormalizer
 {
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getFieldRules()
     {
         return [
@@ -93,9 +91,7 @@ class TicketNormalizer extends AbstractNormalizer
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function normalize($object, string $format = null, array $context = [])
     {
         $result = parent::normalize($object, $format, $context);
@@ -114,9 +110,7 @@ class TicketNormalizer extends AbstractNormalizer
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function getTargetClassName()
     {
         return Ticket::class;

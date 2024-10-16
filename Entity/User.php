@@ -400,6 +400,7 @@ class User implements EmailHolderInterface
     /**
      * @return string
      */
+    #[\Override]
     public function getEmail()
     {
         return $this->email;

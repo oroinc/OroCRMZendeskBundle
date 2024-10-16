@@ -39,9 +39,7 @@ class ExportTicketProcessor extends AbstractExportProcessor
         $this->entityMapper = $entityMapper;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function process($ticket)
     {
         $this->transport->init($this->getChannel()->getTransport());

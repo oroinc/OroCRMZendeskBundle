@@ -29,9 +29,7 @@ class CaseEntityListener implements EventSubscriberInterface
         $this->oroEntityProvider = $oroEntityProvider;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

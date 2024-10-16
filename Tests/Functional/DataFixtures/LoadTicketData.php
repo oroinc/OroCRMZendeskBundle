@@ -197,9 +197,7 @@ class LoadTicketData extends AbstractFixture implements DependentFixtureInterfac
         ]
     ];
 
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     public function getDependencies(): array
     {
         return [
@@ -210,10 +208,10 @@ class LoadTicketData extends AbstractFixture implements DependentFixtureInterfac
     }
 
     /**
-     * {@inheritDoc}
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
+    #[\Override]
     public function load(ObjectManager $manager): void
     {
         foreach ($this->data as $reference => $data) {

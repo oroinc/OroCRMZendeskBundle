@@ -13,9 +13,7 @@ class LoadTicketTypeData extends AbstractTranslatableEntityFixture
 {
     private const TRANSLATION_PREFIX = 'ticket_type';
 
-    /**
-     * {@inheritDoc}
-     */
+    #[\Override]
     protected function loadEntities(ObjectManager $manager): void
     {
         $ticketTypeRepository = $manager->getRepository(TicketType::class);

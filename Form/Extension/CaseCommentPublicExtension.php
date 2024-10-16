@@ -24,6 +24,7 @@ class CaseCommentPublicExtension extends AbstractTypeExtension
     /**
      * Enable public field for case comment if it's connected to Zendesk
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $caseComment = $form->getData();
@@ -48,9 +49,7 @@ class CaseCommentPublicExtension extends AbstractTypeExtension
         return null !== $this->zendeskProvider->getTicketByCase($caseComment->getCase());
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public static function getExtendedTypes(): iterable
     {
         return [CaseCommentType::class];
