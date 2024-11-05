@@ -2,12 +2,12 @@
     "name": "oro/crm-zendesk",
     "description": "OroCRM Zendesk Integration",
     "homepage": "https://github.com/oroinc/OroCRMZendeskBundle.git",
-    "license": "OSL-3.0",
     "keywords": ["Oro", "Zendesk", "Integration"],
+    "license": "OSL-3.0",
     "authors": [
         {
             "name": "Oro, Inc",
-            "homepage": "http://www.orocrm.com"
+            "homepage": "https://oroinc.com/"
         }
     ],
     "autoload": {
@@ -20,7 +20,7 @@
     "repositories": {
         "oro": {
             "type": "composer",
-            "url": "https://packagist.orocrm.com"
+            "url": "https://packagist.oroinc.com"
         }
     },
     "minimum-stability": "dev",
