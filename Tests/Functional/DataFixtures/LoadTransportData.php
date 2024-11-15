@@ -22,6 +22,7 @@ class LoadTransportData extends AbstractFixture
             'zendeskUserEmail' => 'fred.taylor@example.com'
         ]
     ];
+
     #[\Override]
     public function load(ObjectManager $manager): void
     {
