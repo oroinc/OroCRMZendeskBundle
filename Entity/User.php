@@ -337,7 +337,7 @@ class User implements EmailHolderInterface
      * @param UserRole|null $role
      * @return User
      */
-    public function setRole(UserRole $role = null)
+    public function setRole(?UserRole $role = null)
     {
         $this->role = $role;
 
@@ -467,7 +467,7 @@ class User implements EmailHolderInterface
      * @param \DateTime|null $lastLoginAt
      * @return User
      */
-    public function setLastLoginAt(\DateTime $lastLoginAt = null)
+    public function setLastLoginAt(?\DateTime $lastLoginAt = null)
     {
         $this->lastLoginAt = $lastLoginAt;
 
@@ -486,7 +486,7 @@ class User implements EmailHolderInterface
      * @param \DateTime|null $createdAt
      * @return User
      */
-    public function setCreatedAt(\DateTime $createdAt = null)
+    public function setCreatedAt(?\DateTime $createdAt = null)
     {
         $this->createdAt = $createdAt;
 
@@ -505,7 +505,7 @@ class User implements EmailHolderInterface
      * @param \DateTime|null $updatedAt
      * @return User
      */
-    public function setUpdatedAt(\DateTime $updatedAt = null)
+    public function setUpdatedAt(?\DateTime $updatedAt = null)
     {
         $this->updatedAt = $updatedAt;
 
@@ -526,7 +526,7 @@ class User implements EmailHolderInterface
      * @param \DateTime|null $originCreatedAt
      * @return User
      */
-    public function setOriginCreatedAt(\DateTime $originCreatedAt = null)
+    public function setOriginCreatedAt(?\DateTime $originCreatedAt = null)
     {
         $this->originCreatedAt = $originCreatedAt;
 
@@ -545,7 +545,7 @@ class User implements EmailHolderInterface
      * @param \DateTime|null $originUpdatedAt
      * @return User
      */
-    public function setOriginUpdatedAt(\DateTime $originUpdatedAt = null)
+    public function setOriginUpdatedAt(?\DateTime $originUpdatedAt = null)
     {
         $this->originUpdatedAt = $originUpdatedAt;
 
@@ -564,7 +564,7 @@ class User implements EmailHolderInterface
      * @param Contact|null $contact
      * @return User
      */
-    public function setRelatedContact(Contact $contact = null)
+    public function setRelatedContact(?Contact $contact = null)
     {
         $this->relatedContact = $contact;
 
@@ -583,7 +583,7 @@ class User implements EmailHolderInterface
      * @param OroUser|null $user
      * @return User
      */
-    public function setRelatedUser(OroUser $user = null)
+    public function setRelatedUser(?OroUser $user = null)
     {
         $this->relatedUser = $user;
 

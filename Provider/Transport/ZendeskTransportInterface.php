@@ -18,7 +18,7 @@ interface ZendeskTransportInterface extends TransportInterface
      * @return \Iterator Iterator of User
      * @throws RestException
      */
-    public function getUsers(\DateTime $lastSyncDate = null);
+    public function getUsers(?\DateTime $lastSyncDate = null);
 
     /**
      * Get Zendesk tickets data.
@@ -28,7 +28,7 @@ interface ZendeskTransportInterface extends TransportInterface
      * @return \Iterator Iterator of Ticket
      * @throws RestException
      */
-    public function getTickets(\DateTime $lastSyncDate = null);
+    public function getTickets(?\DateTime $lastSyncDate = null);
 
     /**
      * Get Zendesk ticket comments data.

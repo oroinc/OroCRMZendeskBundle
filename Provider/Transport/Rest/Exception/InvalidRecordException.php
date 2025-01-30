@@ -29,7 +29,7 @@ class InvalidRecordException extends RestException
     public static function createFromResponse(
         RestResponseInterface $response,
         $message = null,
-        \Exception $previous = null
+        ?\Exception $previous = null
     ) {
         try {
             $data = $response->json();

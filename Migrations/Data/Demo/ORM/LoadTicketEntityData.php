@@ -67,7 +67,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
     protected $zendeskUsers = array();
 
     #[\Override]
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(?ContainerInterface $container = null)
     {
         $this->container = $container;
     }

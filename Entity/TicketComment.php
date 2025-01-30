@@ -157,7 +157,7 @@ class TicketComment
      * @param User|null $author
      * @return TicketComment
      */
-    public function setAuthor(User $author = null)
+    public function setAuthor(?User $author = null)
     {
         $this->author = $author;
         return $this;
@@ -175,7 +175,7 @@ class TicketComment
      * @param Ticket|null $ticket
      * @return TicketComment
      */
-    public function setTicket(Ticket $ticket = null)
+    public function setTicket(?Ticket $ticket = null)
     {
         $this->ticket = $ticket;
 
@@ -194,7 +194,7 @@ class TicketComment
      * @param CaseComment|null $caseComment
      * @return TicketComment
      */
-    public function setRelatedComment(CaseComment $caseComment = null)
+    public function setRelatedComment(?CaseComment $caseComment = null)
     {
         $this->relatedComment = $caseComment;
 
@@ -213,7 +213,7 @@ class TicketComment
      * @param \DateTime|null $createdAt
      * @return TicketComment
      */
-    public function setCreatedAt(\DateTime $createdAt = null)
+    public function setCreatedAt(?\DateTime $createdAt = null)
     {
         $this->createdAt = $createdAt;
 
@@ -232,7 +232,7 @@ class TicketComment
      * @param \DateTime|null $originCreatedAt
      * @return TicketComment
      */
-    public function setOriginCreatedAt(\DateTime $originCreatedAt = null)
+    public function setOriginCreatedAt(?\DateTime $originCreatedAt = null)
     {
         $this->originCreatedAt = $originCreatedAt;
 
@@ -251,7 +251,7 @@ class TicketComment
      * @param \DateTime|null $updatedAt
      * @return TicketComment
      */
-    public function setUpdatedAt(\DateTime $updatedAt = null)
+    public function setUpdatedAt(?\DateTime $updatedAt = null)
     {
         $this->updatedAt = $updatedAt;
 
