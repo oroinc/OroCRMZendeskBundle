@@ -67,7 +67,7 @@ abstract class AbstractNormalizer implements
     abstract protected function getTargetClassName();
 
     #[\Override]
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, ?string $format = null, array $context = [])
     {
         $targetClass = $this->getTargetClassName();
         if (!$object instanceof $targetClass) {
@@ -102,7 +102,7 @@ abstract class AbstractNormalizer implements
     }
 
     #[\Override]
-    public function denormalize($data, string $type, string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = [])
     {
         $fieldRules = $this->getProcessedFieldRules();
 
@@ -201,7 +201,7 @@ abstract class AbstractNormalizer implements
     }
 
     #[\Override]
-    public function supportsNormalization($data, string $format = null, array $context = []): bool
+    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
         $className = $this->getTargetClassName();
 
@@ -209,7 +209,7 @@ abstract class AbstractNormalizer implements
     }
 
     #[\Override]
-    public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization($data, string $type, ?string $format = null, array $context = []): bool
     {
         return $type === $this->getTargetClassName();
     }

@@ -43,7 +43,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      * @link http://developer.zendesk.com/documentation/rest_api/search.html
      */
     #[\Override]
-    public function getUsers(\DateTime $lastSyncDate = null)
+    public function getUsers(?\DateTime $lastSyncDate = null)
     {
         return $this->getSearchResult(User::class, $lastSyncDate);
     }
@@ -52,7 +52,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      * @link http://developer.zendesk.com/documentation/rest_api/search.html
      */
     #[\Override]
-    public function getTickets(\DateTime $lastSyncDate = null)
+    public function getTickets(?\DateTime $lastSyncDate = null)
     {
         return $this->getSearchResult(Ticket::class, $lastSyncDate);
     }
@@ -192,7 +192,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      *
      * @return ZendeskRestIterator
      */
-    protected function getSearchResult($classType, \DateTime $lastUpdatedAt = null)
+    protected function getSearchResult($classType, ?\DateTime $lastUpdatedAt = null)
     {
         if (!defined(sprintf('%s::%s', $classType, 'SEARCH_TYPE'))) {
             throw new InvalidConfigurationException(sprintf(
@@ -249,7 +249,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      *
      * @return string
      */
-    protected function getDateFilter(\DateTime $lastUpdatedAt = null)
+    protected function getDateFilter(?\DateTime $lastUpdatedAt = null)
     {
         if ($lastUpdatedAt) {
             return sprintf(
@@ -294,7 +294,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      * @return array
      * @throws RestException
      */
-    protected function createEntity($resource, $name, array $entityData, array &$responseData = null)
+    protected function createEntity($resource, $name, array $entityData, ?array &$responseData = null)
     {
         try {
             $response = $this->getClient()->post(
@@ -338,7 +338,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
      * @return array
      * @throws RestException
      */
-    protected function updateEntity($resource, $name, array $entityData, array &$responseData = null)
+    protected function updateEntity($resource, $name, array $entityData, ?array &$responseData = null)
     {
         unset($entityData['id']);
 

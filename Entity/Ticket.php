@@ -245,7 +245,7 @@ class Ticket
      * @param Ticket|null $problem
      * @return Ticket
      */
-    public function setProblem(Ticket $problem = null)
+    public function setProblem(?Ticket $problem = null)
     {
         $this->problem = $problem;
 
@@ -307,7 +307,7 @@ class Ticket
      * @param TicketType|null $type
      * @return Ticket
      */
-    public function setType(TicketType $type = null)
+    public function setType(?TicketType $type = null)
     {
         $this->type = $type;
 
@@ -326,7 +326,7 @@ class Ticket
      * @param TicketStatus|null $status
      * @return Ticket
      */
-    public function setStatus(TicketStatus $status = null)
+    public function setStatus(?TicketStatus $status = null)
     {
         $this->status = $status;
 
@@ -345,7 +345,7 @@ class Ticket
      * @param TicketPriority|null $priority
      * @return Ticket
      */
-    public function setPriority(TicketPriority $priority = null)
+    public function setPriority(?TicketPriority $priority = null)
     {
         $this->priority = $priority;
 
@@ -383,7 +383,7 @@ class Ticket
      * @param User|null $requester
      * @return Ticket
      */
-    public function setRequester(User $requester = null)
+    public function setRequester(?User $requester = null)
     {
         $this->requester = $requester;
 
@@ -402,7 +402,7 @@ class Ticket
      * @param User|null $submitter
      * @return Ticket
      */
-    public function setSubmitter(User $submitter = null)
+    public function setSubmitter(?User $submitter = null)
     {
         $this->submitter = $submitter;
 
@@ -421,7 +421,7 @@ class Ticket
      * @param User|null $assignee
      * @return Ticket
      */
-    public function setAssignee(User $assignee = null)
+    public function setAssignee(?User $assignee = null)
     {
         $this->assignee = $assignee;
 
@@ -459,7 +459,7 @@ class Ticket
      * @param \DateTime|null $dueAt
      * @return Ticket
      */
-    public function setDueAt(\DateTime $dueAt = null)
+    public function setDueAt(?\DateTime $dueAt = null)
     {
         $this->dueAt = $dueAt;
 
@@ -478,7 +478,7 @@ class Ticket
      * @param \DateTime|null $createdAt
      * @return Ticket
      */
-    public function setCreatedAt(\DateTime $createdAt = null)
+    public function setCreatedAt(?\DateTime $createdAt = null)
     {
         $this->createdAt = $createdAt;
 
@@ -497,7 +497,7 @@ class Ticket
      * @param \DateTime|null $originCreatedAt
      * @return Ticket
      */
-    public function setOriginCreatedAt(\DateTime $originCreatedAt = null)
+    public function setOriginCreatedAt(?\DateTime $originCreatedAt = null)
     {
         $this->originCreatedAt = $originCreatedAt;
 
@@ -516,7 +516,7 @@ class Ticket
      * @param \DateTime|null $updatedAt
      * @return Ticket
      */
-    public function setUpdatedAt(\DateTime $updatedAt = null)
+    public function setUpdatedAt(?\DateTime $updatedAt = null)
     {
         $this->updatedAt = $updatedAt;
 
@@ -537,7 +537,7 @@ class Ticket
      * @param \DateTime|null $originUpdatedAt
      * @return Ticket
      */
-    public function setOriginUpdatedAt(\DateTime $originUpdatedAt = null)
+    public function setOriginUpdatedAt(?\DateTime $originUpdatedAt = null)
     {
         $this->originUpdatedAt = $originUpdatedAt;
 
@@ -600,7 +600,7 @@ class Ticket
      * @param CaseEntity|null $case
      * @return Ticket
      */
-    public function setRelatedCase(CaseEntity $case = null)
+    public function setRelatedCase(?CaseEntity $case = null)
     {
         $this->relatedCase = $case;
 

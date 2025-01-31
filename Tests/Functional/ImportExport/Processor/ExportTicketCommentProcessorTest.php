@@ -153,7 +153,7 @@ class ExportTicketCommentProcessorTest extends WebTestCase
         string $expectedMessage,
         User $owner,
         bool $isPublic = true,
-        string $tickedStatus = null
+        ?string $tickedStatus = null
     ): TicketComment {
         if (null === $tickedStatus) {
             $tickedStatus = TicketStatus::STATUS_OPEN;

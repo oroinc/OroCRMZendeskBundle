@@ -33,7 +33,7 @@ class RestException extends BaseException implements ZendeskException
     public static function createFromResponse(
         RestResponseInterface $response,
         $message = null,
-        \Exception $previous = null
+        ?\Exception $previous = null
     ) {
         if ($response->isClientError()) {
             return InvalidRecordException::createFromResponse($response, $message, $previous);

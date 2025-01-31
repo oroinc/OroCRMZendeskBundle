@@ -14,16 +14,16 @@ class RestException extends Exception implements ZendeskException
 {
     /**
      * @param string|null            $message
-     * @param RequestInterface|null  $request
+     * @param RequestInterface|null $request
      * @param ResponseInterface|null $response
-     * @param Exception|null         $previous
+     * @param Exception|null $previous
      * @return RestException
      */
     public static function create(
         $message = null,
-        RequestInterface $request = null,
-        ResponseInterface $response = null,
-        Exception $previous = null
+        ?RequestInterface $request = null,
+        ?ResponseInterface $response = null,
+        ?Exception $previous = null
     ) {
         $messageParts = [];
 

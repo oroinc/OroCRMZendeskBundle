@@ -92,7 +92,7 @@ class TicketNormalizer extends AbstractNormalizer
     }
 
     #[\Override]
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, ?string $format = null, array $context = [])
     {
         $result = parent::normalize($object, $format, $context);
 
