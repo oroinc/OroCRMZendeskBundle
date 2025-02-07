@@ -10,7 +10,7 @@ class TicketControllerTest extends WebTestCase
     #[\Override]
     protected function setUp(): void
     {
-        $this->initClient(['debug' => false], $this->generateWsseAuthHeader());
+        $this->initClient(['debug' => false], self::generateApiAuthHeader());
         $this->loadFixtures([LoadTicketData::class]);
     }
 
