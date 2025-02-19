@@ -12,7 +12,7 @@
     ],
     "autoload": {
         "psr-4": {"Oro\\Bundle\\ZendeskBundle\\": ""},
-        "exclude-from-classmap": ["/Tests/"]
+        "exclude-from-classmap": ["**/Tests/"]
     },
     "require": {
         "oro/crm": "5.0.*"
