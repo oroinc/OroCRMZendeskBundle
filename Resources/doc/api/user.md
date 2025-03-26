@@ -123,7 +123,7 @@ Delete a collection of Zendesk user records.
 
 #### get_subresource
 
-Retrieve the record of the Oro contact that is associated with a specific Zendesk user. 
+Retrieve a record of the Oro contact that is associated with a specific Zendesk user. 
 
 #### get_relationship
 
@@ -150,7 +150,7 @@ Example:
 
 #### get_subresource
 
-Retrieve the record of the Oro user that is associated with a specific Zendesk user. Related user appears when the ticket is submitted to Zendesk by an Oro user.
+Retrieve a record of the Oro user that is associated with a specific Zendesk user. Related user appears when the ticket is submitted to Zendesk by an Oro user.
 
 #### get_relationship
 
@@ -177,7 +177,7 @@ Example:
 
 #### get_subresource
 
-Retrieve the record of the Zendesk role that is assigned to a specific Zendesk user.
+Retrieve a record of the Zendesk role that is assigned to a specific Zendesk user.
 
 #### get_relationship
 

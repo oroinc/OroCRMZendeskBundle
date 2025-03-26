@@ -209,7 +209,7 @@ Delete a collection of Zendesk ticket records.
 
 #### get_subresource
 
-Retrieve the record of a Zendesk user that a specific Zendesk ticket is assigned to.
+Retrieve a record of a Zendesk user that a specific Zendesk ticket is assigned to.
 
 #### get_relationship
 
@@ -236,7 +236,7 @@ Example:
 
 #### get_subresource
 
-Retrieve the records of Zendesk users included in a specific Zendesk ticket communications.
+Retrieve records of Zendesk users included in a specific Zendesk ticket communications.
 
 #### get_relationship
 
@@ -521,7 +521,7 @@ Example:
 
 #### get_subresource
 
-Retrieve the record of a Zendesk user  who created a ticket.
+Retrieve a record of a Zendesk user  who created a ticket.
 
 #### get_relationship
 
@@ -548,7 +548,7 @@ Example:
 
 #### get_subresource
 
-Retrieve the record of a Zendesk ticket type configured for a specific Zendesk ticket.
+Retrieve a record of a Zendesk ticket type configured for a specific Zendesk ticket.
 
 #### get_relationship
 
