@@ -9,7 +9,7 @@ use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\SecurityBundle\Attribute\AclAncestor;
 use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -23,13 +23,15 @@ class TicketController extends AbstractFOSRestController
      *      resource=true
      * )
      */
-    #[ParamConverter('caseEntity', options: ['id' => 'id'])]
-    #[ParamConverter('channel', options: ['id' => 'channelId'])]
     #[QueryParam(name: 'id', requirements: '\d+', description: 'Case Id', nullable: false)]
     #[QueryParam(name: 'channelId', requirements: '\d+', description: 'Channel Id', nullable: false)]
     #[AclAncestor('orocrm_case_update')]
-    public function postSyncCaseAction(CaseEntity $caseEntity, Channel $channel)
-    {
+    public function postSyncCaseAction(
+        #[MapEntity(id: 'id')]
+        CaseEntity $caseEntity,
+        #[MapEntity(id: 'channelId')]
+        Channel $channel
+    ) {
         if ($channel->getType() != ChannelType::TYPE) {
             return $this->handleView($this->view(['message' => 'Invalid channel type.'], Response::HTTP_BAD_REQUEST));
         }
