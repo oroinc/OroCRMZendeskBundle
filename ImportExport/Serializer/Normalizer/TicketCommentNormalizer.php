@@ -45,7 +45,7 @@ class TicketCommentNormalizer extends AbstractNormalizer
     }
 
     #[\Override]
-    public function denormalize($data, string $type, ?string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
     {
         if (is_array($data) && isset($context['ticket_id'])) {
             $data['ticket_id'] = $context['ticket_id'];
@@ -58,5 +58,10 @@ class TicketCommentNormalizer extends AbstractNormalizer
     protected function getTargetClassName(): string
     {
         return TicketComment::class;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [TicketComment::class => true];
     }
 }

@@ -2,6 +2,11 @@
 
 namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 
+use Oro\Bundle\ZendeskBundle\Entity\User;
+
+/**
+ * Normalizer for Zendesk User entities with field mapping rules for data transformation
+ */
 class UserNormalizer extends AbstractNormalizer
 {
     #[\Override]
@@ -54,5 +59,10 @@ class UserNormalizer extends AbstractNormalizer
     protected function getTargetClassName()
     {
         return 'Oro\\Bundle\\ZendeskBundle\\Entity\\User';
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [User::class => true];
     }
 }
