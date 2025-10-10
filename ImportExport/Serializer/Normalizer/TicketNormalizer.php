@@ -92,8 +92,11 @@ class TicketNormalizer extends AbstractNormalizer
     }
 
     #[\Override]
-    public function normalize($object, ?string $format = null, array $context = [])
-    {
+    public function normalize(
+        mixed $object,
+        ?string $format = null,
+        array $context = []
+    ): float|int|bool|\ArrayObject|array|string|null {
         $result = parent::normalize($object, $format, $context);
 
         if (!is_array($result) || $object->getOriginId()) {
@@ -114,5 +117,10 @@ class TicketNormalizer extends AbstractNormalizer
     protected function getTargetClassName()
     {
         return Ticket::class;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [Ticket::class => true];
     }
 }

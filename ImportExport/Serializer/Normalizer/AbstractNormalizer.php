@@ -5,8 +5,8 @@ namespace Oro\Bundle\ZendeskBundle\ImportExport\Serializer\Normalizer;
 use Oro\Bundle\EntityExtendBundle\PropertyAccess;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
-use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -15,8 +15,8 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 abstract class AbstractNormalizer implements
     SerializerAwareInterface,
-    ContextAwareNormalizerInterface,
-    ContextAwareDenormalizerInterface
+    NormalizerInterface,
+    DenormalizerInterface
 {
     const SHORT_MODE = 'short';
 
@@ -26,7 +26,7 @@ abstract class AbstractNormalizer implements
     private static $propertyAccessor;
 
     /**
-     * @var SerializerInterface|ContextAwareNormalizerInterface|ContextAwareDenormalizerInterface
+     * @var SerializerInterface|NormalizerInterface|DenormalizerInterface
      */
     protected $serializer;
 
@@ -67,8 +67,11 @@ abstract class AbstractNormalizer implements
     abstract protected function getTargetClassName();
 
     #[\Override]
-    public function normalize($object, ?string $format = null, array $context = [])
-    {
+    public function normalize(
+        mixed $object,
+        ?string $format = null,
+        array $context = []
+    ): float|int|bool|\ArrayObject|array|string|null {
         $targetClass = $this->getTargetClassName();
         if (!$object instanceof $targetClass) {
             return null;
@@ -102,7 +105,7 @@ abstract class AbstractNormalizer implements
     }
 
     #[\Override]
-    public function denormalize($data, string $type, ?string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
     {
         $fieldRules = $this->getProcessedFieldRules();
 
@@ -220,13 +223,13 @@ abstract class AbstractNormalizer implements
     #[\Override]
     public function setSerializer(SerializerInterface $serializer): void
     {
-        if (!$serializer instanceof ContextAwareNormalizerInterface
-            || !$serializer instanceof ContextAwareDenormalizerInterface) {
+        if (!$serializer instanceof NormalizerInterface
+            || !$serializer instanceof DenormalizerInterface) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Serializer must implement "%s" and "%s"',
-                    ContextAwareNormalizerInterface::class,
-                    ContextAwareDenormalizerInterface::class
+                    NormalizerInterface::class,
+                    DenormalizerInterface::class
                 )
             );
         }
