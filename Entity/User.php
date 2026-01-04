@@ -24,7 +24,7 @@ use Oro\Bundle\UserBundle\Entity\User as OroUser;
 #[Config(defaultValues: ['entity' => ['icon' => 'fa-list-alt']])]
 class User implements EmailHolderInterface
 {
-    const SEARCH_TYPE = 'user';
+    public const SEARCH_TYPE = 'user';
 
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]

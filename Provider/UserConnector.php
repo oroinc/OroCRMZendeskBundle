@@ -7,9 +7,9 @@ namespace Oro\Bundle\ZendeskBundle\Provider;
  */
 class UserConnector extends AbstractZendeskConnector
 {
-    const IMPORT_ENTITY = 'Oro\Bundle\ZendeskBundle\Entity\User';
-    const TYPE = 'user';
-    const IMPORT_JOB = 'zendesk_user_import';
+    public const IMPORT_ENTITY = 'Oro\Bundle\ZendeskBundle\Entity\User';
+    public const TYPE = 'user';
+    public const IMPORT_JOB = 'zendesk_user_import';
 
     #[\Override]
     protected function getConnectorSource()

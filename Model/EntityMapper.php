@@ -13,10 +13,10 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
  */
 class EntityMapper
 {
-    const STATUS_KEY   = 'status';
-    const PRIORITY_KEY = 'priority';
-    const CASE_KEY     = 'case';
-    const TICKET_KEY   = 'ticket';
+    public const STATUS_KEY   = 'status';
+    public const PRIORITY_KEY = 'priority';
+    public const CASE_KEY     = 'case';
+    public const TICKET_KEY   = 'ticket';
 
     /** @var array */
     protected $map;

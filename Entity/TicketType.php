@@ -19,10 +19,10 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\ConfigField;
 #[Config(defaultValues: ['grouping' => ['groups' => ['dictionary']], 'dictionary' => ['virtual_fields' => ['label']]])]
 class TicketType implements Translatable
 {
-    const TYPE_TASK = 'task';
-    const TYPE_PROBLEM = 'problem';
-    const TYPE_INCIDENT = 'incident';
-    const TYPE_QUESTION = 'question';
+    public const TYPE_TASK = 'task';
+    public const TYPE_PROBLEM = 'problem';
+    public const TYPE_INCIDENT = 'incident';
+    public const TYPE_QUESTION = 'question';
 
     #[ORM\Id]
     #[ORM\Column(name: 'name', type: Types::STRING, length: 16)]

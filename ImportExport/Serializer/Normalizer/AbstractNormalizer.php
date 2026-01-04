@@ -18,7 +18,7 @@ abstract class AbstractNormalizer implements
     NormalizerInterface,
     DenormalizerInterface
 {
-    const SHORT_MODE = 'short';
+    public const SHORT_MODE = 'short';
 
     /**
      * @var PropertyAccessor
