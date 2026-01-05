@@ -19,9 +19,9 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\ConfigField;
 #[Config(defaultValues: ['grouping' => ['groups' => ['dictionary']], 'dictionary' => ['virtual_fields' => ['label']]])]
 class UserRole implements Translatable
 {
-    const ROLE_AGENT = 'agent';
-    const ROLE_ADMIN = 'admin';
-    const ROLE_END_USER = 'end-user';
+    public const ROLE_AGENT = 'agent';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_END_USER = 'end-user';
 
     #[ORM\Id]
     #[ORM\Column(name: 'name', type: Types::STRING, length: 16)]

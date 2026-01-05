@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
-    const TICKET_COUNT = 10;
+    public const TICKET_COUNT = 10;
 
     /**
      * @var ContainerInterface

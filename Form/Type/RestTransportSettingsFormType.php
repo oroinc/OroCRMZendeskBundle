@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RestTransportSettingsFormType extends AbstractType
 {
-    const NAME = 'oro_zendesk_rest_transport_setting_form_type';
+    public const NAME = 'oro_zendesk_rest_transport_setting_form_type';
 
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options)

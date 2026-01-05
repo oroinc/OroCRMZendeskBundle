@@ -14,7 +14,7 @@ use Psr\Log\NullLogger;
  */
 class SyncState
 {
-    const LAST_SYNC_DATE_KEY = 'lastSyncDate';
+    public const LAST_SYNC_DATE_KEY = 'lastSyncDate';
 
     /**
      * @var array

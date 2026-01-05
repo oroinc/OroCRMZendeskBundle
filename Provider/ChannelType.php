@@ -7,7 +7,7 @@ use Oro\Bundle\IntegrationBundle\Provider\IconAwareIntegrationInterface;
 
 class ChannelType implements ChannelInterface, IconAwareIntegrationInterface
 {
-    const TYPE = 'zendesk';
+    public const TYPE = 'zendesk';
 
     #[\Override]
     public function getLabel()

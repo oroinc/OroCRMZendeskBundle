@@ -9,10 +9,10 @@ use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
  */
 class TicketConnector extends AbstractZendeskConnector implements TwoWaySyncConnectorInterface
 {
-    const IMPORT_ENTITY = 'Oro\Bundle\ZendeskBundle\Entity\Ticket';
-    const IMPORT_JOB = 'zendesk_ticket_import';
-    const EXPORT_JOB = 'zendesk_ticket_export';
-    const TYPE = 'ticket';
+    public const IMPORT_ENTITY = 'Oro\Bundle\ZendeskBundle\Entity\Ticket';
+    public const IMPORT_JOB = 'zendesk_ticket_import';
+    public const EXPORT_JOB = 'zendesk_ticket_export';
+    public const TYPE = 'ticket';
 
     #[\Override]
     protected function getConnectorSource()

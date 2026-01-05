@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormView;
 
 class SyncWithZendeskExtension extends AbstractTypeExtension
 {
-    const ZENDESK_CHANNEL_FIELD = 'syncWithZendesk';
+    public const ZENDESK_CHANNEL_FIELD = 'syncWithZendesk';
 
     /**
      * @var ZendeskEntityProvider

@@ -7,7 +7,7 @@ use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordExce
 
 class TicketCommentExceptionHandler implements ExceptionHandlerInterface
 {
-    const TICKED_IS_CLOSED_ERROR_CODE = 422;
+    public const TICKED_IS_CLOSED_ERROR_CODE = 422;
 
     /** @var string[] */
     protected $errors = [

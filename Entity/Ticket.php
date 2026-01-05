@@ -25,7 +25,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 #[Config(defaultValues: ['entity' => ['icon' => 'fa-list-alt']])]
 class Ticket
 {
-    const SEARCH_TYPE = 'ticket';
+    public const SEARCH_TYPE = 'ticket';
 
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]

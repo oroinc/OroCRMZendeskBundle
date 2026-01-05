@@ -19,12 +19,12 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\ConfigField;
 #[Config(defaultValues: ['grouping' => ['groups' => ['dictionary']], 'dictionary' => ['virtual_fields' => ['label']]])]
 class TicketStatus implements Translatable
 {
-    const STATUS_NEW = 'new';
-    const STATUS_OPEN = 'open';
-    const STATUS_PENDING = 'pending';
-    const STATUS_HOLD = 'hold';
-    const STATUS_SOLVED = 'solved';
-    const STATUS_CLOSED = 'closed';
+    public const STATUS_NEW = 'new';
+    public const STATUS_OPEN = 'open';
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_HOLD = 'hold';
+    public const STATUS_SOLVED = 'solved';
+    public const STATUS_CLOSED = 'closed';
 
     #[ORM\Id]
     #[ORM\Column(name: 'name', type: Types::STRING, length: 16)]
