@@ -12,6 +12,9 @@ use Oro\Bundle\ZendeskBundle\Model\SyncHelper\ChangeSet\ChangeValue;
 use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketSyncHelper;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
+/**
+ * Exports Zendesk tickets to the Zendesk API.
+ */
 class ExportTicketProcessor extends AbstractExportProcessor
 {
     /**

@@ -8,6 +8,9 @@ use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 
+/**
+ * Defines the contract for Zendesk transport implementations.
+ */
 interface ZendeskTransportInterface extends TransportInterface
 {
     /**

@@ -13,6 +13,9 @@ use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 
+/**
+ * Manages synchronization of cases and comments with Zendesk.
+ */
 class SyncManager
 {
     /**
