@@ -12,6 +12,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
+/**
+ * Form extension for syncing case entities with Zendesk.
+ */
 class SyncWithZendeskExtension extends AbstractTypeExtension
 {
     public const ZENDESK_CHANNEL_FIELD = 'syncWithZendesk';
@@ -33,7 +36,7 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
     }
 
     #[\Override]
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $channels = $this->oroProvider->getEnabledTwoWaySyncChannels();
 
@@ -61,7 +64,7 @@ class SyncWithZendeskExtension extends AbstractTypeExtension
     }
 
     #[\Override]
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /** @var CaseEntity $data */
         $data = $form->getData();
