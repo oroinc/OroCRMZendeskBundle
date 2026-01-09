@@ -9,6 +9,9 @@ use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
+/**
+ * Manages the public field visibility for case comments linked to Zendesk.
+ */
 class CaseCommentPublicExtension extends AbstractTypeExtension
 {
     /**
@@ -25,7 +28,7 @@ class CaseCommentPublicExtension extends AbstractTypeExtension
      * Enable public field for case comment if it's connected to Zendesk
      */
     #[\Override]
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $caseComment = $form->getData();
 

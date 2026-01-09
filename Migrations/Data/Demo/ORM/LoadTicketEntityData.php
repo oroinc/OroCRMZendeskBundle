@@ -19,7 +19,7 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketType;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\UserRole;
 use Oro\Bundle\ZendeskBundle\Model\EntityMapper;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Oro\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -206,7 +206,7 @@ class LoadTicketEntityData extends AbstractFixture implements ContainerAwareInte
         }
 
         $zendeskUser = new User();
-        $name = $user->getFirstName().' '.$user->getLastName();
+        $name = $user->getFirstName() . ' ' . $user->getLastName();
         $roleName = rand(0, 1) ? UserRole::ROLE_AGENT : UserRole::ROLE_ADMIN;
         $role = $this->getRoleByName($roleName);
         $zendeskUser->setOriginId($this->userOriginId++)

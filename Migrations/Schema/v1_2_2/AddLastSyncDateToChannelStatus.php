@@ -59,7 +59,7 @@ SQL;
         $this->logQuery($logger, $selectStatusQuery, $selectStatusParams, $selectStatusTypes);
         $result = $this->connection->fetchAllAssociative($selectStatusQuery, $selectStatusParams, $selectStatusTypes);
 
-        $jsonArrayType = Type::getType(Types::JSON_ARRAY);
+        $jsonArrayType = Type::getType(Types::JSON);
         $platform = $this->connection->getDatabasePlatform();
 
         try {
@@ -78,7 +78,7 @@ SQL;
                         'oro_integration_channel_status',
                         ['data' => $statusData],
                         ['id' => $id],
-                        [Types::JSON_ARRAY]
+                        [Types::JSON]
                     );
                 }
             }

@@ -11,10 +11,13 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
+/**
+ * Automatically sets and manages all connectors for Zendesk channel forms.
+ */
 class ChannelConnectorsExtension extends AbstractTypeExtension
 {
     #[\Override]
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
@@ -40,7 +43,7 @@ class ChannelConnectorsExtension extends AbstractTypeExtension
      * Set all connectors disabled and checked on view
      */
     #[\Override]
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $data = $form->getData();
         if (!$data || $data->getType() !== ChannelTypeProvider::TYPE) {
