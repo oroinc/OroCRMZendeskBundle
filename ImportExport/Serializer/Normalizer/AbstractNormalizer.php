@@ -223,8 +223,10 @@ abstract class AbstractNormalizer implements
     #[\Override]
     public function setSerializer(SerializerInterface $serializer): void
     {
-        if (!$serializer instanceof NormalizerInterface
-            || !$serializer instanceof DenormalizerInterface) {
+        if (
+            !$serializer instanceof NormalizerInterface
+            || !$serializer instanceof DenormalizerInterface
+        ) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Serializer must implement "%s" and "%s"',

@@ -14,7 +14,8 @@ class RestException extends BaseException implements ZendeskException
      */
     public static function checkInvalidRecordException(\Exception $exception)
     {
-        if ($exception instanceof BaseException &&
+        if (
+            $exception instanceof BaseException &&
             $exception->getResponse() &&
             $exception->getResponse()->isClientError()
         ) {

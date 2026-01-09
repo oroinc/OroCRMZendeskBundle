@@ -33,8 +33,8 @@ class RestException extends Exception implements ZendeskException
 
         if (!$previous instanceof GuzzleException) {
             if ($request) {
-                $messageParts[] = '[url] '.(string)$request->getUri();
-                $messageParts[] = '[method] '.$request->getMethod();
+                $messageParts[] = '[url] ' . (string)$request->getUri();
+                $messageParts[] = '[method] ' . $request->getMethod();
             }
 
             if ($response) {

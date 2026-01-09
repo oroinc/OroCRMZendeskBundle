@@ -35,7 +35,8 @@ trait ExecutionContextTrait
             ->method('put')
             ->willReturnCallback(
                 function ($id, $value) use (&$isUpdatedLastSyncDate) {
-                    if (ConnectorInterface::CONTEXT_CONNECTOR_DATA_KEY === $id &&
+                    if (
+                        ConnectorInterface::CONTEXT_CONNECTOR_DATA_KEY === $id &&
                         isset($value[SyncState::LAST_SYNC_DATE_KEY])
                     ) {
                         /**

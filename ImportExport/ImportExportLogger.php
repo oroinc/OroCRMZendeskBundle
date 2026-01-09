@@ -28,7 +28,8 @@ class ImportExportLogger extends AbstractLoggerDecorator implements ContextAware
     #[\Override]
     public function log($level, $message, array $context = array())
     {
-        if ($this->context
+        if (
+            $this->context
             && in_array($level, [LogLevel::EMERGENCY, LogLevel::ALERT, LogLevel::CRITICAL, LogLevel::ERROR])
         ) {
             $this->context->addError($message);

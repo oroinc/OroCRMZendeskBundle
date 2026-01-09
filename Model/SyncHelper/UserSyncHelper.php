@@ -104,7 +104,7 @@ class UserSyncHelper extends AbstractSyncHelper
      * @param User $entity
      * @return bool
      */
-    protected function isRelativeWithUser(User  $entity)
+    protected function isRelativeWithUser(User $entity)
     {
         return $entity->isRoleIn([ZendeskUserRole::ROLE_ADMIN, ZendeskUserRole::ROLE_AGENT]);
     }
