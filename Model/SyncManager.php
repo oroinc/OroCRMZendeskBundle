@@ -13,6 +13,9 @@ use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Oro\Bundle\ZendeskBundle\Provider\TicketCommentConnector;
 use Oro\Bundle\ZendeskBundle\Provider\TicketConnector;
 
+/**
+ * Manages synchronization of cases and comments with Zendesk.
+ */
 class SyncManager
 {
     /**
@@ -142,7 +145,7 @@ class SyncManager
                 $this->syncScheduler->schedule(
                     $channel->getId(),
                     TicketCommentConnector::TYPE,
-                    // @TODO: change key id to ids more see in ticket CRM-8405
+                    // workaround, see CRM-8405
                     array('id' => $ids)
                 );
                 $ids = array();

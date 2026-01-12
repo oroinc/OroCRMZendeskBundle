@@ -7,6 +7,9 @@ use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ZendeskBundle\Logger\AbstractLoggerDecorator;
 use Psr\Log\LogLevel;
 
+/**
+ * Decorates a logger to add message prefixes and context awareness for import/export operations.
+ */
 class ImportExportLogger extends AbstractLoggerDecorator implements ContextAwareInterface
 {
     /**
@@ -28,7 +31,8 @@ class ImportExportLogger extends AbstractLoggerDecorator implements ContextAware
     #[\Override]
     public function log($level, $message, array $context = array())
     {
-        if ($this->context
+        if (
+            $this->context
             && in_array($level, [LogLevel::EMERGENCY, LogLevel::ALERT, LogLevel::CRITICAL, LogLevel::ERROR])
         ) {
             $this->context->addError($message);

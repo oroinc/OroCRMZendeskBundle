@@ -6,6 +6,9 @@ use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\ZendeskBundle\Entity\User as ZendeskUser;
 use Oro\Bundle\ZendeskBundle\Model\SyncHelper\UserSyncHelper;
 
+/**
+ * Imports Zendesk users from the Zendesk API.
+ */
 class ImportUserProcessor extends AbstractImportProcessor
 {
     /**

@@ -6,6 +6,9 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Handler\ExceptionHandlerInterface;
 use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
 
+/**
+ * Writes Zendesk ticket comments to the Zendesk API.
+ */
 class TicketCommentExportWriter extends AbstractExportWriter
 {
     /**

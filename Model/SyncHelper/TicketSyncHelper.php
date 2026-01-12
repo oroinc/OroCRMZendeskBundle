@@ -155,7 +155,8 @@ class TicketSyncHelper extends AbstractSyncHelper
             $relatedCase = $this->caseEntityManager->createCase();
             $ticket->setRelatedCase($relatedCase);
             $relatedCase->setReportedAt($ticket->getOriginCreatedAt());
-            if ($ticket->getStatus() &&
+            if (
+                $ticket->getStatus() &&
                 $ticket->getStatus()->getName() == TicketStatus::STATUS_CLOSED
             ) {
                 $relatedCase->setClosedAt($ticket->getOriginUpdatedAt());
@@ -217,17 +218,20 @@ class TicketSyncHelper extends AbstractSyncHelper
     protected function addCaseRelatedContactChanges(ChangeSet $changeSet, Ticket $ticket, Channel $channel)
     {
         $channelOrganizationId = $this->getRefreshedChannelOrganization($channel)->getId();
-        if ($ticket->getRequester()
+        if (
+            $ticket->getRequester()
             && $ticket->getRequester()->getRelatedContact()
             && $this->checkObjectOrganizationId($ticket->getRequester()->getRelatedContact(), $channelOrganizationId)
         ) {
             $changeSet->add('relatedContact', ['property' => 'requester', 'path' => 'requester.relatedContact'], 'id');
-        } elseif ($ticket->getSubmitter()
+        } elseif (
+            $ticket->getSubmitter()
             && $ticket->getSubmitter()->getRelatedContact()
             && $this->checkObjectOrganizationId($ticket->getSubmitter()->getRelatedContact(), $channelOrganizationId)
         ) {
             $changeSet->add('relatedContact', ['property' => 'submitter', 'path' => 'submitter.relatedContact'], 'id');
-        } elseif ($ticket->getAssignee()
+        } elseif (
+            $ticket->getAssignee()
             && $ticket->getAssignee()->getRelatedContact()
             && $this->checkObjectOrganizationId($ticket->getAssignee()->getRelatedContact(), $channelOrganizationId)
         ) {

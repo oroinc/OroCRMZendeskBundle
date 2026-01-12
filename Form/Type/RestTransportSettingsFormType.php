@@ -9,6 +9,9 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Form type for Zendesk REST transport settings configuration.
+ */
 class RestTransportSettingsFormType extends AbstractType
 {
     public const NAME = 'oro_zendesk_rest_transport_setting_form_type';

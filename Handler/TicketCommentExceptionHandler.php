@@ -5,6 +5,9 @@ namespace Oro\Bundle\ZendeskBundle\Handler;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 
+/**
+ * Handles exceptions that occur during ticket comment export operations.
+ */
 class TicketCommentExceptionHandler implements ExceptionHandlerInterface
 {
     public const TICKED_IS_CLOSED_ERROR_CODE = 422;
