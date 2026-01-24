@@ -6,6 +6,9 @@ use Oro\Bundle\ImportExportBundle\Exception\InvalidArgumentException;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Model\SyncHelper\TicketCommentSyncHelper;
 
+/**
+ * Imports Zendesk ticket comments from the Zendesk API.
+ */
 class ImportTicketCommentProcessor extends AbstractImportProcessor
 {
     /**

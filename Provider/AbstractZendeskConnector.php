@@ -10,6 +10,14 @@ use Oro\Bundle\IntegrationBundle\Provider\ConnectorContextMediator;
 use Oro\Bundle\ZendeskBundle\Model\SyncState;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 
+/**
+ * Provides common functionality for Zendesk connectors.
+ *
+ * This abstract class extends the base integration connector to provide Zendesk-specific functionality.
+ * It manages synchronization state tracking and ensures that the transport is properly configured as
+ * a {@see ZendeskTransportInterface}. Subclasses can leverage the sync state management
+ * and last sync date tracking to implement specific Zendesk data import/export operations.
+ */
 abstract class AbstractZendeskConnector extends AbstractConnector
 {
     /**

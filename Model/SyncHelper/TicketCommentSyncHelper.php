@@ -6,6 +6,9 @@ use Oro\Bundle\CaseBundle\Entity\CaseComment;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 
+/**
+ * Provides common functionality for synchronizing Zendesk ticket comments with case comments.
+ */
 class TicketCommentSyncHelper extends AbstractSyncHelper
 {
     /**

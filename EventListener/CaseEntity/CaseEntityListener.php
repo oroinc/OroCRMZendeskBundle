@@ -11,6 +11,9 @@ use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\SyncManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Handles case entity and case comment events from the case bundle.
+ */
 class CaseEntityListener implements EventSubscriberInterface
 {
     /**

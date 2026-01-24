@@ -4,6 +4,9 @@ namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception;
 
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestResponseInterface;
 
+/**
+ * Thrown when a Zendesk API record validation fails.
+ */
 class InvalidRecordException extends RestException
 {
     /**

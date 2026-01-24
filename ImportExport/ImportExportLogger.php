@@ -7,6 +7,9 @@ use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ZendeskBundle\Logger\AbstractLoggerDecorator;
 use Psr\Log\LogLevel;
 
+/**
+ * Decorates a logger to add message prefixes and context awareness for import/export operations.
+ */
 class ImportExportLogger extends AbstractLoggerDecorator implements ContextAwareInterface
 {
     /**

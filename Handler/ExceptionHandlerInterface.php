@@ -4,6 +4,9 @@ namespace Oro\Bundle\ZendeskBundle\Handler;
 
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 
+/**
+ * Defines the contract for handling exceptions during import/export operations.
+ */
 interface ExceptionHandlerInterface
 {
     /**

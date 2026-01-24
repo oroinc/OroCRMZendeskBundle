@@ -8,6 +8,9 @@ use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\TicketStatus;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 
+/**
+ * Exports Zendesk ticket comments to the Zendesk API.
+ */
 class ExportTicketCommentProcessor extends AbstractExportProcessor
 {
     #[\Override]

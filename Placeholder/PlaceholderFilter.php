@@ -6,6 +6,9 @@ use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 
+/**
+ * Provides filtering logic for Zendesk-related placeholders.
+ */
 class PlaceholderFilter
 {
     /**

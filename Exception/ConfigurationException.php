@@ -2,6 +2,9 @@
 
 namespace Oro\Bundle\ZendeskBundle\Exception;
 
+/**
+ * Thrown when a required configuration setting is missing.
+ */
 class ConfigurationException extends \Exception implements ZendeskException
 {
     /**

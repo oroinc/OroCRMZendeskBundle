@@ -8,6 +8,9 @@ use Oro\Bundle\ZendeskBundle\Model\SyncManager;
 use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Handles integration update events from the integration bundle.
+ */
 class ChannelUpdateListener implements EventSubscriberInterface
 {
     /**

@@ -6,6 +6,9 @@ use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestResponseInterface;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Exception\RestException as BaseException;
 use Oro\Bundle\ZendeskBundle\Exception\ZendeskException;
 
+/**
+ * Thrown when a Zendesk REST API request fails.
+ */
 class RestException extends BaseException implements ZendeskException
 {
     /**

@@ -5,6 +5,9 @@ namespace Oro\Bundle\ZendeskBundle\Provider;
 use Oro\Bundle\AddressBundle\Provider\PhoneProviderInterface;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 
+/**
+ * Provides phone numbers for Zendesk users.
+ */
 class UserPhoneProvider implements PhoneProviderInterface
 {
     /**
