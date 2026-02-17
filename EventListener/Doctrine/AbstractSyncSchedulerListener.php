@@ -159,15 +159,12 @@ abstract class AbstractSyncSchedulerListener implements ServiceSubscriberInterfa
     public static function getSubscribedServices(): array
     {
         return [
-            'oro_integration.sync_scheduler' => SyncScheduler::class
+            SyncScheduler::class
         ];
     }
 
-    /**
-     * @return SyncScheduler
-     */
-    protected function getSyncScheduler()
+    protected function getSyncScheduler(): SyncScheduler
     {
-        return $this->container->get('oro_integration.sync_scheduler');
+        return $this->container->get(SyncScheduler::class);
     }
 }
