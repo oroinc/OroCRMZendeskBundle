@@ -64,7 +64,7 @@ services:
             - '@oro_security.token_accessor'
         tags:
             - { name: doctrine.event_listener, event: onFlush }
-            - { name: container.service_subscriber, id: oro_integration.sync_scheduler }
+            - { name: container.service_subscriber, id: oro_integration.sync_scheduler, key: Oro\Bundle\IntegrationBundle\Manager\SyncScheduler }
 
     oro_zendesk.listener.case_entity:
         class: Oro\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener
