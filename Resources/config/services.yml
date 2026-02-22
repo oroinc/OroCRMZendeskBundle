@@ -88,7 +88,6 @@ services:
             - '@doctrine'
             - '%oro_zendesk.name_prefixes%'
             - '%oro_zendesk.name_suffixes%'
-        lazy: true
 
     oro_zendesk.entity_provider.zendesk:
         class: Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider
@@ -120,11 +119,12 @@ services:
     # Twig extensions
     oro_zendesk.twig.extension:
         class: Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension
-        public: false
         arguments:
             - '@oro_platform.twig.service_locator'
         tags:
             - { name: twig.extension }
+            - { name: container.service_subscriber, id: oro_zendesk.entity_provider.oro, key: Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider }
+            - { name: container.service_subscriber, id: oro_zendesk.entity_provider.zendesk, key: Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider }
 
     # Placeholder filter
     oro_zendesk.placeholder.filter:
