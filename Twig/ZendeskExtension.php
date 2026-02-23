@@ -22,70 +22,35 @@ use Twig\TwigFunction;
  */
 class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInterface
 {
-    /** @var ContainerInterface */
-    protected $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * @return OroEntityProvider
-     */
-    protected function getOroEntityProvider()
-    {
-        return $this->container->get('oro_zendesk.entity_provider.oro');
-    }
-
-    /**
-     * @return ZendeskEntityProvider
-     */
-    protected function getZendeskEntityProvider()
-    {
-        return $this->container->get('oro_zendesk.entity_provider.zendesk');
+    public function __construct(
+        private readonly ContainerInterface $container
+    ) {
     }
 
     #[\Override]
     public function getFunctions()
     {
         return [
-            new TwigFunction(
-                'oro_zendesk_enabled_two_way_sync_channels',
-                [$this, 'getEnabledTwoWaySyncChannels']
-            ),
-            new TwigFunction(
-                'oro_zendesk_ticket_by_related_case',
-                [$this, 'getTicketByCase']
-            ),
-            new TwigFunction('oro_zendesk_ticket_url', [$this, 'getTicketUrl']),
+            new TwigFunction('oro_zendesk_enabled_two_way_sync_channels', [$this, 'getEnabledTwoWaySyncChannels']),
+            new TwigFunction('oro_zendesk_ticket_by_related_case', [$this, 'getTicketByCase']),
+            new TwigFunction('oro_zendesk_ticket_url', [$this, 'getTicketUrl'])
         ];
     }
 
     /**
      * @return Channel[]
      */
-    public function getEnabledTwoWaySyncChannels()
+    public function getEnabledTwoWaySyncChannels(): array
     {
         return $this->getOroEntityProvider()->getEnabledTwoWaySyncChannels();
     }
 
-    /**
-     * @param CaseEntity $caseEntity
-     *
-     * @return Ticket|null
-     */
-    public function getTicketByCase(CaseEntity $caseEntity)
+    public function getTicketByCase(CaseEntity $caseEntity): ?Ticket
     {
         return $this->getZendeskEntityProvider()->getTicketByCase($caseEntity);
     }
 
-    /**
-     * @param Ticket $ticket
-     *
-     * @return string|null
-     */
-    public function getTicketUrl(Ticket $ticket)
+    public function getTicketUrl(Ticket $ticket): ?string
     {
         try {
             if (!$ticket->getChannel() || !$ticket->getOriginId()) {
@@ -118,8 +83,18 @@ class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInt
     public static function getSubscribedServices(): array
     {
         return [
-            'oro_zendesk.entity_provider.oro' => OroEntityProvider::class,
-            'oro_zendesk.entity_provider.zendesk' => ZendeskEntityProvider::class,
+            OroEntityProvider::class,
+            ZendeskEntityProvider::class
         ];
+    }
+
+    private function getOroEntityProvider(): OroEntityProvider
+    {
+        return $this->container->get(OroEntityProvider::class);
+    }
+
+    private function getZendeskEntityProvider(): ZendeskEntityProvider
+    {
+        return $this->container->get(ZendeskEntityProvider::class);
     }
 }
