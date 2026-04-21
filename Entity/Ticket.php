@@ -129,9 +129,6 @@ class Ticket
      */
     private $updatedAtLocked = false;
 
-    /**
-     * Constructor
-     */
     public function __construct()
     {
         $this->collaborators = new ArrayCollection();
