@@ -1,6 +1,6 @@
 <?php
 
-namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Placeholder\Filter;
+namespace Oro\Bundle\ZendeskBundle\Tests\Unit\Placeholder;
 
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
