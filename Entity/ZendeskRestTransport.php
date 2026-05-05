@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 #[Config]
 class ZendeskRestTransport extends Transport
 {
-    #[ORM\Column(name: 'orocrm_zd_url', type: Types::STRING, length: 255, nullable: false)]
+    #[ORM\Column(name: 'orocrm_zd_url', type: Types::TEXT, nullable: false)]
     protected ?string $url = null;
 
     #[ORM\Column(name: 'orocrm_zd_email', type: Types::STRING, length: 100, nullable: false)]

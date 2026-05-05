@@ -11,7 +11,7 @@ class OroZendeskBundleInstaller implements Installation
     #[\Override]
     public function getMigrationVersion(): string
     {
-        return 'v1_5';
+        return 'v1_6';
     }
 
     #[\Override]
@@ -32,7 +32,7 @@ class OroZendeskBundleInstaller implements Installation
     {
         $table = $schema->getTable('oro_integration_transport');
         $table->addColumn('orocrm_zd_email', 'string', ['notnull' => false, 'length' => 100]);
-        $table->addColumn('orocrm_zd_url', 'string', ['notnull' => false, 'length' => 255]);
+        $table->addColumn('orocrm_zd_url', 'text', ['notnull' => false]);
         $table->addColumn('orocrm_zd_token', 'string', ['notnull' => false, 'length' => 255]);
         $table->addColumn('orocrm_zd_default_user_email', 'string', ['notnull' => false, 'length' => 100]);
     }
