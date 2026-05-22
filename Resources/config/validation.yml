@@ -2,12 +2,6 @@ Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport:
     properties:
         url:
           - NotBlank: ~
-        email:
-          - NotBlank: ~
-          - Email:
-              mode: strict
         zendeskUserEmail:
           - NotBlank: ~
           - Email: ~
-        token:
-          - NotBlank: ~

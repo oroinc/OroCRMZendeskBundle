@@ -1,0 +1,11 @@
+operations:
+    zendesk_connect:
+        label: 'Connect to Zendesk'
+        routes:
+            - oro_integration_update
+        preconditions:
+            '@equal': [$type, 'zendesk']
+        button_options:
+            icon: fa-link
+            class: 'zendesk-connect-button'
+            page_component_module: orozendesk/js/app/components/zendesk-oauth-component

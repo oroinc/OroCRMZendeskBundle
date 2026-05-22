@@ -1,5 +1,17 @@
 oro:
     zendesk:
         reverse_sync:
-                success_message:  Publishing to Zendesk was scheduled
-                fail_message:     Could not schedule publishing to Zendesk
+            success_message: Publishing to Zendesk was scheduled
+            fail_message: Could not schedule publishing to Zendesk
+        oauth:
+            auth_confirmation_popup:
+                title: Connect to Zendesk
+                message: |
+                    <p>You will be redirected to Zendesk to sign in and authorize the connection.</p>
+                    <p>Zendesk uses OAuth authentication. This means you will log in directly on Zendesk and grant OroCommerce permission to access your Zendesk account for integration purposes.</p>
+                    <p>After authorization is completed, you will be redirected back to this page and the connection will be established.</p>
+                cancel: Cancel
+                ok: Continue to Zendesk
+            error:
+                missing_transport: Integration not found. Please select a valid Zendesk integration before connecting.
+                popup_blocked: Please disable your popup blocker to enable Zendesk OAuth authentication.
