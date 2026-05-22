@@ -4,18 +4,8 @@ Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport:
           - NotBlank: ~
           - Length:
               max: 255
-        email:
-          - NotBlank: ~
-          - Email:
-              mode: strict
-          - Length:
-              max: 100
         zendeskUserEmail:
           - NotBlank: ~
           - Email: ~
           - Length:
               max: 100
-        token:
-          - NotBlank: ~
-          - Length:
-              max: 255

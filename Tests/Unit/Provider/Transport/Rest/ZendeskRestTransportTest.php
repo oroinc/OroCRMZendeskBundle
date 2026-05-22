@@ -6,11 +6,15 @@ use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientFactoryInterface;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestClientInterface;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Client\RestResponseInterface;
+use Oro\Bundle\SecurityBundle\Encoder\SymmetricCrypterInterface;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport as ZendeskTransportSettingsEntity;
+use Oro\Bundle\ZendeskBundle\Enum\Transport\AuthorizationType;
 use Oro\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType;
+use Oro\Bundle\ZendeskBundle\Provider\Rest\Client\Guzzle\TokenRefreshHandlerInterface;
+use Oro\Bundle\ZendeskBundle\Provider\Rest\Client\Guzzle\ZendGuzzleRestClient;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\InvalidRecordException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\RestException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\ZendeskRestIterator;
@@ -22,11 +26,14 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 {
     private const API_URL_PREFIX = 'api/v2';
     private const COMMENT_EVENT_TYPE = 'Comment';
+    private const string HTTPS_TEST_ZENDESK_URL = 'https://test.zendesk.com';
 
     /** @var RestClientFactoryInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $clientFactory;
@@ -40,6 +47,12 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
     /** @var DenormalizerInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $denormalizer;
 
+    /** @var TokenRefreshHandlerInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $tokenRefreshHandler;
+
+    /** @var SymmetricCrypterInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $crypter;
+
     /** @var ZendeskRestTransport */
     private $transport;
 
@@ -50,13 +63,171 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
         $this->clientFactory = $this->createMock(RestClientFactoryInterface::class);
         $this->normalizer = $this->createMock(NormalizerInterface::class);
         $this->denormalizer = $this->createMock(DenormalizerInterface::class);
+        $this->tokenRefreshHandler = $this->createMock(TokenRefreshHandlerInterface::class);
+        $this->crypter = $this->createMock(SymmetricCrypterInterface::class);
 
         $this->transport = new ZendeskRestTransport(
             $this->normalizer,
             $this->denormalizer,
+            $this->tokenRefreshHandler,
+            $this->crypter,
             ZendeskRestIterator::class
         );
         $this->transport->setRestClientFactory($this->clientFactory);
+    }
+
+    public function testInitWithNonZendeskTransportEntity(): void
+    {
+        $entity = $this->createMock(Transport::class);
+        $entity->expects(self::exactly(2))
+            ->method('getSettingsBag')
+            ->willReturn(new ParameterBag([
+                'url' => self::HTTPS_TEST_ZENDESK_URL,
+                'email' => 'agent@example.com',
+                'token' => 'api-token',
+            ]));
+
+        $this->clientFactory->expects(self::once())
+            ->method('createRestClient')
+            ->with(
+                self::HTTPS_TEST_ZENDESK_URL . '/' . self::API_URL_PREFIX,
+                ['auth' => ['agent@example.com/token', 'api-token']]
+            )
+            ->willReturn($this->client);
+
+        $this->tokenRefreshHandler->expects(self::never())
+            ->method('setTransportContext');
+
+        $this->transport->init($entity);
+    }
+
+    public function testInitWithZendeskTransportEntityUsesOAuthContext(): void
+    {
+        $this->clientFactory->expects($this->once())
+            ->method('createRestClient')
+            ->with(
+                self::HTTPS_TEST_ZENDESK_URL . '/' . self::API_URL_PREFIX,
+                ['headers' => ['Authorization' => 'Bearer access-token-123']]
+            )
+            ->willReturn($this->client);
+
+        $entity = $this->createMock(ZendeskTransportSettingsEntity::class);
+        $entity->expects(self::exactly(2))
+            ->method('getSettingsBag')
+            ->willReturn(new ParameterBag([
+                'url' => self::HTTPS_TEST_ZENDESK_URL,
+                'authorizationType' => AuthorizationType::OAUTH->value,
+                'accessToken' => 'access-token-123',
+            ]));
+        $entity->expects(self::once())
+            ->method('getAuthorizationType')
+            ->willReturn(AuthorizationType::OAUTH);
+
+        $this->crypter->expects(self::once())
+            ->method('decryptData')
+            ->with('access-token-123')
+            ->willReturn('access-token-123');
+
+        $this->tokenRefreshHandler->expects(self::once())
+            ->method('setTransportContext')
+            ->with($entity);
+
+        $this->transport->init($entity);
+    }
+
+    public function testInitWithZendeskTransportEntitySkipsOAuthContextForEmailToken(): void
+    {
+        $entity = $this->createMock(ZendeskTransportSettingsEntity::class);
+        $entity->expects(self::exactly(2))
+            ->method('getSettingsBag')
+            ->willReturn(new ParameterBag([
+                'url' => self::HTTPS_TEST_ZENDESK_URL,
+                'authorizationType' => AuthorizationType::EMAIL_TOKEN->value,
+                'email' => 'agent@example.com',
+                'token' => 'api-token',
+            ]));
+        $entity->expects(self::once())
+            ->method('getAuthorizationType')
+            ->willReturn(AuthorizationType::EMAIL_TOKEN);
+
+        $this->clientFactory->expects(self::once())
+            ->method('createRestClient')
+            ->with(
+                self::HTTPS_TEST_ZENDESK_URL . '/' . self::API_URL_PREFIX,
+                ['auth' => ['agent@example.com/token', 'api-token']]
+            )
+            ->willReturn($this->client);
+
+        $this->tokenRefreshHandler->expects(self::never())
+            ->method('setTransportContext');
+
+        $this->transport->init($entity);
+    }
+
+    public function testInitWithZendeskTransportEntityAndGuzzleClient(): void
+    {
+        $entity = $this->createMock(ZendeskTransportSettingsEntity::class);
+        $entity->expects(self::atLeastOnce())
+            ->method('getSettingsBag')
+            ->willReturn(new ParameterBag([
+                'url' => self::HTTPS_TEST_ZENDESK_URL,
+                'authorizationType' => AuthorizationType::OAUTH->value,
+                'accessToken' => 'access-token-123',
+            ]));
+        $entity->expects(self::once())
+            ->method('getAuthorizationType')
+            ->willReturn(AuthorizationType::OAUTH);
+
+        $this->crypter->expects(self::once())
+            ->method('decryptData')
+            ->with('access-token-123')
+            ->willReturn('access-token-123');
+
+        $this->tokenRefreshHandler->expects(self::once())
+            ->method('setTransportContext')
+            ->with($entity);
+
+        $guzzleClient = $this->createMock(ZendGuzzleRestClient::class);
+        $guzzleClient->expects(self::once())
+            ->method('setTokenRefreshHandler')
+            ->with($this->tokenRefreshHandler);
+
+        $this->clientFactory->expects(self::once())
+            ->method('createRestClient')
+            ->willReturn($guzzleClient);
+
+        $this->transport->init($entity);
+    }
+
+    public function testInitWithZendeskTransportEntityButNotGuzzleClient(): void
+    {
+        $entity = $this->createMock(ZendeskTransportSettingsEntity::class);
+        $entity->expects(self::atLeastOnce())
+            ->method('getSettingsBag')
+            ->willReturn(new ParameterBag([
+                'url' => self::HTTPS_TEST_ZENDESK_URL,
+                'authorizationType' => AuthorizationType::OAUTH->value,
+                'accessToken' => 'access-token-123',
+            ]));
+        $entity->expects(self::once())
+            ->method('getAuthorizationType')
+            ->willReturn(AuthorizationType::OAUTH);
+
+        $this->crypter->expects(self::once())
+            ->method('decryptData')
+            ->with('access-token-123')
+            ->willReturn('access-token-123');
+
+        $this->tokenRefreshHandler->expects(self::once())
+            ->method('setTransportContext')
+            ->with($entity);
+
+        $regularClient = $this->createMock(RestClientInterface::class);
+        $this->clientFactory->expects(self::once())
+            ->method('createRestClient')
+            ->willReturn($regularClient);
+
+        $this->transport->init($entity);
     }
 
     public function testGetUsersWorks(): void
@@ -782,19 +953,28 @@ class ZendeskRestTransportTest extends \PHPUnit\Framework\TestCase
 
     private function initTransport(): void
     {
-        $url = 'https://test.zendesk.com';
+        $accessToken = 'access-token-123';
+        $url = self::HTTPS_TEST_ZENDESK_URL;
         $expectedUrl = $url . '/' . self::API_URL_PREFIX;
-        $email = 'admin@example.com';
-        $token = 'ZsOcahXwCc6rcwLRsqQH27CPCTdpwM2FTfWHDpTBDZi4kBI5';
-        $clientOptions = ['auth' => [$email . '/token', $token]];
 
-        $settings = new ParameterBag(
-            [
-                'url' => $url,
-                'email' => $email,
-                'token' => $token,
-            ]
-        );
+        $settings = new ParameterBag([
+            'url' => $url,
+            'accessToken' => $accessToken,
+            'zendeskUserEmail' => 'user@example.com',
+        ]);
+
+        $clientOptions = [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+            ],
+        ];
+
+        // Mock crypter to return the access token as decrypted value
+        $this->crypter
+            ->expects(self::any())
+            ->method('decryptData')
+            ->with($accessToken)
+            ->willReturn($accessToken);
 
         $entity = $this->createMock(Transport::class);
         $entity->expects(self::atLeastOnce())

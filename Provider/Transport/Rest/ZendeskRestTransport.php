@@ -2,13 +2,18 @@
 
 namespace Oro\Bundle\ZendeskBundle\Provider\Transport\Rest;
 
+use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\IntegrationBundle\Provider\Rest\Transport\AbstractRestTransport;
+use Oro\Bundle\SecurityBundle\Encoder\SymmetricCrypterInterface;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\TicketComment;
 use Oro\Bundle\ZendeskBundle\Entity\User;
 use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport as ZendeskTransportSettingsEntity;
+use Oro\Bundle\ZendeskBundle\Enum\Transport\AuthorizationType;
 use Oro\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType;
+use Oro\Bundle\ZendeskBundle\Provider\Rest\Client\Guzzle\TokenRefreshHandlerInterface;
+use Oro\Bundle\ZendeskBundle\Provider\Rest\Client\Guzzle\ZendGuzzleRestClient;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\Rest\Exception\RestException;
 use Oro\Bundle\ZendeskBundle\Provider\Transport\ZendeskTransportInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -17,6 +22,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Contains methods for getting and creating tickets, users, ticket comments
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  *
  * @link http://developer.zendesk.com/documentation/rest_api/introduction.html
  */
@@ -32,11 +39,31 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     public function __construct(
         NormalizerInterface $normalizer,
         DenormalizerInterface $denormalizer,
-        ?string $resultIteratorClass = null
+        private readonly TokenRefreshHandlerInterface $tokenRefreshHandler,
+        private readonly SymmetricCrypterInterface $crypter,
+        ?string $resultIteratorClass = null,
     ) {
         $this->normalizer = $normalizer;
         $this->denormalizer = $denormalizer;
         $this->resultIteratorClass = $resultIteratorClass ?? ZendeskRestIterator::class;
+    }
+
+    #[\Override]
+    public function init(Transport $transportEntity)
+    {
+        parent::init($transportEntity);
+
+        if ($transportEntity instanceof ZendeskTransportSettingsEntity) {
+            if (!$transportEntity->getAuthorizationType()?->isOAuth()) {
+                return;
+            }
+
+            $this->tokenRefreshHandler->setTransportContext($transportEntity);
+            $client = $this->getClient();
+            if ($client instanceof ZendGuzzleRestClient) {
+                $client->setTokenRefreshHandler($this->tokenRefreshHandler);
+            }
+        }
     }
 
     /**
@@ -120,7 +147,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     #[\Override]
     public function getTicket($id)
     {
-        $response = $this->client->get(
+        $response = $this->getClient()->get(
             sprintf('tickets/%d.json', $id)
         );
 
@@ -173,6 +200,7 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
         $commentData = $this->normalizer->normalize($comment);
 
         $ticketData = ['comment' => $commentData];
+        $responseData = [];
         $this->updateEntity(sprintf('tickets/%d.json', $ticketId), 'ticket', $ticketData, $responseData);
         $createdTicketData = $this->getCommentFromTicketResponse($responseData);
 
@@ -402,6 +430,20 @@ class ZendeskRestTransport extends AbstractRestTransport implements ZendeskTrans
     #[\Override]
     protected function getClientOptions(ParameterBag $parameterBag)
     {
+        $authorizationType = $parameterBag->get('authorizationType');
+        $authAuthType = AuthorizationType::tryFrom((string) $authorizationType) ?? AuthorizationType::DEFAULT;
+
+        if ($authAuthType->isOAuth()) {
+            $accessToken = $parameterBag->get('accessToken');
+            if ($accessToken) {
+                return [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . ($this->crypter->decryptData($accessToken) ?: $accessToken),
+                    ],
+                ];
+            }
+        }
+
         $email = $parameterBag->get('email');
         $token = $parameterBag->get('token');
 

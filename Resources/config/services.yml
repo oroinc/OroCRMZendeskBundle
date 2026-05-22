@@ -15,6 +15,8 @@ services:
     # Forms and extensions
     oro_zendesk.form.type.rest_transport_setting:
         class: Oro\Bundle\ZendeskBundle\Form\Type\RestTransportSettingsFormType
+        arguments:
+            - '@oro_zendesk.model.oauth_callback_url_provider'
         tags:
             - { name: form.type, alias: oro_zendesk_rest_transport_setting_form_type }
 
@@ -45,6 +47,10 @@ services:
         arguments:
             - '@oro_importexport.serializer'
             - '@oro_importexport.serializer'
+            - '@oro_zendesk.transport.rest.guzzle.client.token_refresh_handler'
+            - '@oro_security.encoder.default'
+        calls:
+            - [ setRestClientFactory, [ '@oro_zendesk.transport.rest.guzzle.client_factory' ] ]
         tags:
             - { name: oro_integration.transport, type: zendesk_rest, channel_type: zendesk }
 
@@ -65,6 +71,11 @@ services:
         tags:
             - { name: doctrine.event_listener, event: onFlush }
             - { name: container.service_subscriber, id: oro_integration.sync_scheduler, key: Oro\Bundle\IntegrationBundle\Manager\SyncScheduler }
+
+    oro_zendesk.listener.doctrine.two_way_sync_change:
+        class: Oro\Bundle\ZendeskBundle\EventListener\Doctrine\TwoWaySyncChangeListener
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
 
     oro_zendesk.listener.case_entity:
         class: Oro\Bundle\ZendeskBundle\EventListener\CaseEntity\CaseEntityListener
@@ -142,3 +153,93 @@ services:
     #handler
     oro_zendesk.handler.ticket_comment_exception:
         class: Oro\Bundle\ZendeskBundle\Handler\TicketCommentExceptionHandler
+
+    oro_zendesk.model.oauth_callback_url_provider:
+        class: Oro\Bundle\ZendeskBundle\Model\OAuth\OAuthCallbackUrlProvider
+        arguments:
+            - '@router'
+
+    oro_zendesk.provider.oauth.lock.store:
+        class: Symfony\Component\Lock\PersistingStoreInterface
+        factory: [ 'Symfony\Component\Lock\Store\StoreFactory', 'createStore' ]
+        arguments:
+            - '%oro_zendesk.oauth.lock_store_dsn%'
+
+    oro_zendesk.provider.oauth.lock.factory:
+        class: Symfony\Component\Lock\LockFactory
+        arguments:
+            - '@oro_zendesk.provider.oauth.lock.store'
+        calls:
+            - [setLogger, ['@logger']]
+
+    oro_zendesk.provider.oauth.token_refresh_lock_manager:
+        class: Oro\Bundle\ZendeskBundle\Provider\OAuth\TokenRefreshLockManager
+        arguments:
+            - '@oro_zendesk.provider.oauth.config.token_refresh_lock_manager'
+            - '@oro_zendesk.provider.oauth.lock.factory'
+            - '@logger'
+
+    oro_zendesk.provider.oauth.config.token_refresh_lock_manager:
+        class: Oro\Bundle\ZendeskBundle\Provider\OAuth\Configuration\TokenRefreshLockConfiguration
+        arguments:
+            - '%oro_zendesk.oauth.lock_ttl%'
+            - '%oro_zendesk.oauth.lock_attempt_limit%'
+            - '%oro_zendesk.oauth.lock_wait_between_attempts_ms%'
+
+    oro_zendesk.provider.oauth.access_token_provider:
+        class: Oro\Bundle\ZendeskBundle\Provider\OAuth\AccessTokenProvider
+        arguments:
+            - '@oro_zendesk.transport.rest.guzzle.client_factory'
+            - '@oro_zendesk.model.oauth_callback_url_provider'
+            - '@oro_security.encoder.default'
+            - '%oro_zendesk.oauth.access_token.expires_in%'
+            - '%oro_zendesk.oauth.refresh_token.expires_in%'
+            - '@logger'
+
+    oro_zendesk.provider.oauth.access_token_manager:
+        class: Oro\Bundle\ZendeskBundle\Provider\OAuth\AccessTokenManager
+        arguments:
+            - '@oro_zendesk.provider.oauth.access_token_provider'
+            - '@oro_security.encoder.default'
+            - '@doctrine'
+            - '@oro_zendesk.provider.oauth.token_refresh_lock_manager'
+            - '@logger'
+
+    oro_zendesk.model.oauth_manager:
+        class: Oro\Bundle\ZendeskBundle\Model\OAuthManager
+        arguments:
+            - '@request_stack'
+            - '@oro_zendesk.provider.oauth.access_token_manager'
+            - '@oro_zendesk.model.oauth_callback_url_provider'
+
+    Oro\Bundle\ZendeskBundle\Model\OAuthManagerInterface:
+        alias: oro_zendesk.model.oauth_manager
+
+    Oro\Bundle\ZendeskBundle\Controller\OAuthController:
+        public: true
+        calls:
+            - ['setContainer', ['@Psr\Container\ContainerInterface']]
+        tags:
+            - { name: container.service_subscriber }
+
+    # Commands
+    Oro\Bundle\ZendeskBundle\Command\RefreshOAuthTokensCommand:
+        arguments:
+            - '@doctrine'
+            - '@oro_zendesk.provider.oauth.access_token_manager'
+            - '%oro_zendesk.oauth.refresh_command.cron_schedule%'
+            - '%oro_zendesk.oauth.token.refresh_threshold_days%'
+            - '@logger'
+        tags:
+            - { name: console.command }
+
+    # Client guzzle factory for a bundle usage
+    oro_zendesk.transport.rest.guzzle.client_factory:
+        class: Oro\Bundle\ZendeskBundle\Provider\Rest\Client\Guzzle\ZendGuzzleRestClientFactory
+
+    oro_zendesk.transport.rest.guzzle.client.token_refresh_handler:
+        class: Oro\Bundle\ZendeskBundle\Provider\Rest\Client\Guzzle\TokenRefreshHandler
+        arguments:
+            - '@oro_zendesk.provider.oauth.access_token_manager'
+            - '@oro_security.encoder.default'
+            - '@logger'
