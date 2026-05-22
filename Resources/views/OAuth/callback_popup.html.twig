@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <script>
+            (function() {
+                const result = {
+                    type: 'zendesk:oauth:done',
+                    success: {{ success|default(false) ? 'true' : 'false' }},
+                    message: {{ message|default('')|json_encode|raw }},
+                    messageType: {{ messageType|default('error')|json_encode|raw }}
+                };
+
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage(result, window.location.origin);
+                    window.close();
+                    return;
+                }
+
+                try {
+                    // Fallback for flows where browser security clears window.opener after redirects/login.
+                    const storagePayload = JSON.stringify({
+                        ...result,
+                        timestamp: Date.now()
+                    });
+
+                    localStorage.setItem('zendesk:oauth:done:' + Date.now() + ':' + Math.random(), storagePayload);
+                } catch (error) {
+                    // Ignore storage write errors and keep popup close flow uninterrupted.
+                }
+
+                window.close();
+            })();
+        </script>
+    </body>
+</html>

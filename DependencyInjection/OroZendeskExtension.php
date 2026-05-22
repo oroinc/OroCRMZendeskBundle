@@ -19,6 +19,7 @@ class OroZendeskExtension extends Extension
         $loader->load('name_suffixes.yml');
         $loader->load('name_prefixes.yml');
         $loader->load('importexport.yml');
+        $loader->load('oauth_parameters.yml');
 
         if ('test' === $container->getParameter('kernel.environment')) {
             $loader->load('services_test.yml');

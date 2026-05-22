@@ -1,0 +1,19 @@
+{% import '@OroUI/macros.html.twig' as UI %}
+
+{% set transport = entity.transport %}
+{% set isOAuth = transport.authorizationType is not null and transport.authorizationType.isOAuth() %}
+{% set isConnected = transport.accessToken is not empty %}
+
+<span class="page-title__status"
+      id="zendesk-oauth-badge-connection-status"
+      {% if not isOAuth %}style="display: none;"{% endif %}>
+
+    <span class="zendesk-badge-connected"
+          {% if not isConnected %}style="display: none;"{% endif %}>
+        {{ UI.badge('oro.zendesk.zendeskresttransport.oauth.status.connected.label'|trans, 'enabled') }}
+    </span>
+    <span class="zendesk-badge-not-connected"
+          {% if isConnected %}style="display: none;"{% endif %}>
+        {{ UI.badge('oro.zendesk.zendeskresttransport.oauth.status.notconnected.label'|trans, 'disabled') }}
+    </span>
+</span>
