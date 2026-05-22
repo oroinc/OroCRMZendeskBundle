@@ -1,0 +1,4 @@
+dynamic-imports:
+    orozendesk:
+        - orozendesk/js/app/components/zendesk-authorization-type-component
+        - orozendesk/js/app/components/zendesk-oauth-component

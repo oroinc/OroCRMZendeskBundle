@@ -9,3 +9,18 @@ services:
         decorates: oro_entity.tests.entity_name_resolver.data_loader
         arguments:
             - '@.inner'
+
+    # Fake REST client factory for OAuth functional tests
+    oro_zendesk.tests.rest_client_factory_stub:
+        class: Oro\Bundle\IntegrationBundle\Test\FakeRestClientFactory
+        decorates: oro_zendesk.transport.rest.guzzle.client_factory
+        public: true
+
+    # Stub OAuth manager that bypasses session requirement for tests
+    oro_zendesk.tests.oauth_manager_stub:
+        class: Oro\Bundle\ZendeskBundle\Tests\Functional\Stub\OAuthManagerStub
+        decorates: oro_zendesk.model.oauth_manager
+        arguments:
+            - '@request_stack'
+            - '@oro_zendesk.provider.oauth.access_token_manager'
+            - '@oro_zendesk.model.oauth_callback_url_provider'

@@ -11,7 +11,7 @@ class OroZendeskBundleInstaller implements Installation
     #[\Override]
     public function getMigrationVersion(): string
     {
-        return 'v1_5_1';
+        return 'v1_6';
     }
 
     #[\Override]
@@ -35,6 +35,12 @@ class OroZendeskBundleInstaller implements Installation
         $table->addColumn('orocrm_zd_url', 'text', ['notnull' => false]);
         $table->addColumn('orocrm_zd_token', 'string', ['notnull' => false, 'length' => 255]);
         $table->addColumn('orocrm_zd_default_user_email', 'string', ['notnull' => false, 'length' => 100]);
+
+        $table->addColumn('orocrm_zd_authorization_type', 'string', ['notnull' => false, 'length' => 32]);
+        $table->addColumn('orocrm_zd_oauth_client_id', 'string', ['notnull' => false, 'length' => 255]);
+        $table->addColumn('orocrm_zd_access_token', 'string', ['notnull' => false, 'length' => 255]);
+        $table->addColumn('orocrm_zd_refresh_token', 'string', ['notnull' => false, 'length' => 255]);
+        $table->addColumn('orocrm_zd_oauth_last_refresh_at', 'datetime', ['notnull' => false]);
     }
 
     private function createTicketCollaboratorTable(Schema $schema): void
