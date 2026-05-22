@@ -8,6 +8,10 @@ placeholders:
             items:
                 oro_zendesk_case_sync_button: ~
 
+        breadcrumbs_after:
+            items:
+                oro_zendesk_authorization_status_label: ~
+
     items:
         oro_zendesk_case_ticket_info:
             template: '@@OroZendesk/Case/caseTicketInfo.html.twig'
@@ -16,3 +20,9 @@ placeholders:
         oro_zendesk_case_sync_button:
             template: '@@OroZendesk/Case/syncButton.html.twig'
             applicable: "@oro_zendesk.placeholder.filter->isSyncApplicableForCaseEntity($entity$)"
+
+        oro_zendesk_authorization_status_label:
+            template: '@@OroZendesk/OAuth/authStatusLabel.html.twig'
+            applicable:
+                - '@oro_ui.placeholder.filter->isInstanceOf($entity$, Oro\Bundle\IntegrationBundle\Entity\Channel)'
+                - '@oro_ui.placeholder.filter->isSame($entity.type$, zendesk)'

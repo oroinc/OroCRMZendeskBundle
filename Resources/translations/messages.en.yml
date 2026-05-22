@@ -228,6 +228,37 @@ oro:
             id.label:                 Id
             zendesk_user_email.label: Default Zendesk user email
             channel.label:            Channel
+            refresh_token.label:      Refresh Token
+            oauth_connected_at.label: OAuth Connected At
+            access_token.label:       Access Token
+            oauth_last_refresh_at.label: OAuth Last Refresh At
+            oauth_client_id.label:    OAuth Client ID
+            authorization_type.label: Authorization Type
+            authorization_type.oauth: OAuth
+            authorization_type.email_token: Basic
+            oauth:
+                connect.label: Connect with Zendesk
+                status:
+                    connected.label: Connected
+                    notconnected.label: Not Connected
+
+        oauth:
+            oauth_callback_url:
+                label: OAuth Callback URL
+                tooltip: Copy this value and paste it into the "Redirect URLs" settings of your Zendesk OAuth client.
+            error:
+                user_denied: "Authorization was denied. %error%"
+                invalid_request: Invalid OAuth request. Missing required parameters.
+                transport_not_found: Integration not found.
+                exchange_failed: "Failed to exchange authorization code for access token: %error%"
+                general: An unexpected error occurred during OAuth authentication.
+                authorize_failed: "Failed to generate authorization URL: %error%"
+                disconnect_failed: Failed to disconnect from Zendesk.
+                missing_transport: Integration not found.
+                popup_blocked: Please disable your popup blocker to enable OAuth authentication.
+            success:
+                connected: Successfully connected to Zendesk via OAuth
+                disconnected: Successfully disconnected from Zendesk
 
         transport:
             rest:
@@ -259,3 +290,10 @@ oro:
             ticket_comment.label: Comments connector
             ticket.label:         Tickets connector
             user.label:           Users connector
+
+        synchronization_settings:
+            two_way_sync:
+                label: Enable Two-Way Sync
+                tooltip: |
+                    This setting determines whether the integration requires read or read/write access to Zendesk.
+                    <br>If you change it using <strong>OAuth Authorization</strong>, reconnect to Zendesk to grant the appropriate permissions.
