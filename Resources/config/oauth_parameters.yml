@@ -1,0 +1,24 @@
+parameters:
+    # Cron schedule for the automatic OAuth token refresh command
+    # Default: '0 2 * * *' (runs daily at 2:00 AM)
+    oro_zendesk.oauth.refresh_command.cron_schedule: '0 2 * * *'
+
+    # Number of days before token expiration to trigger proactive token refresh
+    # Tokens expiring within this threshold will be refreshed automatically
+    # Default: 7 days
+    oro_zendesk.oauth.token.refresh_threshold_days: 7
+
+    # Access token expiration time in seconds
+    # Default: 7200 seconds (2 hours)
+    oro_zendesk.oauth.access_token.expires_in: 7200
+
+    # Refresh token expiration time in seconds
+    # Default: 2592000 seconds (30 days)
+    oro_zendesk.oauth.refresh_token.expires_in: 2592000
+
+    # Configurable lock parameters for token refresh lock.
+    oro_zendesk.oauth.lock_store_dsn_fallback: 'flock'
+    oro_zendesk.oauth.lock_store_dsn: '%env(default:oro_zendesk.oauth.lock_store_dsn_fallback:ORO_REDIS_CACHE_DSN)%'
+    oro_zendesk.oauth.lock_ttl: 30
+    oro_zendesk.oauth.lock_attempt_limit: 200
+    oro_zendesk.oauth.lock_wait_between_attempts_ms: 50
