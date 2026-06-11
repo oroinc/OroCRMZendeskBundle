@@ -22,7 +22,10 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 #[ORM\Table(name: 'orocrm_zd_ticket')]
 #[ORM\UniqueConstraint(name: 'zd_ticket_oid_cid_unq', columns: ['origin_id', 'channel_id'])]
 #[ORM\HasLifecycleCallbacks]
-#[Config(defaultValues: ['entity' => ['icon' => 'fa-list-alt']])]
+#[Config(defaultValues: [
+    'entity' => ['icon' => 'fa-list-alt'],
+    'email' => ['available_in_template' => true]
+])]
 class Ticket
 {
     const SEARCH_TYPE = 'ticket';
@@ -30,28 +33,35 @@ class Ticket
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?int $id = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column(name: 'origin_id', type: Types::BIGINT, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected $originId;
 
     #[ORM\Column(name: 'url', type: Types::STRING, length: 255, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $url = null;
 
     #[ORM\Column(name: 'subject', type: Types::STRING, length: 255, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $subject = null;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $description = null;
 
     #[ORM\Column(name: 'external_id', type: Types::STRING, length: 50, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $externalId = null;
 
     #[ORM\ManyToOne(targetEntity: Ticket::class)]
     #[ORM\JoinColumn(name: 'problem_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?Ticket $problem = null;
 
     /**
@@ -61,67 +71,88 @@ class Ticket
     #[ORM\JoinTable(name: 'orocrm_zd_ticket_collaborators')]
     #[ORM\JoinColumn(name: 'ticket_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?Collection $collaborators = null;
 
     #[ORM\ManyToOne(targetEntity: TicketType::class)]
     #[ORM\JoinColumn(name: 'type_name', referencedColumnName: 'name', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?TicketType $type = null;
 
     #[ORM\ManyToOne(targetEntity: TicketStatus::class)]
     #[ORM\JoinColumn(name: 'status_name', referencedColumnName: 'name', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?TicketStatus $status = null;
 
     #[ORM\ManyToOne(targetEntity: TicketPriority::class)]
     #[ORM\JoinColumn(name: 'priority_name', referencedColumnName: 'name', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?TicketPriority $priority = null;
 
     #[ORM\Column(name: 'recipient_email', type: Types::STRING, length: 100, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $recipient = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'requester_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?User $requester = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'submitter_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?User $submitter = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'assignee_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?User $assignee = null;
 
     #[ORM\Column(name: 'has_incidents', type: Types::BOOLEAN, options: ['default' => false])]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?bool $hasIncidents = false;
 
     #[ORM\Column(name: 'due_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?\DateTimeInterface $dueAt = null;
 
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[ConfigField(defaultValues: ['entity' => ['label' => 'oro.ui.created_at']])]
+    #[ConfigField(defaultValues: [
+        'entity' => ['label' => 'oro.ui.created_at'],
+        'email' => ['available_in_template' => true],
+    ])]
     protected ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(name: 'origin_created_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?\DateTimeInterface $originCreatedAt = null;
 
     #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[ConfigField(defaultValues: ['entity' => ['label' => 'oro.ui.updated_at']])]
+    #[ConfigField(defaultValues: [
+        'entity' => ['label' => 'oro.ui.updated_at'],
+        'email' => ['available_in_template' => true],
+    ])]
     protected ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(name: 'origin_updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?\DateTimeInterface $originUpdatedAt = null;
 
     /**
      * @var Collection<int, TicketComment>
      */
     #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: TicketComment::class, cascade: ['persist'], orphanRemoval: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?Collection $comments = null;
 
     #[ORM\OneToOne(targetEntity: CaseEntity::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'case_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?CaseEntity $relatedCase = null;
 
     #[ORM\ManyToOne(targetEntity: Integration::class)]
     #[ORM\JoinColumn(name: 'channel_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?Integration $channel = null;
 
     /**

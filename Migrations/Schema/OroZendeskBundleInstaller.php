@@ -11,7 +11,7 @@ class OroZendeskBundleInstaller implements Installation
     #[\Override]
     public function getMigrationVersion(): string
     {
-        return 'v1_6';
+        return 'v6_1_9_0';
     }
 
     #[\Override]
