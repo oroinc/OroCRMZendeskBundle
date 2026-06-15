@@ -13,7 +13,7 @@ class OroZendeskBundleInstaller implements Installation
      */
     public function getMigrationVersion(): string
     {
-        return 'v1_6';
+        return 'v6_0_10_0';
     }
 
     /**

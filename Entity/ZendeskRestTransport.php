@@ -5,6 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\Config;
+use Oro\Bundle\EntityConfigBundle\Metadata\Attribute\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\ZendeskBundle\Entity\Repository\ZendeskRestTransportRepository;
 use Oro\Bundle\ZendeskBundle\Enum\Transport\AuthorizationType;
@@ -18,15 +19,19 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class ZendeskRestTransport extends Transport
 {
     #[ORM\Column(name: 'orocrm_zd_url', type: Types::STRING, length: 255, nullable: false)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?string $url = null;
 
     #[ORM\Column(name: 'orocrm_zd_email', type: Types::STRING, length: 100, nullable: false)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?string $email = null;
 
     #[ORM\Column(name: 'orocrm_zd_token', type: Types::STRING, length: 255, nullable: false)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?string $token = null;
 
     #[ORM\Column(name: 'orocrm_zd_default_user_email', type: Types::STRING, length: 100, nullable: false)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?string $zendeskUserEmail = null;
 
     #[ORM\Column(
@@ -36,18 +41,23 @@ class ZendeskRestTransport extends Transport
         nullable: true,
         enumType: AuthorizationType::class
     )]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?AuthorizationType $authorizationType = AuthorizationType::DEFAULT;
 
     #[ORM\Column(name: 'orocrm_zd_oauth_client_id', type: Types::STRING, length: 255, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?string $oauthClientId = null;
 
     #[ORM\Column(name: 'orocrm_zd_access_token', type: Types::STRING, length: 255, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?string $accessToken = null;
 
     #[ORM\Column(name: 'orocrm_zd_refresh_token', type: Types::STRING, length: 255, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?string $refreshToken = null;
 
     #[ORM\Column(name: 'orocrm_zd_oauth_last_refresh_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?\DateTimeInterface $oauthLastRefreshAt = null;
 
     /**

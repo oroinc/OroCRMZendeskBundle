@@ -21,7 +21,10 @@ use Oro\Bundle\UserBundle\Entity\User as OroUser;
 #[ORM\Table(name: 'orocrm_zd_user')]
 #[ORM\UniqueConstraint(name: 'zd_user_oid_cid_unq', columns: ['origin_id', 'channel_id'])]
 #[ORM\HasLifecycleCallbacks]
-#[Config(defaultValues: ['entity' => ['icon' => 'fa-list-alt']])]
+#[Config(defaultValues: [
+    'entity' => ['icon' => 'fa-list-alt'],
+    'email' => ['available_in_template' => true]
+])]
 class User implements EmailHolderInterface
 {
     const SEARCH_TYPE = 'user';
@@ -29,87 +32,116 @@ class User implements EmailHolderInterface
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?int $id = null;
 
     /**
      * @var int|null
      */
     #[ORM\Column(name: 'origin_id', type: Types::BIGINT, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected $originId;
 
     #[ORM\Column(name: 'url', type: Types::STRING, length: 255, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $url = null;
 
     #[ORM\Column(name: 'external_id', type: Types::STRING, length: 50, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $externalId = null;
 
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $name = null;
 
     #[ORM\Column(name: 'details', type: Types::TEXT, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $details = null;
 
     #[ORM\Column(name: 'ticket_restrictions', type: Types::STRING, length: 30, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $ticketRestriction = null;
 
     #[ORM\Column(name: 'only_private_comments', type: Types::BOOLEAN, options: ['default' => false])]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?bool $onlyPrivateComments = false;
 
     #[ORM\Column(name: 'notes', type: Types::TEXT, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $notes = null;
 
     #[ORM\Column(name: 'verified', type: Types::BOOLEAN, options: ['default' => false])]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?bool $verified = false;
 
     #[ORM\Column(name: 'active', type: Types::BOOLEAN, options: ['default' => false])]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?bool $active = false;
 
     #[ORM\Column(name: 'alias', type: Types::STRING, length: 100, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $alias = null;
 
     #[ORM\ManyToOne(targetEntity: UserRole::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'role_name', referencedColumnName: 'name', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?UserRole $role = null;
 
     #[ORM\Column(name: 'email', type: Types::STRING, length: 255, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $email = null;
 
     #[ORM\Column(name: 'phone', type: Types::STRING, length: 50, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $phone = null;
 
     #[ORM\Column(name: 'time_zone', type: Types::STRING, length: 30, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $timeZone = null;
 
     #[ORM\Column(name: 'locale', type: Types::STRING, length: 30, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?string $locale = null;
 
     #[ORM\Column(name: 'last_login_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?\DateTimeInterface $lastLoginAt = null;
 
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[ConfigField(defaultValues: ['entity' => ['label' => 'oro.ui.created_at']])]
+    #[ConfigField(defaultValues: [
+        'entity' => ['label' => 'oro.ui.created_at'],
+        'email' => ['available_in_template' => true],
+    ])]
     protected ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[ConfigField(defaultValues: ['entity' => ['label' => 'oro.ui.updated_at']])]
+    #[ConfigField(defaultValues: [
+        'entity' => ['label' => 'oro.ui.updated_at'],
+        'email' => ['available_in_template' => true],
+    ])]
     protected ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(name: 'origin_created_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?\DateTimeInterface $originCreatedAt = null;
 
     #[ORM\Column(name: 'origin_updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?\DateTimeInterface $originUpdatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: Contact::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'related_contact_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?Contact $relatedContact = null;
 
     #[ORM\ManyToOne(targetEntity: OroUser::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'related_user_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?OroUser $relatedUser = null;
 
     #[ORM\ManyToOne(targetEntity: Integration::class)]
     #[ORM\JoinColumn(name: 'channel_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ConfigField(defaultValues: ['email' => ['available_in_template' => true]])]
     protected ?Integration $channel = null;
 
     /**
