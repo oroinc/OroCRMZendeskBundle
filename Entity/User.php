@@ -24,6 +24,9 @@ use Oro\Bundle\UserBundle\Entity\User as OroUser;
  *  defaultValues={
  *      "entity"={
  *          "icon"="fa-list-alt"
+ *      },
+ *      "email"={
+ *          "available_in_template"=true
  *      }
  *  }
  * )

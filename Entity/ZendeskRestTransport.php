@@ -5,6 +5,7 @@ namespace Oro\Bundle\ZendeskBundle\Entity;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
+use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\ZendeskBundle\Enum\Transport\AuthorizationType;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -21,6 +22,14 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_url", type="string", length=255, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected $url;
 
@@ -28,6 +37,14 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_email", type="string", length=100, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected $email;
 
@@ -35,6 +52,14 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_token", type="string", length=255, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected $token;
 
@@ -42,6 +67,14 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_default_user_email", type="string", length=100, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected $zendeskUserEmail;
 
@@ -53,6 +86,14 @@ class ZendeskRestTransport extends Transport
      *     nullable=true,
      *     enumType=AuthorizationType::class
      * )
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected ?AuthorizationType $authorizationType = AuthorizationType::DEFAULT;
 
@@ -63,21 +104,53 @@ class ZendeskRestTransport extends Transport
      *     length=255,
      *     nullable=true
      * )
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected ?string $oauthClientId = null;
 
     /**
      * @ORM\Column(name="orocrm_zd_access_token", type="string", length=255, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected ?string $accessToken = null;
 
     /**
      * @ORM\Column(name="orocrm_zd_refresh_token", type="string", length=255, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected ?string $refreshToken = null;
 
     /**
      * @ORM\Column(name="orocrm_zd_oauth_last_refresh_at", type="datetime", nullable=true)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected ?DateTimeInterface $oauthLastRefreshAt = null;
 
