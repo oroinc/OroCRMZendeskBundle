@@ -4,11 +4,12 @@ namespace Oro\Bundle\ZendeskBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
+use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
- * Class ZendeskRestTransport
+ * Contains methods for getting and creating tickets, users, ticket comments
  *
  * @ORM\Entity
  * @Config()
@@ -19,6 +20,14 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_url", type="string", length=255, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected $url;
 
@@ -26,6 +35,14 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_email", type="string", length=100, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected $email;
 
@@ -33,6 +50,14 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_token", type="string", length=255, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected $token;
 
@@ -40,6 +65,14 @@ class ZendeskRestTransport extends Transport
      * @var string
      *
      * @ORM\Column(name="orocrm_zd_default_user_email", type="string", length=100, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "email"={
+     *              "available_in_template"=false,
+     *              "immutable"=true
+     *          }
+     *      }
+     * )
      */
     protected $zendeskUserEmail;
 

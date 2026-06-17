@@ -9,6 +9,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 
 /**
+ * Represents Zendesk ticket comment
  * @ORM\Entity
  * @ORM\Table(
  *      name="orocrm_zd_comment",
@@ -21,6 +22,9 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
  *  defaultValues={
  *      "entity"={
  *          "icon"="fa-list-alt"
+ *      },
+ *      "email"={
+ *          "available_in_template"=true
  *      }
  *  }
  * )

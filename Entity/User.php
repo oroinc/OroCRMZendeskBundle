@@ -11,6 +11,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\UserBundle\Entity\User as OroUser;
 
 /**
+ * Represents Zendesk user
  * @ORM\Entity
  * @ORM\Table(
  *      name="orocrm_zd_user",
@@ -23,6 +24,9 @@ use Oro\Bundle\UserBundle\Entity\User as OroUser;
  *  defaultValues={
  *      "entity"={
  *          "icon"="fa-list-alt"
+ *      },
+ *      "email"={
+ *          "available_in_template"=true
  *      }
  *  }
  * )
