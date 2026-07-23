@@ -48,11 +48,11 @@ class ZendeskRestTransport extends Transport
     #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?string $oauthClientId = null;
 
-    #[ORM\Column(name: 'orocrm_zd_access_token', type: Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(name: 'orocrm_zd_access_token', type: Types::TEXT, nullable: true)]
     #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?string $accessToken = null;
 
-    #[ORM\Column(name: 'orocrm_zd_refresh_token', type: Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(name: 'orocrm_zd_refresh_token', type: Types::TEXT, nullable: true)]
     #[ConfigField(defaultValues: ['email' => ['available_in_template' => false, 'immutable' => true]])]
     protected ?string $refreshToken = null;
 
