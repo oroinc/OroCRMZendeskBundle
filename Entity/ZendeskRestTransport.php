@@ -116,7 +116,7 @@ class ZendeskRestTransport extends Transport
     protected ?string $oauthClientId = null;
 
     /**
-     * @ORM\Column(name="orocrm_zd_access_token", type="string", length=255, nullable=false)
+     * @ORM\Column(name="orocrm_zd_access_token", type="text", nullable=false)
      * @ConfigField(
      *      defaultValues={
      *          "email"={
@@ -129,7 +129,7 @@ class ZendeskRestTransport extends Transport
     protected ?string $accessToken = null;
 
     /**
-     * @ORM\Column(name="orocrm_zd_refresh_token", type="string", length=255, nullable=false)
+     * @ORM\Column(name="orocrm_zd_refresh_token", type="text", nullable=false)
      * @ConfigField(
      *      defaultValues={
      *          "email"={
