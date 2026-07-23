@@ -6,6 +6,7 @@ namespace Oro\Bundle\ZendeskBundle\Tests\Functional\Controller;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\IntegrationBundle\Test\FakeRestClientFactory;
+use Oro\Bundle\SecurityBundle\Encoder\SymmetricCrypterInterface;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
 use Oro\Bundle\ZendeskBundle\Enum\OAuth\TranslationKey;
@@ -14,10 +15,25 @@ use Oro\Bundle\ZendeskBundle\Tests\Functional\DataFixtures\LoadTransportData;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @dbIsolationPerTest
+ */
 class OAuthControllerTest extends WebTestCase
 {
     private const ZENDESK_TRANSPORT_FIRST_TEST_TRANSPORT = 'zendesk_transport:first_test_transport';
     private const TEST_OAUTH_CLIENT_ID = 'oauth-client-id-functional';
+
+    private const ACCESS_TOKEN = 'gdyt_at_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        . '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        . '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        . '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        . '0123456789abcdefghijklmnopqrstuvwxyz';
+    private const REFRESH_TOKEN = 'gdyt_rt_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        . '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        . '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        . '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        . '0123456789abcdefghijklmnopqrstuvwxyz';
+
     private int $transportId;
 
     #[\Override]
@@ -68,6 +84,20 @@ class OAuthControllerTest extends WebTestCase
         self::assertNotNull($updatedTransport->getAccessToken());
         self::assertNotNull($updatedTransport->getRefreshToken());
         self::assertInstanceOf(\DateTimeInterface::class, $updatedTransport->getOauthLastRefreshAt());
+
+        self::assertGreaterThan(255, strlen((string)$updatedTransport->getAccessToken()));
+        self::assertGreaterThan(255, strlen((string)$updatedTransport->getRefreshToken()));
+
+        /** @var SymmetricCrypterInterface $crypter */
+        $crypter = $this->getContainer()->get('oro_security.encoder.default');
+        self::assertSame(
+            self::ACCESS_TOKEN,
+            $crypter->decryptData((string)$updatedTransport->getAccessToken())
+        );
+        self::assertSame(
+            self::REFRESH_TOKEN,
+            $crypter->decryptData((string)$updatedTransport->getRefreshToken())
+        );
     }
 
     public function testCallbackActionWhenUserDeniedAuthorization(): void
