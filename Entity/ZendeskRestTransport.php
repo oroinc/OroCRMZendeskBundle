@@ -41,10 +41,10 @@ class ZendeskRestTransport extends Transport
     #[ORM\Column(name: 'orocrm_zd_oauth_client_id', type: Types::STRING, length: 255, nullable: true)]
     protected ?string $oauthClientId = null;
 
-    #[ORM\Column(name: 'orocrm_zd_access_token', type: Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(name: 'orocrm_zd_access_token', type: Types::TEXT, nullable: true)]
     protected ?string $accessToken = null;
 
-    #[ORM\Column(name: 'orocrm_zd_refresh_token', type: Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(name: 'orocrm_zd_refresh_token', type: Types::TEXT, nullable: true)]
     protected ?string $refreshToken = null;
 
     #[ORM\Column(name: 'orocrm_zd_oauth_last_refresh_at', type: Types::DATETIME_MUTABLE, nullable: true)]
