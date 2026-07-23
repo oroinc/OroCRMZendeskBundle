@@ -11,7 +11,7 @@ class OroZendeskBundleInstaller implements Installation
     #[\Override]
     public function getMigrationVersion(): string
     {
-        return 'v6_1_9_0';
+        return 'v6_1_9_1';
     }
 
     #[\Override]
@@ -38,8 +38,8 @@ class OroZendeskBundleInstaller implements Installation
 
         $table->addColumn('orocrm_zd_authorization_type', 'string', ['notnull' => false, 'length' => 32]);
         $table->addColumn('orocrm_zd_oauth_client_id', 'string', ['notnull' => false, 'length' => 255]);
-        $table->addColumn('orocrm_zd_access_token', 'string', ['notnull' => false, 'length' => 255]);
-        $table->addColumn('orocrm_zd_refresh_token', 'string', ['notnull' => false, 'length' => 255]);
+        $table->addColumn('orocrm_zd_access_token', 'text', ['notnull' => false]);
+        $table->addColumn('orocrm_zd_refresh_token', 'text', ['notnull' => false]);
         $table->addColumn('orocrm_zd_oauth_last_refresh_at', 'datetime', ['notnull' => false]);
     }
 
