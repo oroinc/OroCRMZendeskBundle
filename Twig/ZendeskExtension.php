@@ -7,10 +7,10 @@ use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\ZendeskBundle\Entity\Ticket;
 use Oro\Bundle\ZendeskBundle\Entity\ZendeskRestTransport;
-use Oro\Bundle\ZendeskBundle\Exception\ConfigurationException;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -74,7 +74,15 @@ class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInt
             }
 
             return $url . '/tickets/' . $ticket->getOriginId();
-        } catch (ConfigurationException $exception) {
+        } catch (\InvalidArgumentException $exception) {
+            $this->container->get(LoggerInterface::class)->warning(
+                'Unable to build Zendesk ticket URL: invalid transport URL.',
+                [
+                    'origin_id' => $ticket->getOriginId(),
+                    'exception' => $exception,
+                ]
+            );
+
             return null;
         }
     }
@@ -84,7 +92,8 @@ class ZendeskExtension extends AbstractExtension implements ServiceSubscriberInt
     {
         return [
             OroEntityProvider::class,
-            ZendeskEntityProvider::class
+            ZendeskEntityProvider::class,
+            LoggerInterface::class,
         ];
     }
 
