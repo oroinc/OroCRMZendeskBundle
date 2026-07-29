@@ -12,6 +12,7 @@ use Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension;
 use Oro\Component\Testing\Unit\TwigExtensionTestCaseTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class ZendeskExtensionTest extends TestCase
 {
@@ -19,6 +20,7 @@ class ZendeskExtensionTest extends TestCase
 
     private OroEntityProvider&MockObject $oroProvider;
     private ZendeskEntityProvider&MockObject $zendeskProvider;
+    private LoggerInterface&MockObject $logger;
     private ZendeskExtension $extension;
 
     #[\Override]
@@ -26,10 +28,12 @@ class ZendeskExtensionTest extends TestCase
     {
         $this->oroProvider = $this->createMock(OroEntityProvider::class);
         $this->zendeskProvider = $this->createMock(ZendeskEntityProvider::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $container = self::getContainerBuilder()
             ->add(OroEntityProvider::class, $this->oroProvider)
             ->add(ZendeskEntityProvider::class, $this->zendeskProvider)
+            ->add(LoggerInterface::class, $this->logger)
             ->getContainer($this);
 
         $this->extension = new ZendeskExtension($container);
@@ -117,6 +121,41 @@ class ZendeskExtensionTest extends TestCase
 
         self::assertEquals(
             $expectedUrl,
+            self::callTwigFunction($this->extension, 'oro_zendesk_ticket_url', [$ticket])
+        );
+    }
+
+    public function testGetTicketUrlWithInvalidUrl(): void
+    {
+        $id = 42;
+        // Transport URL polluted with an invalid value (e.g. an XSS payload)
+        $invalidUrl = '<script>alert(1)</script>';
+
+        $ticket = $this->createMock(Ticket::class);
+        $ticket->expects(self::atLeastOnce())
+            ->method('getOriginId')
+            ->willReturn($id);
+        $channel = $this->createMock(Channel::class);
+        $transport = $this->createMock(ZendeskRestTransport::class);
+        $transport->expects(self::once())
+            ->method('getUrl')
+            ->willReturn($invalidUrl);
+        $ticket->expects(self::atLeastOnce())
+            ->method('getChannel')
+            ->willReturn($channel);
+        $channel->expects(self::once())
+            ->method('getTransport')
+            ->willReturn($transport);
+
+        $this->logger->expects(self::once())
+            ->method('warning')
+            ->with(
+                'Unable to build Zendesk ticket URL: invalid transport URL.',
+                self::callback(static fn (array $context) => $id === $context['origin_id']
+                    && $context['exception'] instanceof \InvalidArgumentException)
+            );
+
+        self::assertNull(
             self::callTwigFunction($this->extension, 'oro_zendesk_ticket_url', [$ticket])
         );
     }
