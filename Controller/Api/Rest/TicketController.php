@@ -7,7 +7,7 @@ use FOS\RestBundle\Controller\Annotations\QueryParam;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Oro\Bundle\CaseBundle\Entity\CaseEntity;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\SecurityBundle\Attribute\AclAncestor;
+use Oro\Bundle\SecurityBundle\Attribute\Acl;
 use Oro\Bundle\ZendeskBundle\Provider\ChannelType;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +25,7 @@ class TicketController extends AbstractFOSRestController
      */
     #[QueryParam(name: 'id', requirements: '\d+', description: 'Case Id', nullable: false)]
     #[QueryParam(name: 'channelId', requirements: '\d+', description: 'Channel Id', nullable: false)]
-    #[AclAncestor('orocrm_case_update')]
+    #[Acl(id: 'orocrm_case_update', type: 'entity', class: CaseEntity::class, permission: 'EDIT')]
     public function postSyncCaseAction(
         #[MapEntity(id: 'id')]
         CaseEntity $caseEntity,
