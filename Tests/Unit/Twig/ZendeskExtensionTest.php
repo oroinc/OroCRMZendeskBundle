@@ -9,6 +9,7 @@ use Oro\Bundle\ZendeskBundle\Model\EntityProvider\OroEntityProvider;
 use Oro\Bundle\ZendeskBundle\Model\EntityProvider\ZendeskEntityProvider;
 use Oro\Bundle\ZendeskBundle\Twig\ZendeskExtension;
 use Oro\Component\Testing\Unit\TwigExtensionTestCaseTrait;
+use Psr\Log\LoggerInterface;
 
 class ZendeskExtensionTest extends \PHPUnit\Framework\TestCase
 {
@@ -23,14 +24,19 @@ class ZendeskExtensionTest extends \PHPUnit\Framework\TestCase
     /** @var ZendeskEntityProvider|\PHPUnit\Framework\MockObject\MockObject */
     private $zendeskProvider;
 
+    /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject */
+    private $logger;
+
     protected function setUp(): void
     {
         $this->oroProvider = $this->createMock(OroEntityProvider::class);
         $this->zendeskProvider = $this->createMock(ZendeskEntityProvider::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $container = self::getContainerBuilder()
             ->add('oro_zendesk.entity_provider.oro', $this->oroProvider)
             ->add('oro_zendesk.entity_provider.zendesk', $this->zendeskProvider)
+            ->add(LoggerInterface::class, $this->logger)
             ->getContainer($this);
 
         $this->extension = new ZendeskExtension($container);
@@ -88,6 +94,43 @@ class ZendeskExtensionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $expectedUrl,
+            self::callTwigFunction($this->extension, 'oro_zendesk_ticket_url', [$ticket])
+        );
+    }
+
+    /**
+     * The XSS security suite stores a script payload as the integration URL, and such a value cannot be
+     * a host. The link is then unavailable, but the page must still render.
+     */
+    public function testGetTicketUrlWhenUrlCannotBeAHost()
+    {
+        $id = 42;
+
+        $ticket = $this->createMock(Ticket::class);
+        $ticket->expects($this->atLeastOnce())
+            ->method('getOriginId')
+            ->willReturn($id);
+        $channel = $this->createMock(Channel::class);
+        $transport = $this->createMock(ZendeskRestTransport::class);
+        $transport->expects($this->once())
+            ->method('getUrl')
+            ->willReturn('%3cscript%20x%3e_x%60p1503%60%3c/script%3e');
+        $ticket->expects($this->atLeastOnce())
+            ->method('getChannel')
+            ->willReturn($channel);
+        $channel->expects($this->once())
+            ->method('getTransport')
+            ->willReturn($transport);
+
+        $this->logger->expects($this->once())
+            ->method('warning')
+            ->with(
+                'Unable to build Zendesk ticket URL: invalid transport URL.',
+                $this->callback(static fn (array $context) => $id === $context['origin_id']
+                    && $context['exception'] instanceof \InvalidArgumentException)
+            );
+
+        $this->assertNull(
             self::callTwigFunction($this->extension, 'oro_zendesk_ticket_url', [$ticket])
         );
     }
